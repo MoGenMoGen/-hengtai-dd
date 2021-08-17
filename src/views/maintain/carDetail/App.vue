@@ -196,7 +196,7 @@
             </div>
             <div class="situation">
                 <div class="title"><span></span>服务项目</div>
-                <div class="serviceList" v-for="item in serviceRecords" @click="toDetail(item.worksheetId)">
+                <div class="serviceList" v-for="item in serviceRecords" :key="item.id" @click="toDetail(item.worksheetId)">
                     <div class="content">
                         <!--type: "1:年检，2:续保，3:精洗，4:保养"-->
                         <p v-if="item.type==1"><span>服务项目：</span>年检服务</p>
@@ -239,7 +239,7 @@
         },
         methods: {
             toDetail(id){
-                this.until.href('../service/finished.html?id='+id)
+                this.until.href('@/maintain/finished.html?id='+id)
             },
             async getInfo(){
 
@@ -274,7 +274,7 @@
             },
 
             toPage(){
-                let url = '../followUp/creat.html?carInfo='+JSON.stringify(this.info)
+                let url = '@/maintain/creat.html?carInfo='+JSON.stringify(this.info)
                 this.until.href(url)
             }
         }

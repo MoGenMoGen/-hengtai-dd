@@ -315,7 +315,7 @@
         },
         methods: {
             toPage(){
-              let url = '../customer/carDetail.html?id='+this.info.vehicleId
+              let url = '@/maintain/carDetail.html?id='+this.info.vehicleId
                 this.until.href(url)
             },
             async getStaffList(){
@@ -353,7 +353,7 @@
                 this.api.serviceApply(param).then(res=>{
                     this.receiptShow = true
                     setTimeout(()=>{
-                        this.until.href('../home/index.html?cd=3&serviceCd=2')
+                        this.until.href('@/maintain/index.html?cd=3&serviceCd=2')
                     },1500)
                 })
             },

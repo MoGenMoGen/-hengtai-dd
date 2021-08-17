@@ -265,7 +265,7 @@
             </div>
             <div class="situation">
                 <div class="title"><span></span>整备项</div>
-                <div class="content" v-for="item in list">
+                <div class="content" v-for="item in list" :key="item.id">
                     <p>
                         <span>整备分类：</span>
                        {{item.prepareName}}
@@ -329,7 +329,7 @@
         },
         methods: {
             toEdit(){
-               let url = '../service/serviceDetail.html?id='+this.id
+               let url = '@/maintain/serviceDetail.html?id='+this.id
                 this.until.href(url)
             },
             bigImg(item){

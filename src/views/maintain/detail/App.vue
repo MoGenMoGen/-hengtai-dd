@@ -130,7 +130,7 @@
             },
 
             toPage(){
-                let url = './creat.html?info='+JSON.stringify(this.info)
+                let url = '@/maintain/creat.html?info='+JSON.stringify(this.info)
                 this.until.href(url)
             }
         }

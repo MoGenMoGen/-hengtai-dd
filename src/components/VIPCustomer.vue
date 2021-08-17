@@ -115,7 +115,7 @@
             </div>
             <span class="iconfont">&#xe63f;</span>
           </div>
-          <div v-for="(i,j) in item.vehicleCustomerVoList" @click="toCar(i.id)">
+          <div v-for="(i,j) in item.vehicleCustomerVoList" :key="j" @click="toCar(i.id)">
             <div class="content">
               <p><span>车辆信息：</span>{{i.vehicleNum}}</p>
               <p><span>保养时间：</span>{{i.nextMaintainDate}}</p>
@@ -257,13 +257,13 @@
             },
             toCustomer(id){
                 console.log('customer')
-                let url = '../customer/customerDetail.html?id='+id
+                let url = '.@/maintain/customerDetail.html?id='+id
                 this.until.href(url)
 
             },
             toCar(id){
                 console.log('car')
-                let url = '../customer/carDetail.html?id='+id
+                let url = '@/maintain/carDetail.html?id='+id
                 this.until.href(url)
 
             },

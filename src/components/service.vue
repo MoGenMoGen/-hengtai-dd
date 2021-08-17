@@ -271,13 +271,13 @@
             toPage(item){
                 let url = ''
                 if(item.status==1){
-                    url = '../service/pendingDetail.html?id='+item.id
+                    url = '@/maintain/pendingDetail.html?id='+item.id
                 }
                 if(item.status==2){
-                    url = '../service/serviceDetail.html?id='+item.id
+                    url = '@/maintain/serviceDetail.html?id='+item.id
                 }
                 if(item.status==3 || item.status==4 || item.status==5){
-                    url = '../service/finished.html?id='+item.id
+                    url = '@/maintain/finished.html?id='+item.id
                 }
                 this.until.href(url)
 

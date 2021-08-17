@@ -385,7 +385,7 @@
                     <div class="upImg">
                         <span>上传图片：</span>
                         <div class="imgList">
-                            <p class="img" v-for="(item,index) in outImg" v-if="outImg.length>0">
+                            <p class="img" v-for="(item,index) in outImg"  :key="index" v-if="outImg.length>0" >
                                 <span class="iconfont" @click="toDele(index,'out')">&#xe673;</span>
                                 <img :src="item" @click="bigImg(item)"/>
                             </p>

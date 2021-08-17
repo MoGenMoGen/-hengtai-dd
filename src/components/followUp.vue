@@ -323,11 +323,11 @@
 
             },
             toPage(id){
-              let url = '../followUp/detail.html?id='+id
+              let url = '@/maintain/detail.html?id='+id
                 this.until.href(url)
             },
             toCreat(){
-                this.until.href('../followUp/creat.html')
+                this.until.href('@/maintain/creat.html')
             },
             loadBottom(){
                 if(this.total==this.list.length){

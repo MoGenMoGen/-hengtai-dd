@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import home from '@/components/img/tabCar.png'
-import homeselected from '@/components/img/tabHomeActive.png'
-import person from '@/components/img/tabRescue.png'
-import personselected from '@/components/img/tabService.png'
+import home from '@/assets/img/index.png'
+import homeselected from '@/assets/img/indexun.png'
+import person from '@/assets/img/personal.png'
+import personselected from '@/assets/img/personalun.png'
 export default {
   props: {
     currentIndex: {

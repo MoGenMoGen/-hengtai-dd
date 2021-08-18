@@ -1,3 +1,4 @@
+<!-- 互生升首页 -->
 <template>
   <div id="container">
     <div class="top">互生升</div>
@@ -8,7 +9,7 @@
       <div class="list">
         <div class="item" @click="toDetail('/views/reception/index.html')">
           <div class="left">
-            <img src="~@/assets/img/icon.png" alt="" class="icon" />
+            <img src="~@/assets/img/icon1.png" alt="" class="icon" />
             <div class="text">
               <div class="title">接待</div>
               <div class="en">Reception</div>
@@ -19,7 +20,7 @@
         </div>
         <div class="item" @click="toDetail('/views/maintain/index.html')">
           <div class="left">
-            <img src="~@/assets/img/icon.png" alt="" class="icon" />
+            <img src="~@/assets/img/icon2.png" alt="" class="icon" />
             <div class="text">
               <div class="title">车保姆</div>
               <div class="en">Car nanny</div>
@@ -30,7 +31,7 @@
         </div>
         <div class="item" @click="toDetail('/views/customermagt/index.html')">
           <div class="left">
-            <img src="~@/assets/img/icon.png" alt="" class="icon" />
+            <img src="~@/assets/img/icon3.png" alt="" class="icon" />
             <div class="text">
               <div class="title">客户管理</div>
               <div class="en">Customer management</div>
@@ -41,7 +42,7 @@
         </div>
         <div class="item" @click="toDetail('/views/productneeds/index.html')">
           <div class="left">
-            <img src="~@/assets/img/icon.png" alt="" class="icon" />
+            <img src="~@/assets/img/icon4.png" alt="" class="icon" />
             <div class="text">
               <div class="title">产品需求</div>
               <div class="en">Product demand</div>
@@ -92,7 +93,7 @@ export default {
     line-height: 1.52rem;
     width: 100%;
     height: 1.52rem;
-    background: url("~@/assets/img/bg.jpg");
+    background: url("~@/assets/img/header.png");
   }
 
   .wrapper {

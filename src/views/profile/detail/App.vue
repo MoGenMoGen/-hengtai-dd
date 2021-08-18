@@ -1,0 +1,231 @@
+<!-- 互生升个人中心详情页面 -->
+<template>
+  <div id="container">
+   <div class="title">
+   	<img src="~@/assets/img/arrowback.png" @click="back" >
+	个人详情
+   </div>
+   <div class="bodyOne">
+		<img src='~@/assets/img/cover.png'>
+		<div class="imgChange" v-if="isChange==true">
+			<img src="~@/assets/img/imgupload.png" >
+			<span>
+				上传头像
+			</span>
+		</div>
+   </div>
+   <div class="bodyTwo">
+   	  <div class="bodyList">
+   	  	 <div class="head">
+   	  	 	昵称
+   	  	 </div>
+		 <div class="content" v-if="isChange==false">
+		 	{{info.nickname}}
+		 </div>
+		 <div class="content" v-if="isChange==true" >
+		<input class="" type="" name="" id="" :value="info.nickname"  />
+		<img src="~@/assets/img/change.png" >
+		</div>
+   	  </div>
+	  <div class="bodyList">
+	  	 <div class="head">
+	  	 	姓名
+	  	 </div>
+	  	 <div class="content" v-if="isChange==false">
+	  		 {{info.name}}
+	  	</div>
+		<div class="content" v-if="isChange==true" >
+		<input class="" type="" name="" id="" :value="info.name"  />
+		<img src="~@/assets/img/change.png" >
+		</div>
+	  </div>
+	  <div class="bodyList">
+	  	 <div class="head">
+	  	 	联系电话
+	  	 </div>
+	  	 <div class="content" v-if="isChange==false">
+	  		 {{info.tel}}
+	  	</div>
+		<div class="content" v-if="isChange==true" >
+		<input class="" type="" name="" id="" :value="info.tel"  />
+		<img src="~@/assets/img/change.png" >
+		</div>
+	  </div>
+	  <div class="bodyList">
+	  	 <div class="head">
+	  	 	职称
+	  	 </div>
+	  	 <div class="content" v-if="isChange==false">
+	  		 {{info.position}}
+	  	</div>
+		<div class="content" v-if="isChange==true" >
+		<input class="" type="" name="" id="" :value="info.position"  />
+		<img src="~@/assets/img/change.png" >
+		</div>
+	  </div>
+	  <div class="bodyList" >
+	  	 <div class="head">
+	  	 	性别
+	  	 </div>
+	  	 <div class="content" v-if="isChange==false">
+	  		 {{info.sex}}
+	  	</div>
+		<div class="content" v-if="isChange==true" >
+		<input class="" type="" name="" id="" :value="info.sex"  />
+		<img src="~@/assets/img/change.png" >
+		</div>
+	  </div>
+   </div>
+   <div class="btn">
+   	<button type="button" v-if="isChange==false" @click="Tochange">修改信息</button>
+	<button type="button" v-if="isChange==true">保存信息</button>
+   </div>
+  </div>
+  
+</template> 
+
+<script>
+
+
+import { Toast } from "mint-ui";
+export default {
+  data() {
+    return {
+		    isChange:false,
+			info:{
+				nickname:"杰尼龟",
+				name:"小火龙",
+				tel:"蒜头王八",
+				position:"皮卡丘",
+				sex:"呱呱呱"
+			}		
+	};
+  },
+ 
+  async mounted() {},
+  methods: {
+	  Tochange(){
+		  this.isChange=true
+	  },
+	  back(){
+		  this.until.back()
+	  }
+  },
+};
+</script>
+
+<style lang="less" scoped>
+@import url("../../../assets/css/mobile.less");
+@import url("../../../assets/css/common.css");
+
+#container {
+  width: 100%;
+  height: 100%;
+  background: url('~@/assets/img/header.png') no-repeat;
+  background-color: #F1F3F2 ;
+  background-size:100% 1.28rem;
+  overflow: hidden;
+  /*display: flex;*/
+  /*display: -webkit-flex;*/
+  /*flex-direction: column;*/
+  .title{
+	  width: 100%;
+	  height: 1.28rem;
+	  position: relative;
+	  line-height: 1.28rem;
+	  text-align: center;
+	  font-size: 0.36rem;
+	  font-weight: 500;
+	  color: #FFFFFF;
+	  img{
+		  height: 0.31rem;
+		  width: 0.17rem;
+		  position: absolute;
+		  top: 50%;
+		  left: 0.36rem;
+		  transform: translateY(-50%);
+	  }
+  }
+  .bodyOne{
+	  margin-top: 0.1rem;
+	  padding: 0.68rem 3.15rem;
+	  background: #FFFFFF;
+	  border-radius: 0.2rem;
+	  box-sizing: border-box;
+	  img{
+		  width: 1.2rem;
+		  height: 1.2rem;
+		  border-radius: 50%;
+	  }
+	  .imgChange{
+		  display: flex;
+		  font-size: 0.24rem;
+		  font-weight: 500;
+		  color: #909090;
+		  img{
+			  width: 0.23rem;
+			  height: 0.22rem;
+			  margin-top: 0.08rem;
+		  }
+		  span{
+			  margin-left: 0.01rem;
+		  }
+	  }
+  }
+  .bodyTwo{
+	  margin-top: 0.1rem;
+	  background: #FFFFFF;
+	  border-radius: 0.2rem;
+	  
+	  .bodyList{
+		  padding: 0.3rem 0.35rem;
+		  box-sizing: border-box;
+		  display: flex;
+		  justify-content: space-between;
+		  border-bottom: 0.01rem solid #F1F1F1;
+		.head{
+			width: 1rem;
+			font-size: 0.24rem;
+			font-weight: bold;
+			color: #303030;
+			text-align-last: justify;
+		}
+		.content{
+			font-size: 0.24rem;
+			font-weight: bold;
+			color: #303030;
+			display: flex;
+			input{
+				font-size: 0.22rem;
+				font-weight: 500;
+				color: #909090;
+				text-align: right;
+				margin-right: 0.2rem;
+			}
+			img{
+				width: 0.23rem;
+				height: 0.24rem;
+				margin-top: 0.1rem;
+			}
+		}
+	
+	  }
+  }
+  .btn{
+	  margin-top: 1.05rem;
+	  text-align: center;
+	  button{
+		  width: 2.61rem;
+		  height: 0.69rem;
+		  border: 0.01px solid #E5E5E5;
+		  background: #FFFFFF;
+		  border-radius: 0.5rem;
+		  font-size: 0.28rem;
+		  color: #303030;
+		  font-weight: bold;
+	  }
+	
+	  
+  }
+}
+</style>

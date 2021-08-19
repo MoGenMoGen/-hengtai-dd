@@ -10,7 +10,7 @@
 		<div class="imgChange" v-if="isChange==true">
 			<img src="~@/assets/img/imgupload.png" >
 			<span>
-				上传头像
+				上传头像 
 			</span>
 		</div>
    </div>

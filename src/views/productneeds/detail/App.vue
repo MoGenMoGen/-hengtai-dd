@@ -18,7 +18,7 @@
 			<img src="~@/assets/img/arrowback.png" @click="back">
 			需求详情
 		</div>
-		<div class="bodyList">
+		<div class="bodyList" v-if="currentindex==0">
 			<div class="list">
 				<div class="listHead">
 					品牌
@@ -102,15 +102,66 @@
 				</div>
 			</div>
 		</div>
+		<div class="bodyList"v-if="currentindex==1">
+			<div class="list">
+				<div class="listHead">
+					品牌车系
+				</div>
+				<div class="listContent">
+					{{info.pinpai}}
+				</div>
+			</div>
+			<div class="list">
+				<div class="listHead">
+					里程数
+				</div>
+				<div class="listContent">
+					{{info.licheng}}
+				</div>
+			</div>
+			<div class="list">
+				<div class="listHead">
+					上牌时间
+				</div>
+				<div class="listContent">
+					{{info.shangpai}}
+				</div>
+			</div>
+			<div class="list">
+				<div class="listHead">
+					备注
+				</div>
+				<div class="listContent">
+					{{info.beizhu}}
+				</div>
+			</div>
+			<div class="list">
+				<div class="listHead">
+					发布时间
+				</div>
+				<div class="listContent">
+					{{info.shijian}}
+				</div>
+			</div>
+			<div class="list">
+				<div class="listHead">
+					销售人员
+				</div>
+				<div class="listContent">
+					{{info.xiaoshou}}
+				</div>
+			</div>
+		</div>
+		
 		<div class="reply" v-for="(item,index) in replayList" :key="index">
 			<div class="replyCotent">
 				{{item.replay}}
 			</div>
 			<div class="replyCotent">
-				{{item.date}}
+				回复时间: {{item.date}}
 			</div>
 			<div class="replyCotent">
-				{{item.person}}
+				回复人: {{item.person}}
 			</div>
 		</div>
 		<div class="btn">
@@ -128,6 +179,7 @@
 		data() {
 			return {
 				isPopShow:false,
+				currentindex:0,
 				info: {
 					pinpai: "奔驰",
 					chexing: "迈巴赫S级",
@@ -138,8 +190,8 @@
 					beizhu: "需要性能好一些，舒适性，视野开阔",
 					dengji: 'o',
 					shijian: "2021-07-28 12:02:01",
-					xiaoshou: "杰尼龟"
-
+					xiaoshou: "杰尼龟",
+					shangpai:"2020-06-01"
 				},
 				replayList:[
 					{
@@ -148,11 +200,18 @@
 						person:"杰尼龟"
 					}
 				]
+				
 
 			};
 		},
 
-		async mounted() {},
+		async mounted() {
+			
+		},
+		created() {
+			this.currentindex=this.until.getQueryString('index')
+			console.log(this.currentindex);
+		},
 		methods: {
 
 			back() {
@@ -177,8 +236,8 @@
 
 	#container {
 		
-		width: 100%;
-		height: 100%;
+		// width: 100%;
+		// height: 100%;
 		background: url('~@/assets/img/header.png') no-repeat;
 		background-color: #F1F3F2;
 		background-size: 100% 1.28rem;
@@ -310,6 +369,19 @@
 			}
 
 
+		}
+		.reply{
+			padding: 0.4rem;
+			background-color: #ffffff;
+			margin-top: 0.1rem;
+		    border-radius: 0.2rem;
+			.replyCotent{
+				font-size: 0.24rem;
+				font-family: PingFang SC;
+				font-weight: bold;
+				color: #303030;
+				margin-top: 0.2rem;
+			}
 		}
 		.btn{
 			text-align: center;

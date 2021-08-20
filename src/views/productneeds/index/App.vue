@@ -8,8 +8,32 @@
 			<div class="leftBox">
 				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" />
 				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1"/>
-				<input type="" name="" id="" value="" placeholder="品牌、车型" />
-
+				<!-- <input type="" name="" id="" value="" placeholder="品牌、车型" /> -->
+				 <el-select v-model="value" filterable placeholder="品牌车型" class="select" v-if="currentIndex==0"  @change="postId">
+				     <el-option
+				       v-for="item in options"
+				       :key="item.value"
+				       :label="item.label"
+				       :value="item.id"
+					   >
+				     </el-option>
+				   </el-select>
+				   <el-select v-model="value2" filterable placeholder="品牌车型" class="select1" v-if="currentIndex==1">
+				       <el-option
+				         v-for="item in optionsThree"
+				         :key="item.value"
+				         :label="item.label"
+				         :value="item.id">
+				       </el-option>
+				     </el-select>
+				  <el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0">
+				       <el-option
+				         v-for="item in optionsTwo"
+				         :key="item.value"
+				         :label="item.label"
+				         :value="item.id">
+				       </el-option>
+				     </el-select>
 				<div class="pick">
 					<el-date-picker type="date" placeholder="选择开始日期" :picker-options="pickerOptionsStart"
 						v-model="startTime" @change="startTimeChang" class="picker"></el-date-picker>
@@ -29,6 +53,8 @@
 				</div>
 			</div>
 			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==0" @click="toDetail()">
+				<img src="~@/assets/img/arrow.png" >
+				
 				<div class="itemList">
 					<div class="itemListHead">
 						品牌:
@@ -81,7 +107,8 @@
 					<button type="button">回复</button>
 				</div>
 			</div>
-			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==1">
+			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==1" @click="toDetail()">
+				<img src="~@/assets/img/arrow.png" >
 				<div class="itemList">
 					<div class="itemListHead">
 						品牌车系:
@@ -135,6 +162,59 @@
 				endTime: '',
 				tabList: ["买车需求", "卖车需求"],
 				currentIndex: 0,
+				value: '',
+				value1:"",
+				value2:"",
+				 options: [{
+				          id:1,
+				          label: '黄金糕'
+				        }, {
+				          id:2,
+				          label: '双皮奶'
+				        }, {
+				          id:3,
+				          label: '蚵仔煎'
+				        }, {
+				          id:4,
+				          label: '龙须面'
+				        }, {
+				         id:5,
+				          label: '北京烤鸭'
+				        }],
+						optionsTwo:[{
+				         
+				          label: '4848'
+				        }, {
+				          
+				          label: '双皮奶'
+				        }, {
+				          
+				          label: '蚵仔煎'
+				        }, {
+				          
+				          label: '龙须面'
+				        }, {
+				         
+				          label: '北京烤鸭'
+				        }],
+						optionsThree:[
+							{
+							 
+							  label: '4848'
+							}, {
+							  
+							  label: '双皮奶'
+							}, {
+							  
+							  label: '蚵仔煎'
+							}, {
+							  
+							  label: '龙须面'
+							}, {
+							 
+							  label: '北京烤鸭'
+							
+						}],
 				infoList:[
 					{
 						pinpai:"奔驰",
@@ -221,7 +301,10 @@
 				this.currentIndex = index
 			},
 			toDetail(){
-				this.until.href("/views/productneeds/detail.html")
+				this.until.href(`/views/productneeds/detail.html?index=${this.currentIndex}`)
+			},
+			postId(id){
+				console.log(11,id);
 			}
 
 
@@ -241,14 +324,25 @@
 		}
 	};
 </script>
-
-<style lang="less" scoped>
+<style lang="less">
+		.el-input__inner{
+			height: 0.7rem;
+			font-size: 0.24rem;
+		}
+		.select1 .el-input__inner{
+			width: 3.91rem;
+		}
+		.el-input--prefix .el-input__inner{
+			height: 0.8rem;
+		}
+</style>
+<style lang="less" scoped >
 	@import url("../../../assets/css/mobile.less");
 	@import url("../../../assets/css/common.css");
 
 	#container {
-		width: 100%;
-		height: 100%;
+		// width: 100%;
+		// height: 100%;
 		background: url('~@/assets/img/header.png') no-repeat;
 		background-color: #F1F3F2;
 		background-size: 100% 1.28rem;
@@ -283,7 +377,7 @@
 
 			.leftBox {
 				input {
-					width: 1.9rem;
+					width: 1.8rem;
 					height: 0.7rem;
 					background: #FFFFFF;
 					border: 0.01px solid #DDDDDD;
@@ -296,8 +390,15 @@
 				input::placeholder {
 					font-size: 0.24rem;
 					color: #909090;
+					opacity: 0.7;
 
 				}
+				.select{
+					width: 1.9rem;
+					height: 0.7rem;
+					
+				}
+			
 
 				.pick {
 					display: flex;
@@ -307,7 +408,7 @@
 						font-size: 0.24rem;
 						margin-top: 0.1rem;
 						padding-right: 0;
-
+						margin-right:0.009rem;
 						/deep/ .el-input--prefix .el-input__inner {
 							padding-right: 0;
 						}
@@ -317,14 +418,15 @@
 
 			.rightBox {
 				button {
-					width: 1.2rem;
+					width: 1rem;
 					height: 1.6rem;
 					background: #09C076;
 					border-radius: 0rem;
-					margin-left: 0.1rem;
+					margin-left: 0.2rem;
 					font-size: 0.3rem;
 					font-weight: bold;
 					color: #FFFFFF;
+					border-radius: 0.1rem;
 				}
 
 			}
@@ -385,6 +487,15 @@
 				font-weight: bold;
 				color: #303030;
 				border-bottom: 0.01rem solid #E5E5E5;
+				img{
+					width: 0.3rem;
+					height: 0.3rem;
+					position: absolute;
+					opacity: 0.5;
+					top: 50%;
+					right:0.3rem;
+					transform: translateY(-50%);
+				}
 				.itemList{
 					display: flex;
 					margin-bottom: 0.25rem;

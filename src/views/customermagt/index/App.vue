@@ -95,7 +95,7 @@
     </div>
 
     <div class="list">
-      <div class="item" v-for="item in customerList" :key="item.id">
+      <div class="item" v-for="item in customerList" :key="item.id" @click="toDetail">
         <div class="level">A</div>
         <div class="row1">
           <div class="name">{{ item.name }}</div>
@@ -245,6 +245,9 @@ export default {
     newcustomer() {
       this.until.href("/views/customermagt/new.html");
     },
+	toDetail(){
+		this.until.href("/views/customermagt/detail.html")
+	}
   },
 };
 </script>

@@ -80,7 +80,7 @@ export default {
   height: 100%;
   background: url('~@/assets/img/profilebg.png') no-repeat @backgroundColor;  
   background-size:100% 4.73rem;
-  overflow: hidden;
+  // overflow: hidden;
   /*display: flex;*/
   /*display: -webkit-flex;*/
   /*flex-direction: column;*/

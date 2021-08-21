@@ -60,7 +60,7 @@
 					</div>
 				</div>
 				<div class="btn">
-					<button type="button">完善信息</button>
+					<button type="button" @click="toDetail">完善信息</button>
 					
 				</div>
 		</div>
@@ -135,6 +135,9 @@
 			//新增接待
 			addNew(){
 				this.until.href("/views/reception/new.html")
+			},
+			toDetail(){
+				this.until.href("/views/reception/detail.html")
 			}
 		},
 		computed: {

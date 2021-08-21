@@ -326,7 +326,7 @@
 </script>
 <style lang="less">
 		.el-input__inner{
-			height: 0.7rem;
+			// height: 0.7rem;
 			font-size: 0.24rem;
 		}
 		.select1 .el-input__inner{
@@ -378,7 +378,7 @@
 			.leftBox {
 				input {
 					width: 1.8rem;
-					height: 0.7rem;
+					height: 0.8rem;
 					background: #FFFFFF;
 					border: 0.01px solid #DDDDDD;
 					border-radius: 0rem;

@@ -97,68 +97,68 @@ export default {
   }
 
   .wrapper {
-    margin-top: -14px;
-    height: calc(100vh - 1.52rem + 14px);
+    margin-top: -.28rem;
+    height: calc(100vh - 1.52rem + .28rem);
     overflow: scroll;
-    border-radius: 25px;
+    border-radius: .5rem;
     background: #f9f9f9;
     display: flex;
     flex-direction: column;
     align-items: center;
     .bg {
-      margin: 15px;
+      margin: .3rem;
       margin-bottom: 0;
-      width: 345px;
-      height: 175px;
+      width: 6.9rem;
+      height: 3.5rem;
       background-color: #ffffff;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0px 4px 8px 0px rgba(238, 238, 238, 0.75);
-      border-radius: 15px;
+      box-shadow: 0px .08rem .16rem 0px rgba(238, 238, 238, 0.75);
+      border-radius: .3rem;
       img {
-        width: 126px;
-        height: 126px;
+        width: 2.52rem;
+        height: 2.52rem;
       }
     }
 
     .list {
       .item {
-        width: 345px;
-        height: 56px;
+        width: 6.9rem;
+        height: 1.12rem;
         background: #fffeff;
-        box-shadow: 2px 3px 5px 0px rgba(11, 2, 5, 0.07);
-        border-radius: 5px;
-        margin: 20px 15px 0;
-        padding: 0 15px;
+        box-shadow: .04rem .06rem .1rem 0px rgba(11, 2, 5, 0.07);
+        border-radius: .1rem;
+        margin: .4rem .3rem 0;
+        padding: 0 .3rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
         .icon {
-          width: 36px;
-          height: 36px;
-          margin-right: 15px;
+          width: .72rem;
+          height: .72rem;
+          margin-right: .3rem;
           display: inline-block;
         }
         .text {
           display: inline-block;
 
           .title {
-            font-size: 15px;
+            font-size: .3rem;
             font-family: PingFang SC;
             font-weight: bold;
             color: #303030;
           }
           .en {
-            font-size: 9px;
+            font-size: .18rem;
             font-weight: 500;
             color: #303030;
             opacity: 0.5;
           }
         }
         .arrow {
-          width: 13px;
-          height: 13px;
+          width: .26rem;
+          height: .26rem;
         }
       }
     }

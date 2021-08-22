@@ -196,6 +196,7 @@
           class="row_between"
           placeholder="搜索或选择"
           :options="citys"
+          v-model="city"
           filterable
         ></el-cascader>
       </div>
@@ -284,13 +285,464 @@
           </el-option>
         </el-select>
       </div>
+      <!-- 价格区间开始 -->
+      <div class="pricebox">
+        <div class="prititle">价格区间 / 万元</div>
+        <div class="pricelist">
+          <div
+            class="priceitem"
+            @click="checkedPriceIndex = index"
+            v-for="(item, index) in priceList"
+            :key="item.id"
+            :class="{ select_price_region: index == checkedPriceIndex }"
+          >
+            {{ item.region }}
+          </div>
+        </div>
+        <div class="custom_price_box">
+          <span class="prititle">自定义价格</span>
+          <div class="lowprice">
+            <input
+              style="width: 23px; text-align: right"
+              class="prititle"
+              v-model="lowprice"
+              type="number"
+              oninput="if(value.length>3)value=value.slice(0,3)"
+              placeholder=""
+            />
+            <span class="prititle">万</span>
+          </div>
+          <span class="connector">~</span>
+          <div class="highprice">
+            <input
+              style="width: 23px; text-align: right"
+              class="prititle"
+              v-model="highprice"
+              type="number"
+              oninput="if(value.length>3)value=value.slice(0,3)"
+              placeholder=""
+            />
+            <span class="prititle">万</span>
+          </div>
+          <div class="confirm">确定</div>
+        </div>
+      </div>
+      <!-- 价格区间结束 -->
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">车身颜色</div>
+        </div>
+        <el-select
+          v-model="carcolor"
+          placeholder="请选择车身颜色"
+          class="row_between"
+        >
+          <el-option
+            v-for="item in carcolors"
+            :key="item.id"
+            :label="item.value"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">里程数</div>
+        </div>
+        <div class="row_between">
+          <el-input
+            style="width: 150px"
+            v-model="buymileage"
+            type="number"
+            oninput="if(value.length>3)value=value.slice(0,3)"
+            placeholder="请输入"
+          ></el-input>
+          <span style="color: #303030">万公里</span>
+        </div>
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">是否按揭</div>
+        </div>
+        <div class="row_radio">
+          <div class="radiobox" @click="ismortgage = 0">
+            <img
+              src="~@/assets/img/radioselect.png"
+              alt=""
+              v-if="ismortgage == 0"
+            />
+            <img src="~@/assets/img/radio.png" alt="" v-else />
+            <span>否</span>
+          </div>
+          <div class="radiobox" @click="ismortgage = 1">
+            <img
+              src="~@/assets/img/radioselect.png"
+              alt=""
+              v-if="ismortgage == 1"
+            />
+            <img src="~@/assets/img/radio.png" alt="" v-else />
+            <span>是</span>
+          </div>
+        </div>
+      </div>
+      <div class="intent_desc">
+        <div
+          style="
+            font-size: 12px;
+            font-weight: bold;
+            color: #303030;
+            margin-bottom: 8px;
+          "
+        >
+          意向描述
+        </div>
+        <el-input
+          type="textarea"
+          autosize
+          placeholder="请输入内容"
+          v-model="intentDesc"
+        >
+        </el-input>
+      </div>
+      <!--意向等级开始  -->
+      <div class="intent_level">
+        <div class="row" style="border: none">
+          <div class="placeholder">*</div>
+          <div class="rowtitle">意向等级</div>
+        </div>
+
+        <div class="intent_level_list">
+          <div
+            class="intent_level_item"
+            @click="checkedLevelIndex = index"
+            v-for="(item, index) in intentLevelList"
+            :key="item.id"
+            :class="{ select_price_region: index == checkedLevelIndex }"
+          >
+            {{ item.level }}
+          </div>
+        </div>
+      </div>
+      <!-- 意向等级结束 -->
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">购买类型</div>
+        </div>
+        <div class="row_radio">
+          <div class="radiobox" @click="butype = 1">
+            <img
+              src="~@/assets/img/radioselect.png"
+              alt=""
+              v-if="butype == 1"
+            />
+            <img src="~@/assets/img/radio.png" alt="" v-else />
+            <span>求购</span>
+          </div>
+          <div class="radiobox" @click="butype = 2">
+            <img
+              src="~@/assets/img/radioselect.png"
+              alt=""
+              v-if="butype == 2"
+            />
+            <img src="~@/assets/img/radio.png" alt="" v-else />
+            <span>增购</span>
+          </div>
+          <div class="radiobox" @click="butype = 3">
+            <img
+              src="~@/assets/img/radioselect.png"
+              alt=""
+              v-if="butype == 3"
+            />
+            <img src="~@/assets/img/radio.png" alt="" v-else />
+            <span>置换</span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">下次跟进时间</div>
+        </div>
+        <el-date-picker
+          class="followdatepicker"
+          style="width: 140px"
+          v-model="followdate"
+          type="datetime"
+          @change="handlefollowdate"
+          placeholder="选择日期时间"
+        >
+        </el-date-picker>
+        <span style="color: #606266">{{ followdateofweek }}</span>
+      </div>
     </div>
     <!-- 买车需求结束 -->
+    <!-- 卖车需求开始 -->
+    <div class="textbox">
+      <div class="texttitle">卖车需求</div>
+    </div>
+    <div class="row">
+      <!-- 占位符 -->
+      <div style="display: flex">
+        <div class="placeholder"></div>
+        <div class="rowtitle">卖车需求</div>
+      </div>
+      <div class="row_radio">
+        <div class="radiobox" @click="issellcar = 0">
+          <img
+            src="~@/assets/img/radioselect.png"
+            alt=""
+            v-if="issellcar == 0"
+          />
+          <img src="~@/assets/img/radio.png" alt="" v-else />
+          <span>否</span>
+        </div>
+        <div class="radiobox" @click="issellcar = 1">
+          <img
+            src="~@/assets/img/radioselect.png"
+            alt=""
+            v-if="issellcar == 1"
+          />
+          <img src="~@/assets/img/radio.png" alt="" v-else />
+          <span>是</span>
+        </div>
+      </div>
+    </div>
+    <div class="ifsellbox" v-if="issellcar">
+      <div class="sellcarbox">
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">品牌车系</div>
+          </div>
+          <el-select
+            v-model="carparm"
+            placeholder="请选择品牌车系"
+            class="row_between"
+          >
+            <el-option
+              v-for="item in carparms"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">里程数</div>
+          </div>
+          <div class="row_between">
+            <el-input
+              style="width: 150px"
+              v-model="sellmileage"
+              type="number"
+              oninput="if(value.length>3)value=value.slice(0,3)"
+              placeholder="请输入"
+            ></el-input>
+            <span style="color: #303030">万公里</span>
+          </div>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">上牌时间</div>
+          </div>
+          <el-date-picker
+            v-model="licensedate"
+            type="date"
+            placeholder="选择上牌日期"
+          >
+          </el-date-picker>
+        </div>
+        <div class="intent_desc">
+          <div
+            style="
+              font-size: 12px;
+              font-weight: bold;
+              color: #303030;
+              margin-bottom: 8px;
+            "
+          >
+            备注
+          </div>
+          <el-input
+            type="textarea"
+            autosize
+            placeholder="请输入"
+            v-model="remark"
+          >
+          </el-input>
+        </div>
+      </div>
+      <!-- 卖车需求结束 -->
+      <!-- 更多信息开始 -->
+      <div class="textbox">
+        <div class="texttitle">更多信息</div>
+      </div>
+      <div class="moreinfobox">
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">老客户介绍人</div>
+          </div>
+          <el-select
+            v-model="introducer"
+            placeholder="请选择"
+            class="row_between"
+          >
+            <el-option
+              v-for="item in introducers"
+              :key="item.id"
+              :label="item.value"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">备用号</div>
+          </div>
+          <div class="row_between">
+            <el-input
+              style="width: 150px"
+              v-model="sparephone"
+              type="number"
+              oninput="if(value.length>11)value=value.slice(0,11)"
+              placeholder="请输入"
+            ></el-input>
+            <span style="color: #09c076">通讯录匹配</span>
+          </div>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">身份证号</div>
+          </div>
+
+          <el-input
+            v-model="idcard"
+            type="text"
+            maxlength="18"
+            placeholder="请输入"
+            style="flex: 1"
+          ></el-input>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">生日</div>
+          </div>
+          <el-date-picker v-model="birthday" type="date" placeholder="请选择">
+          </el-date-picker>
+        </div>
+        <div class="row" style="padding-right: 12px">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle" style="width: 140px">所在地</div>
+          </div>
+
+          <el-cascader
+            class="row_between"
+            placeholder="搜索或选择"
+            :options="locations"
+            v-model="location"
+            filterable
+          ></el-cascader>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">联系地址</div>
+          </div>
+
+          <el-input
+            v-model="contactAddress"
+            type="text"
+            maxlength="18"
+            placeholder="请输入"
+            style="flex: 1"
+          ></el-input>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">兴趣</div>
+          </div>
+
+          <el-input
+            v-model="hobbies"
+            type="text"
+            maxlength="18"
+            placeholder="请输入"
+            style="flex: 1"
+          ></el-input>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">职业</div>
+          </div>
+
+          <el-input
+            v-model="occupation"
+            type="text"
+            maxlength="18"
+            placeholder="请输入"
+            style="flex: 1"
+          ></el-input>
+        </div>
+        <div class="albums">
+          <div class="album_title">相册</div>
+          <div class="albums_box_list">
+            <img
+              class="albums_item"
+              src="~@/assets/img/photograph.png"
+              alt=""
+            />
+            <img
+              class="albums_item"
+              :src="item.src"
+              alt=""
+              v-for="(item, index) in albums"
+              :key="index"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- 更多信息结束-->
+    </div>
+    <div class="btn_save">保存</div>
   </div>
 </template>
 
 <script>
-import brand from '@/assets/img/brand.png'
+import brand from "@/assets/img/brand.png";
+import moment from "moment";
 export default {
   data() {
     return {
@@ -362,7 +814,8 @@ export default {
           id: 7,
         },
       ],
-      // 级联选择城市
+      // 宁波以外城市
+      city: "",
       citys: [
         {
           value: "zj",
@@ -379,6 +832,7 @@ export default {
           ],
         },
       ],
+
       // 客户性质列表
       custype: "",
       custypeList: [
@@ -439,15 +893,222 @@ export default {
         },
       ],
       // 车型列表
-      cartype:'',
-      cartypes:[ {
+      cartype: "",
+      cartypes: [
+        {
           id: 1,
           value: "A4L 新款",
         },
         {
           id: 2,
           value: "A8 黑色 商务款",
-        },]
+        },
+      ],
+      // 选中的价格下标
+      checkedPriceIndex: 0,
+      // 价格区间列表
+      priceList: [
+        {
+          region: "不限",
+          id: 1,
+        },
+        {
+          region: "0 ~ 3万",
+          id: 2,
+        },
+        {
+          region: "3 ~ 5万",
+          id: 3,
+        },
+        {
+          region: "5 ~ 10万",
+          id: 4,
+        },
+        {
+          region: "10 ~ 15万",
+          id: 5,
+        },
+        {
+          region: "15 ~ 20万",
+          id: 6,
+        },
+        {
+          region: "20 ~ 30万",
+          id: 7,
+        },
+        {
+          region: "30 ~ 50",
+          id: 8,
+        },
+        {
+          region: "50万以上",
+          id: 9,
+        },
+      ],
+      // 自定义高低价
+      lowprice: 0,
+      highprice: 0,
+      // 车身颜色
+      carcolor: "",
+      carcolors: [
+        {
+          id: 1,
+          value: "红色",
+        },
+        {
+          id: 2,
+          value: "宝石蓝",
+        },
+      ],
+      // 买车里程数
+      buymileage: 0,
+      // 是否按揭
+      ismortgage: 0,
+      // 意向描述
+      intentDesc: "",
+      // 意向等级
+      checkedLevelIndex: 0,
+      intentLevelList: [
+        {
+          id: 1,
+          level: "O",
+        },
+        {
+          id: 2,
+          level: "K",
+        },
+        {
+          id: 3,
+          level: "A",
+        },
+        {
+          id: 4,
+          level: "B",
+        },
+        {
+          id: 5,
+          level: "C",
+        },
+        {
+          id: 6,
+          level: "J",
+        },
+        {
+          id: 7,
+          level: "S",
+        },
+        {
+          id: 8,
+          level: "P",
+        },
+        {
+          id: 9,
+          level: "战败",
+        },
+        {
+          id: 10,
+          level: "无效",
+        },
+      ],
+      // 购买类型
+      butype: 1,
+      // 跟进日期
+      followdate: "",
+      // 跟进日期周几
+      followdateofweek: "",
+      // 是否卖车
+      issellcar: 1,
+      // 品牌车系
+      carparm: "",
+      carparms: [
+        {
+          id: 8,
+          value: "奥迪  奥迪A6  2004款  ",
+        },
+        {
+          id: 9,
+          value: "奥迪A6    1.8T    自动舒适",
+        },
+        {
+          id: 10,
+          value: "宝马5系",
+        },
+      ],
+      // 卖车里程数
+      sellmileage: 0,
+      // 上牌时间
+      licensedate: "",
+      // 备注
+      remark: "",
+      // 老客户介绍人
+      introducer: "",
+      introducers: [
+        {
+          id: 8,
+          value: "摩根",
+        },
+        {
+          id: 9,
+          value: "姚峰",
+        },
+        {
+          id: 10,
+          value: "吴林超",
+        },
+      ],
+      // 备用号
+      sparephone: "",
+      // 身份证号
+      idcard: "",
+      // 生日
+      birthday: "",
+      // 所在地
+      location: "",
+      locations: [
+        {
+          value: "zj",
+          label: "浙江",
+          children: [
+            {
+              value: "hz",
+              label: "杭州",
+            },
+            {
+              value: "nb",
+              label: "宁波",
+            },
+          ],
+        },
+      ],
+      // 联系地址
+      contactAddress: "",
+      //  兴趣
+      hobbies: "",
+      // 职业
+      occupation: "",
+      // 相册
+      albums: [
+        {
+          id: 8,
+          src: brand,
+        },
+        {
+          id: 9,
+          src: brand,
+        },
+        {
+          id: 10,
+          src: brand,
+        },
+        {
+          id: 3,
+          src: brand,
+        },
+        {
+          id: 2,
+          src: brand,
+        },
+      ],
     };
   },
   methods: {
@@ -462,6 +1123,13 @@ export default {
     switchradiokeycus(num) {
       this.iskeycus = num;
     },
+    // 处理跟进时间
+    handlefollowdate(e) {
+      this.followdateofweek = moment(e).format("dddd");
+    },
+  },
+  created() {
+    moment.locale("zh-cn");
   },
 };
 </script>
@@ -478,6 +1146,17 @@ export default {
 .el-cascader {
   line-height: 19px;
   height: 19px;
+}
+.followdatepicker {
+  .el-input__inner {
+    padding: 0;
+  }
+  .el-input__prefix {
+    display: none;
+  }
+  .el-input__suffix {
+    display: none;
+  }
 }
 </style>
 <style lang="less" scoped>
@@ -605,6 +1284,147 @@ export default {
         }
       }
     }
+    .pricebox {
+      border-bottom: 1px solid #e7e7e7;
+      background: #fff;
+      padding: 15px 24px;
+      .prititle {
+        font-size: 12px;
+        font-weight: bold;
+        color: #303030;
+      }
+
+      .pricelist {
+        padding: 10px 1px;
+        padding-bottom: 0px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+
+        .priceitem {
+          // margin-right: 10px;
+          margin-bottom: 10px;
+          width: 102px;
+          height: 27px;
+          text-align: center;
+          line-height: 27px;
+          color: #909090;
+          background: #ededed;
+          border-radius: 3px;
+        }
+        .select_price_region {
+          background: #09c076;
+          color: #ffffff;
+        }
+      }
+
+      .custom_price_box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .lowprice {
+          display: flex;
+          padding: 3px 20px;
+          border: 1px solid #d8d8d8;
+        }
+
+        .connector {
+          font-size: 12px;
+          font-weight: bold;
+          color: #bfbfbf;
+        }
+
+        .highprice {
+          display: flex;
+          padding: 3px 20px;
+          border: 1px solid #d8d8d8;
+        }
+
+        .confirm {
+          background: #09c076;
+          border-radius: 3px;
+          font-size: 12px;
+          font-weight: 500;
+          color: #ffffff;
+          padding: 3px 22px;
+        }
+      }
+    }
+    .intent_desc {
+      padding: 15px 24px;
+      background: #fff;
+      border-bottom: 1px solid #e7e7e7;
+    }
+    .intent_level {
+      border-bottom: 1px solid #e7e7e7;
+      background: #fff;
+      // padding: 15px 24px;
+      .intent_level_list {
+        padding: 0px 24px 0px 24px;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        .intent_level_item {
+          margin-bottom: 15px;
+          margin-right: 16px;
+          width: 52px;
+          height: 27px;
+          text-align: center;
+          line-height: 27px;
+          color: #909090;
+          background: #ededed;
+          border-radius: 3px;
+        }
+        .intent_level_item:nth-child(5n + 5) {
+          margin-right: 0px;
+        }
+        .select_price_region {
+          background: #09c076;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+  .sellcarbox {
+    .intent_desc {
+      padding: 15px 24px;
+      background: #fff;
+      border-bottom: 1px solid #e7e7e7;
+    }
+  }
+  .albums {
+    padding: 15px 24px;
+    background: #fff;
+    display: flex;
+    .album_title {
+      font-size: 12px;
+      font-weight: bold;
+      color: #303030;
+      width: 87px;
+    }
+    .albums_box_list {
+      display: flex;
+      // justify-content: space-between;
+      flex-wrap: wrap;
+      .albums_item {
+        margin-right: 5px;
+        margin-bottom: 5px;
+        width: 81px;
+        height: 78px;
+      }
+    }
+  }
+  .btn_save {
+    margin:48px auto 0px;
+    width: 285px;
+    height: 35px;
+    background: #09c076;
+    border-radius: 17px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #ffffff;
+    line-height: 35px;
+    text-align: center;
   }
 }
 </style>

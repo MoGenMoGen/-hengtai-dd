@@ -1,6 +1,24 @@
 <template>
 	<div id="container">
-
+		<div class="tabBar">
+			<div class="item">
+				<img src="~@/assets/img/followup.png" >
+				<div>跟进</div>
+			</div>
+			<a  :href="'tel:' + info.tel" class="item">
+				<img src="~@/assets/img/tel.png" >
+				<div>电话</div>
+			</a>
+			<div class="item"  @click="copywxtap"
+            ref="copytext">
+				<img src="~@/assets/img/vx.png" >
+				<div>微信</div>
+			</div>
+			<div class="item" @click="toChange">
+				<img src="~@/assets/img/needschange.png" >
+				<div>修改需求</div>
+			</div>
+		</div>
 		<div class="title">
 			<img src="~@/assets/img/arrowback.png" @click="back">
 			客户详情
@@ -303,6 +321,55 @@
 					<span>({{item.num}})</span>
 				</div>
 			</div>
+			  <div class="" style="margin-top: 0.6rem;">
+			  	
+			  
+			  <el-timeline :reverse="true">
+			    <el-timeline-item
+			      v-for="(item, index) in info.list"
+			      :key="index"
+			     >
+			      <div class="content">
+			      	<div class="head">
+			      		<span v-if="currentIndex==0">
+			      			创建客户
+			      		</span>
+			      		<span  v-if="currentIndex==1">
+			      			创建订单
+			      		</span>
+			      		<span>
+			      			{{info.name}}
+			      		</span>
+			      		<div class="time">
+			      		{{info.creatTime}}
+			      		</div>
+			      	</div>
+			      	<div class="contentBody">
+			      		<div class="type">
+			      			<span  v-if="currentIndex==0">创建客户—</span>
+			      			<span  v-if="currentIndex==1">
+			      				创建订单
+			      			</span>
+			      			<span>{{item.type}}—</span>
+			      			<span>{{item.creat}}</span>
+			      			
+			      		</div>
+			      		<div class="type" v-if="currentIndex==0">
+			      			<span>下次跟进时间：</span>
+			      			<span>{{info.nextTime}}</span>
+			      		</div>
+			      		<div class="type" v-if="currentIndex==1">
+			      			<span>订单内容：</span>
+			      			<span>{{info.content}}</span>
+						
+			      		</div>
+			      	</div>
+			      </div>
+				  
+			    </el-timeline-item>
+			  </el-timeline>
+			</div>
+			
 		</div>
 	</div>
 
@@ -310,6 +377,7 @@
 
 <script>
 	import Bg from "@/assets/img/bg.png"
+	
 	import Fg from "@/assets/img/arrow.png"
 	import {
 		Toast
@@ -320,13 +388,36 @@
 				Bg,
 				currentIndex: 0,
 				info: {
+					vx:'13500008888',
 					name: "金秀炫",
 					rmks: "未知",
 					clock: "3天后跟进",
 					tel: "13500009999",
 					nextTime: "2021-07-05 12:50:20",
 					level: "A",
-					detail: "需要性能好一些，性价比高，舒适型，视野开阔需要性能好一些，性价比高，舒适型，视野开阔需要性能好一些，性价比高，舒适型，视野开阔"
+					list:[
+						{
+								type:"APP",
+								creat:"主动创建",
+						},
+						{
+								type:"APP",
+								creat:"主动创建",
+						},
+						{
+								type:"APP",
+								creat:"主动创建",
+						},
+						{
+								type:"APP",
+								creat:"主动创建",
+						}
+					],
+					detail: "需要性能好一些，性价比高，舒适型，视野开阔需要性能好一些，性价比高，舒适型，视野开阔需要性能好一些，性价比高，舒适型，视野开阔",
+					creatTime:"2021-07-05 12:50:20",
+				
+					
+					content:"奥迪 奥迪A6 2004款 奥迪A6 1.8T 自动舒适 一辆"
 				},
 				imglist: [
 					Bg,
@@ -361,12 +452,30 @@
 			},
 			tabChange(index) {
 				this.currentIndex = index
-			}
+			},
+			toChange(){
+				this.until.href("/views/customermagt/new.html")
+			},
+			copywxtap() {
+			      this.copyContent = this.info.vx;//也可以直接写上等于你想要复制的内容
+			      var input = document.createElement("input"); // 直接构建input
+			      input.value = this.copyContent; // 设置内容
+			      console.log(input.value);
+			      document.body.appendChild(input); // 添加临时实例
+			      input.select(); // 选择实例内容
+			      document.execCommand("Copy"); // 执行复制
+			      document.body.removeChild(input); // 删除临时实例
+			      Toast("微信号复制成功");
+			    },
 
 		},
 	};
 </script>
-
+<style type="less">
+	.el-timeline-item{
+		margin-bottom: -0.24rem;
+	}
+</style>
 <style lang="less" scoped>
 	@import url("../../../assets/css/mobile.less");
 	@import url("../../../assets/css/common.css");
@@ -375,13 +484,41 @@
 
 		// width: 100%;
 		// height: 100%;
+		padding-bottom: 4rem;
 		background: url('~@/assets/img/header.png') no-repeat;
 		background-color: #F1F3F2;
 		background-size: 100% 1.28rem;
 		// overflow: hidden;
-
+		
 		/*display: flex;*/
 		/*display: -webkit-flex;*/
+		.tabBar{
+			display: flex;
+			// justify-content: space-around;
+			align-items: center;
+			
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			z-index: 199;
+		width: 100%;
+			height: 1rem;
+			background: #FFFFFF;
+			border-top: 0.02rem solid  #F1F3F2  ;
+			.item{
+				text-align: center;
+				width: 25%;
+				font-size: 0.22rem;
+				font-weight: 500;
+				color: #999999;
+				img{
+					width: 0.38rem;
+					height: 0.38rem;
+					
+				}
+			}
+			
+		}
 		.title {
 			width: 100%;
 			height: 1.28rem;
@@ -556,10 +693,44 @@
 					height: 0.04rem;
 					background-color: #09C076;
 					position: absolute;
-					bottom: -7px;
-					left: -1px;
+					bottom: -0.12rem;
+					left: 0;
+					
 				}
 			}
+			.content{
+				margin-top: 0.2rem;
+				.head{
+					font-size: 0.24rem;
+					font-weight: 500;
+					color: #909090;
+					display: flex;
+					padding: 0;
+					span{
+						position: relative;
+						margin-right: 0.42rem;
+					}
+					span::after{
+						content: "";
+						width:0.02rem ;
+						height: 0.2rem;
+						background-color: #000000;
+						position: absolute;
+						top:50%;
+						transform: translateY(-50%);
+						right: -0.1rem;
+					}
+				}
+			   .contentBody{
+				   margin-top: 0.2rem;
+				  font-size: 0.24rem;
+				  font-weight: 500;
+				  color: #303030;
+					.type{
+						display: flex;
+					}
+			   }
+			} 
 		}
 
 

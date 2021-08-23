@@ -1,19 +1,20 @@
 
-const hostUrl = "http://u2768442w0.qicp.vip";
+// const hostUrl = "http://u2768442w0.qicp.vip";
 // const hostUrl = "http://hss.jiaxiangtech.com";
+// const hostUrl = "http://hsstest.jinkworld.com";
+const hostUrl = "http://u2768442w0.qicp.vip/";
 import Vue from 'vue'
 import axios from 'axios'
 import { Toast } from 'mint-ui';
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
-    let newurl = '/api' + url
+    let newurl =url
     // let newurl = hostUrl+ url
     // let headers = { ...header, ...{ "yui3-token": "yui3-sid-ba372dba-0e61-42e9-b296-eefff719a344", 'Content-Type': 'application/json' } }
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-b45f988b-ad0c-48b4-8911-b343742a7f55", 'Content-Type': 'application/json' } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-89e5cdfe-60f5-4f27-9b62-46868edb8379", 'Content-Type': 'application/json' } }
     let promise = new Promise((resolve, reject) => {
         axios.get(newurl, { params: data, headers }).then(res => {
-
             if (res.data.code == 0) {
                 resolve(res.data)
             } else {
@@ -28,7 +29,7 @@ function get(url, data, header, cache = false) {
 
 function post(url, data, header) {
     let newurl = '/api' + url
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-b45f988b-ad0c-48b4-8911-b343742a7f55", 'Content-Type': 'application/json' } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-2dff2472-3a49-4a7a-b76c-2e58fbfae122", 'Content-Type': 'application/json' } }
 
 
     console.log(data)
@@ -49,7 +50,7 @@ function post(url, data, header) {
 }
 function get2(url, data, header, cache = false) {
     let newurl = '/api' + url
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-ba372dba-0e61-42e9-b296-eefff719a344", 'Content-Type': 'application/json' } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-2dff2472-3a49-4a7a-b76c-2e58fbfae122", 'Content-Type': 'application/json' } }
 
 
     let promise = new Promise((resolve, reject) => {
@@ -352,6 +353,19 @@ class api {
         });
         return $q;
     }
+	//获取买车需求订单列表
+	getWxBusinessBuy(data) {
+	    let header = {
+	        // 'Content-Type': 'application/json',
+	        // 'yui3-token': localStorage.getItem('token')
+	    }
+	    return new Promise((resolve, reject) => {
+	        get('/hss/wxBusinessBuy/pageList', data, header).then(res => {
+	            resolve(res.data)
+	        })
+	
+	    })
+	}
 }
 
 export { api, hostUrl };

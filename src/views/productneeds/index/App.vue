@@ -266,7 +266,20 @@
 		components: {
 			
 		},
-		async mounted() {},
+		async mounted() {
+			let data={
+				"brandAndmodel": "", //品牌和车型
+				"beginTime": "", //发布开始时间
+				"endTime": "", //发布结束时间（两个时间应该同时存在或者不存在）
+				"phone": "234", //手机号
+				"intentionLevel": "", //意向等级（传id）,返回的为已经转化过的值
+				"n": "0", //起始位置
+				"s": "10" //长度
+			}
+			this.api.getWxBusinessBuy(data).then(res=>{
+				console.log(res);
+			})
+		},
 		methods: {
 			cancel() {
 				console.log('cancel')

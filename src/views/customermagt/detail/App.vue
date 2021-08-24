@@ -1,7 +1,7 @@
 <template>
 	<div id="container">
 		<div class="tabBar">
-			<div class="item">
+			<div class="item" @click="tofollow">
 				<img src="~@/assets/img/followup.png" >
 				<div>跟进</div>
 			</div>
@@ -455,6 +455,10 @@
 			},
 			toChange(){
 				this.until.href("/views/customermagt/new.html")
+			},
+			tofollow(){
+				this.until.href("/views/customermagt/newfollow.html")
+
 			},
 			copywxtap() {
 			      this.copyContent = this.info.vx;//也可以直接写上等于你想要复制的内容

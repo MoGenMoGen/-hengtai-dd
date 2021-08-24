@@ -160,14 +160,14 @@
           </div>
         </div>
       </div>
-      <div class="row" style="padding-bottom: .1rem">
+      <div class="row" style="padding-bottom: 0.1rem">
         <div style="display: flex">
           <div class="placeholder">*</div>
           <div class="rowtitle">客户区域</div>
         </div>
         <div class="row_radio" style="padding: 0px">
           <div
-            style="margin-bottom: .2rem"
+            style="margin-bottom: 0.2rem"
             v-for="(item, index) in cusArea"
             :key="item.id"
             class="radiobox"
@@ -183,7 +183,7 @@
           </div>
         </div>
       </div>
-      <div class="row" style="padding-right: .24rem">
+      <div class="row" style="padding-right: 0.24rem">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder"></div>
@@ -257,7 +257,7 @@
         </div>
         <div class="row_between">
           <div style="flex: 1"></div>
-          <div style="wdith: .64rem">更多></div>
+          <div style="wdith: 32px; font-weight: 500; color: #909090">更多></div>
         </div>
       </div>
       <div class="brand_list">
@@ -303,7 +303,7 @@
           <span class="prititle">自定义价格</span>
           <div class="lowprice">
             <input
-              style="width: .46rem; text-align: right"
+              style="width: 0.46rem; text-align: right"
               class="prititle"
               v-model="lowprice"
               type="number"
@@ -315,7 +315,7 @@
           <span class="connector">~</span>
           <div class="highprice">
             <input
-              style="width: .46rem; text-align: right"
+              style="width: 0.46rem; text-align: right"
               class="prititle"
               v-model="highprice"
               type="number"
@@ -362,7 +362,7 @@
             oninput="if(value.length>3)value=value.slice(0,3)"
             placeholder="请输入"
           ></el-input>
-          <span style="color: #303030">万公里</span>
+          <span style="font-weight: bold;color: #303030">万公里</span>
         </div>
       </div>
       <div class="row">
@@ -395,10 +395,10 @@
       <div class="intent_desc">
         <div
           style="
-            font-size: .24rem;
+            font-size: 0.24rem;
             font-weight: bold;
             color: #303030;
-            margin-bottom: .16rem;
+            margin-bottom: 0.16rem;
           "
         >
           意向描述
@@ -553,7 +553,7 @@
               oninput="if(value.length>3)value=value.slice(0,3)"
               placeholder="请输入"
             ></el-input>
-            <span style="color: #303030">万公里</span>
+            <span style="font-weight: bold; color: #303030">万公里</span>
           </div>
         </div>
         <div class="row">
@@ -572,10 +572,10 @@
         <div class="intent_desc">
           <div
             style="
-              font-size: .24rem;
+              font-size: 0.24rem;
               font-weight: bold;
               color: #303030;
-              margin-bottom: .16rem;
+              margin-bottom: 0.16rem;
             "
           >
             备注
@@ -656,7 +656,7 @@
           <el-date-picker v-model="birthday" type="date" placeholder="请选择">
           </el-date-picker>
         </div>
-        <div class="row" style="padding-right: .24rem">
+        <div class="row" style="padding-right: 0.24rem">
           <!-- 占位符 -->
           <div style="display: flex">
             <div class="placeholder"></div>
@@ -946,8 +946,8 @@ export default {
         },
       ],
       // 自定义高低价
-      lowprice: 0,
-      highprice: 0,
+      lowprice: '',
+      highprice: '',
       // 车身颜色
       carcolor: "",
       carcolors: [
@@ -1136,7 +1136,7 @@ export default {
 <style lang="less">
 .el-input__inner {
   border: none;
-  height: .28rem !important;
+  height: 0.28rem !important;
   padding-left: 0px;
 }
 .el-input__icon {
@@ -1144,8 +1144,8 @@ export default {
   align-items: center;
 }
 .el-cascader {
-  line-height: .38rem;
-  height: .38rem;
+  line-height: 0.38rem;
+  height: 0.38rem;
 }
 .followdatepicker {
   .el-input__inner {
@@ -1190,15 +1190,15 @@ export default {
     }
   }
   .row {
-    padding: .3rem;
-    padding-right: .48rem;
+    padding: 0.3rem;
+    padding-right: 0.48rem;
     background: #fff;
     display: flex;
     border-bottom: 1px solid #e7e7e7;
 
     .placeholder {
-      width: .18rem;
-      font-size: .24rem;
+      width: 0.18rem;
+      font-size: 0.24rem;
       font-weight: bold;
       color: #ff3000;
     }
@@ -1208,10 +1208,10 @@ export default {
   }
   .rowtitle {
     width: 1.44rem;
-    font-size: .24rem;
+    font-size: 0.24rem;
     font-weight: bold;
     color: #303030;
-    margin-right: .34rem;
+    margin-right: 0.34rem;
   }
   .row_between {
     flex: 1;
@@ -1227,15 +1227,15 @@ export default {
       width: 33.3%;
       display: flex;
       img {
-        width: .4rem;
-        height: .4rem;
-        margin-right: .1rem;
+        width: 0.4rem;
+        height: 0.4rem;
+        margin-right: 0.1rem;
       }
     }
   }
   .top {
-    border-radius: .12rem;
-    padding: .14rem 0px 0px;
+    border-radius: 0.12rem;
+    padding: 0.14rem 0px 0px;
     .shopbox {
       // border-bottom: 1px solid #e7e7e7
       // justify-content: space-between;
@@ -1248,16 +1248,16 @@ export default {
     }
   }
   .textbox {
-    padding: .3rem .48rem;
+    padding: 0.3rem 0.48rem;
     display: flex;
     .texttitle {
-      font-size: .24rem;
+      font-size: 0.24rem;
       font-weight: bold;
       color: #303030;
-      margin-right: .1rem;
+      margin-right: 0.1rem;
     }
     .tip {
-      font-size: .24rem;
+      font-size: 0.24rem;
       font-weight: bold;
       color: #09c076;
     }
@@ -1274,7 +1274,7 @@ export default {
       .brand_item {
         width: 25%;
         box-sizing: border-box;
-        padding: .14rem .32rem;
+        padding: 0.14rem 0.32rem;
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
         background: #fff;
@@ -1287,15 +1287,15 @@ export default {
     .pricebox {
       border-bottom: 1px solid #e7e7e7;
       background: #fff;
-      padding: .3rem .48rem;
+      padding: 0.3rem 0.48rem;
       .prititle {
-        font-size: .24rem;
+        font-size: 0.24rem;
         font-weight: bold;
         color: #303030;
       }
 
       .pricelist {
-        padding: .2rem 1px;
+        padding: 0.2rem 1px;
         padding-bottom: 0px;
         display: flex;
         justify-content: space-between;
@@ -1303,14 +1303,14 @@ export default {
 
         .priceitem {
           // margin-right: .2rem;
-          margin-bottom: .2rem;
+          margin-bottom: 0.2rem;
           width: 2.04rem;
-          height: .54rem;
+          height: 0.54rem;
           text-align: center;
-          line-height: .54rem;
+          line-height: 0.54rem;
           color: #909090;
           background: #ededed;
-          border-radius: .06rem;
+          border-radius: 0.06rem;
         }
         .select_price_region {
           background: #09c076;
@@ -1324,34 +1324,34 @@ export default {
         justify-content: space-between;
         .lowprice {
           display: flex;
-          padding: .06rem .4rem;
+          padding: 0.06rem 0.4rem;
           border: 1px solid #d8d8d8;
         }
 
         .connector {
-          font-size: .24rem;
+          font-size: 0.24rem;
           font-weight: bold;
           color: #bfbfbf;
         }
 
         .highprice {
           display: flex;
-          padding: .06rem .4rem;
+          padding: 0.06rem 0.4rem;
           border: 1px solid #d8d8d8;
         }
 
         .confirm {
           background: #09c076;
-          border-radius: .06rem;
-          font-size: .24rem;
+          border-radius: 0.06rem;
+          font-size: 0.24rem;
           font-weight: 500;
           color: #ffffff;
-          padding: .06rem .44rem;
+          padding: 0.06rem 0.44rem;
         }
       }
     }
     .intent_desc {
-      padding: .3rem .48rem;
+      padding: 0.3rem 0.48rem;
       background: #fff;
       border-bottom: 1px solid #e7e7e7;
     }
@@ -1360,20 +1360,20 @@ export default {
       background: #fff;
       // padding: .3rem .48rem;
       .intent_level_list {
-        padding: 0px .48rem 0px .48rem;
+        padding: 0px 0.48rem 0px 0.48rem;
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
         .intent_level_item {
-          margin-bottom: .3rem;
-          margin-right: .32rem;
+          margin-bottom: 0.3rem;
+          margin-right: 0.32rem;
           width: 1.04rem;
-          height: .54rem;
+          height: 0.54rem;
           text-align: center;
-          line-height: .54rem;
+          line-height: 0.54rem;
           color: #909090;
           background: #ededed;
-          border-radius: .06rem;
+          border-radius: 0.06rem;
         }
         .intent_level_item:nth-child(5n + 5) {
           margin-right: 0px;
@@ -1387,17 +1387,17 @@ export default {
   }
   .sellcarbox {
     .intent_desc {
-      padding: .3rem .48rem;
+      padding: 0.3rem 0.48rem;
       background: #fff;
       border-bottom: 1px solid #e7e7e7;
     }
   }
   .albums {
-    padding: .3rem .48rem;
+    padding: 0.3rem 0.48rem;
     background: #fff;
     display: flex;
     .album_title {
-      font-size: .24rem;
+      font-size: 0.24rem;
       font-weight: bold;
       color: #303030;
       width: 1.74rem;
@@ -1407,23 +1407,23 @@ export default {
       // justify-content: space-between;
       flex-wrap: wrap;
       .albums_item {
-        margin-right: .1rem;
-        margin-bottom: .1rem;
+        margin-right: 0.1rem;
+        margin-bottom: 0.1rem;
         width: 1.62rem;
         height: 1.56rem;
       }
     }
   }
   .btn_save {
-    margin:.96rem auto 0px;
+    margin: 0.96rem auto 0px;
     width: 5.7rem;
-    height: .7rem;
+    height: 0.7rem;
     background: #09c076;
-    border-radius: .34rem;
-    font-size: .3rem;
+    border-radius: 0.34rem;
+    font-size: 0.3rem;
     font-weight: 500;
     color: #ffffff;
-    line-height: .7rem;
+    line-height: 0.7rem;
     text-align: center;
   }
 }

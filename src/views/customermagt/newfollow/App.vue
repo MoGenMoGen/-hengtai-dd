@@ -80,8 +80,91 @@
         </div>
       </div>
       <!-- 沟通方式开始 -->
-      <div class="tostore_box" v-if="contacttype!=1">
-         v
+      <div class="tostore_box" v-if="contacttype == 0">
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder">*</div>
+            <div class="rowtitle">来访时间</div>
+          </div>
+          <el-date-picker
+            class="followdatepicker"
+            style="width: 2.8rem"
+            v-model="visitTime"
+            type="datetime"
+            placeholder="请选择来访时间"
+          >
+          </el-date-picker>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder">*</div>
+            <div class="rowtitle">离店时间</div>
+          </div>
+          <el-date-picker
+            class="followdatepicker"
+            style="width: 2.8rem"
+            v-model="leaveTime"
+            type="datetime"
+            placeholder="请选择离店时间"
+          >
+          </el-date-picker>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder">*</div>
+            <div class="rowtitle">客户人数</div>
+          </div>
+
+          <el-input
+            v-model="cusnums"
+            type="number"
+            oninput="if(value.length>6)value=value.slice(0,6)"
+            placeholder="请输入人数"
+            style="flex: 1"
+          ></el-input>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder">*</div>
+            <div class="rowtitle">来访时间段</div>
+          </div>
+
+          <div style="display: flex; align-items: center">
+            <div>{{ visitSt }}</div>
+            <span style="padding: 0px 5px"> ~ </span>
+            <div>{{ visitEt }}</div>
+          </div>
+        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder">*</div>
+            <div class="rowtitle">接待时长</div>
+          </div>
+
+          <div>{{ receptionDuration }}h</div>
+        </div>
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">下次跟进时间</div>
+        </div>
+        <el-date-picker
+          class="followdatepicker"
+          style="width: 2.8rem"
+          v-model="followdate1"
+          type="datetime"
+          @change="handlefollowdate1"
+          placeholder="选择日期时间"
+        >
+        </el-date-picker>
+        <span style="color: #606266">{{ followdateofweek1 }}</span>
       </div>
     </div>
     <!-- 本次沟通记录 结束-->
@@ -99,7 +182,7 @@
         </div>
         <div class="row_between">
           <div style="flex: 1"></div>
-          <div style="wdith: 32px">更多></div>
+          <div style="wdith: 32px; font-weight: 500; color: #909090">更多></div>
         </div>
       </div>
       <div class="brand_list">
@@ -204,7 +287,7 @@
             oninput="if(value.length>3)value=value.slice(0,3)"
             placeholder="请输入"
           ></el-input>
-          <span style="color: #303030">万公里</span>
+          <span style="font-weight: bold;color: #303030">万公里</span>
         </div>
       </div>
       <div class="row">
@@ -253,7 +336,26 @@
         >
         </el-input>
       </div>
+      <!--意向等级开始  -->
+      <div class="intent_level">
+        <div class="row" style="border: none">
+          <div class="placeholder">*</div>
+          <div class="rowtitle">意向等级</div>
+        </div>
 
+        <div class="intent_level_list">
+          <div
+            class="intent_level_item"
+            @click="checkedLevelIndex2 = index"
+            v-for="(item, index) in intentLevelList2"
+            :key="item.id"
+            :class="{ select_price_region: index == checkedLevelIndex2 }"
+          >
+            {{ item.level }}
+          </div>
+        </div>
+      </div>
+      <!-- 意向等级结束 -->
       <div class="row">
         <!-- 占位符 -->
         <div style="display: flex">
@@ -299,265 +401,14 @@
         <el-date-picker
           class="followdatepicker"
           style="width: 140px"
-          v-model="followdate"
+          v-model="followdate2"
           type="datetime"
-          @change="handlefollowdate"
+          @change="handlefollowdate2"
           placeholder="选择日期时间"
         >
         </el-date-picker>
-        <span style="color: #606266">{{ followdateofweek }}</span>
+        <span style="color: #606266">{{ followdateofweek2 }}</span>
       </div>
-    </div>
-    <!-- 买车需求结束 -->
-    <!-- 卖车需求开始 -->
-    <div class="textbox">
-      <div class="texttitle">卖车需求</div>
-    </div>
-    <div class="row">
-      <!-- 占位符 -->
-      <div style="display: flex">
-        <div class="placeholder"></div>
-        <div class="rowtitle">卖车需求</div>
-      </div>
-      <div class="row_radio">
-        <div class="radiobox" @click="issellcar = 0">
-          <img
-            src="~@/assets/img/radioselect.png"
-            alt=""
-            v-if="issellcar == 0"
-          />
-          <img src="~@/assets/img/radio.png" alt="" v-else />
-          <span>否</span>
-        </div>
-        <div class="radiobox" @click="issellcar = 1">
-          <img
-            src="~@/assets/img/radioselect.png"
-            alt=""
-            v-if="issellcar == 1"
-          />
-          <img src="~@/assets/img/radio.png" alt="" v-else />
-          <span>是</span>
-        </div>
-      </div>
-    </div>
-    <div class="ifsellbox" v-if="issellcar">
-      <div class="sellcarbox">
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">品牌车系</div>
-          </div>
-          <el-select
-            v-model="carparm"
-            placeholder="请选择品牌车系"
-            class="row_between"
-          >
-            <el-option
-              v-for="item in carparms"
-              :key="item.id"
-              :label="item.value"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">里程数</div>
-          </div>
-          <div class="row_between">
-            <el-input
-              style="width: 150px"
-              v-model="sellmileage"
-              type="number"
-              oninput="if(value.length>3)value=value.slice(0,3)"
-              placeholder="请输入"
-            ></el-input>
-            <span style="color: #303030">万公里</span>
-          </div>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">上牌时间</div>
-          </div>
-          <el-date-picker
-            v-model="licensedate"
-            type="date"
-            placeholder="选择上牌日期"
-          >
-          </el-date-picker>
-        </div>
-        <div class="intent_desc">
-          <div
-            style="
-              font-size: 12px;
-              font-weight: bold;
-              color: #303030;
-              margin-bottom: 8px;
-            "
-          >
-            备注
-          </div>
-          <el-input
-            type="textarea"
-            autosize
-            placeholder="请输入"
-            v-model="remark"
-          >
-          </el-input>
-        </div>
-      </div>
-      <!-- 卖车需求结束 -->
-      <!-- 更多信息开始 -->
-      <div class="textbox">
-        <div class="texttitle">更多信息</div>
-      </div>
-      <div class="moreinfobox">
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">老客户介绍人</div>
-          </div>
-          <el-select
-            v-model="introducer"
-            placeholder="请选择"
-            class="row_between"
-          >
-            <el-option
-              v-for="item in introducers"
-              :key="item.id"
-              :label="item.value"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">备用号</div>
-          </div>
-          <div class="row_between">
-            <el-input
-              style="width: 150px"
-              v-model="sparephone"
-              type="number"
-              oninput="if(value.length>11)value=value.slice(0,11)"
-              placeholder="请输入"
-            ></el-input>
-            <span style="color: #09c076">通讯录匹配</span>
-          </div>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">身份证号</div>
-          </div>
-
-          <el-input
-            v-model="idcard"
-            type="text"
-            maxlength="18"
-            placeholder="请输入"
-            style="flex: 1"
-          ></el-input>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">生日</div>
-          </div>
-          <el-date-picker v-model="birthday" type="date" placeholder="请选择">
-          </el-date-picker>
-        </div>
-        <div class="row" style="padding-right: 12px">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle" style="width: 140px">所在地</div>
-          </div>
-
-          <el-cascader
-            class="row_between"
-            placeholder="搜索或选择"
-            :options="locations"
-            v-model="location"
-            filterable
-          ></el-cascader>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">联系地址</div>
-          </div>
-
-          <el-input
-            v-model="contactAddress"
-            type="text"
-            maxlength="18"
-            placeholder="请输入"
-            style="flex: 1"
-          ></el-input>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">兴趣</div>
-          </div>
-
-          <el-input
-            v-model="hobbies"
-            type="text"
-            maxlength="18"
-            placeholder="请输入"
-            style="flex: 1"
-          ></el-input>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">职业</div>
-          </div>
-
-          <el-input
-            v-model="occupation"
-            type="text"
-            maxlength="18"
-            placeholder="请输入"
-            style="flex: 1"
-          ></el-input>
-        </div>
-        <div class="albums">
-          <div class="album_title">相册</div>
-          <div class="albums_box_list">
-            <img
-              class="albums_item"
-              src="~@/assets/img/photograph.png"
-              alt=""
-            />
-            <img
-              class="albums_item"
-              :src="item.src"
-              alt=""
-              v-for="(item, index) in albums"
-              :key="index"
-            />
-          </div>
-        </div>
-      </div>
-      <!-- 更多信息结束-->
     </div>
     <div class="btn_save">保存</div>
   </div>
@@ -650,7 +501,216 @@ export default {
           value: "微信",
         },
       ],
+      // 来访时间
+      visitTime: "",
+      // 离店时间
+      leaveTime: "",
+      // 客户人数
+      cusnums: "",
+      // 沟通下次跟进时间
+      followdate1: "",
+      followdateofweek1: "",
+      // 汽车品牌列表
+      brandList: [
+        {
+          src: brand,
+          id: 1,
+        },
+        {
+          src: brand,
+          id: 2,
+        },
+        {
+          src: brand,
+          id: 3,
+        },
+        {
+          src: brand,
+          id: 4,
+        },
+        {
+          src: brand,
+          id: 5,
+        },
+        {
+          src: brand,
+          id: 6,
+        },
+        {
+          src: brand,
+          id: 7,
+        },
+        {
+          src: brand,
+          id: 8,
+        },
+      ],
+      // 车型列表
+      cartype: "",
+      cartypes: [
+        {
+          id: 1,
+          value: "A4L 新款",
+        },
+        {
+          id: 2,
+          value: "A8 黑色 商务款",
+        },
+      ],
+      // 选中的价格下标
+      checkedPriceIndex: 0,
+      // 价格区间列表
+      priceList: [
+        {
+          region: "不限",
+          id: 1,
+        },
+        {
+          region: "0 ~ 3万",
+          id: 2,
+        },
+        {
+          region: "3 ~ 5万",
+          id: 3,
+        },
+        {
+          region: "5 ~ 10万",
+          id: 4,
+        },
+        {
+          region: "10 ~ 15万",
+          id: 5,
+        },
+        {
+          region: "15 ~ 20万",
+          id: 6,
+        },
+        {
+          region: "20 ~ 30万",
+          id: 7,
+        },
+        {
+          region: "30 ~ 50",
+          id: 8,
+        },
+        {
+          region: "50万以上",
+          id: 9,
+        },
+      ],
+      // 自定义高低价
+      lowprice: '',
+      highprice: '',
+      // 车身颜色
+      carcolor: "",
+      carcolors: [
+        {
+          id: 1,
+          value: "红色",
+        },
+        {
+          id: 2,
+          value: "宝石蓝",
+        },
+      ],
+      // 买车里程数
+      buymileage: 0,
+      // 是否按揭
+      ismortgage: 0,
+      // 意向描述
+      intentDesc: "",
+      // 意向等级
+      checkedLevelIndex2: 0,
+      intentLevelList2: [
+        {
+          id: 1,
+          level: "O",
+        },
+        {
+          id: 2,
+          level: "K",
+        },
+        {
+          id: 3,
+          level: "A",
+        },
+        {
+          id: 4,
+          level: "B",
+        },
+        {
+          id: 5,
+          level: "C",
+        },
+        {
+          id: 6,
+          level: "J",
+        },
+        {
+          id: 7,
+          level: "S",
+        },
+        {
+          id: 8,
+          level: "P",
+        },
+        {
+          id: 9,
+          level: "战败",
+        },
+        {
+          id: 10,
+          level: "无效",
+        },
+      ],
+      // 购买类型
+      butype: 1,
+      // 买车下次跟进时间
+      followdate2: "",
+      followdateofweek2: "",
+      //
     };
+  },
+  computed: {
+    visitSt() {
+      if (this.visitTime)
+        return moment(this.visitTime).format("YYYY-MM-DD HH:mm:ss");
+      return "";
+    },
+    visitEt() {
+      if (this.leaveTime) return moment(this.leaveTime).format(" HH:mm:ss");
+      return "";
+    },
+    receptionDuration() {
+      if (this.visitTime && this.leaveTime) {
+        let s = moment(this.leaveTime).diff(
+          moment(this.visitTime),
+          "hours",
+          true
+        );
+        return s.toFixed(2);
+      }
+
+      return "";
+    },
+  },
+  watch: {
+    visitTime: function () {
+      this.visitSt = moment(this.visitTime).format("YYYY-MM-DD hh:MM:ss");
+      if (this.leaveTime) {
+        this.receptionDuration = moment(this.leaveTime)
+          .diff(moment(this.visitTime), "hours", true)
+          .toFixed(2);
+      }
+    },
+    leaveTime: function () {
+      this.visitEt = moment(this.leaveTime).format("YYYY-MM-DD hh:MM:ss");
+      if (this.visitTime) {
+        this.receptionDuration = moment(this.leaveTime)
+          .diff(moment(this.visitTime), "hours", true)
+          .toFixed(2);
+      }
+    },
   },
   methods: {
     back() {
@@ -665,8 +725,11 @@ export default {
       this.iskeycus = num;
     },
     // 处理跟进时间
-    handlefollowdate(e) {
-      this.followdateofweek = moment(e).format("dddd");
+    handlefollowdate1(e) {
+      this.followdateofweek1 = moment(e).format("dddd");
+    },
+    handlefollowdate2(e) {
+      this.followdateofweek2 = moment(e).format("dddd");
     },
   },
   created() {

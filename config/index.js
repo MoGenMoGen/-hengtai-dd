@@ -35,7 +35,7 @@ module.exports = {
       proxyTable: {
           '/api':{
               // target:'http://192.168.2.140',
-              target:'http://u2768442w0.qicp.vip',
+              target:'http://5anpucq.nat.ipyingshe.com',
               changeOrigin:true,
               pathRewrite:{
                   '^/api':''

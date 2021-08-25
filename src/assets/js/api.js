@@ -1,8 +1,9 @@
 
 // const hostUrl = "http://u2768442w0.qicp.vip";
 // const hostUrl = "http://hss.jiaxiangtech.com";
-// const hostUrl = "http://hsstest.jinkworld.com";
-const hostUrl = "http://u2768442w0.qicp.vip/";
+const hostUrl = "http://hsstest.jinkworld.com"
+// const hostUrl = "http://u2768442w0.qicp.vip/";
+// const hostUrl = "http://5anpucq.nat.ipyingshe.com";
 import Vue from 'vue'
 import axios from 'axios'
 import { Toast } from 'mint-ui';
@@ -12,9 +13,10 @@ function get(url, data, header, cache = false) {
     let newurl =url
     // let newurl = hostUrl+ url
     // let headers = { ...header, ...{ "yui3-token": "yui3-sid-ba372dba-0e61-42e9-b296-eefff719a344", 'Content-Type': 'application/json' } }
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-89e5cdfe-60f5-4f27-9b62-46868edb8379", 'Content-Type': 'application/json' } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
     let promise = new Promise((resolve, reject) => {
         axios.get(newurl, { params: data, headers }).then(res => {
+			
             if (res.data.code == 0) {
                 resolve(res.data)
             } else {
@@ -28,7 +30,8 @@ function get(url, data, header, cache = false) {
 }
 
 function post(url, data, header) {
-    let newurl = '/api' + url
+    let newurl = 
+	 + url
     let headers = { ...header, ...{ "yui3-token": "yui3-sid-2dff2472-3a49-4a7a-b76c-2e58fbfae122", 'Content-Type': 'application/json' } }
 
 
@@ -361,7 +364,35 @@ class api {
 	    }
 	    return new Promise((resolve, reject) => {
 	        get('/hss/wxBusinessBuy/pageList', data, header).then(res => {
+	            console.log(res);
+				resolve(res)
+				
+	        })
+	
+	    })
+	}
+	//获取买车需求订单详情
+	getWxBusinessBuyDetail(data) {
+	    let header = {
+	        // 'Content-Type': 'application/json',
+	        // 'yui3-token': localStorage.getItem('token')
+	    }
+	    return new Promise((resolve, reject) => {
+	        get('/hss/wxBusinessBuy/info/'+data, header).then(res => {
 	            resolve(res.data)
+	        })
+	
+	    })
+	}
+	//获取卖车需求订单列表
+	getWxBusinessSell(data) {
+	    let header = {
+	        // 'Content-Type': 'application/json',
+	        // 'yui3-token': localStorage.getItem('token')
+	    }
+	    return new Promise((resolve, reject) => {
+	        get('/hss/wxBusinessSell/pageList',data, header).then(res => {
+	            resolve(res)
 	        })
 	
 	    })

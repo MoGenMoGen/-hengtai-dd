@@ -24,7 +24,7 @@
 					品牌
 				</div>
 				<div class="listContent">
-					{{info.pinpai}}
+					{{info.brand}}
 				</div>
 			</div>
 			<div class="list">
@@ -33,7 +33,7 @@
 					车型
 				</div>
 				<div class="listContent">
-					{{info.chexing}}
+					{{info.model}}
 				</div>
 			</div>
 
@@ -42,7 +42,7 @@
 					价格区间
 				</div>
 				<div class="listContent">
-					{{info.jiage}}
+					{{info.minPrice}}~{{info.maxPrice}}
 				</div>
 			</div>
 			<div class="list">
@@ -50,7 +50,7 @@
 					车身颜色
 				</div>
 				<div class="listContent">
-					{{info.yanse}}
+					{{info.color}}
 				</div>
 			</div>
 			<div class="list">
@@ -58,7 +58,7 @@
 					里程数
 				</div>
 				<div class="listContent">
-					{{info.licheng}}
+					{{info.mileage}}
 				</div>
 			</div>
 			<div class="list">
@@ -66,7 +66,7 @@
 					是否按揭
 				</div>
 				<div class="listContent">
-					{{info.anjie}}
+					{{isMortgage}}
 				</div>
 			</div>
 			<div class="list">
@@ -74,7 +74,7 @@
 					备注
 				</div>
 				<div class="listContent">
-					{{info.beizhu}}
+					{{info.describes}}
 				</div>
 			</div>
 			<div class="list">
@@ -82,7 +82,7 @@
 					意向等级
 				</div>
 				<div class="listContent">
-					{{info.dengji}}
+					{{info.intentionLevel}}
 				</div>
 			</div>
 			<div class="list">
@@ -90,7 +90,7 @@
 					发布时间
 				</div>
 				<div class="listContent">
-					{{info.shijian}}
+					{{info.crtTm}}
 				</div>
 			</div>
 			<div class="list">
@@ -98,7 +98,7 @@
 					销售人员
 				</div>
 				<div class="listContent">
-					{{info.xiaoshou}}
+					{{info.crtBy}}
 				</div>
 			</div>
 		</div>
@@ -180,6 +180,7 @@
 			return {
 				isPopShow:false,
 				currentindex:0,
+				id:"",
 				info: {
 					pinpai: "奔驰",
 					chexing: "迈巴赫S级",
@@ -206,11 +207,15 @@
 		},
 
 		async mounted() {
-			
+			this.api.getWxBusinessBuyDetail(this.id).then(res=>{
+				this.info=res
+				console.log(this.info);
+			})
 		},
 		created() {
 			this.currentindex=this.until.getQueryString('index')
-			console.log(this.currentindex);
+			this.id=this.until.getQueryString('id')
+			console.log(this.currentindex,this.id);
 		},
 		methods: {
 
@@ -227,6 +232,14 @@
 				this.isPopShow=false
 			}
 		},
+		computed:{
+			isMortgage(){
+				if(this.info.isMortgage==false)
+				return "否"
+				else if(this.info.isMortgage==true)
+				return "是"
+			}
+		}
 	};
 </script>
 
@@ -360,6 +373,7 @@
 				}
 
 				.listContent {
+					width: 5rem;
 					font-size: 0.24rem;
 					font-family: PingFang SC;
 					font-weight: bold;

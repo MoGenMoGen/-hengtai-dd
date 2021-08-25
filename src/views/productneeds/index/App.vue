@@ -7,33 +7,21 @@
 		<div class="searchBox">
 			<div class="leftBox">
 				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" />
-				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1"/>
+				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" />
 				<!-- <input type="" name="" id="" value="" placeholder="品牌、车型" /> -->
-				 <el-select v-model="value" filterable placeholder="品牌车型" class="select" v-if="currentIndex==0"  @change="postId">
-				     <el-option
-				       v-for="item in options"
-				       :key="item.value"
-				       :label="item.label"
-				       :value="item.id"
-					   >
-				     </el-option>
-				   </el-select>
-				   <el-select v-model="value2" filterable placeholder="品牌车型" class="select1" v-if="currentIndex==1">
-				       <el-option
-				         v-for="item in optionsThree"
-				         :key="item.value"
-				         :label="item.label"
-				         :value="item.id">
-				       </el-option>
-				     </el-select>
-				  <el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0">
-				       <el-option
-				         v-for="item in optionsTwo"
-				         :key="item.value"
-				         :label="item.label"
-				         :value="item.id">
-				       </el-option>
-				     </el-select>
+				<el-select v-model="value" filterable placeholder="品牌车型" class="select" v-if="currentIndex==0"
+					@change="postId">
+					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.id">
+					</el-option>
+				</el-select>
+				<el-select v-model="value2" filterable placeholder="品牌车型" class="select1" v-if="currentIndex==1">
+					<el-option v-for="item in optionsThree" :key="item.value" :label="item.label" :value="item.id">
+					</el-option>
+				</el-select>
+				<el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0">
+					<el-option v-for="item in optionsTwo" :key="item.value" :label="item.label" :value="item.id">
+					</el-option>
+				</el-select>
 				<div class="pick">
 					<el-date-picker type="date" placeholder="选择开始日期" :picker-options="pickerOptionsStart"
 						v-model="startTime" @change="startTimeChang" class="picker"></el-date-picker>
@@ -52,15 +40,16 @@
 					{{item}}
 				</div>
 			</div>
-			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==0" @click="toDetail()">
-				<img src="~@/assets/img/arrow.png" >
-				
+			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==0"
+				@click="toDetail(index1)">
+				<img src="~@/assets/img/arrow.png">
+
 				<div class="itemList">
 					<div class="itemListHead">
 						品牌:
 					</div>
 					<div class="itemListcontent">
-						{{item1.pinpai}}
+						{{item1.hssWxBusinessBuyReturnPageVo.brand}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -68,7 +57,7 @@
 						车型:
 					</div>
 					<div class="itemListcontent">
-						{{item1.chexing}}
+						{{item1.hssWxBusinessBuyReturnPageVo.model}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -76,7 +65,7 @@
 						价格区间:
 					</div>
 					<div class="itemListcontent">
-						{{item1.jiage}}
+						{{item1.hssWxBusinessBuyReturnPageVo.minPrice}}~{{item1.hssWxBusinessBuyReturnPageVo.maxPrice}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -84,7 +73,7 @@
 						意向等级:
 					</div>
 					<div class="itemListcontent">
-						{{item1.yixiang}}
+						{{item1.hssWxBusinessBuyReturnPageVo.intentionLevel}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -92,7 +81,7 @@
 						销售人员:
 					</div>
 					<div class="itemListcontent">
-						{{item1.xiaoshou}}
+						{{item1.hssWxBusinessBuyReturnPageVo.saler}}
 					</div>
 				</div>
 				<div class="itemList" style="margin-bottom: 0;">
@@ -100,21 +89,25 @@
 						发布时间:
 					</div>
 					<div class="itemListcontent">
-						{{item1.shijian}}
+						{{item1.hssWxBusinessBuyReturnPageVo.crtTm}}
 					</div>
 				</div>
 				<div class="btn">
 					<button type="button">回复</button>
 				</div>
 			</div>
-			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==1" @click="toDetail()">
-				<img src="~@/assets/img/arrow.png" >
+
+
+
+			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==1"
+				@click="toDetail(index1) ">
+				<img src="~@/assets/img/arrow.png">
 				<div class="itemList">
 					<div class="itemListHead">
 						品牌车系:
 					</div>
 					<div class="itemListcontent">
-						{{item1.chexi}}
+						{{item1.brandModel}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -122,7 +115,7 @@
 						里程数:
 					</div>
 					<div class="itemListcontent">
-						{{item1.licheng}}
+						{{item1.mileage}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -130,24 +123,26 @@
 						上牌时间:
 					</div>
 					<div class="itemListcontent">
-						{{item1.shangpai}}
+						{{item1.licensingTime}}
 					</div>
 				</div>
-		
+
 				<div class="itemList">
 					<div class="itemListHead" style="margin-bottom: 0rem;">
 						销售人员:
 					</div>
 					<div class="itemListcontent">
-						{{item1.xiaoshou}}
+						{{item1.crtBy}}
 					</div>
 				</div>
-			
+
 				<div class="btn">
 					<button type="button">回复</button>
 				</div>
 			</div>
 		</div>
+
+
 	</div>
 </template>
 
@@ -155,6 +150,22 @@
 	export default {
 		data() {
 			return {
+				page: {
+					brandAndmodel: "", //品牌和车型
+					beginTime: "", //发布开始时间
+					endTime: "", //发布结束时间（两个时间应该同时存在或者不存在）
+					phone: 234, //手机号
+					intentionLevel: "", //意向等级（传id）,返回的为已经转化过的值
+					n: 0, //起始位置
+					s: 10 //长度
+				},
+				page1: {
+					brandModel: "mix", //品牌车型
+					beginTime: "", //发布开始时间
+					endTime: "", //发布结束时间（两个时间应该同时存在或者不存在）
+					n: 0, //起始位置
+					s: 5 //长度
+				},
 				pickerVisible: true,
 				result: '',
 				show: true,
@@ -163,122 +174,76 @@
 				tabList: ["买车需求", "卖车需求"],
 				currentIndex: 0,
 				value: '',
-				value1:"",
-				value2:"",
-				 options: [{
-				          id:1,
-				          label: '黄金糕'
-				        }, {
-				          id:2,
-				          label: '双皮奶'
-				        }, {
-				          id:3,
-				          label: '蚵仔煎'
-				        }, {
-				          id:4,
-				          label: '龙须面'
-				        }, {
-				         id:5,
-				          label: '北京烤鸭'
-				        }],
-						optionsTwo:[{
-				         
-				          label: '4848'
-				        }, {
-				          
-				          label: '双皮奶'
-				        }, {
-				          
-				          label: '蚵仔煎'
-				        }, {
-				          
-				          label: '龙须面'
-				        }, {
-				         
-				          label: '北京烤鸭'
-				        }],
-						optionsThree:[
-							{
-							 
-							  label: '4848'
-							}, {
-							  
-							  label: '双皮奶'
-							}, {
-							  
-							  label: '蚵仔煎'
-							}, {
-							  
-							  label: '龙须面'
-							}, {
-							 
-							  label: '北京烤鸭'
-							
-						}],
-				infoList:[
-					{
-						pinpai:"奔驰",
-						chexing:"迈巴赫S级",
-						jiage:"30-40万",
-						yixiang:"o",
-						xiaoshou:"王晓红",
-						shijian:"2021-07-28 12:01:20",
-						chexi:"奥迪 奥迪A6 2004款 奥迪A6 1.8T 自动舒适",
-						licheng:"12万公里",
-						shangpai:"2021-07-02",
-					},
-					{
-						pinpai:"奔驰",
-						chexing:"迈巴赫S级",
-						jiage:"30-40万",
-						yixiang:"o",
-						xiaoshou:"王晓红",
-						shijian:"2021-07-28 12:01:20",
-						chexi:"奥迪 奥迪A6 2004款 奥迪A6 1.8T 自动舒适",
-						licheng:"12万公里",
-						shangpai:"2021-07-02",
-					},
-					{
-						pinpai:"奔驰",
-						chexing:"迈巴赫S级",
-						jiage:"30-40万",
-						yixiang:"o",
-						xiaoshou:"王晓红",
-						shijian:"2021-07-28 12:01:20",
-						chexi:"奥迪 奥迪A6 2004款 奥迪A6 1.8T 自动舒适",
-						licheng:"12万公里",
-						shangpai:"2021-07-02",
-					},
-					{
-						pinpai:"奔驰",
-						chexing:"迈巴赫S级",
-						jiage:"30-40万",
-						yixiang:"o",
-						xiaoshou:"王晓红",
-						shijian:"2021-07-28 12:01:20",
-						chexi:"奥迪 奥迪A6 2004款 奥迪A6 1.8T 自动舒适",
-						licheng:"12万公里",
-						shangpai:"2021-07-02",
-					}
+				value1: "",
+				value2: "",
+				total: '',
+				options: [{
+					id: 1,
+					label: '黄金糕'
+				}, {
+					id: 2,
+					label: '双皮奶'
+				}, {
+					id: 3,
+					label: '蚵仔煎'
+				}, {
+					id: 4,
+					label: '龙须面'
+				}, {
+					id: 5,
+					label: '北京烤鸭'
+				}],
+				optionsTwo: [{
+					id: 1,
+					label: '黄金糕'
+				}, {
+					id: 2,
+					label: '双皮奶'
+				}, {
+					id: 3,
+					label: '蚵仔煎'
+				}, {
+					id: 4,
+					label: '龙须面'
+				}, {
+					id: 5,
+					label: '北京烤鸭'
+				}],
+				optionsThree: [{
+					id: 1,
+					label: '黄金糕'
+				}, {
+					id: 2,
+					label: '双皮奶'
+				}, {
+					id: 3,
+					label: '蚵仔煎'
+				}, {
+					id: 4,
+					label: '龙须面'
+				}, {
+					id: 5,
+					label: '北京烤鸭'
+				}, ],
+				infoList: [
+
+
 				]
 			};
 		},
 		components: {
-			
+
 		},
 		async mounted() {
-			let data={
-				"brandAndmodel": "", //品牌和车型
-				"beginTime": "", //发布开始时间
-				"endTime": "", //发布结束时间（两个时间应该同时存在或者不存在）
-				"phone": "234", //手机号
-				"intentionLevel": "", //意向等级（传id）,返回的为已经转化过的值
-				"n": "0", //起始位置
-				"s": "10" //长度
-			}
-			this.api.getWxBusinessBuy(data).then(res=>{
-				console.log(res);
+
+			this.api.getWxBusinessBuy(this.page).then(res => {
+				console.log(888, res);
+				this.total = res.data.total
+				this.infoList = res.data.list
+
+				console.log(77, this.infoList);
 			})
+			window.addEventListener('scroll', this.menu)
 		},
 		methods: {
 			cancel() {
@@ -312,13 +277,65 @@
 			},
 			changePage(index) {
 				this.currentIndex = index
+				this.infoList = []
+				this.page.n = 0
+				this.page1.n = 0
+				this.getList()
+
 			},
-			toDetail(){
-				this.until.href(`/views/productneeds/detail.html?index=${this.currentIndex}`)
+			toDetail(index) {
+				this.until.href(`/views/productneeds/detail.html?index=${this.currentIndex}&id=${this.infoList[index].id}`)
 			},
-			postId(id){
-				console.log(11,id);
+			postId(id) {
+				console.log(11, id);
+			},
+			getList() {
+
+
+
+				if (this.currentIndex == 0) {
+					this.api.getWxBusinessBuy(this.page).then(res => {
+						this.total = res.data.total
+						console.log(res);
+						this.infoList = [...this.infoList, ...res.data.list]
+						this.istrue = true
+
+					})
+				} else {
+					this.api.getWxBusinessSell(this.page1).then(res => {
+						console.log(res);
+						this.total = res.page.total
+						this.infoList = [...this.infoList, ...res.data.list]
+						this.istrue = true
+					})
+				}
+			},
+			menu() {
+				this.scroll = document.documentElement.scrollTop || document.body.scrollTop;
+				let scrollBottom = document.documentElement.scrollHeight - this.scroll - document.documentElement
+					.clientHeight
+				if (this.istrue == true) {
+					if (scrollBottom < 100) {
+						this.istrue = false
+						if (this.currentIndex == 0 && this.infoList.length < this.total) {
+							this.page.n++
+
+							this.getList()
+
+						} else if (this.currentIndex == 1 && this.infoList.length <this.total) {
+							this.page1.n++
+					
+							this.getList()
+						}
+					}
+					// load() {
+					// 	console.log(1231321);
+					// 	this.getList()
+					// }
+				}
 			}
+
+
 
 
 		},
@@ -338,18 +355,20 @@
 	};
 </script>
 <style lang="less">
-		.el-input__inner{
-			// height: 0.7rem;
-			font-size: 0.24rem;
-		}
-		.select1 .el-input__inner{
-			width: 3.91rem;
-		}
-		.el-input--prefix .el-input__inner{
-			height: 0.8rem;
-		}
+	.el-input__inner {
+		height: 0.8rem;
+		font-size: 0.24rem;
+	}
+
+	.select1 .el-input__inner {
+		width: 3.91rem;
+	}
+
+	.el-input--prefix .el-input__inner {
+		height: 0.8rem;
+	}
 </style>
-<style lang="less" scoped >
+<style lang="less" scoped>
 	@import url("../../../assets/css/mobile.less");
 	@import url("../../../assets/css/common.css");
 
@@ -406,12 +425,13 @@
 					opacity: 0.7;
 
 				}
-				.select{
+
+				.select {
 					width: 1.9rem;
 					height: 0.7rem;
-					
+
 				}
-			
+
 
 				.pick {
 					display: flex;
@@ -421,7 +441,8 @@
 						font-size: 0.24rem;
 						margin-top: 0.1rem;
 						padding-right: 0;
-						margin-right:0.009rem;
+						margin-right: 0.009rem;
+
 						/deep/ .el-input--prefix .el-input__inner {
 							padding-right: 0;
 						}
@@ -445,7 +466,7 @@
 			}
 		}
 
-		.bodycontent{
+		.bodycontent {
 			width: 100%;
 			background: #FFFFFF;
 			border-radius: 0.2rem;
@@ -490,39 +511,44 @@
 
 
 			}
-			.bodyList{
+
+			.bodyList {
 				position: relative;
 				width: 100%;
 				background: #FFFFFF;
-				padding:0.3rem 0.31rem ;
+				padding: 0.3rem 0.31rem;
 				box-sizing: border-box;
 				font-size: 0.24rem;
 				font-weight: bold;
 				color: #303030;
 				border-bottom: 0.01rem solid #E5E5E5;
-				img{
+
+				img {
 					width: 0.3rem;
 					height: 0.3rem;
 					position: absolute;
 					opacity: 0.5;
 					top: 50%;
-					right:0.3rem;
+					right: 0.3rem;
 					transform: translateY(-50%);
 				}
-				.itemList{
+
+				.itemList {
 					display: flex;
 					margin-bottom: 0.25rem;
-					
-					.itemListHead{
+
+					.itemListHead {
 						width: 1.1rem;
 					}
-					.itemListcontent{
+
+					.itemListcontent {
 						margin-left: 0.17rem;
 					}
 				}
-				.btn{
-					
-					button{
+
+				.btn {
+
+					button {
 						width: 1.37rem;
 						height: 0.51rem;
 						background: #09C076;
@@ -532,7 +558,7 @@
 						font-weight: 500;
 						position: absolute;
 						right: 0.3rem;
-						bottom:0.3rem;
+						bottom: 0.3rem;
 					}
 				}
 			}

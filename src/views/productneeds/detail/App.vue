@@ -2,15 +2,15 @@
 <template>
 	<div id="container">
 		<div class="mask" v-if="isPopShow==true">
-			
+
 		</div>
 		<div class="popBox" v-if="isPopShow==true">
 			<div class="title">
 				回复
 			</div>
-			<textarea rows="" cols="" placeholder="多行输入"></textarea>
+			<textarea rows="" cols="" placeholder="多行输入" v-model="reply"></textarea>
 			<div class="bOttom">
-			    <div  class="btn1" @click="cancel">取消</div>
+				<div class="btn1" @click="cancel">取消</div>
 				<div class="btn2" @click="submit">确认</div>
 			</div>
 		</div>
@@ -102,13 +102,13 @@
 				</div>
 			</div>
 		</div>
-		<div class="bodyList"v-if="currentindex==1">
+		<div class="bodyList" v-if="currentindex==1">
 			<div class="list">
 				<div class="listHead">
 					品牌车系
 				</div>
 				<div class="listContent">
-					{{info.pinpai}}
+					{{info.brandModel}}
 				</div>
 			</div>
 			<div class="list">
@@ -116,7 +116,7 @@
 					里程数
 				</div>
 				<div class="listContent">
-					{{info.licheng}}
+					{{info.mileage}}
 				</div>
 			</div>
 			<div class="list">
@@ -124,7 +124,7 @@
 					上牌时间
 				</div>
 				<div class="listContent">
-					{{info.shangpai}}
+					{{info.licensingTime}}
 				</div>
 			</div>
 			<div class="list">
@@ -132,7 +132,7 @@
 					备注
 				</div>
 				<div class="listContent">
-					{{info.beizhu}}
+					{{info.remarks}}
 				</div>
 			</div>
 			<div class="list">
@@ -140,7 +140,7 @@
 					发布时间
 				</div>
 				<div class="listContent">
-					{{info.shijian}}
+					{{info.crtTm}}
 				</div>
 			</div>
 			<div class="list">
@@ -148,11 +148,11 @@
 					销售人员
 				</div>
 				<div class="listContent">
-					{{info.xiaoshou}}
+					{{info.saler}}
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="reply" v-for="(item,index) in replayList" :key="index">
 			<div class="replyCotent">
 				{{item.replay}}
@@ -178,9 +178,11 @@
 	export default {
 		data() {
 			return {
-				isPopShow:false,
-				currentindex:0,
-				id:"",
+				isPopShow: false,
+				currentindex: 0,
+				id: "",
+				reply:"",
+				isbuy:true,
 				info: {
 					pinpai: "奔驰",
 					chexing: "迈巴赫S级",
@@ -192,52 +194,73 @@
 					dengji: 'o',
 					shijian: "2021-07-28 12:02:01",
 					xiaoshou: "杰尼龟",
-					shangpai:"2020-06-01"
+					shangpai: "2020-06-01"
 				},
-				replayList:[
-					{
-						replay:"我们店里刚到一款正适合您的需求，推荐您来店里试一下。随时 欢迎光临！",
-						date:"2021-08-05",
-						person:"杰尼龟"
-					}
-				]
-				
+				replayList: [{
+					replay: "我们店里刚到一款正适合您的需求，推荐您来店里试一下。随时 欢迎光临！",
+					date: "2021-08-05",
+					person: "杰尼龟"
+				}]
+
 
 			};
 		},
 
 		async mounted() {
-			this.api.getWxBusinessBuyDetail(this.id).then(res=>{
-				this.info=res
-				console.log(this.info);
-			})
+			if (this.currentindex == 0) {
+				this.api.getWxBusinessBuyDetail(this.id).then(res => {
+					console.log(res);
+					this.info = res
+					this.isbuy=true
+				})
+			}
+			else if(this.currentindex==1){
+				this.api.getWxBusinessSellDetail(this.id).then(res => {
+					
+					this.info = res
+					this.isbuy=false
+					
+				})
+			}
 		},
 		created() {
-			this.currentindex=this.until.getQueryString('index')
-			this.id=this.until.getQueryString('id')
-			console.log(this.currentindex,this.id);
+			this.currentindex = this.until.getQueryString('index')
+			this.id = this.until.getQueryString('id')
+			console.log(this.currentindex, this.id);
 		},
 		methods: {
 
 			back() {
 				this.until.back()
 			},
-			popShow(){
-				this.isPopShow=true
+			popShow() {
+				this.isPopShow = true
 			},
-			cancel(){
-				this.isPopShow=false
+			cancel() {
+				this.isPopShow = false
 			},
-			submit(){
-				this.isPopShow=false
+			submit() {
+				let p={
+					businessId:"",
+					customerId:"",
+					isbuy:"",
+					content:"",
+				}
+				p.content=this.reply
+				p.businessId=this.info.id
+				p.customerId=this.info.customerId
+				p.isbuy=this.isbuy
+				this.api.postWxCommunicate(p)
+				
+				this.isPopShow = false
 			}
 		},
-		computed:{
-			isMortgage(){
-				if(this.info.isMortgage==false)
-				return "否"
-				else if(this.info.isMortgage==true)
-				return "是"
+		computed: {
+			isMortgage() {
+				if (this.info.isMortgage == false)
+					return "否"
+				else if (this.info.isMortgage == true)
+					return "是"
 			}
 		}
 	};
@@ -248,14 +271,15 @@
 	@import url("../../../assets/css/common.css");
 
 	#container {
-		
+
 		// width: 100%;
 		// height: 100%;
 		background: url('~@/assets/img/header.png') no-repeat;
 		background-color: #F1F3F2;
 		background-size: 100% 1.28rem;
+
 		// overflow: hidden;
-		.mask{
+		.mask {
 			position: fixed;
 			top: 0;
 			left: 0;
@@ -265,9 +289,10 @@
 			opacity: 0.3;
 			z-index: 100;
 		}
-		.popBox{
+
+		.popBox {
 			position: fixed;
-			top:5.65rem;
+			top: 5.65rem;
 			left: 50%;
 			transform: translateX(-50%);
 			width: 6.07rem;
@@ -275,49 +300,55 @@
 			border-radius: 0rem;
 			z-index: 199;
 			border-radius: 0.1rem;
-			.title{
+
+			.title {
 				width: 100%;
 				height: 1.06rem;
 				text-align: center;
-				line-height:1.06rem;
+				line-height: 1.06rem;
 				font-size: 0.3rem;
 				font-weight: 500;
 				color: #333333;
-				border-bottom: 0.01rem solid rgba(0,0,0,0.2);
-				
+				border-bottom: 0.01rem solid rgba(0, 0, 0, 0.2);
+
 			}
-			textarea{
+
+			textarea {
 				width: 100%;
 				height: 2.48rem;
 				padding: 0.20rem 0.35rem;
 				font-size: 0.24rem;
-				border-bottom: 0.01rem solid rgba(0,0,0,0.2);
+				border-bottom: 0.01rem solid rgba(0, 0, 0, 0.2);
 				box-sizing: border-box;
-				 display: block;  
+				display: block;
 			}
-			textarea::placeholder{
+
+			textarea::placeholder {
 				font-size: 0.24rem;
 				font-family: PingFang SC;
 				font-weight: 500;
 				color: #909090;
 			}
-			.bOttom{
+
+			.bOttom {
 				display: flex;
 				width: 100%;
 				height: 0.98rem;
-				.btn1{
+
+				.btn1 {
 					width: 50%;
 					height: 100%;
-					border-right:0.01rem solid rgba(0,0,0,0.2);
+					border-right: 0.01rem solid rgba(0, 0, 0, 0.2);
 					text-align: center;
 					line-height: 0.98rem;
 					font-size: 0.3rem;
 					font-family: PingFang SC;
 					font-weight: 500;
 					color: #606060;
-					
+
 				}
-				.btn2{
+
+				.btn2 {
 					width: 50%;
 					height: 100%;
 					text-align: center;
@@ -384,12 +415,14 @@
 
 
 		}
-		.reply{
+
+		.reply {
 			padding: 0.4rem;
 			background-color: #ffffff;
 			margin-top: 0.1rem;
-		    border-radius: 0.2rem;
-			.replyCotent{
+			border-radius: 0.2rem;
+
+			.replyCotent {
 				font-size: 0.24rem;
 				font-family: PingFang SC;
 				font-weight: bold;
@@ -397,10 +430,12 @@
 				margin-top: 0.2rem;
 			}
 		}
-		.btn{
+
+		.btn {
 			text-align: center;
 			margin-top: 3.5rem;
-			button{
+
+			button {
 				width: 5.7rem;
 				height: 0.7rem;
 				background: #09C076;

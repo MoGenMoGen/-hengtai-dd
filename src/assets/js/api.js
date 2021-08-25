@@ -31,8 +31,8 @@ function get(url, data, header, cache = false) {
 
 function post(url, data, header) {
     let newurl = 
-	 + url
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-2dff2472-3a49-4a7a-b76c-2e58fbfae122", 'Content-Type': 'application/json' } }
+	 url
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
 
 
     console.log(data)
@@ -396,6 +396,41 @@ class api {
 	        })
 	
 	    })
+	}
+	//获取卖车需求订单详情
+	getWxBusinessSellDetail(data){
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxBusinessSell/info/'+data, header).then(res => {
+		        resolve(res.data)
+		    })
+			
+		})
+	}
+	//获取意愿登记表
+	getWxIntentionLevel(data){
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxIntentionLevel/list',data, header).then(res => {
+		        resolve(res.data.list)
+		    })
+			
+		})
+		
+	}
+	//买车买车回复提交
+	postWxCommunicate(data){
+		return new Promise(resolve => {
+		    post("/hss/wxCommunicate/add", data, {}).then(res => {
+		        resolve(res.data)
+		    })
+		}) 
 	}
 }
 

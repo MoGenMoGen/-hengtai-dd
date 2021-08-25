@@ -6,8 +6,8 @@
 		</div>
 		<div class="searchBox">
 			<div class="leftBox">
-				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" />
-				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" />
+				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" v-model="phone" />
+				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" v-model="salesman" />
 				<!-- <input type="" name="" id="" value="" placeholder="品牌、车型" /> -->
 				<el-select v-model="value" filterable placeholder="品牌车型" class="select" v-if="currentIndex==0"
 					@change="postId">
@@ -18,8 +18,8 @@
 					<el-option v-for="item in optionsThree" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
 				</el-select>
-				<el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0">
-					<el-option v-for="item in optionsTwo" :key="item.value" :label="item.label" :value="item.id">
+				<el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0" @change="postIdTwo">
+					<el-option v-for="item in optionsTwo" :key="item.value" :label="item.content" :value="item.id">
 					</el-option>
 				</el-select>
 				<div class="pick">
@@ -30,7 +30,7 @@
 				</div>
 			</div>
 			<div class="rightBox">
-				<button type="button">查询</button>
+				<button type="button" @click="search">查询</button>
 			</div>
 		</div>
 		<div class="bodycontent">
@@ -41,7 +41,7 @@
 				</div>
 			</div>
 			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==0"
-				@click="toDetail(index1)">
+				@click="toDetail(item1.hssWxBusinessBuyReturnPageVo.id)">
 				<img src="~@/assets/img/arrow.png">
 
 				<div class="itemList">
@@ -100,7 +100,7 @@
 
 
 			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==1"
-				@click="toDetail(index1) ">
+				@click="toDetail(item1.id) ">
 				<img src="~@/assets/img/arrow.png">
 				<div class="itemList">
 					<div class="itemListHead">
@@ -154,19 +154,22 @@
 					brandAndmodel: "", //品牌和车型
 					beginTime: "", //发布开始时间
 					endTime: "", //发布结束时间（两个时间应该同时存在或者不存在）
-					phone: 234, //手机号
+					phone: "", //手机号
 					intentionLevel: "", //意向等级（传id）,返回的为已经转化过的值
-					n: 0, //起始位置
-					s: 10 //长度
-				},
-				page1: {
-					brandModel: "mix", //品牌车型
-					beginTime: "", //发布开始时间
-					endTime: "", //发布结束时间（两个时间应该同时存在或者不存在）
-					n: 0, //起始位置
+					n: 1, //起始位置
 					s: 5 //长度
 				},
+				page1: {
+					brandModel: "", //品牌车型
+					beginTime: "", //发布开始时间
+					endTime: "", //发布结束时间（两个时间应该同时存在或者不存在）
+					n: 1, //起始位置
+					s: 5 //长度
+				},
+				brandId:'',//品牌车型
+				phone:"",
 				pickerVisible: true,
+				levelId:'',
 				result: '',
 				show: true,
 				startTime: '',
@@ -193,22 +196,7 @@
 					id: 5,
 					label: '北京烤鸭'
 				}],
-				optionsTwo: [{
-					id: 1,
-					label: '黄金糕'
-				}, {
-					id: 2,
-					label: '双皮奶'
-				}, {
-					id: 3,
-					label: '蚵仔煎'
-				}, {
-					id: 4,
-					label: '龙须面'
-				}, {
-					id: 5,
-					label: '北京烤鸭'
-				}],
+				optionsTwo: [],
 				optionsThree: [{
 					id: 1,
 					label: '黄金糕'
@@ -235,13 +223,19 @@
 
 		},
 		async mounted() {
-
+			let p={
+				n:1,
+				s:10
+			}
+			this.api.getWxIntentionLevel(p).then(res=>{
+				
+				this.optionsTwo=res
+				console.log(888,this.optionsTwo);
+			})
+			
 			this.api.getWxBusinessBuy(this.page).then(res => {
-				console.log(888, res);
 				this.total = res.data.total
 				this.infoList = res.data.list
-
-				console.log(77, this.infoList);
 			})
 			window.addEventListener('scroll', this.menu)
 		},
@@ -278,22 +272,31 @@
 			changePage(index) {
 				this.currentIndex = index
 				this.infoList = []
-				this.page.n = 0
-				this.page1.n = 0
+				this.startTime=""
+				this.endTime=""
+				this.page.n = 1
+				this.page1.n = 1
 				this.getList()
 
 			},
-			toDetail(index) {
-				this.until.href(`/views/productneeds/detail.html?index=${this.currentIndex}&id=${this.infoList[index].id}`)
+			toDetail(id) {
+				
+					this.until.href(`/views/productneeds/detail.html?index=${this.currentIndex}&id=${id}`)
+				
+			
+				
 			},
-			postId(id) {
-				console.log(11, id);
-			},
+		
 			getList() {
 
 
 
 				if (this.currentIndex == 0) {
+					this.page.intentionLevel=this.levelId
+					this.page.phone=this.phone
+					this.page.brandAndmodel=this.brandId
+					this.page.beginTime=this.startTime
+					this.page.endTime=this.endTime
 					this.api.getWxBusinessBuy(this.page).then(res => {
 						this.total = res.data.total
 						console.log(res);
@@ -301,7 +304,13 @@
 						this.istrue = true
 
 					})
-				} else {
+					
+				} 
+				else if(this.currentIndex==1)
+				{
+					this.page1.brandModel=this.brandId
+					this.page1.beginTime=this.startTime
+					this.page1.endTime=this.endTime
 					this.api.getWxBusinessSell(this.page1).then(res => {
 						console.log(res);
 						this.total = res.page.total
@@ -333,6 +342,16 @@
 					// 	this.getList()
 					// }
 				}
+			},
+			search(){
+					this.infoList=[]
+					this.getList()
+			},
+			postId(val) {
+				this.brandId=val
+			},
+			postIdTwo(val){
+				this.levelId=val
 			}
 
 
@@ -355,6 +374,9 @@
 	};
 </script>
 <style lang="less">
+	.el-select-dropdown__item{
+		text-align: center;
+	}
 	.el-input__inner {
 		height: 0.8rem;
 		font-size: 0.24rem;

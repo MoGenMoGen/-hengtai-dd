@@ -5,12 +5,13 @@
   ],
   "plugins": 
     [
-      "transform-runtime",
-      ["import", {
-        "libraryName": "vant",
-        "libraryDirectory": "es",
-        "style": true
-      }]
+      "transform-runtime"
+      // ,
+      // ["import", {
+      //   "libraryName": "vant",
+      //   "libraryDirectory": "es",
+      //   "style": true
+      // }]
     ],
   "comments": false,
   "env": {

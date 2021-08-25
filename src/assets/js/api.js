@@ -1,5 +1,5 @@
 
-// const hostUrl = "http://u2768442w0.qicp.vip";
+
 // const hostUrl = "http://hss.jiaxiangtech.com";
 const hostUrl = "http://hsstest.jinkworld.com"
 // const hostUrl = "http://u2768442w0.qicp.vip/";
@@ -10,13 +10,10 @@ import { Toast } from 'mint-ui';
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
-    let newurl =url
-    // let newurl = hostUrl+ url
-    // let headers = { ...header, ...{ "yui3-token": "yui3-sid-ba372dba-0e61-42e9-b296-eefff719a344", 'Content-Type': 'application/json' } }
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-f362d245-1d48-4114-b657-dbdee81d0599" } }
     let promise = new Promise((resolve, reject) => {
-        axios.get(newurl, { params: data, headers }).then(res => {
-			
+        axios.get(url, { params: data, headers }).then(res => {
+
             if (res.data.code == 0) {
                 resolve(res.data)
             } else {

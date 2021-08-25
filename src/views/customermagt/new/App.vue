@@ -257,7 +257,7 @@
         </div>
         <div class="row_between">
           <div style="flex: 1"></div>
-          <div style="wdith: 32px; font-weight: 500; color: #909090">更多></div>
+          <div style="wdith: .64rem; font-weight: 500; color: #909090">更多></div>
         </div>
       </div>
       <div class="brand_list">
@@ -1236,11 +1236,11 @@ export default {
   .top {
     border-radius: 0.12rem;
     padding: 0.14rem 0px 0px;
-    .shopbox {
+    // .shopbox {
       // border-bottom: 1px solid #e7e7e7
       // justify-content: space-between;
       // align-items: center;
-    }
+    // }
     .row {
       el-select {
         flex: 1;
@@ -1262,8 +1262,8 @@ export default {
       color: #09c076;
     }
   }
-  .infobox {
-  }
+  // .infobox {
+  // }
   .buyneeds {
     .brand_list {
       display: flex;

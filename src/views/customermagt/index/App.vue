@@ -4,146 +4,147 @@
       <img src="~@/assets/img/arrowback.png" @click="back" />
       客户管理
     </div>
-    <div class="query">
-      <div class="left">
-        <div class="row1">
-          <el-input
-            class="leftpart bg input"
-            v-model="invalue"
-            placeholder="姓名、手机号"
-          ></el-input>
-          <el-select
-            clearable
-            filterable
-            class="rightpart bg"
-            v-model="buytype"
-            placeholder="购买类型"
-            @change="handleBuysType"
-          >
-            <el-option
-              v-for="(item, index) in buytypes"
-              :label="item.value"
-              :key="index"
-              :value="item.id"
+    <van-pull-refresh v-model="isLoading"  success-text="刷新成功" @refresh="onRefresh">
+      <div class="query">
+        <div class="left">
+          <div class="row1">
+            <el-input
+              class="leftpart bg input"
+              v-model="invalue"
+              placeholder="姓名、手机号"
+            ></el-input>
+            <el-select
+              clearable
+              filterable
+              class="rightpart bg"
+              v-model="buytype"
+              placeholder="购买类型"
+              @change="handleBuysType"
             >
-            </el-option>
-          </el-select>
+              <el-option
+                v-for="(item, index) in buytypes"
+                :label="item.content"
+                :key="index"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div class="row2">
+            <el-select
+              clearable
+              filterable
+              class="leftpart bg"
+              v-model="flowtype"
+              placeholder="客流性质"
+            >
+              <el-option
+                v-for="item in flowtypes"
+                :key="item.id"
+                :value="item.id"
+                :label="item.content"
+              >
+              </el-option>
+            </el-select>
+            <el-select
+              clearable
+              filterable
+              class="centerpart bg"
+              v-model="saler"
+              placeholder="销售顾问"
+            >
+              <el-option
+                v-for="item in salers"
+                :key="item.id"
+                :label="item.arg7"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+            <el-select
+              clearable
+              filterable
+              class="rightpart bg"
+              v-model="intentlevel"
+              placeholder="意向等级"
+            >
+              <el-option
+                v-for="item in intentLevels"
+                :key="item.id"
+                :value="item.id"
+                :label="item.content"
+              >
+              </el-option>
+            </el-select>
+          </div>
+          <div class="row3">
+            <el-date-picker
+              type="date"
+              placeholder="开始日期"
+              v-model="st"
+              class="picker son leftpart bg"
+            ></el-date-picker>
+            <el-date-picker
+              type="date"
+              placeholder="结束日期"
+              v-model="et"
+              class="picker son rightpart bg"
+            ></el-date-picker>
+          </div>
         </div>
-        <div class="row2">
-          <el-select
-            clearable
-            filterable
-            class="leftpart bg"
-            v-model="flowtype"
-            placeholder="客流性质"
-          >
-            <el-option
-              v-for="item in flowtypes"
-              :key="item.id"
-              :value="item.id"
-              :label="item.value"
-            >
-            </el-option>
-          </el-select>
-          <el-select
-            clearable
-            filterable
-            class="centerpart bg"
-            v-model="saler"
-            placeholder="销售顾问"
-          >
-            <el-option
-              v-for="item in salers"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-          <el-select
-            clearable
-            filterable
-            class="rightpart bg"
-            v-model="intentlevel"
-            placeholder="意向等级"
-          >
-            <el-option
-              v-for="item in intentLevels"
-              :key="item.level"
-              :value="item.id"
-              :label="item.level"
-            >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="row3">
-          <el-date-picker
-            type="date"
-            placeholder="开始日期"
-            v-model="st"
-            class="picker son leftpart bg"
-          ></el-date-picker>
-          <el-date-picker
-            type="date"
-            placeholder="结束日期"
-            v-model="et"
-            class="picker son rightpart bg"
-          ></el-date-picker>
-        </div>
+        <div class="right">查询</div>
       </div>
-      <div class="right">查询</div>
-    </div>
 
-    <div class="list">
-      <div class="item" v-for="item in customerList" :key="item.id" @click="toDetail">
-        <div class="level">A</div>
-        <div class="row1">
-          <div class="name">{{ item.name }}</div>
-          <div class="type">({{ item.type }})</div>
-        </div>
-        <div class="item_row">
-          <div class="key left">手机号:</div>
-          <div class="value">{{ item.phone }}</div>
-        </div>
-        <div class="item_row">
-          <div class="key left">微信号:</div>
-          <div class="value">{{ item.wx }}</div>
-        </div>
-        <div class="item_row">
-          <div class="key left">下次跟进时间:</div>
-          <div class="value">{{ item.followtime }}</div>
+      <div class="list">
+        <div
+          class="item"
+          v-for="item in customerList"
+          :key="item.id"
+          @click="toDetail"
+        >
+          <div class="level">A</div>
+          <div class="row1">
+            <div class="name">{{ item.name }}</div>
+            <div class="type" v-if="item.sex == 1">(男)</div>
+            <div class="type" v-else-if="item.sex == 2">(女)</div>
+            <div class="type" v-else>(未知)</div>
+          </div>
+          <div class="item_row">
+            <div class="key left">手机号:</div>
+            <div class="value">{{ item.phone }}</div>
+          </div>
+          <div class="item_row">
+            <div class="key left">微信号:</div>
+            <div class="value">{{ item.wxId }}</div>
+          </div>
+          <div class="item_row">
+            <div class="key left">下次跟进时间:</div>
+            <div class="value">{{ item.nextFollowUpTime }}</div>
+          </div>
         </div>
       </div>
-    </div>
+   </van-pull-refresh>
     <div class="newbtn" @click="newcustomer">新增客户</div>
+ 
+
   </div>
 </template>
 
 <script>
+import { Toast } from "vant";
+
 export default {
   data() {
     return {
+      count: 0,
+      isLoading: true,
       // 输入框
       invalue: "",
       // 购买类型list
-      buytypes: [
-        { value: "首购", id: 1 },
-        { value: "增购", id: 2 },
-        { value: "置换", id: 3 },
-        { value: "求购", id: 4 },
-      ],
+      buytypes: [],
       buytype: "",
       // 客流性质list
-      flowtypes: [
-        { value: "首次自行", id: 1 },
-        { value: "邀约首次", id: 2 },
-        { value: "转介绍首次", id: 3 },
-        { value: "重购首次", id: 4 },
-        { value: "再次邀约", id: 5 },
-        { value: "售后服务", id: 6 },
-        { value: "牌证服务", id: 7 },
-        { value: "其他服务", id: 8 },
-      ],
+      flowtypes: [],
       flowtype: "",
       // 销售顾问list
       salers: [
@@ -211,30 +212,73 @@ export default {
         {
           name: "金秀炫",
           phone: "13312345678",
-          wx: "13312345678",
-          type: "未知",
-          followtime: "2020-01-01 12:00:00",
-        },
-        {
-          name: "金秀炫",
-          phone: "13312345678",
-          wx: "13312345678",
-          type: "未知",
-          followtime: "2020-01-01 12:00:00",
-        },
-        {
-          name: "金秀炫",
-          phone: "13312345678",
-          wx: "13312345678",
-          type: "未知",
-          followtime: "2020-01-01 12:00:00",
+          wxId: "13312345678",
+          sex: 3,
+          nextFollowUpTime: "2020-01-01 12:00:00",
         },
       ],
     };
   },
-  components: {},
-  async mounted() {},
+  components: { Toast },
+  async created() {
+    // 客流性质
+    let query_flow_type = {
+      w: [["category", 2, "EQ"]],
+      o: ["id", "esc"],
+      p: [1, 10],
+    };
+    this.flowtypes = await this.api.getFlowtypeList(
+      this.query.toEncode(this.newqry(query_flow_type))
+    );
+    // 购买类型
+    let query_buys_type = {
+      w: [["category", 4, "EQ"]],
+      o: ["id", "esc"],
+      p: [1, 20],
+    };
+    this.buytypes = await this.api.getBuysTypeList(
+      this.query.toEncode(this.newqry(query_buys_type))
+    );
+    // 销售顾问
+    let query_sales = {
+      w: [
+        ["arg8", 20002.1, "LK"],
+        ["arg6", "销售", "LK"],
+      ],
+      o: ["crtTm", "esc"],
+      p: [1, 10],
+    };
+    this.salers = await this.api.getsalersList(
+      this.query.toEncode(this.newqry(query_sales))
+    );
+    console.log(this.salers);
+    // 意向等级
+    this.intentLevels = await this.api.getWxIntentionLevel({ p: { n: 1, s: 10 } });
+ console.log(this.intentLevels);
+ },
+  mounted() {
+    console.log("mounted");
+    this.getList({});
+  },
   methods: {
+    // 处理公共字段参数生成qry(使用query.js)
+    newqry(obj) {
+      let qry = this.query.new();
+      // 条件
+      obj.w.forEach((item) => {
+        this.query.toW(qry, item[0], item[1], item[2]);
+      });
+      // 排序
+      this.query.toO(qry, obj.o[0], obj.o[1]);
+      // 分页
+      this.query.toP(qry, obj.p[0], obj.p[1]);
+      return qry;
+    },
+    onRefresh() {
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 1000);
+    },
     back() {
       this.until.back();
     },
@@ -245,9 +289,13 @@ export default {
     newcustomer() {
       this.until.href("/views/customermagt/new.html");
     },
-	toDetail(){
-		this.until.href("/views/customermagt/detail.html")
-	}
+    toDetail() {
+      this.until.href("/views/customermagt/detail.html");
+    },
+    async getList(data) {
+      let res = await this.api.getcustomerList(data);
+      this.customerList = res.list;
+    },
   },
 };
 </script>
@@ -473,6 +521,9 @@ export default {
     }
   }
   .newbtn {
+    z-index: 99;
+    position:fixed;
+    bottom:1.04rem;
     width: 5.7rem;
     height: 0.7rem;
     background: #09c076;

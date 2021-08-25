@@ -11,14 +11,14 @@
     </div>
     <div class="connect_record_box">
       <div class="follow_content">
-        <div class="row" style="padding: 0px; border: none; margin-bottom: 8px">
+        <div class="row" style="padding: 0px; border: none; margin-bottom: .16rem">
           <div style="display: flex">
             <div class="placeholder">*</div>
             <div class="rowtitle">跟进内容</div>
           </div>
         </div>
         <el-input
-          style="margin-left: 9px"
+          style="margin-left: .18rem"
           type="textarea"
           autosize
           placeholder="请输入"
@@ -69,7 +69,7 @@
         <div class="intent_level_list">
           <div
             class="intent_level_item"
-            style="margin-right: 12px; width: 72px"
+            style="margin-right: .24rem; width: 1.44rem"
             @click="contacttype = index"
             v-for="(item, index) in contacttypeList"
             :key="item.id"
@@ -135,7 +135,7 @@
 
           <div style="display: flex; align-items: center">
             <div>{{ visitSt }}</div>
-            <span style="padding: 0px 5px"> ~ </span>
+            <span style="padding: 0px .1rem"> ~ </span>
             <div>{{ visitEt }}</div>
           </div>
         </div>
@@ -182,7 +182,7 @@
         </div>
         <div class="row_between">
           <div style="flex: 1"></div>
-          <div style="wdith: 32px; font-weight: 500; color: #909090">更多></div>
+          <div style="wdith: .64rem; font-weight: 500; color: #909090">更多></div>
         </div>
       </div>
       <div class="brand_list">
@@ -228,7 +228,7 @@
           <span class="prititle">自定义价格</span>
           <div class="lowprice">
             <input
-              style="width: 23px; text-align: right"
+              style="width: .46rem; text-align: right"
               class="prititle"
               v-model="lowprice"
               type="number"
@@ -240,7 +240,7 @@
           <span class="connector">~</span>
           <div class="highprice">
             <input
-              style="width: 23px; text-align: right"
+              style="width: .46rem; text-align: right"
               class="prititle"
               v-model="highprice"
               type="number"
@@ -281,7 +281,7 @@
         </div>
         <div class="row_between">
           <el-input
-            style="width: 150px"
+            style="width: 3rem"
             v-model="buymileage"
             type="number"
             oninput="if(value.length>3)value=value.slice(0,3)"
@@ -320,10 +320,10 @@
       <div class="intent_desc">
         <div
           style="
-            font-size: 12px;
+            font-size: .24rem;
             font-weight: bold;
             color: #303030;
-            margin-bottom: 8px;
+            margin-bottom: .16rem;
           "
         >
           意向描述
@@ -400,7 +400,7 @@
         </div>
         <el-date-picker
           class="followdatepicker"
-          style="width: 140px"
+          style="width: 2.8rem"
           v-model="followdate2"
           type="datetime"
           @change="handlefollowdate2"
@@ -740,7 +740,7 @@ export default {
 <style lang="less">
 .el-input__inner {
   border: none;
-  height: 14px !important;
+  height: .28rem !important;
   padding-left: 0px;
 }
 .el-input__icon {
@@ -748,8 +748,8 @@ export default {
   align-items: center;
 }
 .el-cascader {
-  line-height: 19px;
-  height: 19px;
+  line-height: .38rem;
+  height: .38rem;
 }
 .followdatepicker {
   .el-input__inner {
@@ -794,15 +794,15 @@ export default {
     }
   }
   .row {
-    padding: 15px;
-    padding-right: 24px;
+    padding: .3rem;
+    padding-right: .48rem;
     background: #fff;
     display: flex;
     border-bottom: 1px solid #e7e7e7;
 
     .placeholder {
-      width: 9px;
-      font-size: 12px;
+      width: .18rem;
+      font-size: .24rem;
       font-weight: bold;
       color: #ff3000;
     }
@@ -811,11 +811,11 @@ export default {
     border: none;
   }
   .rowtitle {
-    width: 72px;
-    font-size: 12px;
+    width: 1.44rem;
+    font-size: .24rem;
     font-weight: bold;
     color: #303030;
-    margin-right: 17px;
+    margin-right: .34rem;
   }
   .row_between {
     flex: 1;
@@ -831,24 +831,24 @@ export default {
       width: 33.3%;
       display: flex;
       img {
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
+        width: .4rem;
+        height: .4rem;
+        margin-right: .1rem;
       }
     }
   }
 
   .textbox {
-    padding: 15px 24px;
+    padding: .3rem .48rem;
     display: flex;
     .texttitle {
-      font-size: 12px;
+      font-size: .24rem;
       font-weight: bold;
       color: #303030;
-      margin-right: 5px;
+      margin-right: .1rem;
     }
     .tip {
-      font-size: 12px;
+      font-size: .24rem;
       font-weight: bold;
       color: #09c076;
     }
@@ -856,8 +856,8 @@ export default {
 
   .connect_record_box {
     .follow_content {
-      padding: 15px;
-      padding-right: 24px;
+      padding: .3rem;
+      padding-right: .48rem;
       background: #fff;
       border-bottom: 1px solid #e7e7e7;
     }
@@ -865,22 +865,22 @@ export default {
   .intent_level {
     border-bottom: 1px solid #e7e7e7;
     background: #fff;
-    // padding: 15px 24px;
+    // padding: .3rem .48rem;
     .intent_level_list {
-      padding: 0px 24px 0px 24px;
+      padding: 0px .48rem 0px .48rem;
       display: flex;
       // justify-content: space-between;
       flex-wrap: wrap;
       .intent_level_item {
-        margin-bottom: 15px;
-        margin-right: 16px;
-        width: 52px;
-        height: 27px;
+        margin-bottom: .3rem;
+        margin-right: .32rem;
+        width: 1.04rem;
+        height: .54rem;
         text-align: center;
-        line-height: 27px;
+        line-height: .54rem;
         color: #909090;
         background: #ededed;
-        border-radius: 3px;
+        border-radius: .06rem;
       }
       .intent_level_item:nth-child(5n + 5) {
         margin-right: 0px;
@@ -904,43 +904,43 @@ export default {
       .brand_item {
         width: 25%;
         box-sizing: border-box;
-        padding: 7px 16px;
+        padding: .14rem .32rem;
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
         background: #fff;
         img {
-          width: 62px;
-          height: 62px;
+          width: 1.24rem;
+          height: 1.24rem;
         }
       }
     }
     .pricebox {
       border-bottom: 1px solid #e7e7e7;
       background: #fff;
-      padding: 15px 24px;
+      padding: .3rem .48rem;
       .prititle {
-        font-size: 12px;
+        font-size: .24rem;
         font-weight: bold;
         color: #303030;
       }
 
       .pricelist {
-        padding: 10px 1px;
+        padding: .2rem 1px;
         padding-bottom: 0px;
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
 
         .priceitem {
-          // margin-right: 10px;
-          margin-bottom: 10px;
-          width: 102px;
-          height: 27px;
+          // margin-right: .2rem;
+          margin-bottom: .2rem;
+          width: 2.04rem;
+          height: .54rem;
           text-align: center;
-          line-height: 27px;
+          line-height: .54rem;
           color: #909090;
           background: #ededed;
-          border-radius: 3px;
+          border-radius: .06rem;
         }
         .select_price_region {
           background: #09c076;
@@ -954,73 +954,73 @@ export default {
         justify-content: space-between;
         .lowprice {
           display: flex;
-          padding: 3px 20px;
+          padding: .06rem .4rem;
           border: 1px solid #d8d8d8;
         }
 
         .connector {
-          font-size: 12px;
+          font-size: .24rem;
           font-weight: bold;
           color: #bfbfbf;
         }
 
         .highprice {
           display: flex;
-          padding: 3px 20px;
+          padding: .06rem .4rem;
           border: 1px solid #d8d8d8;
         }
 
         .confirm {
           background: #09c076;
-          border-radius: 3px;
-          font-size: 12px;
+          border-radius: .06rem;
+          font-size: .24rem;
           font-weight: 500;
           color: #ffffff;
-          padding: 3px 22px;
+          padding: .06rem .44rem;
         }
       }
     }
     .intent_desc {
-      padding: 15px 24px;
+      padding: .3rem .48rem;
       background: #fff;
       border-bottom: 1px solid #e7e7e7;
     }
   }
 
   .albums {
-    padding: 15px 24px;
+    padding: .3rem .48rem;
     background: #fff;
     display: flex;
     border-bottom: 1px solid #e7e7e7;
 
     .album_title {
-      font-size: 12px;
+      font-size: .24rem;
       font-weight: bold;
       color: #303030;
-      width: 135px;
+      width: 2.7rem;
     }
     .albums_box_list {
       display: flex;
       // justify-content: space-between;
       flex-wrap: wrap;
       .albums_item {
-        margin-right: 5px;
-        margin-bottom: 5px;
-        width: 81px;
-        height: 78px;
+        margin-right: .1rem;
+        margin-bottom: .1rem;
+        width: 1.62rem;
+        height: 1.56rem;
       }
     }
   }
   .btn_save {
-    margin: 48px auto 0px;
-    width: 285px;
-    height: 35px;
+    margin: .96rem auto 0px;
+    width: 5.7rem;
+    height: .7rem;
     background: #09c076;
-    border-radius: 17px;
-    font-size: 15px;
+    border-radius: .34rem;
+    font-size: .3rem;
     font-weight: 500;
     color: #ffffff;
-    line-height: 35px;
+    line-height: .7rem;
     text-align: center;
   }
 }

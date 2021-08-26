@@ -23,7 +23,7 @@
 						联系电话:
 					</div>
 					<div class="listContent">
-						{{info.name}}
+						{{info.phone}}
 					</div>
 				</div>
 				<div class="list">
@@ -31,7 +31,7 @@
 						微信号:
 					</div>
 					<div class="listContent">
-						{{info.name}}
+						{{info.wxId}}
 					</div>
 				</div>
 				<div class="list">
@@ -39,7 +39,7 @@
 						客户类型:
 					</div>
 					<div class="listContent">
-						{{info.name}}
+						{{info.customerType}}
 					</div>
 				</div>
 			</div>
@@ -50,14 +50,14 @@
 			</div>
 			<div class="bodyList">
 				<div class="list">
-					{{info.needs}}
+					{{info.demand}}
 				</div>
 				<div class="list">
 					<div class="listHead">
 						客流性质:
 					</div>
 					<div class="listContent">
-						{{info.name}}
+						{{info.nature}}
 					</div>
 				</div>
 				<div class="list">
@@ -65,7 +65,7 @@
 						销售顾问:
 					</div>
 					<div class="listContent">
-						{{info.name}}
+						{{info.saler}}
 					</div>
 				</div>
 
@@ -85,6 +85,7 @@
 	export default {
 		data() {
 			return {
+				id:"",
 				info: {
 					name: "金秀清",
 					needs: "对动力的需求、要舒适、外观也很重要"
@@ -96,10 +97,12 @@
 		},
 
 		async mounted() {
-
+			this.api.getWxCheckinDetail(this.id).then(res=>{
+				this.info=res
+			})
 		},
 		created() {
-
+         this.id = this.until.getQueryString('id')
 		},
 		methods: {
 			back() {

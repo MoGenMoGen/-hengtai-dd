@@ -13,48 +13,42 @@
 					<div class="listHead">
 						客户姓名
 					</div>
-					<div class="listContent">
-						{{info.name}}
-					</div>
+					<input class="listContent" placeholder="请输入姓名" v-model="name" />
+
+
 				</div>
 				<div class="list">
 					<div class="listHead">
 						联系电话
 					</div>
-					<div class="listContent">
-						{{info.tel}}
-					</div>
+
+					<input class="listContent" placeholder="请输入联系电话" v-model="phone"/>
+
 				</div>
 				<div class="list">
 					<div class="listHead">
 						微信号
 					</div>
-					<div class="listContent">
-						{{info.vx}}
-					</div>
+					<input class="listContent" placeholder="请输入微信号" v-model="wxId" />
 				</div>
 				<div class="list">
 					<div class="listHead">
 						客户类型
 					</div>
-					<div class="listContent">
-						{{info.type}}
-					</div>
+					<input class="listContent" placeholder="请输入客户类型"  v-model="customerType"/>
 				</div>
 			</div>
 			<div class="bodyTitle">
 				客户需求
 			</div>
 			<div class="bodyList">
-				<div class="list">
-					{{info.needs}}
-				</div>
+				<textarea rows="" cols="" class="listContent" placeholder="请输入需求" v-model="demand"></textarea>
 				<div class="list" style="padding-bottom: 0.1rem;">
 					<div class="listHead">
 						客流性质
 					</div>
 					<el-select v-model="value" filterable placeholder="请选择客流性质" class="select" @change="postId">
-						<el-option v-for="item in info.options" :key="item.value" :label="item.label" :value="item.id">
+						<el-option v-for="item in options" :key="item.value" :label="item.content" :value="item.id">
 						</el-option>
 					</el-select>
 
@@ -63,13 +57,11 @@
 					<div class="listHead">
 						销售顾问
 					</div>
-					<div class="listContent">
-						{{info.person}}
-					</div>
+					<input class="listContent" placeholder="请输入姓名" v-model="saler" />
 				</div>
 			</div>
 			<div class="btn">
-				<button type="button">确认</button>
+				<button type="button" @click="confirm">确认</button>
 			</div>
 		</div>
 	</div>
@@ -80,37 +72,63 @@
 		data() {
 			return {
 				value: '',
+				name:"",
+				phone:"",
+				wxId:"",
+				customerType:"",
+				demand:"",
+				nature:"",
+				saler:"",
+				
 				info: {
-					name: "金秀清",
-					tel: "13500009999",
-					vx: "13500009999",
-					type: "新客户",
-					needs: '对动力的需求、要舒适、外观也很重要',
-					person: "刘晓华",
-					options: [{
-						id: 1,
-						label: '首次自行'
-					}, {
-						id: 2,
-						label: '第二次自行'
-					}, {
-						id: 3,
-						label: '蚵仔煎'
-					}, {
-						id: 4,
-						label: '龙须面'
-					}, {
-						id: 5,
-						label: '北京烤鸭'
-					}]
-				}
+					
+				},
+				options: []
 			};
 		},
 		components: {},
-		async mounted() {},
+		async mounted() {
+			let querys = {
+				w: [
+					["category", 2, "EQ"],
+				],
+				o: ["id", "esc"],
+				p: [1, 10],
+			}
+			this.api.getCustomerCommonfield(this.query.toEncode(this.newqry(querys))).then(res=>{
+				console.log(121312,res);
+				this.options=res
+			})
+		},
 		methods: {
+			// 处理公共字段参数生成qry(使用query.js)
+			newqry(obj) {
+				let qry = this.query.new();
+				// 条件
+				obj.w.forEach((item) => {
+					this.query.toW(qry, item[0], item[1], item[2]);
+				});
+				// 排序
+				this.query.toO(qry, obj.o[0], obj.o[1]);
+				// 分页
+				this.query.toP(qry, obj.p[0], obj.p[1]);
+				return qry;
+			},
 			back() {
 				this.until.back()
+			},
+			postId(val){
+				this.nature=val
+			},
+			confirm(){
+				this.info.name=this.name
+				this.info.phone=this.phone
+				this.info.wxId=this.wxId
+				this.info.customerType=this.customerType
+				this.info.demand=this.demand
+				this.info.nature=this.nature
+				this.info.saler=this.saler
+				this.api.postWxCheckin(this.info)
 			}
 		},
 		computed: {
@@ -139,7 +157,7 @@
 <style lang="less" scoped>
 	@import url("../../../assets/css/mobile.less");
 	@import url("../../../assets/css/common.css");
-	
+
 	#container {
 		width: 100%;
 		background: url('~@/assets/img/header.png') no-repeat;
@@ -178,6 +196,17 @@
 				width: 100%;
 				background: #ffffff;
 				border-radius: 0.12rem;
+				textarea{
+					border-bottom: 0.02rem solid rgba(0, 0, 0, 0.1);
+					padding: 0.1rem 0.2rem;
+					font-size: 0.24rem;width: 100%;
+					font-weight: bold;
+					color: #303030;
+					
+				}
+				textarea::placeholder{
+						color: rgb(192,196,204);
+				}
 
 				.list {
 					display: flex;
@@ -195,7 +224,7 @@
 					}
 
 					.select {
-						margin-top: -0.23rem;
+						margin-top: -0.215rem;
 					}
 
 					.listContent {
@@ -203,6 +232,9 @@
 						font-size: 0.24rem;
 						font-weight: bold;
 						color: #303030;
+					}
+					input::placeholder{
+						color: rgb(192,196,204);
 					}
 				}
 

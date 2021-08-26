@@ -233,12 +233,12 @@
 				this.optionsTwo=res
 				
 			})
-			
-			this.api.getWxBusinessBuy(this.page).then(res => {
-				this.total = res.page.total
-				this.infoList = res.data.list
-				console.log(888,this.infoList);
-			})
+			this.getList()
+			// this.api.getWxBusinessBuy(this.page).then(res => {
+			// 	this.total = res.page.total
+			// 	this.infoList = res.data.list
+			// 	console.log(888,this.infoList);
+			// })
 			window.addEventListener('scroll', this.menu)
 		},
 		methods: {
@@ -347,6 +347,8 @@
 			},
 			search(){
 					this.infoList=[]
+					this.page.n=1
+					this.page1.n=1
 					this.getList()
 			},
 			postId(val) {

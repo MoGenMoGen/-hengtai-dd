@@ -25,13 +25,13 @@
       </div>
       <div class="bodyList">
         <div class="head">姓名</div>
-        <div class="content" v-if="isChange == false">
+        <div class="content">
           {{ info.name }}
         </div>
-        <div class="content" v-if="isChange == true">
+       <!-- <div class="content" v-if="isChange == true">
           <input class="" type="" name="" id="" :value="info.name" />
           <img src="~@/assets/img/change.png" />
-        </div>
+        </div> -->
       </div>
       <div class="bodyList">
         <div class="head">联系电话</div>
@@ -45,13 +45,13 @@
       </div>
       <div class="bodyList">
         <div class="head">职称</div>
-        <div class="content" v-if="isChange == false">
+        <div class="content">
           {{ info.position }}
         </div>
-        <div class="content" v-if="isChange == true">
+    <!--    <div class="content" v-if="isChange == true">
           <input class="" type="" name="" id="" :value="info.position" />
           <img src="~@/assets/img/change.png" />
-        </div>
+        </div> -->
       </div>
       <div class="bodyList">
         <div class="head">性别</div>

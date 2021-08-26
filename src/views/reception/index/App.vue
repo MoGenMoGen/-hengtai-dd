@@ -6,7 +6,7 @@
 		</div>
 		<div class="searchBox">
 			<div class="leftBox">
-				<input type="" name="" id="" value="" placeholder="姓名、电话、销售顾问" />
+				<input type="" name="" id="" value="" placeholder="姓名、电话、销售顾问" v-model="searchStr" />
 				<el-select v-model="value" filterable placeholder="留档状态" class="select" @change="postId">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
@@ -19,10 +19,13 @@
 				</div>
 			</div>
 			<div class="rightBox">
-				<button type="button">查询</button>
+				<button type="button" @click="search">查询</button>
 			</div>
 
 		</div>
+		<div  style="padding-bottom: 1.5rem;">
+			
+		
 		<div class="bodyList" v-for="(item,index) in infoList" :key="index">
 				
 				<div class="list">
@@ -31,7 +34,7 @@
 					</div>
 					<div class="listCotent">
 					{{item.name}}
-					<img src="../../../assets/img/new.png" v-if="item.isnew==true" >
+					<img src="../../../assets/img/new.png" v-if="item.isRead==false" >
 					</div>
 					
 				</div>
@@ -40,7 +43,7 @@
 					联系电话:
 					</div>
 					<div class="listCotent">
-					{{item.tel}}
+					{{item.phone}}
 					</div>
 				</div>
 				<div class="list">
@@ -48,23 +51,24 @@
 					到店时间:
 					</div>
 					<div class="listCotent">
-					{{item.time}}
+					{{item.crtTm}}
 					</div>
 				</div>
-				<div class="list">
+				<div class="list" style="margin-bottom: 0;">
 					<div class="listhead">
 						销售顾问:
 					</div>
 					<div class="listCotent">
-					{{item.person}}
+					{{item.saler}}
 					</div>
 				</div>
 				<div class="btn">
-					<button type="button" @click="toDetail">完善信息</button>
+					<button type="button" @click="toDetail(item.id)">完善信息</button>
 					
 				</div>
 		</div>
-		<div class="btn">
+		</div>
+		<div class="btn1">
 			<button type="button" @click="addNew">新增接待</button>
 		</div>
 	</div>
@@ -77,49 +81,39 @@
 				value: "",
 				startTime: "",
 				endTime: "",
+				searchStr:"",
+				gearStatus: "",
+				page:{
+					searchStr:"",
+					beginTime:"",
+					endTime:"",
+					gearStatus:"",
+					n:1,
+					s:10
+				},
 				options: [{
 					id: 1,
-					label: '黄金糕'
+					label: '是'
 				}, {
-					id: 2,
-					label: '双皮奶'
-				}, {
-					id: 3,
-					label: '蚵仔煎'
-				}, {
-					id: 4,
-					label: '龙须面'
-				}, {
-					id: 5,
-					label: '北京烤鸭'
+					id: 0,
+					label: '否'
+				},
+				{
+					id:"",
+					label: '全部'
 				}],
 				infoList:[
-					{
-						name:"金秀炫",
-						tel:"13500009999",
-						time:"2021-07-28 12:01:20",
-						person:"刘晓华",
-						isnew:true
-					},
-					{
-						name:"金秀炫",
-						tel:"13500009999",
-						time:"2021-07-28 12:01:20",
-						person:"刘晓华",
-						isnew:true
-					},
-					{
-						name:"金秀炫",
-						tel:"13500009999",
-						time:"2021-07-28 12:01:20",
-						person:"刘晓华",
-						isnew:false
-					}
-				]
+					
+				],
+				total:"",
+			
 			};
 		},
 		components: {},
-		async mounted() {},
+		async mounted() {
+		    this.getList()
+			window.addEventListener('scroll', this.menu)
+		},
 		methods: {
 			back() {
 				this.until.back()
@@ -136,8 +130,43 @@
 			addNew(){
 				this.until.href("/views/reception/new.html")
 			},
-			toDetail(){
-				this.until.href("/views/reception/detail.html")
+			toDetail(id){
+				this.until.href(`/views/reception/detail.html?id=${id}`)
+			},
+			getList(){
+				this.page.searchStr=this.searchStr
+				this.page.gearStatus=this.gearStatus
+				this.page.beginTime=this.startTime
+				this.page.endTime=this.endTime
+				this.api.getWxCheckin(this.page).then(res=>{
+					this.total=res.page.total
+					this.infoList=[...this.infoList,...res.data.list]
+					this.istrue=true
+					console.log(this.infoList,this.total);
+				})
+			},
+			postId(val)
+			{
+				this.gearStatus=val
+			},
+			search(){
+				this.infoList=[]
+				this.page.n=1
+				this.getList()
+			},
+			//分页
+			menu(){
+				this.scroll = document.documentElement.scrollTop || document.body.scrollTop;
+				let scrollBottom = document.documentElement.scrollHeight - this.scroll - document.documentElement
+					.clientHeight
+					if(this.istrue==true){
+						
+						if(scrollBottom<100 &&this.infoList.length<this.total){
+							this.istrue=false
+							this.page.n++
+							this.getList()
+						}
+					}
 			}
 		},
 		computed: {
@@ -312,9 +341,13 @@
 				}
 			}
 		}
-		.btn{
-			margin-top: 0.66rem ;
-			
+		.btn1{
+		
+			position: fixed;
+			bottom: 0rem;
+			left: 0;
+			margin-left: 50%;
+			transform: translateX(-50%);
 			text-align:center;
 			button{
 				width: 5.7rem;
@@ -324,7 +357,7 @@
 				font-size: 0.3rem;
 				font-weight: 500;
 				color: #ffffff;
-				margin-bottom: 1rem;
+				margin-bottom: 0.2rem;
 				
 			}
 		}

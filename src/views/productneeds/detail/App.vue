@@ -152,16 +152,19 @@
 				</div>
 			</div>
 		</div>
+		<div id="" style="padding-bottom:1.2rem;">
 
-		<div class="reply" v-for="(item,index) in replayList" :key="index">
-			<div class="replyCotent">
-				{{item.replay}}
-			</div>
-			<div class="replyCotent">
-				回复时间: {{item.date}}
-			</div>
-			<div class="replyCotent">
-				回复人: {{item.person}}
+
+			<div class="reply" v-for="(item,index) in replayList" :key="index">
+				<div class="replyCotent">
+					{{item.content}}
+				</div>
+				<div class="replyCotent">
+					回复时间: {{item.crtTm}}
+				</div>
+				<div class="replyCotent">
+					回复人: {{item.crtBy}}
+				</div>
 			</div>
 		</div>
 		<div class="btn">
@@ -181,8 +184,8 @@
 				isPopShow: false,
 				currentindex: 0,
 				id: "",
-				reply:"",
-				isbuy:true,
+				reply: "",
+				isbuy: true,
 				info: {
 					pinpai: "奔驰",
 					chexing: "迈巴赫S级",
@@ -209,17 +212,40 @@
 		async mounted() {
 			if (this.currentindex == 0) {
 				this.api.getWxBusinessBuyDetail(this.id).then(res => {
-					console.log(res);
+
 					this.info = res
-					this.isbuy=true
+					this.isbuy = true
+					let querys = {
+						w: [
+							["business_id", this.info.id, "EQ"],
+							["isbuy", "1", "EQ"],
+						],
+						o: ["id", "desc"],
+						p: [1, 10],
+					}
+					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(res => {
+						this.replayList = res
+					})
+
 				})
-			}
-			else if(this.currentindex==1){
+
+			} else if (this.currentindex == 1) {
 				this.api.getWxBusinessSellDetail(this.id).then(res => {
-					
+
 					this.info = res
-					this.isbuy=false
-					
+					this.isbuy = false
+					let querys = {
+						w: [
+							["business_id", this.info.id, "EQ"],
+							["isbuy", "0", "EQ"],
+						],
+						o: ["id", "desc"],
+						p: [1, 10],
+					}
+					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(res => {
+						this.replayList = res
+					})
+
 				})
 			}
 		},
@@ -229,7 +255,19 @@
 			console.log(this.currentindex, this.id);
 		},
 		methods: {
-
+			// 处理公共字段参数生成qry(使用query.js)
+			newqry(obj) {
+				let qry = this.query.new();
+				// 条件
+				obj.w.forEach((item) => {
+					this.query.toW(qry, item[0], item[1], item[2]);
+				});
+				// 排序
+				this.query.toO(qry, obj.o[0], obj.o[1]);
+				// 分页
+				this.query.toP(qry, obj.p[0], obj.p[1]);
+				return qry;
+			},
 			back() {
 				this.until.back()
 			},
@@ -240,18 +278,18 @@
 				this.isPopShow = false
 			},
 			submit() {
-				let p={
-					businessId:"",
-					customerId:"",
-					isbuy:"",
-					content:"",
+				let p = {
+					businessId: "",
+					customerId: "",
+					isbuy: "",
+					content: "",
 				}
-				p.content=this.reply
-				p.businessId=this.info.id
-				p.customerId=this.info.customerId
-				p.isbuy=this.isbuy
+				p.content = this.reply
+				p.businessId = this.info.id
+				p.customerId = this.info.customerId
+				p.isbuy = this.isbuy
 				this.api.postWxCommunicate(p)
-				
+
 				this.isPopShow = false
 			}
 		},
@@ -434,8 +472,15 @@
 		.btn {
 			text-align: center;
 			margin-top: 3.5rem;
+			position: fixed;
+			bottom: 0.4rem;
+			left: 0;
+			margin-left: 50%;
+			transform: translateX(-50%);
 
 			button {
+
+
 				width: 5.7rem;
 				height: 0.7rem;
 				background: #09C076;

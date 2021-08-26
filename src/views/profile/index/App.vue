@@ -1,7 +1,7 @@
 <!-- 互生升个人中心页面 -->
 <template>
   <div id="container">
-    <div class="title">个人中心</div>
+    <div class="title"><span>个人中心</span></div>
 	<div class="personInfomation" @click="toDetail">
 		<img class="img1" src="~@/assets/img/cover.png">
 		<img  class="img2" src="~@/assets/img/arrowrightwhite.png" >
@@ -86,10 +86,12 @@ export default {
   /*flex-direction: column;*/
   .title{
 	 font-size: 0.36rem;
-	 margin-top: 0.67rem;
+	
 	 font-weight: 500;
 	 color: #ffffff;
 	 text-align: center;
+	 padding-top: 0.67rem;
+	
 	 
   }
   .personInfomation{

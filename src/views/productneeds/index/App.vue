@@ -41,7 +41,7 @@
 				</div>
 			</div>
 			<div class="bodyList" v-for="(item1,index1) in infoList" :key="index1" v-if="currentIndex==0"
-				@click="toDetail(item1.hssWxBusinessBuyReturnPageVo.id)">
+				@click="toDetail(item1.id)">
 				<img src="~@/assets/img/arrow.png">
 
 				<div class="itemList">
@@ -49,7 +49,7 @@
 						品牌:
 					</div>
 					<div class="itemListcontent">
-						{{item1.hssWxBusinessBuyReturnPageVo.brand}}
+						{{item1.brand}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -57,7 +57,7 @@
 						车型:
 					</div>
 					<div class="itemListcontent">
-						{{item1.hssWxBusinessBuyReturnPageVo.model}}
+						{{item1.model}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -65,7 +65,7 @@
 						价格区间:
 					</div>
 					<div class="itemListcontent">
-						{{item1.hssWxBusinessBuyReturnPageVo.minPrice}}~{{item1.hssWxBusinessBuyReturnPageVo.maxPrice}}
+						{{item1.minPrice}}~{{item1.maxPrice}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -73,7 +73,7 @@
 						意向等级:
 					</div>
 					<div class="itemListcontent">
-						{{item1.hssWxBusinessBuyReturnPageVo.intentionLevel}}
+						{{item1.intentionLevel}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -81,7 +81,7 @@
 						销售人员:
 					</div>
 					<div class="itemListcontent">
-						{{item1.hssWxBusinessBuyReturnPageVo.saler}}
+						{{item1.saler}}
 					</div>
 				</div>
 				<div class="itemList" style="margin-bottom: 0;">
@@ -89,7 +89,7 @@
 						发布时间:
 					</div>
 					<div class="itemListcontent">
-						{{item1.hssWxBusinessBuyReturnPageVo.crtTm}}
+						{{item1.crtTm}}
 					</div>
 				</div>
 				<div class="btn">
@@ -166,6 +166,7 @@
 					n: 1, //起始位置
 					s: 5 //长度
 				},
+				salesman:"",
 				brandId:'',//品牌车型
 				phone:"",
 				pickerVisible: true,
@@ -230,12 +231,13 @@
 			this.api.getWxIntentionLevel(p).then(res=>{
 				
 				this.optionsTwo=res
-				console.log(888,this.optionsTwo);
+				
 			})
 			
 			this.api.getWxBusinessBuy(this.page).then(res => {
-				this.total = res.data.total
+				this.total = res.page.total
 				this.infoList = res.data.list
+				console.log(888,this.infoList);
 			})
 			window.addEventListener('scroll', this.menu)
 		},
@@ -298,8 +300,8 @@
 					this.page.beginTime=this.startTime
 					this.page.endTime=this.endTime
 					this.api.getWxBusinessBuy(this.page).then(res => {
-						this.total = res.data.total
-						console.log(res);
+						this.total = res.page.total
+						console.log("kankan",res);
 						this.infoList = [...this.infoList, ...res.data.list]
 						this.istrue = true
 

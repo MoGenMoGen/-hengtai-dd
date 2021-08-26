@@ -15,6 +15,7 @@ function get(url, data, header, cache = false) {
             if (res.data.code == 0) {
                 resolve(res.data)
             } else {
+
                 Toast(res.data.msg)
             }
         }).catch(err => {
@@ -470,7 +471,26 @@ class api {
     getcustomerList(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxCustomer/pageList', data, {}).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+
+     // 获取客户详情
+     getcustomerDetail(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCustomer/info/'+data, {}, {}).then(res => {
                 resolve(res.data)
+            })
+
+        })
+    } 
+    // 轨迹
+    gettrail(data){
+        return new Promise((resolve, reject) => {
+            get('/hss/wxTrajectory/page?query=' + data).then(res => {
+                resolve(res.data.list)
             })
 
         })

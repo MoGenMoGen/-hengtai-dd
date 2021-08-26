@@ -672,6 +672,7 @@ export default {
     };
   },
   computed: {
+    // 来访日期
     visitSt() {
       if (this.visitTime)
         return moment(this.visitTime).format("YYYY-MM-DD HH:mm:ss");
@@ -681,6 +682,7 @@ export default {
       if (this.leaveTime) return moment(this.leaveTime).format(" HH:mm:ss");
       return "";
     },
+    // 时间间隔
     receptionDuration() {
       if (this.visitTime && this.leaveTime) {
         let s = moment(this.leaveTime).diff(

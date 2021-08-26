@@ -4,20 +4,24 @@
       <img src="~@/assets/img/arrowback.png" @click="back" />
       客户管理
     </div>
-    <van-pull-refresh v-model="isLoading"  success-text="刷新成功" @refresh="onRefresh">
+    <van-pull-refresh
+      v-model="isLoading"
+      success-text="刷新成功"
+      @refresh="onRefresh"
+    >
       <div class="query">
         <div class="left">
           <div class="row1">
             <el-input
               class="leftpart bg input"
-              v-model="invalue"
+              v-model="info.nameAndphone"
               placeholder="姓名、手机号"
             ></el-input>
             <el-select
               clearable
               filterable
               class="rightpart bg"
-              v-model="buytype"
+              v-model="info.business"
               placeholder="购买类型"
               @change="handleBuysType"
             >
@@ -25,7 +29,7 @@
                 v-for="(item, index) in buytypes"
                 :label="item.content"
                 :key="index"
-                :value="item.id"
+                :value="item.content"
               >
               </el-option>
             </el-select>
@@ -35,13 +39,13 @@
               clearable
               filterable
               class="leftpart bg"
-              v-model="flowtype"
+              v-model="info.nature"
               placeholder="客流性质"
             >
               <el-option
                 v-for="item in flowtypes"
                 :key="item.id"
-                :value="item.id"
+                :value="item.content"
                 :label="item.content"
               >
               </el-option>
@@ -50,14 +54,14 @@
               clearable
               filterable
               class="centerpart bg"
-              v-model="saler"
+              v-model="info.saler"
               placeholder="销售顾问"
             >
               <el-option
                 v-for="item in salers"
                 :key="item.id"
                 :label="item.arg7"
-                :value="item.id"
+                :value="item.arg7"
               >
               </el-option>
             </el-select>
@@ -65,7 +69,7 @@
               clearable
               filterable
               class="rightpart bg"
-              v-model="intentlevel"
+              v-model="info.intentionLevel"
               placeholder="意向等级"
             >
               <el-option
@@ -81,28 +85,38 @@
             <el-date-picker
               type="date"
               placeholder="开始日期"
-              v-model="st"
+              v-model="info.beginFollowUpTime"
+              @change="startTimeChange"
+              :picker-options="stOptions"
               class="picker son leftpart bg"
             ></el-date-picker>
             <el-date-picker
               type="date"
               placeholder="结束日期"
-              v-model="et"
+              v-model="info.endFollowUpTime"
+              @change="endTimeChange"
+              :picker-options="etOptions"
               class="picker son rightpart bg"
             ></el-date-picker>
           </div>
         </div>
-        <div class="right">查询</div>
+        <div class="right" @click="handleQuery">查询</div>
       </div>
 
-      <div class="list">
-        <div
+      <van-list
+        class="list"
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="handleLoad"
+      >
+        <van-cell
           class="item"
-          v-for="item in customerList"
-          :key="item.id"
-          @click="toDetail"
+          v-for="(item,index) in customerList"
+          :key="index"
+          @click="toDetail(item.id)"
         >
-          <div class="level">A</div>
+          <div class="level">{{ item.intentionLevel }}</div>
           <div class="row1">
             <div class="name">{{ item.name }}</div>
             <div class="type" v-if="item.sex == 1">(男)</div>
@@ -121,106 +135,82 @@
             <div class="key left">下次跟进时间:</div>
             <div class="value">{{ item.nextFollowUpTime }}</div>
           </div>
-        </div>
-      </div>
-   </van-pull-refresh>
+        </van-cell>
+      </van-list>
+    </van-pull-refresh>
     <div class="newbtn" @click="newcustomer">新增客户</div>
- 
-
   </div>
 </template>
 
 <script>
-import { Toast } from "vant";
-
+import moment from "moment";
 export default {
   data() {
     return {
-      count: 0,
-      isLoading: true,
-      // 输入框
-      invalue: "",
+      // 上拉加载loading
+      loading: false,
+      finished: false,
+      // 是否第一次加载van-list数据
+      isfirstload: true,
+      total: 0,
+      // 提交给后台的数据
+      info: {
+        nameAndphone: "", //姓名手机
+        business: "", //购买类型
+        beginFollowUpTime: "", //跟进时间开始时间
+        endFollowUpTime: "", //跟进时间结束时间
+        nature: "", //客流性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7牌证服务，8其他服务）
+        saler: "", //销售顾问（存储为销售人员的id）
+        intentionLevel: "", //意向等级（此处存储意向的id，而不会是值）
+        pageNo: 1, //分页起始位置
+        pageSize: 5, //分页结束位置
+      },
+
+      // 是否显示下拉loading
+      isLoading: false,
       // 购买类型list
       buytypes: [],
-      buytype: "",
       // 客流性质list
       flowtypes: [],
-      flowtype: "",
       // 销售顾问list
-      salers: [
-        {
-          name: "张三",
-          id: 1,
-        },
-        {
-          name: "李四",
-          id: 2,
-        },
-        {
-          name: "王五",
-          id: 3,
-        },
-      ],
-      saler: "",
+      salers: [],
       // 意向等级
-      intentLevels: [
-        {
-          level: "O",
-          id: 1,
-        },
-        {
-          level: "k",
-          id: 2,
-        },
-        {
-          level: "A",
-          id: 3,
-        },
-        {
-          level: "B",
-          id: 4,
-        },
-        {
-          level: "C",
-          id: 5,
-        },
-        {
-          level: "J",
-          id: 6,
-        },
-        {
-          level: "S",
-          id: 7,
-        },
-        {
-          level: "P",
-          id: 8,
-        },
-        {
-          level: "战败",
-          id: 9,
-        },
-        {
-          level: "无效",
-          id: 10,
-        },
-      ],
-      intentlevel: "",
-      st: "",
-      et: "",
-      customerList: [
-        {
-          name: "金秀炫",
-          phone: "13312345678",
-          wxId: "13312345678",
-          sex: 3,
-          nextFollowUpTime: "2020-01-01 12:00:00",
-        },
-      ],
+      intentLevels: [],
+      // 内容列表
+      customerList: [],
     };
   },
-  components: { Toast },
+  computed: {
+    // 开始日期限制
+    // 有结束日期时禁止大于结束日期的日期
+    stOptions() {
+      let _this = this;
+      return {
+        disabledDate(time) {
+          if (_this.info.endFollowUpTime)
+            return (
+              time.getTime() > moment(_this.info.endFollowUpTime).valueOf()
+            );
+        },
+      };
+    },
+    // 结束日期限制
+    // 有开始日期时禁止小于开始日期的日期
+    etOptions() {
+      let _this = this;
+      return {
+        disabledDate(time) {
+          if (_this.info.beginFollowUpTime) {
+            return (
+              time.getTime() < moment(_this.info.beginFollowUpTime).valueOf()
+            );
+          }
+        },
+      };
+    },
+  },
   async created() {
+    // 获取公共列表
     // 客流性质
     let query_flow_type = {
       w: [["category", 2, "EQ"]],
@@ -251,16 +241,33 @@ export default {
     this.salers = await this.api.getsalersList(
       this.query.toEncode(this.newqry(query_sales))
     );
-    console.log(this.salers);
     // 意向等级
-    this.intentLevels = await this.api.getWxIntentionLevel({ p: { n: 1, s: 10 } });
- console.log(this.intentLevels);
- },
+    this.intentLevels = await this.api.getWxIntentionLevel({
+      p: { n: 1, s: 10 },
+    });
+  },
   mounted() {
     console.log("mounted");
-    this.getList({});
   },
   methods: {
+    handleLoad() {
+      if (this.isfirstload) {
+        // 页码不增加
+        this.getList(this.info);
+        this.isfirstload = false;
+        this.loading = false;
+      } else {
+        if (this.total > this.customerList.length) {
+          this.info.pageNo += 1;
+          this.getList(this.info);
+          this.loading = false;
+        } else {
+          this.loading = false;
+
+          this.finished = true;
+        }
+      }
+    },
     // 处理公共字段参数生成qry(使用query.js)
     newqry(obj) {
       let qry = this.query.new();
@@ -274,7 +281,14 @@ export default {
       this.query.toP(qry, obj.p[0], obj.p[1]);
       return qry;
     },
+    // 下拉刷新
     onRefresh() {
+      this.customerList=[];
+      this.finished=false;
+      this.loading=true;
+      this.info.pageNo = 1;
+      this.isfirstload=true;
+      this.handleLoad()
       setTimeout(() => {
         this.isLoading = false;
       }, 1000);
@@ -282,19 +296,36 @@ export default {
     back() {
       this.until.back();
     },
-    handleBuysType(id) {
-      console.log(id);
-      console.log(this.buystype);
-    },
+    handleBuysType(id) {},
+    // 新增客户
     newcustomer() {
       this.until.href("/views/customermagt/new.html");
     },
-    toDetail() {
-      this.until.href("/views/customermagt/detail.html");
+    toDetail(id) {
+      this.until.href("/views/customermagt/detail.html?id="+id);
     },
+    // 获取列表
     async getList(data) {
       let res = await this.api.getcustomerList(data);
-      this.customerList = res.list;
+      this.customerList = [...this.customerList, ...res.data.list];
+      console.table(this.customerList)
+      this.total = res.page.total;
+    },
+    // 查询
+    handleQuery() {
+      // 每次点击请求第一页数据
+       this.customerList=[];
+      this.finished=false;
+      this.loading=true;
+      this.info.pageNo = 1;
+      this.isfirstload=true;
+      this.handleLoad()
+    },
+    startTimeChange(val) {
+      this.info.beginFollowUpTime = moment(val).format("YYYY-MM-DD");
+    },
+    endTimeChange(val) {
+      this.info.endFollowUpTime = moment(val).format("YYYY-MM-DD");
     },
   },
 };
@@ -332,7 +363,7 @@ export default {
   background-color: #f1f3f2;
   background-size: 100% 1.28rem;
   min-height: 100vh;
-  padding-bottom: 1.04rem;
+  padding-bottom: 2.1rem;
   .title {
     width: 100%;
     height: 1.28rem;
@@ -522,8 +553,8 @@ export default {
   }
   .newbtn {
     z-index: 99;
-    position:fixed;
-    bottom:1.04rem;
+    position: fixed;
+    bottom: 0.78rem;
     width: 5.7rem;
     height: 0.7rem;
     background: #09c076;

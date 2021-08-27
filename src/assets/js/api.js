@@ -547,7 +547,7 @@ class api {
 
         })
     }
-<<<<<<< Updated upstream
+
     //获取留言列表
     getWxCommunicate(data) {
         return new Promise((resolve, reject) => {
@@ -601,7 +601,7 @@ class api {
             })
         })
     }
-=======
+
 	//获取留言列表
 	getWxCommunicate(data){
 		return new Promise((resolve, reject) => {
@@ -676,7 +676,7 @@ class api {
 		    })
 		}) 
 	}
->>>>>>> Stashed changes
+
 }
 
 export { api, hostUrl };

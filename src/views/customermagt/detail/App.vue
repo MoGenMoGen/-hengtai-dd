@@ -35,7 +35,7 @@
         <div class="rmks" v-else>（未知）</div>
         <div class="clock">
           <img src="~@/assets/img/clock.png" />
-          <span>{{relativeTime}}跟进</span>
+          <span>{{ relativeTime }}跟进</span>
         </div>
       </div>
       <div class="headList">
@@ -165,11 +165,11 @@
         </div>
         <div class="list">
           <div class="listHead">购买类型:</div>
-          <div class="listContent">**购买类型</div>
+          <div class="listContent">{{userinfo.data.business}}</div>
         </div>
         <div class="list">
           <div class="listHead">下次跟进时间:</div>
-          <div class="listContent">**下次跟进时间</div>
+          <div class="listContent">{{ userinfo.data.nextFollowUpTime }}</div>
         </div>
       </div>
     </div>
@@ -178,7 +178,9 @@
       <div class="bodyList">
         <div class="list">
           <div class="listHead">卖车需求:</div>
-          <div class="listContent">**卖车需求:</div>
+          <div class="listContent">
+            {{ userinfo.data.isSell ? "是" : "否" }}
+          </div>
         </div>
         <div class="list">
           <div class="listHead">品牌车系:</div>
@@ -262,8 +264,8 @@
             <el-image
               style="width: 1.6rem; height: 1.6rem; margin-right: 0.2rem"
               :src="item"
-              :preview-src-list="userinfo1.data.pic.split(',')"
-              v-for="(item, index) in userinfo1.data.pic.split(',')"
+              :preview-src-list="userinfo.data.pic.split(',')"
+              v-for="(item, index) in userinfo.data.pic.split(',')"
               :key="index"
             >
             </el-image>
@@ -273,12 +275,17 @@
     </div>
     <div class="bottomBox">
       <div class="tab">
-				<div class="tabList" v-for="(item,index) in tabList" :key="index" @click="tabChange(index)"
-					:class="{active:currentIndex==index}">
-					{{item.name}}
-					<span>({{item.num}})</span>
-				</div>
-			</div>
+        <div
+          class="tabList"
+          v-for="(item, index) in tabList"
+          :key="index"
+          @click="tabChange(index)"
+          :class="{ active: currentIndex == index }"
+        >
+          {{ item.name }}
+          <span>({{ item.num }})</span>
+        </div>
+      </div>
       <div class="" style="margin-top: 0.6rem">
         <el-timeline :reverse="true">
           <el-timeline-item v-for="(item, index) in info.list" :key="index">
@@ -319,7 +326,7 @@
 
 <script>
 import Bg from "@/assets/img/bg.png";
-import moment from 'moment'
+import moment from "moment";
 import Fg from "@/assets/img/arrow.png";
 import { Toast } from "mint-ui";
 export default {
@@ -336,7 +343,9 @@ export default {
       // 卖车信息
       sellInfo: {},
       userinfo1: {
-        data: { pic: "https://tse1-mm.cn.bing.net/th/id/R-C.8c372fd892b3bd371eb3a1df8bd7fc88?rik=4KxekfOQD28FKA&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20170303%2fdfe53a7300794009a029131a062836d5.jpg&ehk=6ayU5y%2fwtGnzhu7g%2bJimm2REgEbHGczl9Mkbg3I1%2b5I%3d&risl=&pid=ImgRaw&r=0,https://tse1-mm.cn.bing.net/th/id/R-C.33674725d9ae34f86e3835ae30b20afe?rik=Pb3C9e5%2b%2b3a9Vw&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20180626%2f4c8157d07c14a30fd76f9bc110b1314e.jpg&ehk=9tpmnrrRNi0eBGq3CnhwvuU8PPmKuy1Yma0zL%2ba14T0%3d&risl=&pid=ImgRaw&r=0,https://tse1-mm.cn.bing.net/th/id/R-C.33674725d9ae34f86e3835ae30b20afe?rik=Pb3C9e5%2b%2b3a9Vw&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20180626%2f4c8157d07c14a30fd76f9bc110b1314e.jpg&ehk=9tpmnrrRNi0eBGq3CnhwvuU8PPmKuy1Yma0zL%2ba14T0%3d&risl=&pid=ImgRaw&r=0" },
+        data: {
+          pic: "https://tse1-mm.cn.bing.net/th/id/R-C.8c372fd892b3bd371eb3a1df8bd7fc88?rik=4KxekfOQD28FKA&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20170303%2fdfe53a7300794009a029131a062836d5.jpg&ehk=6ayU5y%2fwtGnzhu7g%2bJimm2REgEbHGczl9Mkbg3I1%2b5I%3d&risl=&pid=ImgRaw&r=0,https://tse1-mm.cn.bing.net/th/id/R-C.33674725d9ae34f86e3835ae30b20afe?rik=Pb3C9e5%2b%2b3a9Vw&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20180626%2f4c8157d07c14a30fd76f9bc110b1314e.jpg&ehk=9tpmnrrRNi0eBGq3CnhwvuU8PPmKuy1Yma0zL%2ba14T0%3d&risl=&pid=ImgRaw&r=0,https://tse1-mm.cn.bing.net/th/id/R-C.33674725d9ae34f86e3835ae30b20afe?rik=Pb3C9e5%2b%2b3a9Vw&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20180626%2f4c8157d07c14a30fd76f9bc110b1314e.jpg&ehk=9tpmnrrRNi0eBGq3CnhwvuU8PPmKuy1Yma0zL%2ba14T0%3d&risl=&pid=ImgRaw&r=0",
+        },
       },
       imglist: [Bg, Fg, Bg, Bg],
       tabList: [
@@ -351,22 +360,26 @@ export default {
       ],
     };
   },
-computed:{
-	relativeTime(){
-		return (moment([this.userinfo.data.nextFollowUpTime])).toNow()
-	}
-},
+  computed: {
+    relativeTime() {
+      return moment([this.userinfo.data.nextFollowUpTime]).toNow();
+    },
+  },
   async mounted() {
-	  console.log(moment().format());
-	  console.log('相对日期',this.relativeTime);
+    console.log(moment().format());
+    console.log("相对日期", this.relativeTime);
   },
   async created() {
-	  moment.locale('zh-cn');
+    moment.locale("zh-cn");
     this.id = this.until.getQueryString("id");
+    // 获取详情信息
     let info = await this.api.getcustomerDetail(this.id);
     this.userinfo = info.customer;
     this.sellInfo = info.sell;
     this.buyInfo = info.buy;
+  // 获取轨迹信息
+  let data=await this.api.gettrail(encodeURIComponent(JSON.stringify({"w":[{"customerId":"50"}],"o":[{"k":"id","t":"desc"}],"p":{"n":1,"s":10}})))
+  console.log('轨迹',data);
   },
   methods: {
     back() {
@@ -379,7 +392,7 @@ computed:{
       this.until.href("/views/customermagt/new.html");
     },
     tofollow() {
-      this.until.href("/views/customermagt/newfollow.html");
+      this.until.href("/views/customermagt/newfollow.html?id="+this.id);
     },
     copywxtap() {
       this.copyContent = this.info.vx; //也可以直接写上等于你想要复制的内容

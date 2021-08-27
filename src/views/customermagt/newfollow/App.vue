@@ -11,14 +11,17 @@
     </div>
     <div class="connect_record_box">
       <div class="follow_content">
-        <div class="row" style="padding: 0px; border: none; margin-bottom: .16rem">
+        <div
+          class="row"
+          style="padding: 0px; border: none; margin-bottom: 0.16rem"
+        >
           <div style="display: flex">
             <div class="placeholder">*</div>
             <div class="rowtitle">跟进内容</div>
           </div>
         </div>
         <el-input
-          style="margin-left: .18rem"
+          style="margin-left: 0.18rem"
           type="textarea"
           autosize
           placeholder="请输入"
@@ -28,7 +31,15 @@
       </div>
       <div class="albums">
         <div class="album_title">添加图片</div>
-        <div class="albums_box_list">
+        <van-uploader
+          style="flex: 1"
+          preview-size="1.5rem"
+          :after-read="afterRead"
+          v-model="albums"
+          multiple="true"
+        />
+        <van-loading v-if='isvanloading' type="spinner" class="van_loading" />
+        <!-- <div class="albums_box_list">
           <img class="albums_item" src="~@/assets/img/photograph.png" alt="" />
           <img
             class="albums_item"
@@ -37,7 +48,7 @@
             v-for="(item, index) in albums"
             :key="index"
           />
-        </div>
+        </div> -->
       </div>
       <!--意向等级开始  -->
       <div class="intent_level">
@@ -69,7 +80,7 @@
         <div class="intent_level_list">
           <div
             class="intent_level_item"
-            style="margin-right: .24rem; width: 1.44rem"
+            style="margin-right: 0.24rem; width: 1.44rem"
             @click="contacttype = index"
             v-for="(item, index) in contacttypeList"
             :key="item.id"
@@ -135,7 +146,7 @@
 
           <div style="display: flex; align-items: center">
             <div>{{ visitSt }}</div>
-            <span style="padding: 0px .1rem"> ~ </span>
+            <span style="padding: 0px 0.1rem"> ~ </span>
             <div>{{ visitEt }}</div>
           </div>
         </div>
@@ -182,7 +193,9 @@
         </div>
         <div class="row_between">
           <div style="flex: 1"></div>
-          <div style="wdith: .64rem; font-weight: 500; color: #909090">更多></div>
+          <div style="wdith: 0.64rem; font-weight: 500; color: #909090">
+            更多>
+          </div>
         </div>
       </div>
       <div class="brand_list">
@@ -228,7 +241,7 @@
           <span class="prititle">自定义价格</span>
           <div class="lowprice">
             <input
-              style="width: .46rem; text-align: right"
+              style="width: 0.46rem; text-align: right"
               class="prititle"
               v-model="lowprice"
               type="number"
@@ -240,7 +253,7 @@
           <span class="connector">~</span>
           <div class="highprice">
             <input
-              style="width: .46rem; text-align: right"
+              style="width: 0.46rem; text-align: right"
               class="prititle"
               v-model="highprice"
               type="number"
@@ -287,7 +300,7 @@
             oninput="if(value.length>3)value=value.slice(0,3)"
             placeholder="请输入"
           ></el-input>
-          <span style="font-weight: bold;color: #303030">万公里</span>
+          <span style="font-weight: bold; color: #303030">万公里</span>
         </div>
       </div>
       <div class="row">
@@ -320,10 +333,10 @@
       <div class="intent_desc">
         <div
           style="
-            font-size: .24rem;
+            font-size: 0.24rem;
             font-weight: bold;
             color: #303030;
-            margin-bottom: .16rem;
+            margin-bottom: 0.16rem;
           "
         >
           意向描述
@@ -417,33 +430,19 @@
 <script>
 import brand from "@/assets/img/brand.png";
 import moment from "moment";
+import { compressImg, readImg } from "@/assets/js/imageUtil";
+
 export default {
   data() {
     return {
+      // 页面id
+      id: "",
       // 跟进内容
       followContent: "",
+      isvanloading:false,
       // 添加图片
       albums: [
-        {
-          id: 8,
-          src: brand,
-        },
-        {
-          id: 9,
-          src: brand,
-        },
-        {
-          id: 10,
-          src: brand,
-        },
-        {
-          id: 3,
-          src: brand,
-        },
-        {
-          id: 2,
-          src: brand,
-        },
+        
       ],
       // 沟通意向等级
       checkedLevelIndex1: 0,
@@ -599,8 +598,8 @@ export default {
         },
       ],
       // 自定义高低价
-      lowprice: '',
-      highprice: '',
+      lowprice: "",
+      highprice: "",
       // 车身颜色
       carcolor: "",
       carcolors: [
@@ -718,6 +717,25 @@ export default {
     back() {
       this.until.back();
     },
+    async afterRead(e) {
+      console.log(e);
+      // this.$loading.show("正在上传");
+      this.isvanloading=true;
+      const formData = new FormData();
+      if (e.file.size > 1048576) {
+        console.log("压缩图片");
+        const img = await readImg(e.file);
+        let blob = await compressImg(img);
+        formData.append("file", blob, "file.jpg");
+      } else {    
+        formData.append("file", e.file, "file.jpg");
+      }
+      this.api.upnewimg(formData).then((imgurl) => {
+        console.log("上传后地址", imgurl);
+        this.isvanloading=false;
+      });
+    },
+
     // 单选性别
     switchradiosex(num) {
       this.sexnum = num;
@@ -734,15 +752,19 @@ export default {
       this.followdateofweek2 = moment(e).format("dddd");
     },
   },
-  created() {
+  async created() {
+    // 设置moment.js(时间库)中文环境
     moment.locale("zh-cn");
+    this.id = this.until.getQueryString("id");
+    let data = await this.api.followDetail(this.id);
+    console.log(data);
   },
 };
 </script>
 <style lang="less">
 .el-input__inner {
   border: none;
-  height: .28rem !important;
+  height: 0.28rem !important;
   padding-left: 0px;
 }
 .el-input__icon {
@@ -750,8 +772,8 @@ export default {
   align-items: center;
 }
 .el-cascader {
-  line-height: .38rem;
-  height: .38rem;
+  line-height: 0.38rem;
+  height: 0.38rem;
 }
 .followdatepicker {
   .el-input__inner {
@@ -796,15 +818,15 @@ export default {
     }
   }
   .row {
-    padding: .3rem;
-    padding-right: .48rem;
+    padding: 0.3rem;
+    padding-right: 0.48rem;
     background: #fff;
     display: flex;
     border-bottom: 1px solid #e7e7e7;
 
     .placeholder {
-      width: .18rem;
-      font-size: .24rem;
+      width: 0.18rem;
+      font-size: 0.24rem;
       font-weight: bold;
       color: #ff3000;
     }
@@ -814,10 +836,10 @@ export default {
   }
   .rowtitle {
     width: 1.44rem;
-    font-size: .24rem;
+    font-size: 0.24rem;
     font-weight: bold;
     color: #303030;
-    margin-right: .34rem;
+    margin-right: 0.34rem;
   }
   .row_between {
     flex: 1;
@@ -833,24 +855,24 @@ export default {
       width: 33.3%;
       display: flex;
       img {
-        width: .4rem;
-        height: .4rem;
-        margin-right: .1rem;
+        width: 0.4rem;
+        height: 0.4rem;
+        margin-right: 0.1rem;
       }
     }
   }
 
   .textbox {
-    padding: .3rem .48rem;
+    padding: 0.3rem 0.48rem;
     display: flex;
     .texttitle {
-      font-size: .24rem;
+      font-size: 0.24rem;
       font-weight: bold;
       color: #303030;
-      margin-right: .1rem;
+      margin-right: 0.1rem;
     }
     .tip {
-      font-size: .24rem;
+      font-size: 0.24rem;
       font-weight: bold;
       color: #09c076;
     }
@@ -858,8 +880,8 @@ export default {
 
   .connect_record_box {
     .follow_content {
-      padding: .3rem;
-      padding-right: .48rem;
+      padding: 0.3rem;
+      padding-right: 0.48rem;
       background: #fff;
       border-bottom: 1px solid #e7e7e7;
     }
@@ -869,20 +891,20 @@ export default {
     background: #fff;
     // padding: .3rem .48rem;
     .intent_level_list {
-      padding: 0px .48rem 0px .48rem;
+      padding: 0px 0.48rem 0px 0.48rem;
       display: flex;
       // justify-content: space-between;
       flex-wrap: wrap;
       .intent_level_item {
-        margin-bottom: .3rem;
-        margin-right: .32rem;
+        margin-bottom: 0.3rem;
+        margin-right: 0.32rem;
         width: 1.04rem;
-        height: .54rem;
+        height: 0.54rem;
         text-align: center;
-        line-height: .54rem;
+        line-height: 0.54rem;
         color: #909090;
         background: #ededed;
-        border-radius: .06rem;
+        border-radius: 0.06rem;
       }
       .intent_level_item:nth-child(5n + 5) {
         margin-right: 0px;
@@ -906,7 +928,7 @@ export default {
       .brand_item {
         width: 25%;
         box-sizing: border-box;
-        padding: .14rem .32rem;
+        padding: 0.14rem 0.32rem;
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
         background: #fff;
@@ -919,15 +941,15 @@ export default {
     .pricebox {
       border-bottom: 1px solid #e7e7e7;
       background: #fff;
-      padding: .3rem .48rem;
+      padding: 0.3rem 0.48rem;
       .prititle {
-        font-size: .24rem;
+        font-size: 0.24rem;
         font-weight: bold;
         color: #303030;
       }
 
       .pricelist {
-        padding: .2rem 1px;
+        padding: 0.2rem 1px;
         padding-bottom: 0px;
         display: flex;
         justify-content: space-between;
@@ -935,14 +957,14 @@ export default {
 
         .priceitem {
           // margin-right: .2rem;
-          margin-bottom: .2rem;
+          margin-bottom: 0.2rem;
           width: 2.04rem;
-          height: .54rem;
+          height: 0.54rem;
           text-align: center;
-          line-height: .54rem;
+          line-height: 0.54rem;
           color: #909090;
           background: #ededed;
-          border-radius: .06rem;
+          border-radius: 0.06rem;
         }
         .select_price_region {
           background: #09c076;
@@ -956,73 +978,81 @@ export default {
         justify-content: space-between;
         .lowprice {
           display: flex;
-          padding: .06rem .4rem;
+          padding: 0.06rem 0.4rem;
           border: 1px solid #d8d8d8;
         }
 
         .connector {
-          font-size: .24rem;
+          font-size: 0.24rem;
           font-weight: bold;
           color: #bfbfbf;
         }
 
         .highprice {
           display: flex;
-          padding: .06rem .4rem;
+          padding: 0.06rem 0.4rem;
           border: 1px solid #d8d8d8;
         }
 
         .confirm {
           background: #09c076;
-          border-radius: .06rem;
-          font-size: .24rem;
+          border-radius: 0.06rem;
+          font-size: 0.24rem;
           font-weight: 500;
           color: #ffffff;
-          padding: .06rem .44rem;
+          padding: 0.06rem 0.44rem;
         }
       }
     }
     .intent_desc {
-      padding: .3rem .48rem;
+      padding: 0.3rem 0.48rem;
       background: #fff;
       border-bottom: 1px solid #e7e7e7;
     }
   }
 
   .albums {
-    padding: .3rem .48rem;
+    position: relative;
+    padding: 0.3rem 0.48rem;
     background: #fff;
     display: flex;
     border-bottom: 1px solid #e7e7e7;
 
     .album_title {
-      font-size: .24rem;
+      font-size: 0.24rem;
       font-weight: bold;
       color: #303030;
-      width: 2.7rem;
+      width: 1.2rem;
+    }
+    .van_loading {
+      position: absolute;
+      top: 50%;
+      right: 30%;
+      transform: translateX(-50%) translateY(-50%);
+      color: #09c076;
     }
     .albums_box_list {
       display: flex;
       // justify-content: space-between;
       flex-wrap: wrap;
       .albums_item {
-        margin-right: .1rem;
-        margin-bottom: .1rem;
+        margin-right: 0.1rem;
+        margin-bottom: 0.1rem;
         width: 1.62rem;
         height: 1.56rem;
       }
     }
   }
   .btn_save {
-    margin: .96rem auto 0px;
+    margin: 0.96rem auto 0px;
     width: 5.7rem;
-    height: .7rem;
+    height: 0.7rem;
     background: #09c076;
-    border-radius: .34rem;
-    font-size: .3rem;
+    border-radius: 0.34rem;
+    font-size: 0.3rem;
     font-weight: 500;
     color: #ffffff;
-    line-height: .7rem;
+    line-height: 0.7rem;
     text-align: center;
   }
 }

@@ -8,7 +8,7 @@ import { Toast } from 'mint-ui';
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-f362d245-1d48-4114-b657-dbdee81d0599" } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-ea294686-7287-4a9e-819d-beca58edcbba" } }
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
 
@@ -29,13 +29,14 @@ function post(url, data, header) {
 
     // let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
 
-
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-f362d245-1d48-4114-b657-dbdee81d0599", 'Content-Type': 'application/json' } }
+// let newurl='/api'+url;
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-ea294686-7287-4a9e-819d-beca58edcbba", 'Content-Type': 'application/json' } }
     console.log(data)
     let promise = new Promise((resolve, reject) => {
         axios.post(url, data, { headers })
             .then(function (response) {
-                if (response.data.code == 0) {
+                console.log('111',response)
+                if (response.data.code == 0||response.status==200) {
                     resolve(response.data);
                 } else {
                     Toast(response.data.msg)
@@ -48,7 +49,7 @@ function post(url, data, header) {
     return promise;
 }
 function get2(url, data, header, cache = false) {
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-2dff2472-3a49-4a7a-b76c-2e58fbfae122" } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-ea294686-7287-4a9e-819d-beca58edcbba" } }
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
 
@@ -292,7 +293,21 @@ class api {
             })
         })
     }
+   
+    // post图片上传
+    upnewimg(data) {
+        console.log('post上传');
+        return new Promise((resolve, reject) => {
+            post('/general/oss/upload' ,data, {"Content-Type": "multipart/form-data"}).then(res => {
+                resolve(res)
+            })
+            .catch(err=>{
+                reject(err)
 
+            })
+
+        })
+    }
     //上传
     upImg(e) {
         let $q = new Promise((resolve, reject) => {
@@ -349,82 +364,82 @@ class api {
         });
         return $q;
     }
-	//获取买车需求订单列表
-	getWxBusinessBuy(data) {
-	    let header = {
-	        // 'Content-Type': 'application/json',
-	        // 'yui3-token': localStorage.getItem('token')
-	    }
-	    return new Promise((resolve, reject) => {
-	        get('/hss/wxBusinessBuy/pageList', data, header).then(res => {
-	            console.log(res);
-				resolve(res)
-				
-	        })
-	
-	    })
-	}
-	//获取买车需求订单详情
-	getWxBusinessBuyDetail(data) {
-	    let header = {
-	        // 'Content-Type': 'application/json',
-	        // 'yui3-token': localStorage.getItem('token')
-	    }
-	    return new Promise((resolve, reject) => {
-	        get('/hss/wxBusinessBuy/info/'+data, header).then(res => {
-	            resolve(res.data)
-	        })
-	
-	    })
-	}
-	//获取卖车需求订单列表
-	getWxBusinessSell(data) {
-	    let header = {
-	        // 'Content-Type': 'application/json',
-	        // 'yui3-token': localStorage.getItem('token')
-	    }
-	    return new Promise((resolve, reject) => {
-	        get('/hss/wxBusinessSell/pageList',data, header).then(res => {
-	            resolve(res)
-	        })
-	
-	    })
-	}
-	//获取卖车需求订单详情
-	getWxBusinessSellDetail(data){
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxBusinessSell/info/'+data, header).then(res => {
-		        resolve(res.data)
-		    })
-			
-		})
-	}
-	//获取意愿登记表
-	getWxIntentionLevel(data){
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxIntentionLevel/list',data, header).then(res => {
-		        resolve(res.data.list)
-		    })
-			
-		})
-		
-	}
-	//买车买车回复提交
-	postWxCommunicate(data){
-		return new Promise(resolve => {
-		    post("/hss/wxCommunicate/add", data, {}).then(res => {
-		        resolve(res.data)
-		    })
-		}) 
-	}
+    //获取买车需求订单列表
+    getWxBusinessBuy(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxBusinessBuy/pageList', data, header).then(res => {
+                console.log(res);
+                resolve(res)
+
+            })
+
+        })
+    }
+    //获取买车需求订单详情
+    getWxBusinessBuyDetail(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxBusinessBuy/info/' + data, header).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+    //获取卖车需求订单列表
+    getWxBusinessSell(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxBusinessSell/pageList', data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    //获取卖车需求订单详情
+    getWxBusinessSellDetail(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxBusinessSell/info/' + data, header).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+    //获取意愿登记表
+    getWxIntentionLevel(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxIntentionLevel/list', data, header).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+
+    }
+    //买车买车回复提交
+    postWxCommunicate(data) {
+        return new Promise(resolve => {
+            post("/hss/wxCommunicate/add", data, {}).then(res => {
+                resolve(res.data)
+            })
+        })
+    }
     //获取买车需求订单列表
     getWxBusinessBuy(data) {
         let header = {
@@ -477,20 +492,29 @@ class api {
         })
     }
 
-     // 获取客户详情
-     getcustomerDetail(data) {
+    // 获取客户详情
+    getcustomerDetail(data) {
         return new Promise((resolve, reject) => {
-            get('/hss/wxCustomer/info/'+data, {}, {}).then(res => {
+            get('/hss/wxCustomer/info/' + data, {}, {}).then(res => {
                 resolve(res.data)
             })
 
         })
-    } 
+    }
     // 轨迹
-    gettrail(data){
+    gettrail(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxTrajectory/page?query=' + data).then(res => {
                 resolve(res.data.list)
+            })
+
+        })
+    }
+    // 跟进详情
+    followDetail(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxFollowup/info/' + data).then(res => {
+                resolve(res)
             })
 
         })
@@ -523,59 +547,59 @@ class api {
 
         })
     }
-	//获取留言列表
-	getWxCommunicate(data){
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommunicate/page?query=' + data).then(res => {
-		        resolve(res.data.list)
-		    })
-		
-		})
-	}
-	//获取接待列表
-	
-   getWxCheckin(data){
-   	return new Promise((resolve, reject) => {
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-   	    get('/hss/wxCheckin/pageList',data,header).then(res => {
-   	        resolve(res)
-   	    })
-   	
-   	})
-   }
-	//获取接待详情
-	getWxCheckinDetail(data){
-		return new Promise((resolve, reject) => {
-			let header = {
-			    // 'Content-Type': 'application/json',
-			    // 'yui3-token': localStorage.getItem('token')
-			}
-		    get('/hss/wxCheckin/info/'+data,header).then(res => {
-		        resolve(res.data)
-		    })
-		
-		})
-	}
-	//获取客户性质列表
-	getCustomerCommonfield(data){
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommonfield/page?query=' + data).then(res => {
-		        resolve(res.data.list)
-		    })
-		
-		})
-	}
-	//提交新增接待
-	postWxCheckin(data){
-		return new Promise(resolve => {
-		    post("/hss/wxCheckin/add", data, {}).then(res => {
-		        resolve(res.data)
-		    })
-		}) 
-	}
+    //获取留言列表
+    getWxCommunicate(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommunicate/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+    //获取接待列表
+
+    getWxCheckin(data) {
+        return new Promise((resolve, reject) => {
+            let header = {
+                // 'Content-Type': 'application/json',
+                // 'yui3-token': localStorage.getItem('token')
+            }
+            get('/hss/wxCheckin/pageList', data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    //获取接待详情
+    getWxCheckinDetail(data) {
+        return new Promise((resolve, reject) => {
+            let header = {
+                // 'Content-Type': 'application/json',
+                // 'yui3-token': localStorage.getItem('token')
+            }
+            get('/hss/wxCheckin/info/' + data, header).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+    //获取客户性质列表
+    getCustomerCommonfield(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+    //提交新增接待
+    postWxCheckin(data) {
+        return new Promise(resolve => {
+            post("/hss/wxCheckin/add", data, {}).then(res => {
+                resolve(res.data)
+            })
+        })
+    }
 }
 
 export { api, hostUrl };

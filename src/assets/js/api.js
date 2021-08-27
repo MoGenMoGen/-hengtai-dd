@@ -29,13 +29,13 @@ function post(url, data, header) {
 
     // let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
 
-// let newurl='/api'+url;
+
     let headers = { ...header, ...{ "yui3-token": "yui3-sid-ea294686-7287-4a9e-819d-beca58edcbba", 'Content-Type': 'application/json' } }
     console.log(data)
     let promise = new Promise((resolve, reject) => {
         axios.post(url, data, { headers })
             .then(function (response) {
-                console.log('111',response)
+
                 if (response.data.code == 0||response.status==200) {
                     resolve(response.data);
                 } else {
@@ -547,6 +547,7 @@ class api {
 
         })
     }
+<<<<<<< Updated upstream
     //获取留言列表
     getWxCommunicate(data) {
         return new Promise((resolve, reject) => {
@@ -600,6 +601,82 @@ class api {
             })
         })
     }
+=======
+	//获取留言列表
+	getWxCommunicate(data){
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxCommunicate/page?query=' + data).then(res => {
+		        resolve(res.data.list)
+		    })
+		
+		})
+	}
+	//获取接待列表
+	
+   getWxCheckin(data){
+   	return new Promise((resolve, reject) => {
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+   	    get('/hss/wxCheckin/pageList',data,header).then(res => {
+   	        resolve(res)
+   	    })
+   	
+   	})
+   }
+	//获取接待详情
+	getWxCheckinDetail(data){
+		return new Promise((resolve, reject) => {
+			let header = {
+			    // 'Content-Type': 'application/json',
+			    // 'yui3-token': localStorage.getItem('token')
+			}
+		    get('/hss/wxCheckin/info/'+data,header).then(res => {
+		        resolve(res.data)
+		    })
+		
+		})
+	}
+	//获取客户性质列表
+	getCustomerCommonfield(data){
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxCommonfield/page?query=' + data).then(res => {
+		        resolve(res.data.list)
+		    })
+		
+		})
+	}
+	//提交新增接待
+	postWxCheckin(data){
+		return new Promise(resolve => {
+		    post("/hss/wxCheckin/add", data, {}).then(res => {
+		        resolve(res.data)
+		    })
+		}) 
+	}
+	//获取个人信息
+	getPersonInformation(data){
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+		return new Promise((resolve, reject) => {
+		    get('/sys/user/getPerson',data,header).then(res => {
+		        resolve(res.data)
+		    })
+		
+		})
+	}
+	//提交修改个人修改信息
+	postUpdPerson(data){
+		return new Promise(resolve => {
+		    post("/sys/user/updPerson", data, {}).then(res => {
+		        resolve(res.data)
+		    })
+		}) 
+	}
+>>>>>>> Stashed changes
 }
 
 export { api, hostUrl };

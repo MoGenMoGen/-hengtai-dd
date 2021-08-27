@@ -7,17 +7,17 @@
 		<img  class="img2" src="~@/assets/img/arrowrightwhite.png" >
 		<div class="textbox">
 			<div class="name">
-				{{name}}
-				<span class="tel">({{tel}})</span>
+				{{info.arg7}}
+				<span class="tel">({{info.mob}})</span>
 				
 			</div>
 			<div class="position">
-				<span>{{position}}</span>
+				<span>{{info.departRoles}}</span>
 			</div>
 		</div>
 	</div>
 	<div class="personList">
-		<div class="listcontent">
+		<div class="listcontent" @click="toMycostomer">
 			<img  class="img1" src="~@/assets/img/mycustomer.png" >
 			<span>
 			  我的客户
@@ -33,7 +33,7 @@
 				{{customerService}}
 			</div>
 		</div>
-		<div class="listcontent">
+		<div class="listcontent" @click="toAboutus">
 			<img  class="img1" src="~@/assets/img/aboutus.png" >
 			<span>
 			关于我们
@@ -56,16 +56,31 @@ export default {
 			name:"张章",
 			tel:13456179573,
 			position:"销售经理",
-			customerService:'400-88880000'			
+			customerService:'400-88880000'			,
+			info:{
+				
+			}
 	};
   },
   components: {
     tabbar,
   },
-  async mounted() {},
+  async mounted() {
+	  this.api.getPersonInformation({}).then(res=>{
+		  
+		  this.info=res.sysUserVo
+		  console.log(this.info);
+	  })
+  },
   methods: {
 	  toDetail(){
 		  this.until.href("/views/profile/detail.html")
+	  },
+	  toAboutus(){
+		  this.until.href("/views/profile/aboutus.html")
+	  },
+	  toMycostomer(){
+		  this.until.href("/views/customermagt/index.html")
 	  }
   },
 };

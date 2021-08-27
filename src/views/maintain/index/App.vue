@@ -5,17 +5,38 @@
 #container {
     width: 100%;
     height: 100%;
-    background: @backgroundColor;
-    overflow: hidden;
+	background: url("~@/assets/img/header.png") no-repeat;
+	background-color: #f1f3f2;
+	background-size: 100% 1.28rem;
+	overflow: hidden;
     /*display: flex;*/
     /*display: -webkit-flex;*/
     /*flex-direction: column;*/
+	.title {
+		width: 100%;
+		height: 1.28rem;
+		position: relative;
+		line-height: 1.28rem;
+		text-align: center;
+		font-size: 0.36rem;
+		font-weight: 500;
+		color: #ffffff;
+	
+		img {
+			height: 0.31rem;
+			width: 0.17rem;
+			position: absolute;
+			top: 50%;
+			left: 0.36rem;
+			transform: translateY(-50%);
+		}
+	}
     .menu{
         background: #ffffff;
         display: flex;
         display: -webkit-flex;
-        position: fixed;
-        top: 0;
+        position: sticky;
+        top: 1.28rem;
         left: 0;
         width: 100%;
         z-index: 99;
@@ -27,12 +48,12 @@
             border-bottom: 1px solid @borderColor;
         }
         p.active{
-            color: @color;
-            border-bottom: 2px solid @color;
+            color:#09C076;
+            border-bottom: 2px solid #09C076;
         }
     }
     .main{
-        padding-top: 1rem;
+        // padding-top: 1rem;
         height: 100%;
         box-sizing: border-box;
         /*flex: 1;*/
@@ -45,6 +66,10 @@
 
 <template>
     <div id="container">
+		<div class="title">
+			<img src="~@/assets/img/arrowback.png" /> <!-- @click="back" --> 
+			车保姆
+		</div>
         <div class="menu">
             <p :class="{active:cd==1}" @click="cd=1">信息查询
             </p>
@@ -68,7 +93,7 @@
 export default {
   data() {
     return {
-        cd:0,
+        cd:1,
         customerId:'',
         userInfo:{}
     };

@@ -38,7 +38,7 @@
           v-model="albums"
           multiple="true"
         />
-        <van-loading v-if='isvanloading' type="spinner" class="van_loading" />
+        <van-loading v-if="isvanloading" type="spinner" class="van_loading" />
         <!-- <div class="albums_box_list">
           <img class="albums_item" src="~@/assets/img/photograph.png" alt="" />
           <img
@@ -160,22 +160,32 @@
           <div>{{ receptionDuration }}h</div>
         </div>
       </div>
-      <div class="row">
+      <div class="row" style="align-items: center">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder"></div>
           <div class="rowtitle">下次跟进时间</div>
         </div>
-        <el-date-picker
-          class="followdatepicker"
-          style="width: 2.8rem"
-          v-model="followdate1"
-          type="datetime"
-          @change="handlefollowdate1"
-          placeholder="选择日期时间"
-        >
-        </el-date-picker>
-        <span style="color: #606266">{{ followdateofweek1 }}</span>
+        <van-field
+          style="padding: 0; height: 19px; line-height: 19px"
+          readonly
+          clickable
+          label=""
+          :value="followdate1"
+          placeholder="选择完整时间"
+          @click="showfollowtime1 = true"
+        />
+        <van-popup v-model="showfollowtime1" round position="bottom">
+          <van-datetime-picker
+            class="followdatepicker"
+            v-model="datepicker1"
+            type="datetime"
+            title="选择完整时间"
+            :min-date="minDate"
+            @cancel="showfollowtime1 = false"
+            @confirm="handlefollowConfirm1"
+          />
+        </van-popup>
       </div>
     </div>
     <!-- 本次沟通记录 结束-->
@@ -405,22 +415,32 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row" style="align-items: center">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder"></div>
           <div class="rowtitle">下次跟进时间</div>
         </div>
-        <el-date-picker
-          class="followdatepicker"
-          style="width: 2.8rem"
-          v-model="followdate2"
-          type="datetime"
-          @change="handlefollowdate2"
-          placeholder="选择日期时间"
-        >
-        </el-date-picker>
-        <span style="color: #606266">{{ followdateofweek2 }}</span>
+        <van-field
+          style="padding: 0; height: 19px; line-height: 19px"
+          readonly
+          clickable
+          label=""
+          :value="followdate2"
+          placeholder="选择完整时间"
+          @click="showfollowtime2 = true"
+        />
+        <van-popup v-model="showfollowtime2" round position="bottom">
+          <van-datetime-picker
+            class="followdatepicker"
+            v-model="datepicker2"
+            type="datetime"
+            title="选择完整时间"
+            :min-date="minDate"
+            @cancel="showfollowtime2 = false"
+            @confirm="handlefollowConfirm2"
+          />
+        </van-popup>
       </div>
     </div>
     <div class="btn_save">保存</div>
@@ -435,15 +455,18 @@ import { compressImg, readImg } from "@/assets/js/imageUtil";
 export default {
   data() {
     return {
+      datepicker1: "",
+      datepicker2: "",
+      showfollowtime1: false,
+      showfollowtime2: false,
+      minDate: new Date(),
       // 页面id
       id: "",
       // 跟进内容
       followContent: "",
-      isvanloading:false,
+      isvanloading: false,
       // 添加图片
-      albums: [
-        
-      ],
+      albums: [],
       // 沟通意向等级
       checkedLevelIndex1: 0,
       intentLevelList1: [
@@ -720,19 +743,19 @@ export default {
     async afterRead(e) {
       console.log(e);
       // this.$loading.show("正在上传");
-      this.isvanloading=true;
+      this.isvanloading = true;
       const formData = new FormData();
       if (e.file.size > 1048576) {
         console.log("压缩图片");
         const img = await readImg(e.file);
         let blob = await compressImg(img);
         formData.append("file", blob, "file.jpg");
-      } else {    
+      } else {
         formData.append("file", e.file, "file.jpg");
       }
       this.api.upnewimg(formData).then((imgurl) => {
         console.log("上传后地址", imgurl);
-        this.isvanloading=false;
+        this.isvanloading = false;
       });
     },
 
@@ -745,11 +768,13 @@ export default {
       this.iskeycus = num;
     },
     // 处理跟进时间
-    handlefollowdate1(e) {
-      this.followdateofweek1 = moment(e).format("dddd");
+    handlefollowConfirm1(e) {
+      this.followdate1 = moment(e).format("YYYY-MM-DD dddd HH:mm");
+      this.showfollowtime1 = false;
     },
-    handlefollowdate2(e) {
-      this.followdateofweek2 = moment(e).format("dddd");
+    handlefollowConfirm2(e) {
+      this.followdate2 = moment(e).format("YYYY-MM-DD dddd HH:mm");
+      this.showfollowtime2 = false;
     },
   },
   async created() {

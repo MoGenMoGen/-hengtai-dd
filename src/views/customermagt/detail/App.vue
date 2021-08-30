@@ -165,7 +165,7 @@
         </div>
         <div class="list">
           <div class="listHead">购买类型:</div>
-          <div class="listContent">{{userinfo.data.business}}</div>
+          <div class="listContent">{{ userinfo.data.business }}</div>
         </div>
         <div class="list">
           <div class="listHead">下次跟进时间:</div>
@@ -288,32 +288,35 @@
       </div>
       <div class="" style="margin-top: 0.6rem">
         <el-timeline :reverse="true">
-          <el-timeline-item v-for="(item, index) in info.list" :key="index">
+          <el-timeline-item v-for="(item, index) in trailList" :key="index" :color='activeColor(item.nextFollowUpTime)'>
             <div class="content">
               <div class="head">
-                <span v-if="currentIndex == 0"> 创建客户 </span>
-                <span v-if="currentIndex == 1"> 创建订单 </span>
+                <span>{{ item.behavior }}</span>
                 <span>
-                  {{ info.name }}
+                  {{ item.saler }}
                 </span>
                 <div class="time">
-                  {{ info.creatTime }}
+                  {{ item.crtTm }}
                 </div>
               </div>
               <div class="contentBody">
+                <div
+                  class="type"
+                  v-for="(conitem, conindex) in trailContentList(item.content)"
+                  :key="conindex"
+                >
+                  <span>{{ conitem }}</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;width:100%">
+                  <div style="width:30%;" v-for="(picitem,picindex) in item.pic.split(',')" :key="picindex">
+                  <img :src="picitem" style="width:1.6rem;height:1.6rem;" alt="" >
+
+                  </div>
+                </div>
+                <!-- <div class="type">{{item.content}}</div> -->
                 <div class="type">
-                  <span v-if="currentIndex == 0">创建客户—</span>
-                  <span v-if="currentIndex == 1"> 创建订单 </span>
-                  <span>{{ item.type }}—</span>
-                  <span>{{ item.creat }}</span>
-                </div>
-                <div class="type" v-if="currentIndex == 0">
-                  <span>下次跟进时间:</span>
-                  <span>{{ info.nextTime }}</span>
-                </div>
-                <div class="type" v-if="currentIndex == 1">
-                  <span>订单内容:</span>
-                  <span>{{ info.content }}</span>
+                  <span>下次跟进时间： </span>
+                  <span>{{ item.nextFollowUpTime }}</span>
                 </div>
               </div>
             </div>
@@ -347,7 +350,8 @@ export default {
           pic: "https://tse1-mm.cn.bing.net/th/id/R-C.8c372fd892b3bd371eb3a1df8bd7fc88?rik=4KxekfOQD28FKA&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20170303%2fdfe53a7300794009a029131a062836d5.jpg&ehk=6ayU5y%2fwtGnzhu7g%2bJimm2REgEbHGczl9Mkbg3I1%2b5I%3d&risl=&pid=ImgRaw&r=0,https://tse1-mm.cn.bing.net/th/id/R-C.33674725d9ae34f86e3835ae30b20afe?rik=Pb3C9e5%2b%2b3a9Vw&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20180626%2f4c8157d07c14a30fd76f9bc110b1314e.jpg&ehk=9tpmnrrRNi0eBGq3CnhwvuU8PPmKuy1Yma0zL%2ba14T0%3d&risl=&pid=ImgRaw&r=0,https://tse1-mm.cn.bing.net/th/id/R-C.33674725d9ae34f86e3835ae30b20afe?rik=Pb3C9e5%2b%2b3a9Vw&riu=http%3a%2f%2fwww.desktx.com%2fd%2ffile%2fwallpaper%2fscenery%2f20180626%2f4c8157d07c14a30fd76f9bc110b1314e.jpg&ehk=9tpmnrrRNi0eBGq3CnhwvuU8PPmKuy1Yma0zL%2ba14T0%3d&risl=&pid=ImgRaw&r=0",
         },
       },
-      imglist: [Bg, Fg, Bg, Bg],
+      // 轨迹内容列表
+      trailList: [],
       tabList: [
         {
           name: "轨迹",
@@ -361,13 +365,44 @@ export default {
     };
   },
   computed: {
+    // 相对时间
     relativeTime() {
-      return moment([this.userinfo.data.nextFollowUpTime]).toNow();
+      // return moment([this.userinfo.data.nextFollowUpTime]).fromNow();
+      let year = moment(this.userinfo.data.nextFollowUpTime).format("YYYY");
+      let month =
+        parseInt(moment(this.userinfo.data.nextFollowUpTime).format("M")) - 1;
+      let day = moment(this.userinfo.data.nextFollowUpTime).format("DD");
+      // 跟进时间在现在之前
+      if (
+        moment(this.userinfo.data.nextFollowUpTime).valueOf() <
+        moment().valueOf()
+      )
+        return moment([year, month, day]).fromNow();
+      else return moment([year, month, day]).toNow();
     },
+    // 轨迹变更列表
+    trailContentList() {
+      console.log(1);
+      return function (content) {
+        if (content) {
+          return content.split(";");
+        } else {
+          return [];
+        }
+      };
+    },
+    // 时间线颜色
+    activeColor()
+    {
+      return function(nexttime){
+        if(moment(nexttime).valueOf()<moment().valueOf())
+        return '#09c076'
+        return '';
+      }
+    }
   },
   async mounted() {
-    console.log(moment().format());
-    console.log("相对日期", this.relativeTime);
+    // console.log("相对日期", this.relativeTime);
   },
   async created() {
     moment.locale("zh-cn");
@@ -377,9 +412,18 @@ export default {
     this.userinfo = info.customer;
     this.sellInfo = info.sell;
     this.buyInfo = info.buy;
-  // 获取轨迹信息
-  let data=await this.api.gettrail(encodeURIComponent(JSON.stringify({"w":[{"customerId":"50"}],"o":[{"k":"id","t":"desc"}],"p":{"n":1,"s":10}})))
-  console.log('轨迹',data);
+    console.log("userinfo", this.userinfo);
+    // 获取轨迹信息
+    this.trailList = await this.api.gettrail(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ customerId: "50" }],
+          o: [{ k: "id", t: "desc" }],
+          p: { n: 1, s: 10 },
+        })
+      )
+    );
+    console.log("轨迹", this.trailList);
   },
   methods: {
     back() {
@@ -392,7 +436,7 @@ export default {
       this.until.href("/views/customermagt/new.html");
     },
     tofollow() {
-      this.until.href("/views/customermagt/newfollow.html?id="+this.id);
+      this.until.href("/views/customermagt/newfollow.html?id=" + this.id);
     },
     copywxtap() {
       this.copyContent = this.info.vx; //也可以直接写上等于你想要复制的内容
@@ -408,7 +452,7 @@ export default {
   },
 };
 </script>
-<style type="less">
+<style lang="less">
 .el-timeline-item {
   margin-bottom: -0.24rem;
 }
@@ -644,11 +688,11 @@ export default {
           content: "";
           width: 0.02rem;
           height: 0.2rem;
-          background-color: #000000;
+          background-color: #909090;
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          right: -0.1rem;
+          right: -0.21rem;
         }
       }
       .contentBody {

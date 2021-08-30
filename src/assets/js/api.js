@@ -2,13 +2,14 @@
 const hostUrl = "http://hsstest.jinkworld.com"
 // const hostUrl = "http://u2768442w0.qicp.vip/";
 // const hostUrl = "http://5anpucq.nat.ipyingshe.com";
+const token = 'yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47'
 import Vue from 'vue'
 import axios from 'axios'
 import { Toast } from 'mint-ui';
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47" } }
+    let headers = { ...header, ...{ "yui3-token": token } }
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
 
@@ -30,7 +31,7 @@ function post(url, data, header) {
     // let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
 
 
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47", 'Content-Type': 'application/json' } }
+    let headers = { ...header, ...{ "yui3-token": token } }
     console.log(data)
     let promise = new Promise((resolve, reject) => {
         axios.post(url, data, { headers })
@@ -49,7 +50,7 @@ function post(url, data, header) {
     return promise;
 }
 function get2(url, data, header, cache = false) {
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-ea294686-7287-4a9e-819d-beca58edcbba" } }
+    let headers = { ...header, ...{ "yui3-token": token } }
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
 
@@ -538,10 +539,37 @@ class api {
 
         })
     }
+      // 获取门店列表
+      getstoreList(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
     // 获取销售顾问列表
     getsalersList(data) {
         return new Promise((resolve, reject) => {
             get('/sys/user/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+    // 获取省市区列表
+    getmapList(data) {
+        return new Promise((resolve, reject) => {
+            get('/sys/region/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+    // 获取客户来源列表
+    getCustomerSource(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
                 resolve(res.data.list)
             })
 
@@ -593,6 +621,26 @@ class api {
 
         })
     }
+
+      //获取客户区域列表
+      getCustomerArea(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+
+    // 获取八个常用车标
+    getCommonCarIcon(){
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/mostbrand').then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
     //提交新增接待
     postWxCheckin(data) {
         return new Promise(resolve => {
@@ -638,15 +686,7 @@ class api {
 		
 		})
 	}
-	//获取客户性质列表
-	getCustomerCommonfield(data){
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommonfield/page?query=' + data).then(res => {
-		        resolve(res.data.list)
-		    })
-		
-		})
-	}
+	
 	//提交新增接待
 	postWxCheckin(data){
 		return new Promise(resolve => {

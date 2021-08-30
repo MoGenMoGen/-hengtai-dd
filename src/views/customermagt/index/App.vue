@@ -243,7 +243,7 @@ export default {
     );
     // 意向等级
     this.intentLevels = await this.api.getWxIntentionLevel({
-      p: { n: 1, s: 10 },
+      p: { n: 1, s: 20 },
     });
   },
   mounted() {

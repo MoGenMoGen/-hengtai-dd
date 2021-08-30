@@ -8,11 +8,11 @@ import { Toast } from 'mint-ui';
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-ea294686-7287-4a9e-819d-beca58edcbba" } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47" } }
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
 
-            if (res.data.code == 0) {
+            if (res.data.code == 0||res.data.error_code==0) {
                 resolve(res.data)
             } else {
 
@@ -30,7 +30,7 @@ function post(url, data, header) {
     // let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
 
 
-    let headers = { ...header, ...{ "yui3-token": "yui3-sid-ea294686-7287-4a9e-819d-beca58edcbba", 'Content-Type': 'application/json' } }
+    let headers = { ...header, ...{ "yui3-token": "yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47", 'Content-Type': 'application/json' } }
     console.log(data)
     let promise = new Promise((resolve, reject) => {
         axios.post(url, data, { headers })
@@ -552,7 +552,7 @@ class api {
     getWxCommunicate(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxCommunicate/page?query=' + data).then(res => {
-                resolve(res.data.list)
+                resolve(res)
             })
 
         })
@@ -606,7 +606,7 @@ class api {
 	getWxCommunicate(data){
 		return new Promise((resolve, reject) => {
 		    get('/hss/wxCommunicate/page?query=' + data).then(res => {
-		        resolve(res.data.list)
+		        resolve(res)
 		    })
 		
 		})
@@ -676,7 +676,54 @@ class api {
 		    })
 		}) 
 	}
-
+	//获取关于我们信息
+	getAboutUs(data){
+		return new Promise((resolve, reject) => {
+		    get('/sys/show/page?query=' + data).then(res => {
+		        resolve(res.data)
+		    })
+		
+		})
+	}
+	//获取品牌列表
+	getWxCommonfield(data){
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxCommonfield/brand/'+data,header).then(res => {
+		        resolve(res.result)
+		    })
+		
+		})
+	}
+	//获取车系列表
+	getCarSeries(data){
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxCommonfield/series',data,header).then(res => {
+		        resolve(res)
+		    })
+		
+		})
+	}
+	//获取车型列表
+	getCarModels(data){
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxCommonfield/series/'+data,header).then(res => {
+		        resolve(res)
+		    })
+		
+		})
+	}
 }
 
 export { api, hostUrl };

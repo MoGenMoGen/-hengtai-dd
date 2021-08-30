@@ -14,7 +14,7 @@
 			<div class="position">
 				<span>{{info.departRoles}}</span>
 			</div>
-		</div>
+		</div>  
 	</div>
 	<div class="personList">
 		<div class="listcontent" @click="toMycostomer">
@@ -71,14 +71,14 @@ export default {
 		  this.info=res.sysUserVo
 		  console.log(this.info);
 	  })
-  },
+  }, 
   methods: {
 	  toDetail(){
 		  this.until.href("/views/profile/detail.html")
 	  },
 	  toAboutus(){
 		  this.until.href("/views/profile/aboutus.html")
-	  },
+		  },
 	  toMycostomer(){
 		  this.until.href("/views/customermagt/index.html")
 	  }

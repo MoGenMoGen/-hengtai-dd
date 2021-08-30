@@ -6,19 +6,35 @@
 		</div>
 		<div class="searchBox">
 			<div class="leftBox">
-				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" v-model="phone" />
-				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" v-model="salesman" />
-				<!-- <input type="" name="" id="" value="" placeholder="品牌、车型" /> -->
-				<el-select v-model="value" filterable placeholder="品牌车型" class="select" v-if="currentIndex==0"
+				<el-select v-model="value" filterable placeholder="品牌" class="select2"
 					@change="postId">
-					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.id">
+					<el-option v-for="item in options" :key="item.value" :label="item.brand_name" :value="item.id">
 					</el-option>
 				</el-select>
-				<el-select v-model="value2" filterable placeholder="品牌车型" class="select1" v-if="currentIndex==1">
+				<el-select v-model="value2" filterable placeholder="车系" class="select2" 
+					@change="postIdThree">
+					<el-option v-for="item in optionsThree" :key="item.value" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+				<el-select v-model="value3" filterable placeholder="车型" class="select2" 
+					@change="postIdFour">
+					<el-option v-for="item in optionsFour" :key="item.value" :label="item.brand_name" :value="item.id">
+					</el-option>
+				</el-select>
+				
+				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" v-model="phone" />
+				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" v-model="salesman"  class="putin"/>
+				<!-- <input type="" name="" id="" value="" placeholder="品牌、车型" /> -->
+			<!-- 	<el-select v-model="value" filterable placeholder="品牌车型" class="select" v-if="currentIndex==0"
+					@change="postId">
+					<el-option v-for="item in options" :key="item.value" :label="item.brand_name" :value="item.id">
+					</el-option>
+				</el-select> -->
+				<!-- <el-select v-model="value2" filterable placeholder="品牌车型" class="select1" v-if="currentIndex==1">
 					<el-option v-for="item in optionsThree" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
-				</el-select>
-				<el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0" @change="postIdTwo">
+				</el-select> -->
+				<el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0" @change="postIdTwo" style="margin-bottom: 0;">
 					<el-option v-for="item in optionsTwo" :key="item.value" :label="item.content" :value="item.id">
 					</el-option>
 				</el-select>
@@ -180,40 +196,13 @@
 				value: '',
 				value1: "",
 				value2: "",
+				value3:"",
 				total: '',
-				options: [{
-					id: 1,
-					label: '黄金糕'
-				}, {
-					id: 2,
-					label: '双皮奶'
-				}, {
-					id: 3,
-					label: '蚵仔煎'
-				}, {
-					id: 4,
-					label: '龙须面'
-				}, {
-					id: 5,
-					label: '北京烤鸭'
-				}],
+				options: [],
 				optionsTwo: [],
-				optionsThree: [{
-					id: 1,
-					label: '黄金糕'
-				}, {
-					id: 2,
-					label: '双皮奶'
-				}, {
-					id: 3,
-					label: '蚵仔煎'
-				}, {
-					id: 4,
-					label: '龙须面'
-				}, {
-					id: 5,
-					label: '北京烤鸭'
-				}, ],
+				
+				optionsThree: [],
+				optionsFour:[],
 				infoList: [
 
 
@@ -240,6 +229,15 @@
 			// 	console.log(888,this.infoList);
 			// })
 			window.addEventListener('scroll', this.menu)
+			let list="abcd"
+			for(let i=0;i<list.length;i++)
+			{
+				this.api.getWxCommonfield(list[i]).then(res=>{
+					console.log("012",res);
+				 this.options=[...this.options,...res]
+				})
+			}
+			
 		},
 		methods: {
 			cancel() {
@@ -352,11 +350,24 @@
 					this.getList()
 			},
 			postId(val) {
-				this.brandId=val
+			
+				this.api.getCarSeries({brandid:val}).then(res=>{
+					console.log("测试",res);
+					this.optionsThree=res.result
+				})
 			},
 			postIdTwo(val){
 				this.levelId=val
+			},
+			postIdThree(val){
+				this.api.getCarModels(val).then(res=>{
+					this.optionsFour=res.result
+				})
+			},
+			postIdFour(val){
+					this.brandId=val
 			}
+			
 
 
 
@@ -435,27 +446,37 @@
 
 			.leftBox {
 				input {
-					width: 1.8rem;
+					width: 2.866rem;
 					height: 0.8rem;
 					background: #FFFFFF;
 					border: 0.01px solid #DDDDDD;
 					border-radius: 0rem;
 					font-size: 0.24rem;
-					padding: 0 0.1rem;
+					padding: 0 0.32rem;
 
+				}
+				.putin{
+					width:5.8rem ;
 				}
 
 				input::placeholder {
 					font-size: 0.24rem;
 					color: #909090;
+					opacity: 0.8;
 					opacity: 0.7;
-
+ 
 				}
 
 				.select {
-					width: 1.9rem;
+					width: 2.866rem;
 					height: 0.7rem;
+					margin-bottom: 10px;
 
+				}
+				.select2{
+					width: 1.88rem;
+					height: 0.7rem;
+					margin-bottom: 0.2rem; 
 				}
 
 
@@ -467,7 +488,7 @@
 						font-size: 0.24rem;
 						margin-top: 0.1rem;
 						padding-right: 0;
-						margin-right: 0.009rem;
+						margin-right: 0.059rem;
 
 						/deep/ .el-input--prefix .el-input__inner {
 							padding-right: 0;

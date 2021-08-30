@@ -67,7 +67,7 @@
 <template>
     <div id="container">
 		<div class="title">
-			<img src="~@/assets/img/arrowback.png" /> <!-- @click="back" --> 
+			<img src="~@/assets/img/arrowback.png" @click="back"/> <!-- @click="back" --> 
 			车保姆
 		</div>
         <div class="menu">
@@ -155,6 +155,9 @@ export default {
               }
           })
       },
+	  back(){
+		  this.until.back()
+	  }
   }
 };
 </script>

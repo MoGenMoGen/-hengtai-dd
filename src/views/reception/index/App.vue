@@ -98,10 +98,7 @@
 					id: 0,
 					label: '否'
 				},
-				{
-					id:"",
-					label: '全部'
-				}],
+				],
 				infoList:[
 					
 				],

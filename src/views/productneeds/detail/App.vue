@@ -186,6 +186,10 @@
 				id: "",
 				reply: "",
 				isbuy: true,
+				istrue:true,
+				num:1,
+				
+				total: "",
 				info: {
 					pinpai: "奔驰",
 					chexing: "迈巴赫S级",
@@ -199,11 +203,9 @@
 					xiaoshou: "杰尼龟",
 					shangpai: "2020-06-01"
 				},
-				replayList: [{
-					replay: "我们店里刚到一款正适合您的需求，推荐您来店里试一下。随时 欢迎光临！",
-					date: "2021-08-05",
-					person: "杰尼龟"
-				}]
+				replayList: [],
+			
+			
 
 
 			};
@@ -215,16 +217,18 @@
 
 					this.info = res
 					this.isbuy = true
-					let querys = {
-						w: [
-							["business_id", this.info.id, "EQ"],
-							["isbuy", "1", "EQ"],
-						],
-						o: ["id", "desc"],
-						p: [1, 10],
-					}
+	 let querys= {
+					w: [
+						["business_id",this.info.id, "EQ"],
+						["isbuy", "1", "EQ"],
+					],
+					o: ["id", "desc"],
+					p: [1, 10],
+				}
 					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(res => {
-						this.replayList = res
+						this.replayList = [...this.replayList, ...res.data.list]
+						this.total = res.page.total
+
 					})
 
 				})
@@ -234,7 +238,7 @@
 
 					this.info = res
 					this.isbuy = false
-					let querys = {
+					let querystwo = {
 						w: [
 							["business_id", this.info.id, "EQ"],
 							["isbuy", "0", "EQ"],
@@ -242,12 +246,14 @@
 						o: ["id", "desc"],
 						p: [1, 10],
 					}
-					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(res => {
-						this.replayList = res
+					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querystwo))).then(res => {
+						this.replayList = [...this.replayList,...res.data.list]
+						this.total = res.page.total
 					})
 
 				})
 			}
+			window.addEventListener('scroll', this.menu)
 		},
 		created() {
 			this.currentindex = this.until.getQueryString('index')
@@ -267,6 +273,60 @@
 				// 分页
 				this.query.toP(qry, obj.p[0], obj.p[1]);
 				return qry;
+			},
+			menu() {
+				this.scroll = document.documentElement.scrollTop || document.body.scrollTop;
+				let scrollBottom = document.documentElement.scrollHeight - this.scroll - document.documentElement
+					.clientHeight
+				if (this.istrue == true) {
+					console.log(1);
+					if (scrollBottom < 100) {
+						console.log(2,this.currentindex,this.replayList.length < this.total);
+						this.istrue = false
+						if (this.currentindex == 0 && this.replayList.length < this.total) {
+							console.log(3);
+							this.num++
+							let querys= {
+												w: [
+													["business_id", this.info.id, "EQ"],
+													["isbuy", "1", "EQ"],
+												],
+												o: ["id", "desc"],
+												p: [this.num, 10],
+											}
+							
+							console.log(44545,querys.p[0]);
+							this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(res => {
+								this.replayList = [...this.replayList, ...res.data.list]
+								this.istrue = true
+
+							})
+
+
+						} else if (this.currentindex == 1 && this.replayList.length < this.total) {
+							this.num++
+							
+							let querystwo = {
+								w: [
+									["business_id", this.info.id, "EQ"],
+									["isbuy", "0", "EQ"],
+								],
+								o: ["id", "desc"],
+								p: [this.num, 10],
+							}
+							
+							this.api.getWxCommunicate(this.query.toEncode(this.newqry(querystwo))).then(res => {
+								this.replayList = [...this.replayList,...res.data.list]
+								this.istrue = true
+							})
+
+						}
+					}
+					// load() {
+					// 	console.log(1231321);
+					// 	this.getList()
+					// }
+				}
 			},
 			back() {
 				this.until.back()

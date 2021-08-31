@@ -12,7 +12,12 @@
           <div class="placeholder">*</div>
           <div class="rowtitle">门店</div>
         </div>
-        <el-select v-model="shop" placeholder="请选择门店" class="row_between">
+        <el-select
+          v-model="hssWxCustomerRo.store"
+          filterable
+          placeholder="请选择门店"
+          class="row_between"
+        >
           <el-option
             v-for="item in shopList"
             :key="item.id"
@@ -29,7 +34,8 @@
           <div class="rowtitle">销售</div>
         </div>
         <el-select
-          v-model="saler"
+          filterable
+          v-model="hssWxCustomerRo.saler"
           placeholder="请选择销售顾问"
           class="row_between"
         >
@@ -59,7 +65,7 @@
         <div class="row_between">
           <el-input
             style="width: 3rem"
-            v-model="phone"
+            v-model="hssWxCustomerRo.phone"
             type="number"
             oninput="if(value.length>11)value=value.slice(0,11)"
             placeholder="请输入"
@@ -75,7 +81,7 @@
         </div>
 
         <el-input
-          v-model="wxnum"
+          v-model="hssWxCustomerRo.wxId"
           type="text"
           maxlength="11"
           placeholder="请输入"
@@ -90,7 +96,7 @@
         </div>
 
         <el-input
-          v-model="name"
+          v-model="hssWxCustomerRo.name"
           type="text"
           maxlength="8"
           placeholder="请输入"
@@ -104,32 +110,33 @@
           <div class="rowtitle">性别</div>
         </div>
         <div class="row_radio">
-          <div class="radiobox" @click="switchradiosex(0)">
+          <div class="radiobox" @click="hssWxCustomerRo.sex = 2">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="sexnum == 0"
-            />
-            <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>未知</span>
-          </div>
-          <div class="radiobox" @click="switchradiosex(1)">
-            <img
-              src="~@/assets/img/radioselect.png"
-              alt=""
-              v-if="sexnum == 1"
+              v-if="hssWxCustomerRo.sex == 2"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>先生</span>
           </div>
-          <div class="radiobox" @click="switchradiosex(2)">
+          <div class="radiobox" @click="hssWxCustomerRo.sex = 1">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="sexnum == 2"
+              v-if="hssWxCustomerRo.sex == 1"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>女士</span>
+          </div>
+          <div class="radiobox" @click="hssWxCustomerRo.sex = 3">
+            <img
+              src="~@/assets/img/radio.png"
+              alt=""
+              v-if="hssWxCustomerRo.sex == 1 || hssWxCustomerRo.sex == 2"
+            />
+            <img src="~@/assets/img/radioselect.png" alt="" v-else />
+
+            <span>未知</span>
           </div>
         </div>
       </div>
@@ -140,20 +147,20 @@
           <div class="rowtitle">重点客户</div>
         </div>
         <div class="row_radio">
-          <div class="radiobox" @click="switchradiokeycus(0)">
+          <div class="radiobox" @click="hssWxCustomerRo.important = 0">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="iskeycus == 0"
+              v-if="hssWxCustomerRo.important == 0"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>否</span>
           </div>
-          <div class="radiobox" @click="switchradiokeycus(1)">
+          <div class="radiobox" @click="hssWxCustomerRo.important = 1">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="iskeycus == 1"
+              v-if="hssWxCustomerRo.important == 1"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>是</span>
@@ -171,7 +178,7 @@
             v-for="(item, index) in cusArea"
             :key="item.id"
             class="radiobox"
-            @click="cusAreaindex = index"
+            @click="radioCheckArea(item, index)"
           >
             <img
               src="~@/assets/img/radioselect.png"
@@ -193,7 +200,12 @@
         </div>
 
         <van-field
-          style="align-item: center; padding: 0"
+          style="
+            align-item: center;
+            padding: 0;
+            height: 19px;
+            line-height: 19px;
+          "
           class="row_between"
           v-model="city"
           readonly
@@ -222,6 +234,7 @@
           <div class="rowtitle">客户性质</div>
         </div>
         <el-select
+          filterable
           v-model="custype"
           placeholder="请选择客流性质"
           class="row_between"
@@ -242,6 +255,7 @@
           <div class="rowtitle">客户来源</div>
         </div>
         <el-select
+          filterable
           v-model="customerof"
           placeholder="请选择客户来源"
           class="row_between"
@@ -263,7 +277,7 @@
     </div>
 
     <div class="buyneeds">
-      <div class="row">
+      <div class="row" @click="toMore">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder">*</div>
@@ -277,7 +291,13 @@
         </div>
       </div>
       <div class="brand_list">
-        <div class="brand_item" v-for="item in BbrandList" :key="item.id">
+        <div
+          class="brand_item"
+          v-for="item in BbrandList"
+          :key="item.id"
+          @click="currentBID = item.id"
+          :style="{ border: item.id == currentBID ? '1px solid #09c076' : '' }"
+        >
           <img :src="item.brand_logo" alt="" />
         </div>
       </div>
@@ -288,6 +308,7 @@
           <div class="rowtitle">车系</div>
         </div>
         <el-select
+          filterable
           v-model="bcarserie"
           placeholder="请选择车系"
           class="row_between"
@@ -308,6 +329,7 @@
           <div class="rowtitle">车型</div>
         </div>
         <el-select
+          filterable
           v-model="bcartype"
           placeholder="请选择车型"
           class="row_between"
@@ -590,6 +612,7 @@
             <div class="rowtitle">车系</div>
           </div>
           <el-select
+            filterable
             v-model="scartype"
             placeholder="请选择车系"
             class="row_between"
@@ -610,6 +633,7 @@
             <div class="rowtitle">车型</div>
           </div>
           <el-select
+            filterable
             v-model="scartype"
             placeholder="请选择车型"
             class="row_between"
@@ -686,6 +710,7 @@
             <div class="rowtitle">老客户介绍人</div>
           </div>
           <el-select
+            filterable
             v-model="introducer"
             placeholder="请选择"
             class="row_between"
@@ -693,7 +718,7 @@
             <el-option
               v-for="item in introducers"
               :key="item.id"
-              :label="item.value"
+              :label="item.name"
               :value="item.id"
             >
             </el-option>
@@ -742,18 +767,37 @@
         </div>
         <div class="row" style="padding-right: 0.24rem">
           <!-- 占位符 -->
-          <div style="display: flex">
+          <div style="display: flex; align-items: center">
             <div class="placeholder"></div>
-            <div class="rowtitle" style="">所在地</div>
+            <div class="rowtitle">所在地</div>
           </div>
 
-          <el-cascader
+          <van-field
+            style="
+              align-item: center;
+              padding: 0;
+              height: 19px;
+              line-height: 19px;
+            "
             class="row_between"
-            placeholder="搜索或选择"
-            :options="locations"
             v-model="location"
-            filterable
-          ></el-cascader>
+            readonly
+            label=""
+            placeholder="请选择所在地区"
+            @click="showlocation = true"
+          />
+          <van-popup v-model="showlocation" round position="bottom">
+            <van-cascader
+              v-model="cascaderValue1"
+              title="请选择所在地区"
+              :options="locations"
+              :field-names="{ text: 'nm', value: 'id' }"
+              active-color="#09C076"
+              @close="showlocation = false"
+              @change="changelocations"
+              @finish="onFinishlocation"
+            />
+          </van-popup>
         </div>
         <div class="row">
           <!-- 占位符 -->
@@ -829,13 +873,63 @@ export default {
       datepicker: "",
       showfollowtime: false,
       minDate: new Date(),
+      // 选中买车品牌ID
+      currentBID: "sds",
       // 用户信息
-      hssWxCustomerRo: {},
+      hssWxCustomerRo: {
+        chcekinId: "", //接待表id，用于是否留档
+        name: "", //用户姓名
+        wxId: "", //微信号
+        phone: "", //电话
+        sex: 3, //性别(1女2男3未知)
+        important: 0, //重点客户（0否，1是）
+        region: "", //客户区域
+        nature: "", //性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7证牌服务，8其他服务）
+        store: "", //门店
+        saler: "", //销售顾问
+        source: "", //客户来源（1新媒体（快手、抖音等），2老客户，3客户推荐，4亲朋推荐，5同行介绍，6网格邀约（汽车之家，华夏）7自然到店，8访客，9牌证中心，10车保姆中心）
+        introducer: "", //老客户介绍人
+        sparePhone: "", //备用手机号
+        idcard: "", //身份证
+        birthday: "", //生日
+        location: "", //所在地
+        contactAddress: "", //联系地址
+        hobby: "", //兴趣
+        occupation: "", //职业
+        business: 1, //(购买类型)1增购，2置换，3求购
+        nextFollowUpTime: "", //下次跟进时间
+        intentionLevel: "", //意向等级（保存意向等级id）
+        isSell: false, //是否卖车
+      },
       // 买车
-      hssWxBusinessBuyRo: {},
+      hssWxBusinessBuyRo: {
+        brand: "", //品牌
+        brandPic: "",
+
+        model: "", //车型
+        priceId: "",
+
+        minPrice: 5.1, //最低价格，单位（万）
+        maxPrice: 10.5, //最高价格，单位（万）(无限就写0)
+        color: "", //颜色
+        mileage: 0, //里程数
+        isMortgage: 0, //按揭，1否，2是
+        describes: "", //意向描述
+      },
       // 卖车
-      hssWxBusinessSellRo: {},
+      hssWxBusinessSellRo: {
+        brandModel: "", //品牌车系
+        mileage: 0, //里程数
+        licensingTime: "", //上牌日期
+        remarks: "", //备注
+      },
       query_params: {
+        w: [["pid", 100000, "EQ"]],
+        o: ["id", "esc"],
+        p: [1, 10000],
+      },
+      // 所在地的查询条件
+      query_locations: {
         w: [["pid", 100000, "EQ"]],
         o: ["id", "esc"],
         p: [1, 10000],
@@ -856,116 +950,31 @@ export default {
       // 当前客户区域下标
       cusAreaindex: 0,
       // 客户区域
-      cusArea: [
-        {
-          content: "老三区",
-          id: 1,
-        },
-        {
-          content: "北仑区",
-          id: 2,
-        },
-        {
-          content: "奉化区",
-          id: 3,
-        },
-        {
-          content: "余姚",
-          id: 4,
-        },
-        {
-          content: "宁海",
-          id: 5,
-        },
-        {
-          content: "慈溪",
-          id: 6,
-        },
-        {
-          content: "象山",
-          id: 7,
-        },
-      ],
+      cusArea: [],
       cascaderValue: "",
+      cascaderValue1: "",
       showcity: false,
+      showlocation: false,
       // 宁波以外城市
       city: "",
-      citys: [
-        {
-          nm: "浙江省",
-          id: "330000",
-          children: [
-            { nm: "杭州市", id: "330100" },
-            { nm: "宁波市", id: "330200" },
-          ],
-        },
-      ],
+      citys: [],
+      location: "",
+      locations: [],
 
       // 客户性质列表
       custype: "",
-      custypeList: [
-        {
-          id: 1,
-          value: "首次自行",
-        },
-        {
-          id: 2,
-          value: "邀约自行",
-        },
-      ],
+      custypeList: [],
       // 客户来源
       customerof: "",
       customerofList: [],
       // 汽车品牌列表
-      BbrandList: [
-        {
-          brand_logo: brand,
-          id: 1,
-        },
-        {
-          brand_logo: brand,
-          id: 2,
-        },
-        {
-          brand_logo: brand,
-          id: 3,
-        },
-        {
-          brand_logo: brand,
-          id: 4,
-        },
-        {
-          brand_logo: brand,
-          id: 5,
-        },
-        {
-          brand_logo: brand,
-          id: 6,
-        },
-        {
-          brand_logo: brand,
-          id: 7,
-        },
-        {
-          brand_logo: brand,
-          id: 8,
-        },
-      ],
+      BbrandList: [],
       // 车系列表
       Bcarseries: [],
       bcarserie: "",
       // 车型列表
       bcartype: "",
-      Bcartypes: [
-        {
-          id: 1,
-          value: "A4L 新款",
-        },
-        {
-          id: 2,
-          value: "A8 黑色 商务款",
-        },
-      ],
+      Bcartypes: [],
       // 选中的价格下标
       checkedPriceIndex: 0,
       // 价格区间列表
@@ -1010,18 +1019,6 @@ export default {
       // 自定义高低价
       lowprice: "",
       highprice: "",
-      // 车身颜色
-      carcolor: "",
-      carcolors: [
-        {
-          id: 1,
-          value: "红色",
-        },
-        {
-          id: 2,
-          value: "宝石蓝",
-        },
-      ],
       // 买车里程数
       buymileage: 0,
       // 是否按揭
@@ -1030,48 +1027,7 @@ export default {
       intentDesc: "",
       // 意向等级
       checkedLevelIndex: 0,
-      intentLevelList: [
-        {
-          id: 1,
-          level: "O",
-        },
-        {
-          id: 2,
-          level: "K",
-        },
-        {
-          id: 3,
-          level: "A",
-        },
-        {
-          id: 4,
-          level: "B",
-        },
-        {
-          id: 5,
-          level: "C",
-        },
-        {
-          id: 6,
-          level: "J",
-        },
-        {
-          id: 7,
-          level: "S",
-        },
-        {
-          id: 8,
-          level: "P",
-        },
-        {
-          id: 9,
-          level: "战败",
-        },
-        {
-          id: 10,
-          level: "无效",
-        },
-      ],
+      intentLevelList: [],
       // 购买类型
       butype: 1,
       // 跟进日期
@@ -1080,55 +1036,13 @@ export default {
       followdateofweek: "",
       // 是否卖车
       issellcar: 1,
-      SbrandList: [
-        {
-          brand_logo: brand,
-          id: 1,
-        },
-        {
-          brand_logo: brand,
-          id: 2,
-        },
-        {
-          brand_logo: brand,
-          id: 3,
-        },
-        {
-          brand_logo: brand,
-          id: 4,
-        },
-        {
-          brand_logo: brand,
-          id: 5,
-        },
-        {
-          brand_logo: brand,
-          id: 6,
-        },
-        {
-          brand_logo: brand,
-          id: 7,
-        },
-        {
-          brand_logo: brand,
-          id: 8,
-        },
-      ],
+      SbrandList: [],
       // 车系列表
       Scarseries: [],
       scarserie: "",
       // 车型列表
       scartype: "",
-      Scartypes: [
-        {
-          id: 1,
-          value: "A4L 新款",
-        },
-        {
-          id: 2,
-          value: "A8 黑色 商务款",
-        },
-      ],
+      Scartypes: [],
       // 卖车里程数
       sellmileage: 0,
       // 上牌时间
@@ -1137,20 +1051,7 @@ export default {
       remark: "",
       // 老客户介绍人
       introducer: "",
-      introducers: [
-        {
-          id: 8,
-          value: "摩根",
-        },
-        {
-          id: 9,
-          value: "姚峰",
-        },
-        {
-          id: 10,
-          value: "吴林超",
-        },
-      ],
+      introducers: [],
       // 备用号
       sparephone: "",
       // 身份证号
@@ -1159,22 +1060,7 @@ export default {
       birthday: "",
       // 所在地
       location: "",
-      locations: [
-        {
-          value: "zj",
-          label: "浙江",
-          children: [
-            {
-              value: "hz",
-              label: "杭州",
-            },
-            {
-              value: "nb",
-              label: "宁波",
-            },
-          ],
-        },
-      ],
+      locations: [],
       // 联系地址
       contactAddress: "",
       //  兴趣
@@ -1211,13 +1097,10 @@ export default {
       this.query.toP(qry, obj.p[0], obj.p[1]);
       return qry;
     },
-    // 单选性别
-    switchradiosex(num) {
-      this.sexnum = num;
-    },
-    // 单选重点客户
-    switchradiokeycus(num) {
-      this.iskeycus = num;
+    // 单选客户区域
+    radioCheckArea(item, index) {
+      this.cusAreaindex = index;
+      this.region=item.id; 
     },
     // 处理跟进时间
     handlefollowdate(e) {
@@ -1249,6 +1132,32 @@ export default {
       this.city = selectedOptions.map((option) => option.nm).join("/");
       // 设置请求条件，下次请求还是先请求省
     },
+    // 更换省市区
+    changelocations({ value }) {
+      // 选中了某省(选某市就结束了)
+      // 修改请求条件
+      this.query_locations.w[0][1] = value;
+
+      // 循环locations,在对应项中插入children
+      this.locations.forEach((item, index) => {
+        if (item.id == value) {
+          this.api
+            .getmapList(this.query.toEncode(this.newqry(this.query_locations)))
+            .then((res) => {
+              item.children = res;
+            });
+          return false;
+        }
+      });
+    },
+    // 全部选项选择完毕后，会触发 finish 事件
+    onFinishlocation({ selectedOptions }) {
+      // 关闭弹出层
+      this.showlocation = false;
+      // 设置显示内容
+      this.location = selectedOptions.map((option) => option.nm).join("/");
+      // 设置请求条件，下次请求还是先请求省
+    },
 
     async afterRead(e) {
       console.log(e);
@@ -1273,8 +1182,13 @@ export default {
       this.followdate = moment(e).format("YYYY-MM-DD dddd HH:mm");
       this.showfollowtime = false;
     },
+    // 跳到品牌列表页
+    toMore() {
+      this.until.href("/views/customermagt/brandlist.html");
+    },
   },
   async created() {
+    console.log("created");
     moment.locale("zh-cn");
     // 获取门店列表
     this.shopList = await this.api.getstoreList(
@@ -1310,10 +1224,13 @@ export default {
     this.api
       .getmapList(this.query.toEncode(this.newqry(this.query_params)))
       .then((res) => {
+        // 宁波以外某省某市
         this.citys = res.map((item) => {
           item.children = [];
           return item;
         });
+        this.locations = JSON.parse(JSON.stringify(this.citys));
+        // console.log("citys", this.citys, "locations", this.locations);
       });
     // 客流性质
     let query_flow_type = {
@@ -1340,7 +1257,11 @@ export default {
     });
     // 获取八个常用车标
     let BbrandList = await this.api.getCommonCarIcon();
-    //  this.BbrandList=BbrandList.split(',')
+    this.BbrandList = JSON.parse(BbrandList);
+    this.SbrandList = JSON.parse(JSON.stringify(this.BbrandList));
+
+    //  获取老客户介绍人
+    this.introducers = await this.api.getOldCustomer("");
   },
 };
 </script>
@@ -1418,7 +1339,7 @@ export default {
     border: none;
   }
   .rowtitle {
-    width: 1.44rem;
+    width: 1.5rem;
     font-size: 0.24rem;
     font-weight: bold;
     color: #303030;

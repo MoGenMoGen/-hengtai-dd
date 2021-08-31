@@ -4,6 +4,13 @@
       <img src="~@/assets/img/arrowback.png" @click="back" />
       品牌列表
     </div>
+    <van-search
+      v-model="searchvalue"
+      shape="round"
+      background="#fff"
+      placeholder="请输入搜索关键词"
+      @search="onSearch"
+    />
     <div class="brand_list">
       <div
         class="brand_item"
@@ -16,6 +23,10 @@
             class="son_item"
             v-for="(item2, index2) in item1.sonlist"
             :key="index2"
+            :style="{
+              'background-color': currentID == item2.id ? '#09c076' : '',
+            }"
+            @click="handleClick(item2)"
           >
             <img class="brand_icon" :src="item2.brand_logo" alt="" />
             <div class="item_name">{{ item2.brand_name }}</div>
@@ -30,49 +41,36 @@
 export default {
   data() {
     return {
-      brandlist: [
-        {
-          first_letter: "A",
-          sonlist: [
-            {
-              brand_name: "奥迪",
-              brand_logo: "https://juhe.oss-cn-hangzhou.aliyuncs.com/api_image/538/brand/1.png",
-            },
-            {
-              brand_name: "阿尔法·罗密欧",
-              brand_logo: "https://juhe.oss-cn-hangzhou.aliyuncs.com/api_image/538/brand/2.png",
-            },
-            {
-              brand_name: "阿斯顿·马丁",
-              brand_logo: "https://juhe.oss-cn-hangzhou.aliyuncs.com/api_image/538/brand/3.png",
-            },
-          ],
-        },
-        {
-          first_letter: "B",
-          sonlist: [
-            {
-              brand_name: "奥迪",
-              brand_logo: "https://juhe.oss-cn-hangzhou.aliyuncs.com/api_image/538/brand/1.png",
-            },
-            {
-              brand_name: "阿尔法·罗密欧",
-              brand_logo: "https://juhe.oss-cn-hangzhou.aliyuncs.com/api_image/538/brand/2.png",
-            },
-            {
-              brand_name: "阿斯顿·马丁",
-              brand_logo: "https://juhe.oss-cn-hangzhou.aliyuncs.com/api_image/538/brand/3.png",
-            },
-          ],
-        },
-      ],
+      searchvalue: "",
+      // 选中ID
+      currentID: "fds",
+      brandlist: [],
     };
   },
   computed: {},
   async mounted() {},
-  async created() {},
+  async created() {
+    // 利用ASCII码转为字符
+    // let code = 65;
+    // while (code <= 67) {
+    //   let obj = {};
+    //   obj.first_letter = String.fromCharCode(code);
+    //   obj.sonlist = await this.api.getWxCommonfield(String.fromCharCode(code));
+    //   this.brandlist.push(obj);
+    //   code++;
+    // }
+    // console.log(this.brandlist);
+  },
   methods: {
     back() {
+      this.until.back();
+    },
+    onSearch(val) {
+      console.log(val);
+    },
+    handleClick(obj) {
+      //将选中项携带出去
+      // this.until.loSave('')
       this.until.back();
     },
   },

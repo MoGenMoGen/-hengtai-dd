@@ -503,8 +503,8 @@ export default {
       position: relative;
       .level {
         position: absolute;
-        top: 0.4rem;
-        right: 0.4rem;
+        top:0;
+        right: 0rem;
         width: 0.44rem;
         height: 0.44rem;
         font-size: 0.26rem;

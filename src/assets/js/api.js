@@ -13,7 +13,7 @@ function get(url, data, header, cache = false) {
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
 
-            if (res.data.code == 0||res.data.error_code==0) {
+            if (res.data.code == 0 || res.data.error_code == 0) {
                 resolve(res.data)
             } else {
 
@@ -37,7 +37,7 @@ function post(url, data, header) {
         axios.post(url, data, { headers })
             .then(function (response) {
 
-                if (response.data.code == 0||response.status==200) {
+                if (response.data.code == 0 || response.status == 200) {
                     resolve(response.data);
                 } else {
                     Toast(response.data.msg)
@@ -294,18 +294,18 @@ class api {
             })
         })
     }
-   
+
     // post图片上传
     upnewimg(data) {
         console.log('post上传');
         return new Promise((resolve, reject) => {
-            post('/general/oss/upload' ,data, {"Content-Type": "multipart/form-data"}).then(res => {
+            post('/general/oss/upload', data, { "Content-Type": "multipart/form-data" }).then(res => {
                 resolve(res)
             })
-            .catch(err=>{
-                reject(err)
+                .catch(err => {
+                    reject(err)
 
-            })
+                })
 
         })
     }
@@ -539,8 +539,8 @@ class api {
 
         })
     }
-      // 获取门店列表
-      getstoreList(data) {
+    // 获取门店列表
+    getstoreList(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxCommonfield/page?query=' + data).then(res => {
                 resolve(res.data.list)
@@ -622,8 +622,8 @@ class api {
         })
     }
 
-      //获取客户区域列表
-      getCustomerArea(data) {
+    //获取客户区域列表
+    getCustomerArea(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxCommonfield/page?query=' + data).then(res => {
                 resolve(res.data.list)
@@ -633,9 +633,18 @@ class api {
     }
 
     // 获取八个常用车标
-    getCommonCarIcon(){
+    getCommonCarIcon() {
         return new Promise((resolve, reject) => {
             get('/hss/wxCommonfield/mostbrand').then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+    // 获取老客户介绍人
+    getOldCustomer(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCheckin/listOldUser?name=' + data).then(res => {
                 resolve(res.data)
             })
 
@@ -650,120 +659,120 @@ class api {
         })
     }
 
-	//获取留言列表
-	getWxCommunicate(data){
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommunicate/page?query=' + data).then(res => {
-		        resolve(res)
-		    })
-		
-		})
-	}
-	//获取接待列表
-	
-   getWxCheckin(data){
-   	return new Promise((resolve, reject) => {
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-   	    get('/hss/wxCheckin/pageList',data,header).then(res => {
-   	        resolve(res)
-   	    })
-   	
-   	})
-   }
-	//获取接待详情
-	getWxCheckinDetail(data){
-		return new Promise((resolve, reject) => {
-			let header = {
-			    // 'Content-Type': 'application/json',
-			    // 'yui3-token': localStorage.getItem('token')
-			}
-		    get('/hss/wxCheckin/info/'+data,header).then(res => {
-		        resolve(res.data)
-		    })
-		
-		})
-	}
-	
-	//提交新增接待
-	postWxCheckin(data){
-		return new Promise(resolve => {
-		    post("/hss/wxCheckin/add", data, {}).then(res => {
-		        resolve(res.data)
-		    })
-		}) 
-	}
-	//获取个人信息
-	getPersonInformation(data){
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-		return new Promise((resolve, reject) => {
-		    get('/sys/user/getPerson',data,header).then(res => {
-		        resolve(res.data)
-		    })
-		
-		})
-	}
-	//提交修改个人修改信息
-	postUpdPerson(data){
-		return new Promise(resolve => {
-		    post("/sys/user/updPerson", data, {}).then(res => {
-		        resolve(res.data)
-		    })
-		}) 
-	}
-	//获取关于我们信息
-	getAboutUs(data){
-		return new Promise((resolve, reject) => {
-		    get('/sys/show/page?query=' + data).then(res => {
-		        resolve(res.data)
-		    })
-		
-		})
-	}
-	//获取品牌列表
-	getWxCommonfield(data){
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommonfield/brand/'+data,header).then(res => {
-		        resolve(res.result)
-		    })
-		
-		})
-	}
-	//获取车系列表
-	getCarSeries(data){
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommonfield/series',data,header).then(res => {
-		        resolve(res)
-		    })
-		
-		})
-	}
-	//获取车型列表
-	getCarModels(data){
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommonfield/series/'+data,header).then(res => {
-		        resolve(res)
-		    })
-		
-		})
-	}
+    //获取留言列表
+    getWxCommunicate(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommunicate/page?query=' + data).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    //获取接待列表
+
+    getWxCheckin(data) {
+        return new Promise((resolve, reject) => {
+            let header = {
+                // 'Content-Type': 'application/json',
+                // 'yui3-token': localStorage.getItem('token')
+            }
+            get('/hss/wxCheckin/pageList', data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    //获取接待详情
+    getWxCheckinDetail(data) {
+        return new Promise((resolve, reject) => {
+            let header = {
+                // 'Content-Type': 'application/json',
+                // 'yui3-token': localStorage.getItem('token')
+            }
+            get('/hss/wxCheckin/info/' + data, header).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+
+    //提交新增接待
+    postWxCheckin(data) {
+        return new Promise(resolve => {
+            post("/hss/wxCheckin/add", data, {}).then(res => {
+                resolve(res.data)
+            })
+        })
+    }
+    //获取个人信息
+    getPersonInformation(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/sys/user/getPerson', data, header).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+    //提交修改个人修改信息
+    postUpdPerson(data) {
+        return new Promise(resolve => {
+            post("/sys/user/updPerson", data, {}).then(res => {
+                resolve(res.data)
+            })
+        })
+    }
+    //获取关于我们信息
+    getAboutUs(data) {
+        return new Promise((resolve, reject) => {
+            get('/sys/show/page?query=' + data).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+    //获取品牌列表
+    getWxCommonfield(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/brand/' + data, header).then(res => {
+                resolve(res.result)
+            })
+
+        })
+    }
+    //获取车系列表
+    getCarSeries(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/series', data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    //获取车型列表
+    getCarModels(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/series/' + data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
 }
 
 export { api, hostUrl };

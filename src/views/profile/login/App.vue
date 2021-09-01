@@ -63,9 +63,13 @@ export default {
   created(){
   },
   mounted() {
-      this.until.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wwa9310f942b8696dc&redirect_uri=http%3A%2F%2F5pow6dc.nat.ipyingshe.com%2Fstatic%2Fwechat%2Fviews%2Fhome%2Findex.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
+	  
+	   this.code=this.until.getQueryString('code')
+	  if(!this.code)
+      this.until.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww45310caa5a15d5b4&redirect_uri=http%3A%2F%2F5q35epf.nat.ipyingshe.com%2Fstatic%2Fwechat%2Fviews%2Fprofile%2Flogin.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
 `)
-    //   this.login()
+      else
+      this.ifShow=true
     //   this.tel = this.until.loGet('tel') ? this.until.loGet('tel') : ''
     //   this.pwd = this.until.loGet('pwd') ? this.until.loGet('pwd') : ''
   },
@@ -89,6 +93,8 @@ export default {
     //   },
       //获取code
       login(){
+		  
+		  
         //   let that = this
         //   dd.runtime.permission.requestAuthCode({
         //       corpId:"ding2c2e5aee012096b435c2f4657eb6378f", // 企业id
@@ -104,8 +110,14 @@ export default {
 
       },
       submit(){
-
-
+			
+			let p={
+				username:this.tel,
+				password:this.pwd
+			}
+			this.api.login(p).then(res=>{
+				console.log(res);
+			})
         //   let that = this
         //   dd.runtime.permission.requestAuthCode({
         //       corpId:"ding2c2e5aee012096b435c2f4657eb6378f", // 企业id

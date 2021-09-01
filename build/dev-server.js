@@ -64,8 +64,12 @@ var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsS
 app.use(staticPath, express.static('./static'))
 
 
+<<<<<<< Updated upstream
 // var uri = 'http://localhost:' + port+'/views/profile/login.html'
 var uri = 'http://localhost:' + port+'/views/home/index.html'
+=======
+var uri = 'http://localhost:' + port+'/static/wechat/views/profile/login.html'
+>>>>>>> Stashed changes
       
 devMiddleware.waitUntilValid(function () {
   console.log('> 构建完成，已自动在浏览器打开页面，如未自动打开，请手工复制下面的链接，复制到浏览器里打开。')

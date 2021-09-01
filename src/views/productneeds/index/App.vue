@@ -6,26 +6,24 @@
 		</div>
 		<div class="searchBox">
 			<div class="leftBox">
-				<el-select v-model="value" filterable placeholder="品牌" class="select2"
-					@change="postId">
+				<el-select v-model="value" filterable placeholder="品牌" class="select2" @change="postId">
 					<el-option v-for="item in options" :key="item.value" :label="item.brand_name" :value="item.id">
 					</el-option>
 				</el-select>
-				<el-select v-model="value2" filterable placeholder="车系" class="select2" 
-					@change="postIdThree">
+				<el-select v-model="value2" filterable placeholder="车系" class="select2" @change="postIdThree">
 					<el-option v-for="item in optionsThree" :key="item.value" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
-				<el-select v-model="value3" filterable placeholder="车型" class="select2" 
-					@change="postIdFour">
-					<el-option v-for="item in optionsFour" :key="item.value" :label="item.brand_name" :value="item.id">
+				<el-select v-model="value3" filterable placeholder="车型" class="select2" @change="postIdFour">
+					<el-option v-for="item in optionsFour" :key="item.value" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
-				
+
 				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" v-model="phone" />
-				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" v-model="salesman"  class="putin"/>
+				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" v-model="salesman"
+					class="putin" />
 				<!-- <input type="" name="" id="" value="" placeholder="品牌、车型" /> -->
-			<!-- 	<el-select v-model="value" filterable placeholder="品牌车型" class="select" v-if="currentIndex==0"
+				<!-- 	<el-select v-model="value" filterable placeholder="品牌车型" class="select" v-if="currentIndex==0"
 					@change="postId">
 					<el-option v-for="item in options" :key="item.value" :label="item.brand_name" :value="item.id">
 					</el-option>
@@ -34,7 +32,8 @@
 					<el-option v-for="item in optionsThree" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
 				</el-select> -->
-				<el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0" @change="postIdTwo" style="margin-bottom: 0;">
+				<el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0"
+					@change="postIdTwo" style="margin-bottom: 0;">
 					<el-option v-for="item in optionsTwo" :key="item.value" :label="item.content" :value="item.id">
 					</el-option>
 				</el-select>
@@ -167,7 +166,9 @@
 		data() {
 			return {
 				page: {
-					brandAndmodel: "", //品牌和车型
+					brand: "", //车牌
+					series: "", //车系	
+					model: "", //车型
 					beginTime: "", //发布开始时间
 					endTime: "", //发布结束时间（两个时间应该同时存在或者不存在）
 					phone: "", //手机号
@@ -176,17 +177,22 @@
 					s: 5 //长度
 				},
 				page1: {
-					brandModel: "", //品牌车型
+					brand: "", //车牌
+					series: "", //车系	
+					model: "", //车型
+					saler:"",//销售
 					beginTime: "", //发布开始时间
 					endTime: "", //发布结束时间（两个时间应该同时存在或者不存在）
 					n: 1, //起始位置
 					s: 5 //长度
 				},
-				salesman:"",
-				brandId:'',//品牌车型
-				phone:"",
+				salesman: "",
+				brand: "", //车牌
+				series: "", //车系	
+				model: "", //车型
+				phone: "",
 				pickerVisible: true,
-				levelId:'',
+				levelId: '',
 				result: '',
 				show: true,
 				startTime: '',
@@ -196,13 +202,13 @@
 				value: '',
 				value1: "",
 				value2: "",
-				value3:"",
+				value3: "",
 				total: '',
 				options: [],
 				optionsTwo: [],
-				
+
 				optionsThree: [],
-				optionsFour:[],
+				optionsFour: [],
 				infoList: [
 
 
@@ -213,14 +219,14 @@
 
 		},
 		async mounted() {
-			let p={
-				n:1,
-				s:10
+			let p = {
+				n: 1,
+				s: 10
 			}
-			this.api.getWxIntentionLevel(p).then(res=>{
-				
-				this.optionsTwo=res
-				
+			this.api.getWxIntentionLevel(p).then(res => {
+
+				this.optionsTwo = res
+
 			})
 			this.getList()
 			// this.api.getWxBusinessBuy(this.page).then(res => {
@@ -229,15 +235,14 @@
 			// 	console.log(888,this.infoList);
 			// })
 			window.addEventListener('scroll', this.menu)
-			let list="abcd"
-			for(let i=0;i<list.length;i++)
-			{
-				this.api.getWxCommonfield(list[i]).then(res=>{
-					console.log("012",res);
-				 this.options=[...this.options,...res]
+			let list = "abcdefghijklmnopqrstuvwxyz"
+			for (let i = 0; i < list.length; i++) {
+				this.api.getWxCommonfield(list[i]).then(res => {
+					console.log("012", res);
+					this.options = [...this.options, ...res]
 				})
 			}
-			
+
 		},
 		methods: {
 			cancel() {
@@ -271,46 +276,61 @@
 			},
 			changePage(index) {
 				this.currentIndex = index
+				// this.optionsTwo=[]
+				this.value=""
+				this.value1=""
+				this.value2=""
+				this.value3=""
+				this.optionsThree=[]
+				this.optionsFour=[]
+				this.levelId=""
+				this.brand = ""
+				this.series = ""
+				this.model = ""
+				this.salesman=""
 				this.infoList = []
-				this.startTime=""
-				this.endTime=""
+				this.startTime = ""
+				this.endTime = ""
 				this.page.n = 1
 				this.page1.n = 1
 				this.getList()
 
 			},
 			toDetail(id) {
-				
-					this.until.href(`/views/productneeds/detail.html?index=${this.currentIndex}&id=${id}`)
-				
-			
-				
+
+				this.until.href(`/views/productneeds/detail.html?index=${this.currentIndex}&id=${id}`)
+
+
+
 			},
-		
+
 			getList() {
 
 
 
 				if (this.currentIndex == 0) {
-					this.page.intentionLevel=this.levelId
-					this.page.phone=this.phone
-					this.page.brandAndmodel=this.brandId
-					this.page.beginTime=this.startTime
-					this.page.endTime=this.endTime
+					this.page.intentionLevel = this.levelId
+					this.page.phone = this.phone
+					this.page.brand = this.brand
+					this.page.series = this.series
+					this.page.model = this.model
+					this.page.beginTime = this.startTime
+					this.page.endTime = this.endTime
 					this.api.getWxBusinessBuy(this.page).then(res => {
 						this.total = res.page.total
-						console.log("kankan",res);
+						console.log("kankan", res);
 						this.infoList = [...this.infoList, ...res.data.list]
 						this.istrue = true
 
 					})
-					
-				} 
-				else if(this.currentIndex==1)
-				{
-					this.page1.brandModel=this.brandId
-					this.page1.beginTime=this.startTime
-					this.page1.endTime=this.endTime
+
+				} else if (this.currentIndex == 1) {
+					this.page1.brand = this.brand
+					this.page1.series = this.series
+					this.page1.model = this.model
+					this.page1.beginTime = this.startTime
+					this.page1.endTime = this.endTime
+					this.page1.saler=this.salesman
 					this.api.getWxBusinessSell(this.page1).then(res => {
 						console.log(res);
 						this.total = res.page.total
@@ -331,9 +351,9 @@
 
 							this.getList()
 
-						} else if (this.currentIndex == 1 && this.infoList.length <this.total) {
+						} else if (this.currentIndex == 1 && this.infoList.length < this.total) {
 							this.page1.n++
-					
+
 							this.getList()
 						}
 					}
@@ -343,31 +363,34 @@
 					// }
 				}
 			},
-			search(){
-					this.infoList=[]
-					this.page.n=1
-					this.page1.n=1
-					this.getList()
+			search() {
+				this.infoList = []
+				this.page.n = 1
+				this.page1.n = 1
+				this.getList()
 			},
 			postId(val) {
-			
-				this.api.getCarSeries({brandid:val}).then(res=>{
-					console.log("测试",res);
-					this.optionsThree=res.result
+			this.brand=val
+				this.api.getCarSeries({
+					brandid: val
+				}).then(res => {
+					console.log("测试", res);
+					this.optionsThree = res.result
 				})
 			},
-			postIdTwo(val){
-				this.levelId=val
+			postIdTwo(val) {
+				this.levelId = val
 			},
-			postIdThree(val){
-				this.api.getCarModels(val).then(res=>{
-					this.optionsFour=res.result
+			postIdThree(val) {
+				this.series=val
+				this.api.getCarModels(val).then(res => {
+					this.optionsFour = res.result
 				})
 			},
-			postIdFour(val){
-					this.brandId=val
+			postIdFour(val) {
+				this.model = val
 			}
-			
+
 
 
 
@@ -389,9 +412,10 @@
 	};
 </script>
 <style lang="less">
-	.el-select-dropdown__item{
+	.el-select-dropdown__item {
 		text-align: center;
 	}
+
 	.el-input__inner {
 		height: 0.8rem;
 		font-size: 0.24rem;
@@ -455,8 +479,9 @@
 					padding: 0 0.32rem;
 
 				}
-				.putin{
-					width:5.8rem ;
+
+				.putin {
+					width: 5.8rem;
 				}
 
 				input::placeholder {
@@ -464,7 +489,7 @@
 					color: #909090;
 					opacity: 0.8;
 					opacity: 0.7;
- 
+
 				}
 
 				.select {
@@ -473,10 +498,11 @@
 					margin-bottom: 10px;
 
 				}
-				.select2{
+
+				.select2 {
 					width: 1.88rem;
 					height: 0.7rem;
-					margin-bottom: 0.2rem; 
+					margin-bottom: 0.2rem;
 				}
 
 
@@ -500,7 +526,7 @@
 			.rightBox {
 				button {
 					width: 1rem;
-					height: 1.6rem;
+					height: 2.6rem;
 					background: #09C076;
 					border-radius: 0rem;
 					margin-left: 0.2rem;

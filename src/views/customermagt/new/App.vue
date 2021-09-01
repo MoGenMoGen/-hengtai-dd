@@ -295,8 +295,8 @@
           class="brand_item"
           v-for="item in BbrandList"
           :key="item.id"
-          @click="currentBID = item.id"
-          :style="{ border: item.id == currentBID ? '1px solid #09c076' : '' }"
+          @click="currentBbrandID = item.id"
+          :style="{ background: item.id == currentBbrandID ? '#09c076' : '' }"
         >
           <img :src="item.brand_logo" alt="" />
         </div>
@@ -316,7 +316,7 @@
           <el-option
             v-for="item in Bcarseries"
             :key="item.id"
-            :label="item.content"
+            :label="item.name"
             :value="item.id"
           >
           </el-option>
@@ -873,8 +873,10 @@ export default {
       datepicker: "",
       showfollowtime: false,
       minDate: new Date(),
-      // 选中买车品牌ID
-      currentBID: "sds",
+      // 选中买车品牌、车系、车型ID
+      currentBbrandID: "sds",
+      currentBseriesID: "sds",
+      currentBmodelID: "sds",
       // 用户信息
       hssWxCustomerRo: {
         chcekinId: "", //接待表id，用于是否留档
@@ -885,7 +887,7 @@ export default {
         important: 0, //重点客户（0否，1是）
         region: "", //客户区域
         nature: "", //性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7证牌服务，8其他服务）
-        store: "", //门店
+        store: 1, //门店
         saler: "", //销售顾问
         source: "", //客户来源（1新媒体（快手、抖音等），2老客户，3客户推荐，4亲朋推荐，5同行介绍，6网格邀约（汽车之家，华夏）7自然到店，8访客，9牌证中心，10车保姆中心）
         introducer: "", //老客户介绍人
@@ -936,7 +938,7 @@ export default {
       },
       shop: "",
       // 门店列表
-      shopList: [],
+      shopList: [{id:1,content:'门店1'},{id:2,content:'门店2'}],
       saler: "",
       // 销售顾问列表
       salers: [],
@@ -1071,15 +1073,15 @@ export default {
       albums: [],
     };
   },
-  // watch: {
-  //   query_params() {
-  //     this.api
-  //       .getmapList(this.query.toEncode(this.newqry(this.query_params)))
-  //       .then((res) => {
-  //         this.citys = res;
-  //       });
-  //   },
-  // },
+  watch: {
+    // 买车品牌id变换请求车系列表
+    currentBbrandID() {
+      // 获取买车车系列表
+      this.api.getCarSeries({brandid:this.currentBbrandID}).then((res) => {
+        this.Bcarseries = res;
+      });
+    },
+  },
   methods: {
     back() {
       this.until.back();
@@ -1100,7 +1102,7 @@ export default {
     // 单选客户区域
     radioCheckArea(item, index) {
       this.cusAreaindex = index;
-      this.region=item.id; 
+      this.region = item.id;
     },
     // 处理跟进时间
     handlefollowdate(e) {
@@ -1188,18 +1190,18 @@ export default {
     },
   },
   async created() {
-    console.log("created");
+    console.log("created1");
     moment.locale("zh-cn");
     // 获取门店列表
-    this.shopList = await this.api.getstoreList(
-      encodeURIComponent(
-        JSON.stringify({
-          w: [{ k: "category", v: 1, m: "EQ" }],
-          o: [{ k: "id", t: "esc" }],
-          p: { n: 1, s: 10 },
-        })
-      )
-    );
+    // this.shopList = await this.api.getstoreList(
+    //   encodeURIComponent(
+    //     JSON.stringify({
+    //       w: [{ k: "category", v: 1, m: "EQ" }],
+    //       o: [{ k: "id", t: "esc" }],
+    //       p: { n: 1, s: 10 },
+    //     })
+    //   )
+    // );
     // 获取销售顾问列表
     this.salers = await this.api.getsalersList(
       encodeURIComponent(
@@ -1262,6 +1264,22 @@ export default {
 
     //  获取老客户介绍人
     this.introducers = await this.api.getOldCustomer("");
+  },
+  mounted() {
+     let Bbrand=this.until.loGet('Bbrand')
+     console.log(Bbrand);
+    if( Object.values(Bbrand).length>0)
+    {
+      console.log(2222);
+      console.log(this.BbrandList);
+      console.log(3333);
+      this.BbrandList.unshift(Bbrand);
+      // this.BbrandList.pop();
+      console.log(this.BbrandList);
+      this.currentBbrandID=Bbrand.id;
+      // 用完清空缓存
+      // this.until.loRemove('Bbrand')
+    }
   },
 };
 </script>

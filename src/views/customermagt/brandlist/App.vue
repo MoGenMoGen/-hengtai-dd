@@ -24,7 +24,7 @@
             v-for="(item2, index2) in item1.sonlist"
             :key="index2"
             :style="{
-              'background-color': currentID == item2.id ? '#09c076' : '',
+              'background-color': (currentID == item2.id ? '#09c076' : '')
             }"
             @click="handleClick(item2)"
           >
@@ -51,15 +51,14 @@ export default {
   async mounted() {},
   async created() {
     // 利用ASCII码转为字符
-    // let code = 65;
-    // while (code <= 67) {
-    //   let obj = {};
-    //   obj.first_letter = String.fromCharCode(code);
-    //   obj.sonlist = await this.api.getWxCommonfield(String.fromCharCode(code));
-    //   this.brandlist.push(obj);
-    //   code++;
-    // }
-    // console.log(this.brandlist);
+    let code = 65;
+    while (code <= 90) {
+      let obj = {};
+      obj.first_letter = String.fromCharCode(code);
+      obj.sonlist = await this.api.getWxCommonfield(String.fromCharCode(code));
+      this.brandlist.push(obj);
+      code++;
+    }
   },
   methods: {
     back() {
@@ -69,9 +68,14 @@ export default {
       console.log(val);
     },
     handleClick(obj) {
+      console.log(obj);
       //将选中项携带出去
-      // this.until.loSave('')
+      this.until.loSave('Bbrand',obj)
+      console.log(this.until.loGet('Bbrand'));
+      this.currentID = obj.id
+    setTimeout(() => {
       this.until.back();
+    }, 500);
     },
   },
 };

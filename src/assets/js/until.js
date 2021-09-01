@@ -432,10 +432,10 @@ class until{
   }
   //local存取
   loSave(name,obj){
-    localStorage.setItem(name,obj);
+    localStorage.setItem(name,JSON.stringify(obj));
   }
   loGet(name){
-    return localStorage.getItem(name);
+    return JSON.parse(localStorage.getItem(name));
   }
   loRemove(name){
     localStorage.removeItem(name);

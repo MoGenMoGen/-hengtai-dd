@@ -755,7 +755,7 @@ class api {
         }
         return new Promise((resolve, reject) => {
             get('/hss/wxCommonfield/series', data, header).then(res => {
-                resolve(res)
+                resolve(res.result)
             })
 
         })
@@ -767,7 +767,7 @@ class api {
             // 'yui3-token': localStorage.getItem('token')
         }
         return new Promise((resolve, reject) => {
-            get('/hss/wxCommonfield/series/' + data, header).then(res => {
+            get('/hss/wxCommonfield/models/' + data, header).then(res => {
                 resolve(res)
             })
 

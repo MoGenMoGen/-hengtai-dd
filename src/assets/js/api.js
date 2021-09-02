@@ -2,10 +2,14 @@
 const hostUrl = "http://hsstest.jinkworld.com"
 // const hostUrl = "http://u2768442w0.qicp.vip/";
 // const hostUrl = "http://5anpucq.nat.ipyingshe.com";
-const token = 'yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47'
+// const token = 'yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47'
 import Vue from 'vue'
 import axios from 'axios'
 import { Toast } from 'mint-ui';
+import { until} from '@/assets/js/until'
+const until1=new until();
+const token=until1.loGet("token")
+// const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
@@ -65,12 +69,21 @@ function get2(url, data, header, cache = false) {
 class api {
 
     //code登录 DD
-    login(code) {
+    login(data) {
         // let header={
         //     'Content-Type': 'application/json',
         // }
         // return get2(hostUrl + '/general/access/ddLogin', { code: code }, '')
-
+      let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+		return new Promise(resolve => {
+		    get('/general/access/login', data,header).then(res => {
+		        resolve(res)
+		    })
+		})
+		
     }
     //绑定手机号 DD
     setTel(data) {
@@ -773,6 +786,19 @@ class api {
 	
 	        })
 	    }
+		//使用token
+		getWxlogin(data) {
+		    let header = {
+		        // 'Content-Type': 'application/json',
+		        // 'yui3-token': localStorage.getItem('token')
+		    }
+		    return new Promise((resolve, reject) => {
+		        get('/general/access/wxlogin' , data, header).then(res => {
+		            resolve(res)
+		        })
+			
+		    })
+		}
  
 }
 

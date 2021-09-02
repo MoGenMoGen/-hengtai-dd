@@ -39,19 +39,21 @@
 <template>
     <div id="login">
         <img src=""/>
-        <div class="form" v-if="ifShow">
-            <mt-field label="手机号" placeholder="请输入手机号码" v-model="tel" type="tel" maxLength="1"></mt-field>
+        <div class="form" >
+            <mt-field label="手机号" placeholder="请输入手机号码" v-model="tel"  maxLength="1"></mt-field>
             <mt-field label="密码" placeholder="请输入密码" v-model="pwd" type="password"></mt-field>
         </div>
-        <button @click="submit"  v-if="ifShow">登录</button>
+        <button @click="submit" >登录</button>
+		
     </div>
 </template>
 
 <script>
+import { Toast } from "mint-ui";
 export default {
   data() {
     return {
-        ifShow:false,
+      
        tel:'',
         pwd:'',
         code:'',
@@ -61,15 +63,34 @@ export default {
 
   },
   created(){
+	  
   },
   mounted() {
-	  
-	   this.code=this.until.getQueryString('code')
-	  if(!this.code)
-      this.until.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww45310caa5a15d5b4&redirect_uri=http%3A%2F%2F5q35epf.nat.ipyingshe.com%2Fstatic%2Fwechat%2Fviews%2Fprofile%2Flogin.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
-`)
-      else
-      this.ifShow=true
+	  if(this.until.loGet('username')&&this.until.loGet('password'))
+	  {
+		  let p={
+			  username:this.until.loGet('username')
+			  password:this.until.loGet('password')
+		  }
+		  this.api.login(p).then((res)=>{
+		  	
+		  	
+		  	this.until.loSave('token',res.data.token)
+		  	this.until.loSave('userInfo',res.data.userInfo)
+		  	this.api.getWxlogin(this.code)
+		  	window.location.replace("/static/wechat/views/profile/index.html")
+		  	
+		  })
+	  }
+	  else{
+		  this.code=this.until.getQueryString('code')
+		  	  if(!this.code)
+		        this.until.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww45310caa5a15d5b4&redirect_uri=http%3A%2F%2F5q35epf.nat.ipyingshe.com%2Fstatic%2Fwechat%2Fviews%2Fprofile%2Flogin.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
+		  `)
+	  }
+
+//       else
+//       this.ifShow=true
     //   this.tel = this.until.loGet('tel') ? this.until.loGet('tel') : ''
     //   this.pwd = this.until.loGet('pwd') ? this.until.loGet('pwd') : ''
   },
@@ -110,13 +131,18 @@ export default {
 
       },
       submit(){
-			
 			let p={
 				username:this.tel,
 				password:this.pwd
 			}
-			this.api.login(p).then(res=>{
-				console.log(res);
+			this.api.login(p).then((res)=>{
+				console.log(1111111,res);
+				
+				this.until.loSave('token',res.data.token)
+				this.until.loSave('userInfo',res.data.userInfo)
+				this.api.getWxlogin(this.code)
+				window.location.replace("/static/wechat/views/profile/index.html")
+				
 			})
         //   let that = this
         //   dd.runtime.permission.requestAuthCode({

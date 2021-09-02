@@ -579,7 +579,7 @@ class until{
       if(count == 0){
         el.innerHTML=`重新获取`;
         el.removeAttribute('disabled');
-        clearInterval(timer);
+        Interval(timer);
       }else{
         count--;
         el.innerHTML=`( ${count} )`;

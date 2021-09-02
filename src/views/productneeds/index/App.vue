@@ -238,7 +238,7 @@
 			let list = "abcdefghijklmnopqrstuvwxyz"
 			for (let i = 0; i < list.length; i++) {
 				this.api.getWxCommonfield(list[i]).then(res => {
-					console.log("012", res);
+					
 					this.options = [...this.options, ...res]
 				})
 			}
@@ -374,8 +374,9 @@
 				this.api.getCarSeries({
 					brandid: val
 				}).then(res => {
-					console.log("测试", res);
-					this.optionsThree = res.result
+					console.log("kankan",res);
+					this.optionsThree = res
+					console.log("测试", this.optionsThree);
 				})
 			},
 			postIdTwo(val) {

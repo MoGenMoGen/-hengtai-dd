@@ -155,9 +155,6 @@ export default {
               }
           })
       },
-	  back(){
-		  this.until.back()
-	  }
   }
 };
 </script>

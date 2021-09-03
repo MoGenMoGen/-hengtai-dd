@@ -645,6 +645,16 @@ class api {
         })
     }
 
+    // 获取价格区间
+    getpriceList(data){
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+
     // 获取八个常用车标
     getCommonCarIcon() {
         return new Promise((resolve, reject) => {
@@ -747,45 +757,8 @@ class api {
 
         })
     }
-	 //获取品牌列表
-	    getWxCommonfield(data) {
-	        let header = {
-	            // 'Content-Type': 'application/json',
-	            // 'yui3-token': localStorage.getItem('token')
-	        }
-	        return new Promise((resolve, reject) => {
-	            get('/hss/wxCommonfield/brand/' + data, header).then(res => {
-	                resolve(res.result)
-	            })
-	
-	        })
-	    }
-	    //获取车系列表
-	    getCarSeries(data) {
-	        let header = {
-	            // 'Content-Type': 'application/json',
-	            // 'yui3-token': localStorage.getItem('token')
-	        }
-	        return new Promise((resolve, reject) => {
-	            get('/hss/wxCommonfield/series', data, header).then(res => {
-	                resolve(res.result)
-	            })
-	
-	        })
-	    }
-	    //获取车型列表
-	    getCarModels(data) {
-	        let header = {
-	            // 'Content-Type': 'application/json',
-	            // 'yui3-token': localStorage.getItem('token')
-	        }
-	        return new Promise((resolve, reject) => {
-	            get('/hss/wxCommonfield/models/' + data, header).then(res => {
-	                resolve(res)
-	            })
-	
-	        })
-	    }
+
+	 
 		//使用token
 		getWxlogin(data) {
 		    let header = {
@@ -800,6 +773,60 @@ class api {
 		    })
 		}
  
+    //获取品牌列表
+    // getWxCommonfield(data) {
+    //     let header = {
+    //         'Content-Type': 'application/json',
+    //         'yui3-token': localStorage.getItem('token')
+    //     }
+    //     return new Promise((resolve, reject) => {
+    //         get('/hss/wxCommonfield/brand/' + data, header).then(res => {
+    //             resolve(res.result)
+    //         })
+
+    //     })
+    // }
+    //搜索品牌列表
+    searchbrandlist(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/search?firstLetter='+data, header).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+
+    //获取车系列表
+    getCarSeries(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/series', data, header).then(res => {
+                resolve(res.result)
+            })
+
+        })
+    }
+    //获取车型列表
+    getCarModels(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/models' , data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+
 }
 
 export { api, hostUrl };

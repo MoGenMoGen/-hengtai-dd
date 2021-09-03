@@ -22,7 +22,7 @@
             v-for="item in shopList"
             :key="item.id"
             :label="item.content"
-            :value="item.id"
+            :value="item.content"
           >
           </el-option>
         </el-select>
@@ -43,7 +43,7 @@
             v-for="item in salers"
             :key="item.id"
             :label="item.arg7"
-            :value="item.id"
+            :value="item.arg7"
           >
           </el-option>
         </el-select>
@@ -110,29 +110,29 @@
           <div class="rowtitle">性别</div>
         </div>
         <div class="row_radio">
-          <div class="radiobox" @click="hssWxCustomerRo.sex = 2">
+          <div class="radiobox" @click="hssWxCustomerRo.sex = '男'">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="hssWxCustomerRo.sex == 2"
+              v-if="hssWxCustomerRo.sex == '男'"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>先生</span>
           </div>
-          <div class="radiobox" @click="hssWxCustomerRo.sex = 1">
+          <div class="radiobox" @click="hssWxCustomerRo.sex = '女'">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="hssWxCustomerRo.sex == 1"
+              v-if="hssWxCustomerRo.sex == '女'"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>女士</span>
           </div>
-          <div class="radiobox" @click="hssWxCustomerRo.sex = 3">
+          <div class="radiobox" @click="hssWxCustomerRo.sex = '未知'">
             <img
               src="~@/assets/img/radio.png"
               alt=""
-              v-if="hssWxCustomerRo.sex == 1 || hssWxCustomerRo.sex == 2"
+              v-if="hssWxCustomerRo.sex == '男' || hssWxCustomerRo.sex == '女'"
             />
             <img src="~@/assets/img/radioselect.png" alt="" v-else />
 
@@ -147,20 +147,20 @@
           <div class="rowtitle">重点客户</div>
         </div>
         <div class="row_radio">
-          <div class="radiobox" @click="hssWxCustomerRo.important = 0">
+          <div class="radiobox" @click="hssWxCustomerRo.important = '否'">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="hssWxCustomerRo.important == 0"
+              v-if="hssWxCustomerRo.important == '否'"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>否</span>
           </div>
-          <div class="radiobox" @click="hssWxCustomerRo.important = 1">
+          <div class="radiobox" @click="hssWxCustomerRo.important = '是'">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="hssWxCustomerRo.important == 1"
+              v-if="hssWxCustomerRo.important == '是'"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>是</span>
@@ -190,7 +190,7 @@
           </div>
         </div>
       </div>
-      <div class="row" style="padding-right: 0.24rem">
+      <div class="row" style="padding-right: 0.24rem" v-if="showAreaOutside">
         <!-- 占位符 -->
         <div style="display: flex; align-items: center">
           <div class="placeholder"></div>
@@ -207,7 +207,7 @@
             line-height: 19px;
           "
           class="row_between"
-          v-model="city"
+          v-model="hssWxCustomerRo.regionOutside"
           readonly
           label=""
           placeholder="请选择所在地区"
@@ -235,7 +235,7 @@
         </div>
         <el-select
           filterable
-          v-model="custype"
+          v-model="hssWxCustomerRo.nature"
           placeholder="请选择客流性质"
           class="row_between"
         >
@@ -243,7 +243,7 @@
             v-for="item in custypeList"
             :key="item.id"
             :label="item.content"
-            :value="item.id"
+            :value="item.content"
           >
           </el-option>
         </el-select>
@@ -256,7 +256,7 @@
         </div>
         <el-select
           filterable
-          v-model="customerof"
+          v-model="hssWxCustomerRo.source"
           placeholder="请选择客户来源"
           class="row_between"
         >
@@ -264,24 +264,65 @@
             v-for="item in customerofList"
             :key="item.id"
             :label="item.content"
-            :value="item.id"
+            :value="item.content"
           >
           </el-option>
         </el-select>
       </div>
     </div>
     <!-- 基本信息结束-->
+
+    <!-- 更多品牌弹窗 开始 -->
+    <van-popup v-model="showmorebrand" position="bottom" @open="handleshowmore">
+      <div class="morebrand">
+        <van-search
+          v-model="searchvalue"
+          shape="round"
+          background="#fff"
+          placeholder="请输入搜索关键词"
+          @search="onSearch"
+        />
+        <div class="brand_list">
+          <div
+            class="brand_item"
+            v-for="(item1, index1) in brandlist"
+            :key="index1"
+          >
+            <div class="letter_title" v-if="item1.first_letter">
+              {{ item1.first_letter }}
+            </div>
+            <div class="son_brand_list">
+              <div
+                class="son_item"
+                v-for="(item2, index2) in item1.result"
+                :key="index2"
+                :style="{
+                  'background-color': currentID == item2.id ? '#09c076' : '',
+                }"
+                @click="handlecheckbrand(item2)"
+              >
+                <img class="brand_icon" :src="item2.brand_logo" alt="" />
+                <div class="item_name">{{ item2.brand_name }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </van-popup>
+    <!-- 更多品牌弹窗 结束 -->
     <!-- 买车需求开始 -->
     <div class="textbox">
       <div class="texttitle">买车需求</div>
     </div>
-
     <div class="buyneeds">
-      <div class="row" @click="toMore">
+      <div class="row" @click="showmorebuybrand = true">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder">*</div>
-          <div class="rowtitle">品牌</div>
+          <div class="rowtitle" v-if="!hssWxBusinessBuyRo.brand">品牌</div>
+          <div class="rowtitle" style="width: 200px" v-else>
+            品牌：{{ hssWxBusinessBuyRo.brand }}
+          </div>
         </div>
         <div class="row_between">
           <div style="flex: 1"></div>
@@ -295,12 +336,15 @@
           class="brand_item"
           v-for="item in BbrandList"
           :key="item.id"
-          @click="currentBbrandID = item.id"
-          :style="{ background: item.id == currentBbrandID ? '#09c076' : '' }"
+          @click="handlecheckBcarlogo(item)"
+          :style="{
+            background: item.id == hssWxBusinessBuyRo.brandId ? '#09c076' : '',
+          }"
         >
           <img :src="item.brand_logo" alt="" />
         </div>
       </div>
+
       <div class="row">
         <!-- 占位符 -->
         <div style="display: flex">
@@ -309,15 +353,17 @@
         </div>
         <el-select
           filterable
-          v-model="bcarserie"
+          v-model="bseriseobj"
           placeholder="请选择车系"
           class="row_between"
+          @change="handlecheckBseries"
+          value-key="id"
         >
           <el-option
             v-for="item in Bcarseries"
             :key="item.id"
             :label="item.name"
-            :value="item.id"
+            :value="item"
           >
           </el-option>
         </el-select>
@@ -330,15 +376,17 @@
         </div>
         <el-select
           filterable
-          v-model="bcartype"
+          v-model="btypeobj"
           placeholder="请选择车型"
           class="row_between"
+          @change="handlecheckBtypes"
+          value-key="id"
         >
           <el-option
             v-for="item in Bcartypes"
             :key="item.id"
-            :label="item.content"
-            :value="item.id"
+            :label="item.name"
+            :value="item"
           >
           </el-option>
         </el-select>
@@ -349,40 +397,47 @@
         <div class="pricelist">
           <div
             class="priceitem"
-            @click="checkedPriceIndex = index"
+            @click="hanglecheckprice(item, index)"
             v-for="(item, index) in priceList"
             :key="item.id"
             :class="{ select_price_region: index == checkedPriceIndex }"
           >
-            {{ item.region }}
+            {{ item.content }}
           </div>
         </div>
-        <div class="custom_price_box">
+        <div class="custom_price_box" v-if="showdiyprice">
           <span class="prititle">自定义价格</span>
-          <div class="lowprice">
-            <input
-              style="width: 0.46rem; text-align: right"
-              class="prititle"
-              v-model="lowprice"
-              type="number"
-              oninput="if(value.length>3)value=value.slice(0,3)"
-              placeholder=""
-            />
-            <span class="prititle">万</span>
+          <div style="display: flex; align-items: center">
+            <div
+              class="lowprice"
+              :style="{'border':(confirmprice? 'none':'1px solid #d8d8d8;')}"
+            >
+              <input
+                style="width: 0.6rem; text-align: right"
+                class="prititle"
+                v-model="hssWxBusinessBuyRo.minPrice"
+                type="number"
+                oninput="if(value.length>4)value=value.slice(0,4)"
+                placeholder=""
+              />
+              <span class="prititle">万</span>
+            </div>
+            <span class="connector">~</span>
+            <div class="highprice" :style="{'border':(confirmprice? 'none':'1px solid #d8d8d8;')}">
+              <input
+                style="width: 0.6rem; text-align: right"
+                class="prititle"
+                v-model="hssWxBusinessBuyRo.maxPrice"
+                type="number"
+                oninput="if(value.length>4)value=value.slice(0,4)"
+                placeholder=""
+              />
+              <span class="prititle">万</span>
+            </div>
           </div>
-          <span class="connector">~</span>
-          <div class="highprice">
-            <input
-              style="width: 0.46rem; text-align: right"
-              class="prititle"
-              v-model="highprice"
-              type="number"
-              oninput="if(value.length>3)value=value.slice(0,3)"
-              placeholder=""
-            />
-            <span class="prititle">万</span>
-          </div>
-          <div class="confirm">确定</div>
+
+          <div class="confirm" @click="!confirmprice" v-if="!confirmprice">确定</div>
+          <div class="confirm" style='background:"#EE5A24"' @click="!confirmprice" v-else>编辑</div>
         </div>
       </div>
       <!-- 价格区间结束 -->
@@ -587,11 +642,14 @@
     </div>
     <div class="ifsellbox" v-if="issellcar">
       <div class="sellcarbox">
-        <div class="row">
+        <div class="row" @click="showmoresellbrand = true">
           <!-- 占位符 -->
           <div style="display: flex">
             <div class="placeholder">*</div>
-            <div class="rowtitle">品牌</div>
+            <div class="rowtitle" v-if="!sellbrandname">品牌</div>
+            <div class="rowtitle" style="width: 200px" v-else>
+              品牌：{{ sellbrandname }}
+            </div>
           </div>
           <div class="row_between">
             <div style="flex: 1"></div>
@@ -601,7 +659,13 @@
           </div>
         </div>
         <div class="brand_list">
-          <div class="brand_item" v-for="item in SbrandList" :key="item.id">
+          <div
+            class="brand_item"
+            v-for="item in SbrandList"
+            :key="item.id"
+            @click="handlecheckScarlogo(item)"
+            :style="{ background: item.id == currentSbrandID ? '#09c076' : '' }"
+          >
             <img :src="item.brand_logo" alt="" />
           </div>
         </div>
@@ -613,14 +677,16 @@
           </div>
           <el-select
             filterable
-            v-model="scartype"
+            v-model="sseriseobj"
             placeholder="请选择车系"
             class="row_between"
+            @change="handlecheckSseries"
+            value-key="id"
           >
             <el-option
               v-for="item in Scarseries"
               :key="item.id"
-              :label="item.content"
+              :label="item.name"
               :value="item.id"
             >
             </el-option>
@@ -634,15 +700,17 @@
           </div>
           <el-select
             filterable
-            v-model="scartype"
+            v-model="stypeobj"
             placeholder="请选择车型"
             class="row_between"
+            value-key="id"
           >
             <el-option
               v-for="item in Scartypes"
               :key="item.id"
-              :label="item.content"
-              :value="item.id"
+              :label="item.name"
+              :value="item"
+              @change="handlecheckStypes"
             >
             </el-option>
           </el-select>
@@ -719,7 +787,7 @@
               v-for="item in introducers"
               :key="item.id"
               :label="item.name"
-              :value="item.id"
+              :value="item.name"
             >
             </el-option>
           </el-select>
@@ -864,7 +932,6 @@
 </template>
 
 <script>
-import brand from "@/assets/img/brand.png";
 import moment from "moment";
 export default {
   data() {
@@ -873,58 +940,89 @@ export default {
       datepicker: "",
       showfollowtime: false,
       minDate: new Date(),
+      // 买车车系绑定对象，用于给后台传递多个值
+      bseriseobj: {},
+      btypeobj: {},
+      sseriseobj: {},
+      stypeobj: {},
       // 选中买车品牌、车系、车型ID
       currentBbrandID: "sds",
       currentBseriesID: "sds",
       currentBmodelID: "sds",
-      // 用户信息
+      buybrandname: "",
+      // 选中卖车品牌、车系、车型ID
+      currentSbrandID: "sds",
+      currentSseriesID: "sds",
+      currentSmodelID: "sds",
+      sellbrandname: "",
+      // 更多品牌弹窗
+      searchvalue: "",
+      // 选中ID
+      currentID: "fds",
+      brandlist: [],
+      // 更多买车
+      showmorebuybrand: false,
+      showmoresellbrand: false,
+      // 显示宁波以外某省某市
+      showAreaOutside: 0,
+      // 自定义价格
+      showdiyprice: 0,
+      // 确定自定义价格
+      confirmprice:false,
       hssWxCustomerRo: {
-        chcekinId: "", //接待表id，用于是否留档
-        name: "", //用户姓名
-        wxId: "", //微信号
-        phone: "", //电话
-        sex: 3, //性别(1女2男3未知)
-        important: 0, //重点客户（0否，1是）
-        region: "", //客户区域
-        nature: "", //性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7证牌服务，8其他服务）
-        store: 1, //门店
-        saler: "", //销售顾问
-        source: "", //客户来源（1新媒体（快手、抖音等），2老客户，3客户推荐，4亲朋推荐，5同行介绍，6网格邀约（汽车之家，华夏）7自然到店，8访客，9牌证中心，10车保姆中心）
-        introducer: "", //老客户介绍人
-        sparePhone: "", //备用手机号
-        idcard: "", //身份证
-        birthday: "", //生日
-        location: "", //所在地
-        contactAddress: "", //联系地址
-        hobby: "", //兴趣
-        occupation: "", //职业
-        business: 1, //(购买类型)1增购，2置换，3求购
-        nextFollowUpTime: "", //下次跟进时间
-        intentionLevel: "", //意向等级（保存意向等级id）
-        isSell: false, //是否卖车
-      },
-      // 买车
+        chcekinId: "37", //接待表id，用于是否留档
+        name: "强强强强", //用户姓名
+        wxId: "zhangsan_110", //微信号
+        phone: "15157130303", //电话
+        sex: "男", //性别(1女2男3未知)
+        important: "是", //重点客户（0否，1是）
+        region: "北京", //客户区域
+        regionOutside: "", //客户区域(外，补充信息)
+        nature: "自然段哦点", //性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7证牌服务，8其他服务）
+        store: "北京天安门", //门店
+        saler: "胖虎", //销售顾问
+        source: "都应", //客户来源（1新媒体（快手、抖音等），2老客户，3客户推荐，4亲朋推荐，5同行介绍，6网格邀约（汽车之家，华夏）7自然到店，8访客，9牌证中心，10车保姆中心）
+        introducer: "朋友甲", //老客户介绍人
+        sparePhone: "1329197220", //备用手机号
+        idcard: "3302129199808081598", //身份证
+        birthday: "2021-08-11", //生日
+        location: "北京", //所在地
+        contactAddress: "骆驼街道", //联系地址
+        hobby: "打篮球、rap", //兴趣
+        occupation: "法师", //职业
+        business: "置换", //(购买类型)1增购，2置换，3求购
+        nextFollowUpTime: "2021-08-11 16:09:51", //下次跟进时间
+        intentionLevel: "2", //意向等级（保存意向等级id）
+        isSell: true, //是否卖车
+      }, //用户信息
       hssWxBusinessBuyRo: {
-        brand: "", //品牌
-        brandPic: "",
-
-        model: "", //车型
-        priceId: "",
-
+        brand: "品牌", //品牌
+        series: "车系", //车系
+        model: "车型", //车型
+        brandId: "品牌Id", //品牌Id
+        seriesId: "车系Id", //车系Id
+        modelId: "车型Id", //车型Id
+        brandPic: "dasd",
+        priceId: "10万-20万",
         minPrice: 5.1, //最低价格，单位（万）
         maxPrice: 10.5, //最高价格，单位（万）(无限就写0)
-        color: "", //颜色
-        mileage: 0, //里程数
+        color: "奶奶灰色", //颜色
+        mileage: 33, //里程数
         isMortgage: 0, //按揭，1否，2是
-        describes: "", //意向描述
-      },
-      // 卖车
+        describes: "要一辆大一点的，提速强的，好看的，价格还要便宜的", //意向描述
+      }, //买车表
       hssWxBusinessSellRo: {
-        brandModel: "", //品牌车系
-        mileage: 0, //里程数
-        licensingTime: "", //上牌日期
-        remarks: "", //备注
-      },
+        brand: "品牌", //品牌
+        series: "车系", //车系
+        model: "车型", //车型
+        brandId: "品牌Id", //品牌Id
+        seriesId: "车系Id", //车系Id
+        modelId: "车型Id", //车型Id
+        brandPic: "dasd",
+        mileage: 5, //里程数
+        licensingTime: "2018-05-09", //上牌日期
+        remarks: "不讲价不讲价不讲价，重要的事情说三遍", //备注
+      }, //卖车表（如果是否卖车为true则需要传）
       query_params: {
         w: [["pid", 100000, "EQ"]],
         o: ["id", "esc"],
@@ -938,7 +1036,10 @@ export default {
       },
       shop: "",
       // 门店列表
-      shopList: [{id:1,content:'门店1'},{id:2,content:'门店2'}],
+      shopList: [
+        { id: 1, content: "门店1" },
+        { id: 2, content: "门店2" },
+      ],
       saler: "",
       // 销售顾问列表
       salers: [],
@@ -1073,13 +1174,80 @@ export default {
       albums: [],
     };
   },
+  computed: {
+    showmorebrand() {
+      return this.showmorebuybrand == true || this.showmoresellbrand == true;
+    },
+  },
   watch: {
     // 买车品牌id变换请求车系列表
-    currentBbrandID() {
+    "hssWxBusinessBuyRo.brandId"() {
+      // 清空车型、车系
+      this.hssWxBusinessBuyRo.series = "";
+      this.hssWxBusinessBuyRo.model = "";
+      this.hssWxBusinessBuyRo.seriesId = "";
+      this.hssWxBusinessBuyRo.modelId = "";
+      this.bseriseobj = {};
+      this.btypeobj = {};
+
       // 获取买车车系列表
-      this.api.getCarSeries({brandid:this.currentBbrandID}).then((res) => {
-        this.Bcarseries = res;
-      });
+      this.api
+        .getCarSeries({ brandid: this.hssWxBusinessBuyRo.brandId })
+        .then((res) => {
+          this.Bcarseries = res;
+        });
+    },
+    // 买车车系id变化请求车型
+    "hssWxBusinessBuyRo.seriesId"() {
+      console.log(2222222);
+      // 车型清空
+      this.bcartype = "";
+      this.btypeobj = {};
+
+      // 获取买车车型列表
+      this.api
+        .getCarModels({ seriesId: this.hssWxBusinessBuyRo.seriesId })
+        .then((res) => {
+          this.Bcartypes = res.result;
+        });
+    },
+
+    // 卖车品牌id变换请求车系列表
+    "hssWxBusinessSellRo.brandId"() {
+      // 清空车系、车型
+      this.hssWxBusinessSellRo.series = "";
+      this.hssWxBusinessSellRo.model = "";
+      this.hssWxBusinessSellRo.seriesId = "";
+      this.hssWxBusinessSellRo.modelId = "";
+      this.sseriseobj = {};
+      this.stypeobj = {};
+      // 获取买车车系列表
+      this.api
+        .getCarSeries({ brandid: this.hssWxBusinessSellRo.brandId })
+        .then((res) => {
+          this.Scarseries = res;
+        });
+    },
+    // 卖车车系id变化请求车型
+    "hssWxBusinessSellRo.seriesId"() {
+      // 车型清空
+      this.scartype = "";
+      this.stypeobj = {};
+
+      // 获取卖车车型列表
+      this.api
+        .getCarModels({ seriesId: this.hssWxBusinessSellRo.seriesId })
+        .then((res) => {
+          this.Scartypes = res.result;
+        });
+    },
+    // 清空搜索框就重新请求列表
+    searchvalue() {
+      if (this.searchvalue == "") {
+        this.api.searchbrandlist("").then((res) => {
+          this.brandlist = res;
+        });
+      }
     },
   },
   methods: {
@@ -1102,7 +1270,18 @@ export default {
     // 单选客户区域
     radioCheckArea(item, index) {
       this.cusAreaindex = index;
-      this.region = item.id;
+      this.hssWxCustomerRo.region = item.content;
+      this.showAreaOutside = item.outside;
+    },
+    // 选中价格
+    hanglecheckprice(item, index) {
+      this.showdiyprice = item.outside;
+      this.hssWxBusinessBuyRo.priceId = item.content;
+      this.checkedPriceIndex = index;
+    },
+    //确定自定义价格
+    handleconfirmPrice(){
+        this.confirmprice=true;
     },
     // 处理跟进时间
     handlefollowdate(e) {
@@ -1188,30 +1367,95 @@ export default {
     toMore() {
       this.until.href("/views/customermagt/brandlist.html");
     },
+    // 打开更多品牌弹出层
+    async handleshowmore() {
+      // 每次打开重新请求所有品牌列表，搜索会改变列表
+      this.searchvalue = "";
+
+      // 将买车/卖车id赋值给currentID
+      if (this.showmorebuybrand)
+        this.currentID = this.hssWxBusinessBuyRo.brandId;
+      else this.currentID = this.currentSbrandID;
+    },
+    // 更多品牌中选择
+    handlecheckbrand(brand) {
+      this.currentID = brand.id;
+      // 判断是卖车还是买车
+      if (this.showmorebuybrand) {
+        this.hssWxBusinessBuyRo.brandId = brand.id;
+        this.buybrandname = brand.brand_name;
+        // 清空车系车型
+        this.bcarserie = "";
+        this.bcartype = "";
+        setTimeout(() => {
+          this.showmorebuybrand = false;
+        }, 200);
+      } else {
+        this.currentSbrandID = brand.id;
+        this.sellbrandname = brand.brand_name;
+        // 清空车系车型
+        this.scarserie = "";
+        this.scartype = "";
+        setTimeout(() => {
+          this.showmoresellbrand = false;
+        }, 200);
+      }
+    },
+    async onSearch(val) {
+      this.brandlist = await this.api.searchbrandlist(val);
+    },
+    // 选择买车车标
+    handlecheckBcarlogo(brand) {
+      this.hssWxBusinessBuyRo.brandId = brand.id;
+      this.hssWxBusinessBuyRo.brand = brand.brand_name;
+    },
+    handlecheckScarlogo(brand) {
+      this.currentSbrandID = brand.id;
+      this.sellbrandname = brand.brand_name;
+      // 清空车系、车型
+      this.scarserie = "";
+      this.scartype = "";
+    },
+    // 处理买车车系选中值变化
+    handlecheckBseries(brand) {
+      this.hssWxBusinessBuyRo.seriesId = brand.brandid;
+      this.hssWxBusinessBuyRo.series = brand.name;
+    },
+    handlecheckBtypes(brand) {
+      this.hssWxBusinessBuyRo.modelId = brand.id;
+      this.hssWxBusinessBuyRo.model = brand.name;
+    },
+    handlecheckSseries(brand) {
+      this.hssWxBusinessSellRo.seriesId = brand.brandid;
+      this.hssWxBusinessSellRo.series = brand.name;
+    },
+    handlecheckStypes(brand) {
+      this.hssWxBusinessSellRo.modelId = brand.id;
+      this.hssWxBusinessSellRo.model = brand.name;
+    },
   },
   async created() {
-    console.log("created1");
     moment.locale("zh-cn");
     // 获取门店列表
-    // this.shopList = await this.api.getstoreList(
-    //   encodeURIComponent(
-    //     JSON.stringify({
-    //       w: [{ k: "category", v: 1, m: "EQ" }],
-    //       o: [{ k: "id", t: "esc" }],
-    //       p: { n: 1, s: 10 },
-    //     })
-    //   )
-    // );
-    // 获取销售顾问列表
-    this.salers = await this.api.getsalersList(
+    this.shopList = await this.api.getstoreList(
       encodeURIComponent(
         JSON.stringify({
-          w: [{ k: "category", v: 6, m: "EQ" }],
+          w: [{ k: "category", v: 1, m: "EQ" }],
           o: [{ k: "id", t: "esc" }],
-          p: { n: 1, s: 20 },
+          p: { n: 1, s: 10 },
         })
       )
     );
+    // 获取销售顾问列表
+    // this.salers = await this.api.getsalersList(
+    //   encodeURIComponent(
+    //     JSON.stringify({
+    //       w: [{ k: "category", v: 6, m: "EQ" }],
+    //       o: [{ k: "id", t: "esc" }],
+    //       p: { n: 1, s: 20 },
+    //     })
+    //   )
+    // );
     // 获取客户区域
     this.cusArea = await this.api.getCustomerArea(
       encodeURIComponent(
@@ -1262,25 +1506,23 @@ export default {
     this.BbrandList = JSON.parse(BbrandList);
     this.SbrandList = JSON.parse(JSON.stringify(this.BbrandList));
 
+    // 获取更多品牌
+    this.brandlist = await this.api.searchbrandlist("");
+    // 获取交个区间
+    this.priceList = await this.api.getpriceList(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 7, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 20 },
+        })
+      )
+    );
+    console.log(this.priceList);
     //  获取老客户介绍人
     this.introducers = await this.api.getOldCustomer("");
   },
-  mounted() {
-     let Bbrand=this.until.loGet('Bbrand')
-     console.log(Bbrand);
-    if( Object.values(Bbrand).length>0)
-    {
-      console.log(2222);
-      console.log(this.BbrandList);
-      console.log(3333);
-      this.BbrandList.unshift(Bbrand);
-      // this.BbrandList.pop();
-      console.log(this.BbrandList);
-      this.currentBbrandID=Bbrand.id;
-      // 用完清空缓存
-      // this.until.loRemove('Bbrand')
-    }
-  },
+  mounted() {},
 };
 </script>
 <style lang="less">
@@ -1306,6 +1548,9 @@ export default {
   }
   .el-input__suffix {
     display: none;
+  }
+  .el-timeline-item {
+    margin-bottom: -0.24rem;
   }
 }
 </style>
@@ -1412,6 +1657,63 @@ export default {
       color: #09c076;
     }
   }
+
+  .morebrand {
+    padding-bottom: 4rem;
+    background-color: #f1f3f2;
+    min-height: 100vh;
+    background-size: 100% 1.28rem;
+    // overflow: hidden;
+
+    /*display: flex;*/
+    /*display: -webkit-flex;*/
+
+    .title {
+      width: 100%;
+      height: 1.28rem;
+      position: relative;
+      line-height: 1.28rem;
+      text-align: center;
+      font-size: 0.36rem;
+      font-weight: 500;
+      color: #ffffff;
+
+      img {
+        height: 0.31rem;
+        width: 0.17rem;
+        position: absolute;
+        top: 50%;
+        left: 0.36rem;
+        transform: translateY(-50%);
+      }
+    }
+    .brand_list {
+      .brand_item {
+        .letter_title {
+          padding: 5px 10px;
+        }
+
+        .son_brand_list {
+          background: #ffffff;
+          .son_item {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            .brand_icon {
+              width: 50px;
+              height: 50px;
+              margin-right: 10px;
+            }
+            .item_name {
+              font-size: 16px;
+              height: 30px;
+              line-height: 30px;
+            }
+          }
+        }
+      }
+    }
+  }
   // .infobox {
   // }
   .buyneeds {
@@ -1474,8 +1776,7 @@ export default {
         justify-content: space-between;
         .lowprice {
           display: flex;
-          padding: 0.06rem 0.4rem;
-          border: 1px solid #d8d8d8;
+          padding: 0.06rem 0.2rem;
         }
 
         .connector {
@@ -1486,8 +1787,7 @@ export default {
 
         .highprice {
           display: flex;
-          padding: 0.06rem 0.4rem;
-          border: 1px solid #d8d8d8;
+          padding: 0.06rem 0.2rem;
         }
 
         .confirm {

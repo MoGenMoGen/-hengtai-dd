@@ -21,7 +21,7 @@ function get(url, data, header, cache = false) {
                 resolve(res.data)
             }
 			else if(res.data.code == 400){
-				window.location.replace("/static/wechat/views/profile/login.html")
+				window.location.replace("/views/profile/login.html")
 			}
 			 else {
 

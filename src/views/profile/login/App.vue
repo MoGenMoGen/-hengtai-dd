@@ -148,7 +148,7 @@
 					this.until.loSave('token', res.data.token)
 					this.until.loSave('userInfo', res.data.userInfo)
 					this.api.getWxlogin(this.code)
-					window.location.replace("/static/wechat/views/profile/index.html")
+					window.location.replace("/views/profile/index.html")
 
 				})
 				//   let that = this

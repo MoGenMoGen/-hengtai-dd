@@ -36,13 +36,13 @@ export default {
         home,
       tabList: [
         {
-          path: "/static/wechat/views/home/index.html",
+          path: "/views/home/index.html",
           title: "首页",
           icon: [home, homeselected],
         },
         {
           // path: "/views/profile/index.html",
-		   path: "/static/wechat/views/profile/index.html",
+		   path: "/views/profile/index.html",
           title: "个人中心",
           icon: [person, personselected],
         },

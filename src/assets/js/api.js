@@ -16,10 +16,14 @@ function get(url, data, header, cache = false) {
     let headers = { ...header, ...{ "yui3-token": token } }
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
-
+       console.log(1111222,res);
             if (res.data.code == 0 || res.data.error_code == 0) {
                 resolve(res.data)
-            } else {
+            }
+			else if(res.data.code == 400){
+				window.location.replace("/static/wechat/views/profile/login.html")
+			}
+			 else {
 
                 Toast(res.data.msg)
             }
@@ -767,9 +771,21 @@ class api {
 		    }
 		    return new Promise((resolve, reject) => {
 		        get('/general/access/wxlogin' , data, header).then(res => {
+					
 		            resolve(res)
 		        })
 			
+		    })
+		}
+		//退出登录
+		postUpdPerson() {
+		    return new Promise(resolve => {
+		        post("/sys/user/updPerson",{}, {}).then(res => {
+					
+		            resolve(res.data)
+				
+					
+		        })
 		    })
 		}
  

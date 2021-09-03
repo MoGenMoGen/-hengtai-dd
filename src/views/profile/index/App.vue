@@ -41,7 +41,9 @@
 			<img class="img2" src="~@/assets/img/arrowrightblack.png" >
 		</div>
 	</div>
-
+	<div class="btn">
+		<button type="button" @click="quit">退出登录</button>
+	</div>
     <tabbar :currentIndex="1"> </tabbar>
   </div>
 </template>
@@ -81,6 +83,12 @@ export default {
 		  },
 	  toMycostomer(){
 		  this.until.href("/views/customermagt/index.html")
+	  },
+	  quit(){
+		  this.api.postUpdPerson().then(()=>{
+				 localStorage.clear()
+			  	window.location.replace("/views/profile/login.html")
+		  })
 	  }
   },
 };
@@ -197,5 +205,17 @@ export default {
 			}
 		}
 	}
+.btn{
+	display: flex;
+	justify-content: center;
+	margin-top: 4rem;
+	button{
+		padding: 0.2rem 1rem;
+		background-color:#09C076;
+		color:#FFFFFF;
+		border-radius: 0.4rem;
+	
+	}
+}
 }
 </style>

@@ -66,7 +66,7 @@ app.use(staticPath, express.static('./static'))
 
 
 // var uri = 'http://localhost:' + port+'/views/home/index.html'
-var uri = 'http://localhost:' + port+'/static/wechat/views/profile/login.html'
+var uri = 'http://localhost:' + port+'/views/profile/index.html'
 
       
 devMiddleware.waitUntilValid(function () {

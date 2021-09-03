@@ -25,7 +25,7 @@
           type="textarea"
           autosize
           placeholder="请输入"
-          v-model="followContent"
+          v-model="info.hssWxFollowupRo.content"
         >
         </el-input>
       </div>
@@ -60,12 +60,15 @@
         <div class="intent_level_list">
           <div
             class="intent_level_item"
-            @click="checkedLevelIndex1 = index"
-            v-for="(item, index) in intentLevelList1"
+            @click="info.hssWxFollowupRo.intentionLevel = item.id"
+            v-for="item in intentLevelList"
             :key="item.id"
-            :class="{ select_price_region: index == checkedLevelIndex1 }"
+            :class="{
+              select_price_region:
+                info.hssWxFollowupRo.intentionLevel == item.id,
+            }"
           >
-            {{ item.level }}
+            {{ item.content }}
           </div>
         </div>
       </div>
@@ -81,47 +84,73 @@
           <div
             class="intent_level_item"
             style="margin-right: 0.24rem; width: 1.44rem"
-            @click="contacttype = index"
-            v-for="(item, index) in contacttypeList"
+            @click="handlecheckcontact(item)"
+            v-for="item in commtypeList"
             :key="item.id"
-            :class="{ select_price_region: index == contacttype }"
+            :class="{
+              select_price_region: item.content == info.hssWxFollowupRo.mode,
+            }"
           >
-            {{ item.value }}
+            {{ item.content }}
           </div>
         </div>
       </div>
-      <!-- 沟通方式开始 -->
-      <div class="tostore_box" v-if="contacttype == 0">
-        <div class="row">
+      <!-- 沟通方式结束 -->
+      <div class="tostore_box" v-if="showToStoreContent">
+        <div class="row" style="align-items: center">
           <!-- 占位符 -->
           <div style="display: flex">
             <div class="placeholder">*</div>
             <div class="rowtitle">来访时间</div>
           </div>
-          <el-date-picker
-            class="followdatepicker"
-            style="width: 2.8rem"
-            v-model="visitTime"
-            type="datetime"
+          <van-field
+            style="padding: 0; height: 19px; line-height: 19px"
+            readonly
+            clickable
+            label=""
+            :value="info.hssWxFollowupRo.visitingTime"
             placeholder="请选择来访时间"
-          >
-          </el-date-picker>
+            @click="showvisitTime = true"
+          />
+          <van-popup v-model="showvisitTime" round position="bottom">
+            <van-datetime-picker
+              class="followdatepicker"
+              v-model="datepicker3"
+              type="datetime"
+              title="请选择来访时间"
+              @cancel="showvisitTime = false"
+              @confirm="handlevisitTimeconfirm"
+            />
+          </van-popup>
         </div>
-        <div class="row">
+
+        <div class="row" style="align-items: center">
           <!-- 占位符 -->
           <div style="display: flex">
             <div class="placeholder">*</div>
             <div class="rowtitle">离店时间</div>
           </div>
-          <el-date-picker
-            class="followdatepicker"
-            style="width: 2.8rem"
-            v-model="leaveTime"
-            type="datetime"
+          <van-field
+            style="padding: 0; height: 19px; line-height: 19px"
+            readonly
+            clickable
+            label=""
+            :value="info.hssWxFollowupRo.departureTime"
             placeholder="请选择离店时间"
-          >
-          </el-date-picker>
+            @click="showleftTime = true"
+          />
+          <van-popup v-model="showleftTime" round position="bottom">
+            <van-datetime-picker
+              class="followdatepicker"
+              v-model="datepicker4"
+              type="datetime"
+              title="请选择离店时间"
+              @cancel="showleftTime = false"
+              @confirm="handleleftTimeconfirm"
+            />
+          </van-popup>
         </div>
+
         <div class="row">
           <!-- 占位符 -->
           <div style="display: flex">
@@ -130,15 +159,15 @@
           </div>
 
           <el-input
-            v-model="cusnums"
+            v-model="info.hssWxFollowupRo.customerNumber"
             type="number"
             oninput="if(value.length>6)value=value.slice(0,6)"
             placeholder="请输入人数"
             style="flex: 1"
           ></el-input>
         </div>
-        <div class="row">
-          <!-- 占位符 -->
+        <!-- <div class="row">
+          占位符
           <div style="display: flex">
             <div class="placeholder">*</div>
             <div class="rowtitle">来访时间段</div>
@@ -149,7 +178,7 @@
             <span style="padding: 0px 0.1rem"> ~ </span>
             <div>{{ visitEt }}</div>
           </div>
-        </div>
+        </div> -->
         <div class="row">
           <!-- 占位符 -->
           <div style="display: flex">
@@ -157,11 +186,11 @@
             <div class="rowtitle">接待时长</div>
           </div>
 
-          <div>{{ receptionDuration }}h</div>
+          <div>{{ info.hssWxFollowupRo.receptionDuration }}h</div>
         </div>
       </div>
-      <div class="row" style="align-items: center">
-        <!-- 占位符 -->
+      <!-- <div class="row" style="align-items: center">
+        占位符
         <div style="display: flex">
           <div class="placeholder"></div>
           <div class="rowtitle">下次跟进时间</div>
@@ -186,20 +215,65 @@
             @confirm="handlefollowConfirm1"
           />
         </van-popup>
-      </div>
+      </div> -->
     </div>
     <!-- 本次沟通记录 结束-->
+
+    <!-- 更多品牌弹窗 开始 -->
+    <van-popup
+      v-model="showmorebrand"
+      position="bottom"
+      @open="handleshowmore"
+    >
+      <div class="morebrand">
+        <van-search
+          v-model="searchvalue"
+          shape="round"
+          background="#fff"
+          placeholder="请输入搜索关键词"
+          @search="onSearch"
+        />
+        <div class="brand_list">
+          <div
+            class="brand_item"
+            v-for="(item1, index1) in brandlist"
+            :key="index1"
+          >
+            <div class="letter_title" v-if="item1.first_letter">
+              {{ item1.first_letter }}
+            </div>
+            <div class="son_brand_list">
+              <div
+                class="son_item"
+                v-for="(item2, index2) in item1.result"
+                :key="index2"
+                :style="{
+                  'background-color': currentID == item2.id ? '#09c076' : '',
+                }"
+                @click="handlecheckbrand(item2)"
+              >
+                <img class="brand_icon" :src="item2.brand_logo" alt="" />
+                <div class="item_name">{{ item2.brand_name }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </van-popup>
+    <!-- 更多品牌弹窗 结束 -->
     <!-- 买车需求开始 -->
     <div class="textbox">
       <div class="texttitle">买车需求</div>
     </div>
-
     <div class="buyneeds">
-      <div class="row">
+      <div class="row" @click="showmorebrand = true">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder">*</div>
-          <div class="rowtitle">品牌</div>
+          <div class="rowtitle" v-if="!info.hssWxBusinessBuyRo.brand">品牌</div>
+          <div class="rowtitle" style="width: 200px" v-else>
+            品牌：{{ info.hssWxBusinessBuyRo.brand }}
+          </div>
         </div>
         <div class="row_between">
           <div style="flex: 1"></div>
@@ -209,9 +283,42 @@
         </div>
       </div>
       <div class="brand_list">
-        <div class="brand_item" v-for="item in brandList" :key="item.id">
-          <img :src="item.src" alt="" />
+        <div
+          class="brand_item"
+          v-for="item in BbrandList"
+          :key="item.id"
+          @click="handlecheckBcarlogo(item)"
+          :style="{
+            background:
+              item.id == info.hssWxBusinessBuyRo.brandId ? '#09c076' : '',
+          }"
+        >
+          <img :src="item.brand_logo" alt="" />
         </div>
+      </div>
+
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">车系</div>
+        </div>
+        <el-select
+          filterable
+          v-model="bseriseobj"
+          placeholder="请选择车系"
+          class="row_between"
+          @change="handlecheckBseries"
+          value-key="id"
+        >
+          <el-option
+            v-for="item in Bcarseries"
+            :key="item.id"
+            :label="item.name"
+            :value="item"
+          >
+          </el-option>
+        </el-select>
       </div>
       <div class="row">
         <!-- 占位符 -->
@@ -220,15 +327,18 @@
           <div class="rowtitle">车型</div>
         </div>
         <el-select
-          v-model="cartype"
+          filterable
+          v-model="btypeobj"
           placeholder="请选择车型"
           class="row_between"
+          @change="handlecheckBtypes"
+          value-key="id"
         >
           <el-option
-            v-for="item in cartypes"
+            v-for="item in Bcartypes"
             :key="item.id"
-            :label="item.value"
-            :value="item.id"
+            :label="item.name"
+            :value="item"
           >
           </el-option>
         </el-select>
@@ -239,45 +349,52 @@
         <div class="pricelist">
           <div
             class="priceitem"
-            @click="checkedPriceIndex = index"
+            @click="hanglecheckprice(item, index)"
             v-for="(item, index) in priceList"
             :key="item.id"
-            :class="{ select_price_region: index == checkedPriceIndex }"
+            :class="{
+              select_price_region:
+                item.content == info.hssWxBusinessBuyRo.priceId,
+            }"
           >
-            {{ item.region }}
+            {{ item.content }}
           </div>
         </div>
-        <div class="custom_price_box">
+        <div class="custom_price_box" v-if="showdiyprice">
           <span class="prititle">自定义价格</span>
-          <div class="lowprice">
-            <input
-              style="width: 0.46rem; text-align: right"
-              class="prititle"
-              v-model="lowprice"
-              type="number"
-              oninput="if(value.length>3)value=value.slice(0,3)"
-              placeholder=""
-            />
-            <span class="prititle">万</span>
+          <div style="display: flex; align-items: center">
+            <div class="lowprice">
+              <input
+                style="width: 0.6rem; text-align: right"
+                class="prititle"
+                v-model="info.hssWxBusinessBuyRo.minPrice"
+                type="number"
+                oninput="if(value.length>4)value=value.slice(0,4)"
+                placeholder=""
+              />
+              <span class="prititle">万</span>
+            </div>
+            <span class="connector">~</span>
+            <div class="highprice">
+              <input
+                style="width: 0.6rem; text-align: right"
+                class="prititle"
+                v-model="info.hssWxBusinessBuyRo.maxPrice"
+                type="number"
+                oninput="if(value.length>4)value=value.slice(0,4)"
+                placeholder=""
+              />
+              <span class="prititle">万</span>
+            </div>
           </div>
-          <span class="connector">~</span>
-          <div class="highprice">
-            <input
-              style="width: 0.46rem; text-align: right"
-              class="prititle"
-              v-model="highprice"
-              type="number"
-              oninput="if(value.length>3)value=value.slice(0,3)"
-              placeholder=""
-            />
-            <span class="prititle">万</span>
-          </div>
-          <div class="confirm">确定</div>
+          <div style="width: 1rem"></div>
+          <!-- <div class="confirm" @click="!confirmprice" v-if="!confirmprice">确定</div>
+          <div class="confirm" style='background:"#EE5A24"' @click="!confirmprice" v-else>编辑</div>  -->
         </div>
       </div>
       <!-- 价格区间结束 -->
-      <div class="row">
-        <!-- 占位符 -->
+      <!-- <div class="row">
+        占位符
         <div style="display: flex">
           <div class="placeholder"></div>
           <div class="rowtitle">车身颜色</div>
@@ -295,7 +412,7 @@
           >
           </el-option>
         </el-select>
-      </div>
+      </div> -->
       <div class="row">
         <!-- 占位符 -->
         <div style="display: flex">
@@ -305,7 +422,7 @@
         <div class="row_between">
           <el-input
             style="width: 3rem"
-            v-model="buymileage"
+            v-model="info.hssWxBusinessBuyRo.mileage"
             type="number"
             oninput="if(value.length>3)value=value.slice(0,3)"
             placeholder="请输入"
@@ -320,20 +437,20 @@
           <div class="rowtitle">是否按揭</div>
         </div>
         <div class="row_radio">
-          <div class="radiobox" @click="ismortgage = 0">
+          <div class="radiobox" @click="info.hssWxBusinessBuyRo.isMortgage = 1">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="ismortgage == 0"
+              v-if="info.hssWxBusinessBuyRo.isMortgage == 1"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>否</span>
           </div>
-          <div class="radiobox" @click="ismortgage = 1">
+          <div class="radiobox" @click="info.hssWxBusinessBuyRo.isMortgage = 2">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="ismortgage == 1"
+              v-if="info.hssWxBusinessBuyRo.isMortgage == 2"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>是</span>
@@ -355,12 +472,12 @@
           type="textarea"
           autosize
           placeholder="请输入内容"
-          v-model="intentDesc"
+          v-model="info.hssWxBusinessBuyRo.describes"
         >
         </el-input>
       </div>
       <!--意向等级开始  -->
-      <div class="intent_level">
+      <!-- <div class="intent_level">
         <div class="row" style="border: none">
           <div class="placeholder">*</div>
           <div class="rowtitle">意向等级</div>
@@ -369,16 +486,20 @@
         <div class="intent_level_list">
           <div
             class="intent_level_item"
-            @click="checkedLevelIndex2 = index"
-            v-for="(item, index) in intentLevelList2"
+            @click="info.hssWxFollowupRo.intentionLevel = item.id"
+            v-for="item in intentLevelList"
             :key="item.id"
-            :class="{ select_price_region: index == checkedLevelIndex2 }"
+            :class="{
+              select_price_region:
+                info.hssWxFollowupRo.intentionLevel == item.id,
+            }"
           >
-            {{ item.level }}
+            {{ item.content }}
           </div>
         </div>
-      </div>
+      </div> -->
       <!-- 意向等级结束 -->
+      <!-- 购买类型 -->
       <div class="row">
         <!-- 占位符 -->
         <div style="display: flex">
@@ -386,32 +507,19 @@
           <div class="rowtitle">购买类型</div>
         </div>
         <div class="row_radio">
-          <div class="radiobox" @click="butype = 1">
+          <div
+            class="radiobox radiobuytype"
+            @click="info.hssWxFollowupRo.business = item.content"
+            v-for="item in purchasetypeList"
+            :key="item.id"
+          >
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="butype == 1"
+              v-if="info.hssWxFollowupRo.business == item.content"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>求购</span>
-          </div>
-          <div class="radiobox" @click="butype = 2">
-            <img
-              src="~@/assets/img/radioselect.png"
-              alt=""
-              v-if="butype == 2"
-            />
-            <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>增购</span>
-          </div>
-          <div class="radiobox" @click="butype = 3">
-            <img
-              src="~@/assets/img/radioselect.png"
-              alt=""
-              v-if="butype == 3"
-            />
-            <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>置换</span>
+            <span>{{ item.content }}</span>
           </div>
         </div>
       </div>
@@ -426,14 +534,14 @@
           readonly
           clickable
           label=""
-          :value="followdate2"
+          :value="info.hssWxFollowupRo.nextFollowUpTime"
           placeholder="选择完整时间"
           @click="showfollowtime2 = true"
         />
         <van-popup v-model="showfollowtime2" round position="bottom">
           <van-datetime-picker
             class="followdatepicker"
-            v-model="datepicker2"
+            v-model="datepicker3"
             type="datetime"
             title="选择完整时间"
             :min-date="minDate"
@@ -443,7 +551,7 @@
         </van-popup>
       </div>
     </div>
-    <div class="btn_save">保存</div>
+    <div class="btn_save" @click="save">保存</div>
   </div>
 </template>
 
@@ -455,74 +563,74 @@ import { compressImg, readImg } from "@/assets/js/imageUtil";
 export default {
   data() {
     return {
+      albums: [],
+      // 显示更多品牌弹窗
+      showmorebrand: false,
+      showdiyprice: false,
+      // 到店显示的内容
+      showToStoreContent: false,
+      showvisitTime: false,
+      showleftTime: false,
+      searchvalue: "",
+      currentID: "",
+      bseriseobj: {},
+      btypeobj: {},
+      info: {
+        hssWxFollowupRo: {
+          customerId: "", //用户id
+          content: "", //跟进内容
+          pic: "", //图片
+          mode: "", //沟通方式
+          visitingTime: "", //来访时间
+          departureTime: "", //离店时间
+          customerNumber: "", //客户人数
+          visitingPeriod: "", //来访时间段
+          receptionDuration: "", //接待时长
+          nextFollowUpTime: "", //下次跟进时间
+          intentionLevel: "", //意向等级
+          business: "",
+        }, //跟进信息
+        hssWxBusinessBuyRo: {
+          id: "", //买车表id
+          brand: "", //品牌
+          series: "",
+
+          model: "", //车型
+          brandId: "",
+
+          seriesId: "",
+
+          modelId: "",
+
+          brandPic: "",
+
+          priceId: "",
+
+          minPrice: "", //最低价格
+          maxPrice: "", //最高价格
+          color: "", //颜色
+          mileage: "", //里程数
+          isMortgage: 0, //是否按揭
+          describes: "", //意向描述
+        }, //买车需求
+      },
       datepicker1: "",
       datepicker2: "",
+      datepicker3: "",
+      datepicker4: "",
       showfollowtime1: false,
       showfollowtime2: false,
       minDate: new Date(),
-      // 页面id
-      id: "",
-      // 跟进内容
-      followContent: "",
+
+      // 购买类型
+      purchasetypeList: [],
+      // 沟通方式
+      commtypeList: [],
       isvanloading: false,
       // 添加图片
       albums: [],
       // 沟通意向等级
-      checkedLevelIndex1: 0,
-      intentLevelList1: [
-        {
-          id: 1,
-          level: "O",
-        },
-        {
-          id: 2,
-          level: "K",
-        },
-        {
-          id: 3,
-          level: "A",
-        },
-        {
-          id: 4,
-          level: "B",
-        },
-        {
-          id: 5,
-          level: "C",
-        },
-        {
-          id: 6,
-          level: "J",
-        },
-        {
-          id: 7,
-          level: "S",
-        },
-        {
-          id: 8,
-          level: "P",
-        },
-      ],
-      // 沟通方式,
-      contacttype: 1,
-      contacttypeList: [
-        {
-          id: 5,
-          value: "到店",
-        },
-        {
-          id: 6,
-          value: "电话",
-        },
-        {
-          id: 7,
-          value: "短信",
-        },
-        {
-          id: 8,
-          value: "微信",
-        },
-      ],
+      intentLevelList: [],
       // 来访时间
       visitTime: "",
       // 离店时间
@@ -532,186 +640,33 @@ export default {
       // 沟通下次跟进时间
       followdate1: "",
       followdateofweek1: "",
-      // 汽车品牌列表
-      brandList: [
-        {
-          src: brand,
-          id: 1,
-        },
-        {
-          src: brand,
-          id: 2,
-        },
-        {
-          src: brand,
-          id: 3,
-        },
-        {
-          src: brand,
-          id: 4,
-        },
-        {
-          src: brand,
-          id: 5,
-        },
-        {
-          src: brand,
-          id: 6,
-        },
-        {
-          src: brand,
-          id: 7,
-        },
-        {
-          src: brand,
-          id: 8,
-        },
-      ],
+      // 汽车品牌弹窗列表
+      brandlist: [],
+      // 买车品牌列表
+      BbrandList: [],
+      // 车系列表
+      Bcarseries: [],
       // 车型列表
-      cartype: "",
-      cartypes: [
-        {
-          id: 1,
-          value: "A4L 新款",
-        },
-        {
-          id: 2,
-          value: "A8 黑色 商务款",
-        },
-      ],
-      // 选中的价格下标
-      checkedPriceIndex: 0,
+      Bcartypes: [],
       // 价格区间列表
-      priceList: [
-        {
-          region: "不限",
-          id: 1,
-        },
-        {
-          region: "0 ~ 3万",
-          id: 2,
-        },
-        {
-          region: "3 ~ 5万",
-          id: 3,
-        },
-        {
-          region: "5 ~ 10万",
-          id: 4,
-        },
-        {
-          region: "10 ~ 15万",
-          id: 5,
-        },
-        {
-          region: "15 ~ 20万",
-          id: 6,
-        },
-        {
-          region: "20 ~ 30万",
-          id: 7,
-        },
-        {
-          region: "30 ~ 50",
-          id: 8,
-        },
-        {
-          region: "50万以上",
-          id: 9,
-        },
-      ],
-      // 自定义高低价
-      lowprice: "",
-      highprice: "",
-      // 车身颜色
-      carcolor: "",
-      carcolors: [
-        {
-          id: 1,
-          value: "红色",
-        },
-        {
-          id: 2,
-          value: "宝石蓝",
-        },
-      ],
-      // 买车里程数
-      buymileage: 0,
-      // 是否按揭
-      ismortgage: 0,
-      // 意向描述
-      intentDesc: "",
-      // 意向等级
-      checkedLevelIndex2: 0,
-      intentLevelList2: [
-        {
-          id: 1,
-          level: "O",
-        },
-        {
-          id: 2,
-          level: "K",
-        },
-        {
-          id: 3,
-          level: "A",
-        },
-        {
-          id: 4,
-          level: "B",
-        },
-        {
-          id: 5,
-          level: "C",
-        },
-        {
-          id: 6,
-          level: "J",
-        },
-        {
-          id: 7,
-          level: "S",
-        },
-        {
-          id: 8,
-          level: "P",
-        },
-        {
-          id: 9,
-          level: "战败",
-        },
-        {
-          id: 10,
-          level: "无效",
-        },
-      ],
-      // 购买类型
-      butype: 1,
-      // 买车下次跟进时间
-      followdate2: "",
-      followdateofweek2: "",
-      //
+      priceList: [],
     };
   },
   computed: {
-    // 来访日期
-    visitSt() {
-      if (this.visitTime)
-        return moment(this.visitTime).format("YYYY-MM-DD HH:mm:ss");
-      return "";
-    },
-    visitEt() {
-      if (this.leaveTime) return moment(this.leaveTime).format(" HH:mm:ss");
-      return "";
-    },
-    // 时间间隔
     receptionDuration() {
-      if (this.visitTime && this.leaveTime) {
-        let s = moment(this.leaveTime).diff(
-          moment(this.visitTime),
+      console.log(11111);
+      console.log(this.info.hssWxFollowupRo.visitingTime);
+      console.log(this.info.hssWxFollowupRo.departureTime);
+      if (
+        this.info.hssWxFollowupRo.visitingTime &&
+        this.info.hssWxFollowupRo.departureTime
+      ) {
+        let s = moment(this.info.hssWxFollowupRo.departureTime).diff(
+          moment(this.info.hssWxFollowupRo.visitingTime),
           "hours",
           true
         );
+        console.log(s);
         return s.toFixed(2);
       }
 
@@ -719,26 +674,81 @@ export default {
     },
   },
   watch: {
-    visitTime: function () {
-      this.visitSt = moment(this.visitTime).format("YYYY-MM-DD hh:MM:ss");
-      if (this.leaveTime) {
-        this.receptionDuration = moment(this.leaveTime)
-          .diff(moment(this.visitTime), "hours", true)
-          .toFixed(2);
-      }
+    // visitTime: function () {
+    //   this.visitSt = moment(this.visitTime).format("YYYY-MM-DD hh:MM:ss");
+    //   if (this.leaveTime) {
+    //     this.receptionDuration = moment(this.leaveTime)
+    //       .diff(moment(this.visitTime), "hours", true)
+    //       .toFixed(2);
+    //   }
+    // },
+    // leaveTime: function () {
+    //   this.visitEt = moment(this.leaveTime).format("YYYY-MM-DD hh:MM:ss");
+    //   if (this.visitTime) {
+    //     this.receptionDuration = moment(this.leaveTime)
+    //       .diff(moment(this.visitTime), "hours", true)
+    //       .toFixed(2);
+    //   }
+    // },
+    // 时间间隔
+    receptionDuration() {
+      this.info.hssWxFollowupRo.receptionDuration = this.receptionDuration;
     },
-    leaveTime: function () {
-      this.visitEt = moment(this.leaveTime).format("YYYY-MM-DD hh:MM:ss");
-      if (this.visitTime) {
-        this.receptionDuration = moment(this.leaveTime)
-          .diff(moment(this.visitTime), "hours", true)
-          .toFixed(2);
+    // 买车品牌id变换请求车系列表
+    "info.hssWxBusinessBuyRo.brandId"() {
+      // 清空车型、车系
+      this.info.hssWxBusinessBuyRo.series = "";
+      this.info.hssWxBusinessBuyRo.model = "";
+      this.info.hssWxBusinessBuyRo.seriesId = "";
+      this.info.hssWxBusinessBuyRo.modelId = "";
+      this.bseriseobj = {};
+      this.btypeobj = {};
+
+      // 获取买车车系列表
+      this.api
+        .getCarSeries({ brandid: this.info.hssWxBusinessBuyRo.brandId })
+        .then((res) => {
+          this.Bcarseries = res;
+        });
+    },
+    // 买车车系id变化请求车型
+    "info.hssWxBusinessBuyRo.seriesId"() {
+      // 车型清空
+      this.info.hssWxBusinessBuyRo.model = "";
+      this.info.hssWxBusinessBuyRo.modelId = "";
+      this.btypeobj = {};
+
+      // 获取买车车型列表
+      this.api
+        .getCarModels({ seriesId: this.info.hssWxBusinessBuyRo.seriesId })
+        .then((res) => {
+          this.Bcartypes = res.result;
+        });
+    },
+     searchvalue() {
+      if (this.searchvalue == "") {
+        this.api.searchbrandlist("").then((res) => {
+          this.brandlist = res;
+        });
       }
     },
   },
   methods: {
     back() {
       this.until.back();
+    },
+    // 处理公共字段参数生成qry(使用query.js)
+    newqry(obj) {
+      let qry = this.query.new();
+      // 条件
+      obj.w.forEach((item) => {
+        this.query.toW(qry, item[0], item[1], item[2]);
+      });
+      // 排序
+      this.query.toO(qry, obj.o[0], obj.o[1]);
+      // 分页
+      this.query.toP(qry, obj.p[0], obj.p[1]);
+      return qry;
     },
     async afterRead(e) {
       console.log(e);
@@ -754,7 +764,12 @@ export default {
         formData.append("file", e.file, "file.jpg");
       }
       this.api.upnewimg(formData).then((imgurl) => {
-        console.log("上传后地址", imgurl);
+        console.log("上传后地址", imgurl.data);
+        if (!this.info.hssWxFollowupRo.pic) {
+          this.info.hssWxFollowupRo.pic = imgurl.data;
+        } else {
+          this.info.hssWxFollowupRo.pic += `,${imgurl.data}`;
+        }
         this.isvanloading = false;
       });
     },
@@ -773,16 +788,137 @@ export default {
       this.showfollowtime1 = false;
     },
     handlefollowConfirm2(e) {
-      this.followdate2 = moment(e).format("YYYY-MM-DD dddd HH:mm");
+      this.info.hssWxFollowupRo.nextFollowUpTime = moment(e).format(
+        "YYYY-MM-DD dddd HH:mm"
+      );
       this.showfollowtime2 = false;
     },
+    handlevisitTimeconfirm(e) {
+      this.info.hssWxFollowupRo.visitingTime =
+        moment(e).format("YYYY-MM-DD HH:mm");
+      this.showvisitTime = false;
+    },
+    handleleftTimeconfirm(e) {
+      this.info.hssWxFollowupRo.departureTime =
+        moment(e).format("YYYY-MM-DD HH:mm");
+      this.showleftTime = false;
+    },
+    // 更多品牌中选择
+    handlecheckbrand(brand) {
+      this.currentID = brand.id;
+      this.info.hssWxBusinessBuyRo.brandId = brand.id;
+      setTimeout(() => {
+        this.showmorebrand = false;
+      }, 200);
+    },
+    async onSearch(val) {
+      this.brandlist = await this.api.searchbrandlist(val);
+    },
+    // 选择买车车标
+    handlecheckBcarlogo(brand) {
+      this.info.hssWxBusinessBuyRo.brandId = brand.id;
+      this.info.hssWxBusinessBuyRo.brand = brand.brand_name;
+    },
+    // 处理买车车系选中值变化
+    handlecheckBseries(brand) {
+      this.info.hssWxBusinessBuyRo.seriesId = brand.id;
+      this.info.hssWxBusinessBuyRo.series = brand.name;
+    },
+    handlecheckBtypes(brand) {
+      this.info.hssWxBusinessBuyRo.modelId = brand.id;
+      this.info.hssWxBusinessBuyRo.model = brand.name;
+    },
+    // 选中沟通方式
+    handlecheckcontact(item) {
+      this.info.hssWxFollowupRo.mode = item.content;
+      this.showToStoreContent = item.outside;
+    },
+    // 打开更多品牌弹出层
+    async handleshowmore() {
+      // 每次打开重新请求所有品牌列表，搜索会改变列表
+      this.searchvalue = "";
+      // 将买车id赋值给currentID
+      this.currentID = this.info.hssWxBusinessBuyRo.brandId;
+      console.log(this.brandlist);
+    },
+     // 选中价格
+    hanglecheckprice(item, index) {
+      this.showdiyprice = item.outside;
+      this.info.hssWxBusinessBuyRo.priceId = item.content;
+    },
+    //确定自定义价格
+    handleconfirmPrice() {
+      this.confirmprice = true;
+    },
+    async save(){
+        await this.api.commitNewfollow(this.info)
+    }
   },
   async created() {
     // 设置moment.js(时间库)中文环境
     moment.locale("zh-cn");
-    this.id = this.until.getQueryString("id");
-    let data = await this.api.followDetail(this.id);
-    console.log(data);
+    this.info.hssWxFollowupRo.customerId = this.until.getQueryString("id");
+    // let data = await this.api.followDetail(this.info.hssWxFollowupRo.customerId);
+
+    // 沟通方式
+    this.commtypeList = await this.api.getcommtypeList(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 8, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 10 },
+        })
+      )
+    );
+    // 客流性质
+    let query_flow_type = {
+      w: [["category", 2, "EQ"]],
+      o: ["id", "esc"],
+      p: [1, 10],
+    };
+    this.custypeList = await this.api.getFlowtypeList(
+      this.query.toEncode(this.newqry(query_flow_type))
+    );
+    // 获取客户来源
+    this.customerofList = await this.api.getCustomerSource(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 3, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 10 },
+        })
+      )
+    );
+    // 获取购买类型
+    this.purchasetypeList = await this.api.getBuysTypeList(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 4, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 20 },
+        })
+      )
+    );
+    // 意向等级
+    this.intentLevelList = await this.api.getWxIntentionLevel({
+      p: { n: 1, s: 20 },
+    });
+    // 获取八个常用车标
+    let BbrandList = await this.api.getCommonCarIcon();
+    this.BbrandList = JSON.parse(BbrandList);
+
+    // 获取更多品牌
+    this.brandlist = await this.api.searchbrandlist("");
+    // 获取价格区间
+    this.priceList = await this.api.getpriceList(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 7, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 20 },
+        })
+      )
+    );
   },
 };
 </script>
@@ -885,8 +1021,66 @@ export default {
         margin-right: 0.1rem;
       }
     }
+    .radiobuytype:last-child {
+      margin-top: 10px;
+    }
   }
+  .morebrand {
+    padding-bottom: 4rem;
+    background-color: #f1f3f2;
+    min-height: 100vh;
+    background-size: 100% 1.28rem;
+    // overflow: hidden;
 
+    /*display: flex;*/
+    /*display: -webkit-flex;*/
+
+    .title {
+      width: 100%;
+      height: 1.28rem;
+      position: relative;
+      line-height: 1.28rem;
+      text-align: center;
+      font-size: 0.36rem;
+      font-weight: 500;
+      color: #ffffff;
+
+      img {
+        height: 0.31rem;
+        width: 0.17rem;
+        position: absolute;
+        top: 50%;
+        left: 0.36rem;
+        transform: translateY(-50%);
+      }
+    }
+    .brand_list {
+      .brand_item {
+        .letter_title {
+          padding: 5px 10px;
+        }
+
+        .son_brand_list {
+          background: #ffffff;
+          .son_item {
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            .brand_icon {
+              width: 50px;
+              height: 50px;
+              margin-right: 10px;
+            }
+            .item_name {
+              font-size: 16px;
+              height: 30px;
+              line-height: 30px;
+            }
+          }
+        }
+      }
+    }
+  }
   .textbox {
     padding: 0.3rem 0.48rem;
     display: flex;

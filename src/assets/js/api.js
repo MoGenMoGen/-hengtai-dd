@@ -2,13 +2,13 @@
 const hostUrl = "http://hsstest.jinkworld.com"
 // const hostUrl = "http://u2768442w0.qicp.vip/";
 // const hostUrl = "http://5anpucq.nat.ipyingshe.com";
-// const token = 'yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47'
+const token = 'yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47'
 import Vue from 'vue'
 import axios from 'axios'
 import { Toast } from 'mint-ui';
 import { until} from '@/assets/js/until'
-const until1=new until();
-const token=until1.loGet("token")
+// const until1=new until();
+// const token=until1.loGet("token")
 // const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
@@ -436,7 +436,7 @@ class api {
 
         })
     }
-    //获取意愿登记表
+    //获取意向等级表
     getWxIntentionLevel(data) {
         let header = {
             // 'Content-Type': 'application/json',
@@ -566,9 +566,9 @@ class api {
         })
     }
     // 获取销售顾问列表
-    getsalersList(data) {
+    getsalersList() {
         return new Promise((resolve, reject) => {
-            get('/sys/user/page?query=' + data).then(res => {
+            get('/sys/user/listByDepart?orgCode=10000.30').then(res => {
                 resolve(res.data.list)
             })
 
@@ -837,6 +837,38 @@ class api {
         }
         return new Promise((resolve, reject) => {
             get('/hss/wxCommonfield/models' , data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+     //获取沟通方式列表
+     getcommtypeList(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data, header).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+
+    // 提交新增客户数据
+    commitNewCustomer(data){
+        return new Promise((resolve, reject) => {
+            post('/hss/wxCustomer/add' , data).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+     // 提交新增跟进数据
+     commitNewfollow(data){
+        return new Promise((resolve, reject) => {
+            post('/hss/wxFollowup/add' , data).then(res => {
                 resolve(res)
             })
 

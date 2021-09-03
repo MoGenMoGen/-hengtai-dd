@@ -183,7 +183,7 @@
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="index == cusAreaindex"
+              v-if="hssWxCustomerRo.region == item.content"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>{{ item.content }}</span>
@@ -400,7 +400,9 @@
             @click="hanglecheckprice(item, index)"
             v-for="(item, index) in priceList"
             :key="item.id"
-            :class="{ select_price_region: index == checkedPriceIndex }"
+            :class="{
+              select_price_region: item.content == hssWxBusinessBuyRo.priceId,
+            }"
           >
             {{ item.content }}
           </div>
@@ -408,10 +410,7 @@
         <div class="custom_price_box" v-if="showdiyprice">
           <span class="prititle">自定义价格</span>
           <div style="display: flex; align-items: center">
-            <div
-              class="lowprice"
-              :style="{'border':(confirmprice? 'none':'1px solid #d8d8d8;')}"
-            >
+            <div class="lowprice">
               <input
                 style="width: 0.6rem; text-align: right"
                 class="prititle"
@@ -423,7 +422,7 @@
               <span class="prititle">万</span>
             </div>
             <span class="connector">~</span>
-            <div class="highprice" :style="{'border':(confirmprice? 'none':'1px solid #d8d8d8;')}">
+            <div class="highprice">
               <input
                 style="width: 0.6rem; text-align: right"
                 class="prititle"
@@ -435,9 +434,9 @@
               <span class="prititle">万</span>
             </div>
           </div>
-
-          <div class="confirm" @click="!confirmprice" v-if="!confirmprice">确定</div>
-          <div class="confirm" style='background:"#EE5A24"' @click="!confirmprice" v-else>编辑</div>
+          <div style="width: 1rem"></div>
+          <!-- <div class="confirm" @click="!confirmprice" v-if="!confirmprice">确定</div>
+          <div class="confirm" style='background:"#EE5A24"' @click="!confirmprice" v-else>编辑</div>  -->
         </div>
       </div>
       <!-- 价格区间结束 -->
@@ -470,7 +469,7 @@
         <div class="row_between">
           <el-input
             style="width: 3rem"
-            v-model="buymileage"
+            v-model="hssWxBusinessBuyRo.mileage"
             type="number"
             oninput="if(value.length>3)value=value.slice(0,3)"
             placeholder="请输入"
@@ -485,20 +484,20 @@
           <div class="rowtitle">是否按揭</div>
         </div>
         <div class="row_radio">
-          <div class="radiobox" @click="ismortgage = 0">
+          <div class="radiobox" @click="hssWxBusinessBuyRo.isMortgage = 1">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="ismortgage == 0"
+              v-if="hssWxBusinessBuyRo.isMortgage == 1"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>否</span>
           </div>
-          <div class="radiobox" @click="ismortgage = 1">
+          <div class="radiobox" @click="hssWxBusinessBuyRo.isMortgage = 2">
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="ismortgage == 1"
+              v-if="hssWxBusinessBuyRo.isMortgage == 2"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
             <span>是</span>
@@ -520,7 +519,7 @@
           type="textarea"
           autosize
           placeholder="请输入内容"
-          v-model="intentDesc"
+          v-model="hssWxBusinessBuyRo.describes"
         >
         </el-input>
       </div>
@@ -534,10 +533,12 @@
         <div class="intent_level_list">
           <div
             class="intent_level_item"
-            @click="checkedLevelIndex = index"
-            v-for="(item, index) in intentLevelList"
+            @click="hssWxCustomerRo.intentionLevel = item.id"
+            v-for="item in intentLevelList"
             :key="item.id"
-            :class="{ select_price_region: index == checkedLevelIndex }"
+            :class="{
+              select_price_region: hssWxCustomerRo.intentionLevel == item.id,
+            }"
           >
             {{ item.content }}
           </div>
@@ -551,32 +552,19 @@
           <div class="rowtitle">购买类型</div>
         </div>
         <div class="row_radio">
-          <div class="radiobox" @click="butype = 1">
+          <div
+            class="radiobox radiobuytype"
+            @click="hssWxCustomerRo.business = item.content"
+            v-for="item in purchasetypeListt"
+            :key="item.id"
+          >
             <img
               src="~@/assets/img/radioselect.png"
               alt=""
-              v-if="butype == 1"
+              v-if="hssWxCustomerRo.business == item.content"
             />
             <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>求购</span>
-          </div>
-          <div class="radiobox" @click="butype = 2">
-            <img
-              src="~@/assets/img/radioselect.png"
-              alt=""
-              v-if="butype == 2"
-            />
-            <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>增购</span>
-          </div>
-          <div class="radiobox" @click="butype = 3">
-            <img
-              src="~@/assets/img/radioselect.png"
-              alt=""
-              v-if="butype == 3"
-            />
-            <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>置换</span>
+            <span>{{ item.content }}</span>
           </div>
         </div>
       </div>
@@ -591,7 +579,7 @@
           readonly
           clickable
           label=""
-          :value="followdate"
+          :value="hssWxCustomerRo.nextFollowUpTime"
           placeholder="选择完整时间"
           @click="showfollowtime = true"
         />
@@ -620,35 +608,35 @@
         <div class="rowtitle">卖车需求</div>
       </div>
       <div class="row_radio">
-        <div class="radiobox" @click="issellcar = 0">
+        <div class="radiobox" @click="hssWxCustomerRo.isSell = 0">
           <img
             src="~@/assets/img/radioselect.png"
             alt=""
-            v-if="issellcar == 0"
+            v-if="!hssWxCustomerRo.isSell"
           />
           <img src="~@/assets/img/radio.png" alt="" v-else />
           <span>否</span>
         </div>
-        <div class="radiobox" @click="issellcar = 1">
+        <div class="radiobox" @click="hssWxCustomerRo.isSell = 1">
           <img
             src="~@/assets/img/radioselect.png"
             alt=""
-            v-if="issellcar == 1"
+            v-if="hssWxCustomerRo.isSell"
           />
           <img src="~@/assets/img/radio.png" alt="" v-else />
           <span>是</span>
         </div>
       </div>
     </div>
-    <div class="ifsellbox" v-if="issellcar">
+    <div class="ifsellbox" v-if="hssWxCustomerRo.isSell">
       <div class="sellcarbox">
         <div class="row" @click="showmoresellbrand = true">
           <!-- 占位符 -->
           <div style="display: flex">
             <div class="placeholder">*</div>
-            <div class="rowtitle" v-if="!sellbrandname">品牌</div>
+            <div class="rowtitle" v-if="!hssWxBusinessSellRo.brandId">品牌</div>
             <div class="rowtitle" style="width: 200px" v-else>
-              品牌：{{ sellbrandname }}
+              品牌：{{ hssWxBusinessSellRo.brand }}
             </div>
           </div>
           <div class="row_between">
@@ -664,7 +652,10 @@
             v-for="item in SbrandList"
             :key="item.id"
             @click="handlecheckScarlogo(item)"
-            :style="{ background: item.id == currentSbrandID ? '#09c076' : '' }"
+            :style="{
+              background:
+                item.id == hssWxBusinessSellRo.brandId ? '#09c076' : '',
+            }"
           >
             <img :src="item.brand_logo" alt="" />
           </div>
@@ -687,7 +678,7 @@
               v-for="item in Scarseries"
               :key="item.id"
               :label="item.name"
-              :value="item.id"
+              :value="item"
             >
             </el-option>
           </el-select>
@@ -724,7 +715,7 @@
           <div class="row_between">
             <el-input
               style="width: 3rem"
-              v-model="sellmileage"
+              v-model="hssWxBusinessSellRo.mileage"
               type="number"
               oninput="if(value.length>3)value=value.slice(0,3)"
               placeholder="请输入"
@@ -739,7 +730,7 @@
             <div class="rowtitle">上牌时间</div>
           </div>
           <el-date-picker
-            v-model="licensedate"
+            v-model="hssWxBusinessSellRo.licensingTime"
             type="date"
             placeholder="选择上牌日期"
           >
@@ -760,7 +751,7 @@
             type="textarea"
             autosize
             placeholder="请输入"
-            v-model="remark"
+            v-model="hssWxBusinessSellRo.remarks"
           >
           </el-input>
         </div>
@@ -779,7 +770,7 @@
           </div>
           <el-select
             filterable
-            v-model="introducer"
+            v-model="hssWxCustomerRo.introducer"
             placeholder="请选择"
             class="row_between"
           >
@@ -801,7 +792,7 @@
           <div class="row_between">
             <el-input
               style="width: 3rem"
-              v-model="sparephone"
+              v-model="hssWxCustomerRo.sparePhone"
               type="number"
               oninput="if(value.length>11)value=value.slice(0,11)"
               placeholder="请输入"
@@ -817,7 +808,7 @@
           </div>
 
           <el-input
-            v-model="idcard"
+            v-model="hssWxCustomerRo.idcard"
             type="text"
             maxlength="18"
             placeholder="请输入"
@@ -830,7 +821,11 @@
             <div class="placeholder"></div>
             <div class="rowtitle">生日</div>
           </div>
-          <el-date-picker v-model="birthday" type="date" placeholder="请选择">
+          <el-date-picker
+            v-model="hssWxCustomerRo.birthday"
+            type="date"
+            placeholder="请选择"
+          >
           </el-date-picker>
         </div>
         <div class="row" style="padding-right: 0.24rem">
@@ -848,7 +843,7 @@
               line-height: 19px;
             "
             class="row_between"
-            v-model="location"
+            v-model="hssWxCustomerRo.location"
             readonly
             label=""
             placeholder="请选择所在地区"
@@ -875,7 +870,7 @@
           </div>
 
           <el-input
-            v-model="contactAddress"
+            v-model="hssWxCustomerRo.contactAddress"
             type="text"
             maxlength="18"
             placeholder="请输入"
@@ -890,7 +885,7 @@
           </div>
 
           <el-input
-            v-model="hobbies"
+            v-model="hssWxCustomerRo.hobby"
             type="text"
             maxlength="18"
             placeholder="请输入"
@@ -905,7 +900,7 @@
           </div>
 
           <el-input
-            v-model="occupation"
+            v-model="hssWxCustomerRo.occupation"
             type="text"
             maxlength="18"
             placeholder="请输入"
@@ -927,7 +922,7 @@
       </div>
       <!-- 更多信息结束-->
     </div>
-    <div class="btn_save">保存</div>
+    <div class="btn_save" @click="save">保存</div>
   </div>
 </template>
 
@@ -936,6 +931,7 @@ import moment from "moment";
 export default {
   data() {
     return {
+      albums: [],
       isvanloading: false,
       datepicker: "",
       showfollowtime: false,
@@ -968,60 +964,61 @@ export default {
       // 自定义价格
       showdiyprice: 0,
       // 确定自定义价格
-      confirmprice:false,
+      confirmprice: false,
       hssWxCustomerRo: {
-        chcekinId: "37", //接待表id，用于是否留档
-        name: "强强强强", //用户姓名
-        wxId: "zhangsan_110", //微信号
-        phone: "15157130303", //电话
-        sex: "男", //性别(1女2男3未知)
-        important: "是", //重点客户（0否，1是）
-        region: "北京", //客户区域
+        chcekinId: "", //接待表id，用于是否留档
+        name: "", //用户姓名
+        wxId: "", //微信号
+        phone: "", //电话
+        sex: "", //性别(1女2男3未知)
+        important: "", //重点客户（0否，1是）
+        region: "", //客户区域
         regionOutside: "", //客户区域(外，补充信息)
-        nature: "自然段哦点", //性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7证牌服务，8其他服务）
-        store: "北京天安门", //门店
-        saler: "胖虎", //销售顾问
-        source: "都应", //客户来源（1新媒体（快手、抖音等），2老客户，3客户推荐，4亲朋推荐，5同行介绍，6网格邀约（汽车之家，华夏）7自然到店，8访客，9牌证中心，10车保姆中心）
-        introducer: "朋友甲", //老客户介绍人
-        sparePhone: "1329197220", //备用手机号
-        idcard: "3302129199808081598", //身份证
-        birthday: "2021-08-11", //生日
-        location: "北京", //所在地
-        contactAddress: "骆驼街道", //联系地址
-        hobby: "打篮球、rap", //兴趣
-        occupation: "法师", //职业
-        business: "置换", //(购买类型)1增购，2置换，3求购
-        nextFollowUpTime: "2021-08-11 16:09:51", //下次跟进时间
-        intentionLevel: "2", //意向等级（保存意向等级id）
+        nature: "", //性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7证牌服务，8其他服务）
+        store: "", //门店
+        saler: "", //销售顾问
+        source: "", //客户来源（1新媒体（快手、抖音等），2老客户，3客户推荐，4亲朋推荐，5同行介绍，6网格邀约（汽车之家，华夏）7自然到店，8访客，9牌证中心，10车保姆中心）
+        introducer: "", //老客户介绍人
+        sparePhone: "", //备用手机号
+        idcard: "", //身份证
+        birthday: "", //生日
+        location: "", //所在地
+        contactAddress: "", //联系地址
+        hobby: "", //兴趣
+        occupation: "", //职业
+        business: "", //(购买类型)1增购，2置换，3求购
+        nextFollowUpTime: "", //下次跟进时间
+        intentionLevel: "", //意向等级（保存意向等级id）
         isSell: true, //是否卖车
+        pic: "",
       }, //用户信息
       hssWxBusinessBuyRo: {
-        brand: "品牌", //品牌
-        series: "车系", //车系
-        model: "车型", //车型
-        brandId: "品牌Id", //品牌Id
-        seriesId: "车系Id", //车系Id
-        modelId: "车型Id", //车型Id
-        brandPic: "dasd",
-        priceId: "10万-20万",
-        minPrice: 5.1, //最低价格，单位（万）
-        maxPrice: 10.5, //最高价格，单位（万）(无限就写0)
-        color: "奶奶灰色", //颜色
-        mileage: 33, //里程数
+        brand: "", //品牌
+        series: "", //车系
+        model: "", //车型
+        brandId: "", //品牌Id
+        seriesId: "", //车系Id
+        modelId: "", //车型Id
+        brandPic: "",
+        priceId: "",
+        minPrice: 0, //最低价格，单位（万）
+        maxPrice: 0, //最高价格，单位（万）(无限就写0)
+        color: "", //颜色
+        mileage: 0, //里程数
         isMortgage: 0, //按揭，1否，2是
-        describes: "要一辆大一点的，提速强的，好看的，价格还要便宜的", //意向描述
+        describes: "", //意向描述
       }, //买车表
       hssWxBusinessSellRo: {
-        brand: "品牌", //品牌
-        series: "车系", //车系
-        model: "车型", //车型
-        brandId: "品牌Id", //品牌Id
-        seriesId: "车系Id", //车系Id
-        modelId: "车型Id", //车型Id
-        brandPic: "dasd",
-        mileage: 5, //里程数
-        licensingTime: "2018-05-09", //上牌日期
-        remarks: "不讲价不讲价不讲价，重要的事情说三遍", //备注
+        brand: "", //品牌
+        series: "", //车系
+        model: "", //车型
+        brandId: "", //品牌Id
+        seriesId: "", //车系Id
+        modelId: "", //车型Id
+        brandPic: "",
+        mileage: 0, //里程数
+        licensingTime: "", //上牌日期
+        remarks: "", //备注
       }, //卖车表（如果是否卖车为true则需要传）
       query_params: {
         w: [["pid", 100000, "EQ"]],
@@ -1036,22 +1033,10 @@ export default {
       },
       shop: "",
       // 门店列表
-      shopList: [
-        { id: 1, content: "门店1" },
-        { id: 2, content: "门店2" },
-      ],
+      shopList: [{}, {}],
       saler: "",
       // 销售顾问列表
       salers: [],
-      phone: "",
-      wxnum: "",
-      name: "",
-      // 选中性别编号
-      sexnum: 2,
-      //重要客户编号
-      iskeycus: 0,
-      // 当前客户区域下标
-      cusAreaindex: 0,
       // 客户区域
       cusArea: [],
       cascaderValue: "",
@@ -1059,16 +1044,14 @@ export default {
       showcity: false,
       showlocation: false,
       // 宁波以外城市
-      city: "",
       citys: [],
-      location: "",
       locations: [],
 
       // 客户性质列表
-      custype: "",
       custypeList: [],
+      // 购买类型
+      purchasetypeListt: [],
       // 客户来源
-      customerof: "",
       customerofList: [],
       // 汽车品牌列表
       BbrandList: [],
@@ -1078,100 +1061,17 @@ export default {
       // 车型列表
       bcartype: "",
       Bcartypes: [],
-      // 选中的价格下标
-      checkedPriceIndex: 0,
       // 价格区间列表
-      priceList: [
-        {
-          region: "不限",
-          id: 1,
-        },
-        {
-          region: "0 ~ 3万",
-          id: 2,
-        },
-        {
-          region: "3 ~ 5万",
-          id: 3,
-        },
-        {
-          region: "5 ~ 10万",
-          id: 4,
-        },
-        {
-          region: "10 ~ 15万",
-          id: 5,
-        },
-        {
-          region: "15 ~ 20万",
-          id: 6,
-        },
-        {
-          region: "20 ~ 30万",
-          id: 7,
-        },
-        {
-          region: "30 ~ 50",
-          id: 8,
-        },
-        {
-          region: "50万以上",
-          id: 9,
-        },
-      ],
-      // 自定义高低价
-      lowprice: "",
-      highprice: "",
-      // 买车里程数
-      buymileage: 0,
-      // 是否按揭
-      ismortgage: 0,
-      // 意向描述
-      intentDesc: "",
-      // 意向等级
-      checkedLevelIndex: 0,
+      priceList: [],
       intentLevelList: [],
-      // 购买类型
-      butype: 1,
-      // 跟进日期
-      followdate: "",
-      // 跟进日期周几
-      followdateofweek: "",
-      // 是否卖车
-      issellcar: 1,
       SbrandList: [],
       // 车系列表
       Scarseries: [],
-      scarserie: "",
       // 车型列表
-      scartype: "",
       Scartypes: [],
-      // 卖车里程数
-      sellmileage: 0,
-      // 上牌时间
-      licensedate: "",
-      // 备注
-      remark: "",
-      // 老客户介绍人
-      introducer: "",
       introducers: [],
-      // 备用号
-      sparephone: "",
-      // 身份证号
-      idcard: "",
-      // 生日
-      birthday: "",
       // 所在地
-      location: "",
       locations: [],
-      // 联系地址
-      contactAddress: "",
-      //  兴趣
-      hobbies: "",
-      // 职业
-      occupation: "",
-      // 相册
-      albums: [],
     };
   },
   computed: {
@@ -1199,9 +1099,9 @@ export default {
     },
     // 买车车系id变化请求车型
     "hssWxBusinessBuyRo.seriesId"() {
-      console.log(2222222);
       // 车型清空
-      this.bcartype = "";
+      this.hssWxBusinessBuyRo.model = "";
+      this.hssWxBusinessBuyRo.modelId = "";
       this.btypeobj = {};
 
       // 获取买车车型列表
@@ -1231,7 +1131,8 @@ export default {
     // 卖车车系id变化请求车型
     "hssWxBusinessSellRo.seriesId"() {
       // 车型清空
-      this.scartype = "";
+      this.hssWxBusinessSellRo.model = "";
+      this.hssWxBusinessSellRo.modelId = "";
       this.stypeobj = {};
 
       // 获取卖车车型列表
@@ -1251,6 +1152,13 @@ export default {
     },
   },
   methods: {
+    async save() {
+      await this.api.commitNewCustomer({
+        hssWxCustomerRo: this.hssWxCustomerRo,
+        hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
+        hssWxBusinessSellRo: this.hssWxBusinessSellRo,
+      });
+    },
     back() {
       this.until.back();
     },
@@ -1269,7 +1177,6 @@ export default {
     },
     // 单选客户区域
     radioCheckArea(item, index) {
-      this.cusAreaindex = index;
       this.hssWxCustomerRo.region = item.content;
       this.showAreaOutside = item.outside;
     },
@@ -1277,11 +1184,10 @@ export default {
     hanglecheckprice(item, index) {
       this.showdiyprice = item.outside;
       this.hssWxBusinessBuyRo.priceId = item.content;
-      this.checkedPriceIndex = index;
     },
     //确定自定义价格
-    handleconfirmPrice(){
-        this.confirmprice=true;
+    handleconfirmPrice() {
+      this.confirmprice = true;
     },
     // 处理跟进时间
     handlefollowdate(e) {
@@ -1336,7 +1242,9 @@ export default {
       // 关闭弹出层
       this.showlocation = false;
       // 设置显示内容
-      this.location = selectedOptions.map((option) => option.nm).join("/");
+      this.hssWxCustomerRo.location = selectedOptions
+        .map((option) => option.nm)
+        .join("/");
       // 设置请求条件，下次请求还是先请求省
     },
 
@@ -1354,13 +1262,20 @@ export default {
         formData.append("file", e.file, "file.jpg");
       }
       this.api.upnewimg(formData).then((imgurl) => {
-        console.log("上传后地址", imgurl);
+        console.log("上传后地址", imgurl.data);
+        if (!this.hssWxCustomerRo.pic) {
+          this.hssWxCustomerRo.pic = imgurl.data;
+        } else {
+          this.hssWxCustomerRo.pic += `,${imgurl.data}`;
+        }
         this.isvanloading = false;
       });
     },
     // 处理确定跟进时间
     handlefollowConfirm(e) {
-      this.followdate = moment(e).format("YYYY-MM-DD dddd HH:mm");
+      this.hssWxCustomerRo.nextFollowUpTime = moment(e).format(
+        "YYYY-MM-DD dddd HH:mm"
+      );
       this.showfollowtime = false;
     },
     // 跳到品牌列表页
@@ -1383,19 +1298,13 @@ export default {
       // 判断是卖车还是买车
       if (this.showmorebuybrand) {
         this.hssWxBusinessBuyRo.brandId = brand.id;
-        this.buybrandname = brand.brand_name;
-        // 清空车系车型
-        this.bcarserie = "";
-        this.bcartype = "";
+        this.hssWxBusinessBuyRo.brand = brand.brand_name;
         setTimeout(() => {
           this.showmorebuybrand = false;
         }, 200);
       } else {
         this.currentSbrandID = brand.id;
-        this.sellbrandname = brand.brand_name;
-        // 清空车系车型
-        this.scarserie = "";
-        this.scartype = "";
+        this.hssWxBusinessSellRo.brand = brand.brand_name;
         setTimeout(() => {
           this.showmoresellbrand = false;
         }, 200);
@@ -1410,23 +1319,22 @@ export default {
       this.hssWxBusinessBuyRo.brand = brand.brand_name;
     },
     handlecheckScarlogo(brand) {
-      this.currentSbrandID = brand.id;
-      this.sellbrandname = brand.brand_name;
-      // 清空车系、车型
-      this.scarserie = "";
-      this.scartype = "";
+      this.hssWxBusinessSellRo.brandId = brand.id;
+      this.hssWxBusinessSellRo.brand = brand.brand_name;
     },
     // 处理买车车系选中值变化
     handlecheckBseries(brand) {
-      this.hssWxBusinessBuyRo.seriesId = brand.brandid;
+      console.log(11111, brand);
+      this.hssWxBusinessBuyRo.seriesId = brand.id;
       this.hssWxBusinessBuyRo.series = brand.name;
+      console.log(555555555, this.hssWxBusinessBuyRo.seriesId);
     },
     handlecheckBtypes(brand) {
       this.hssWxBusinessBuyRo.modelId = brand.id;
       this.hssWxBusinessBuyRo.model = brand.name;
     },
     handlecheckSseries(brand) {
-      this.hssWxBusinessSellRo.seriesId = brand.brandid;
+      this.hssWxBusinessSellRo.seriesId = brand.id;
       this.hssWxBusinessSellRo.series = brand.name;
     },
     handlecheckStypes(brand) {
@@ -1447,15 +1355,15 @@ export default {
       )
     );
     // 获取销售顾问列表
-    // this.salers = await this.api.getsalersList(
-    //   encodeURIComponent(
-    //     JSON.stringify({
-    //       w: [{ k: "category", v: 6, m: "EQ" }],
-    //       o: [{ k: "id", t: "esc" }],
-    //       p: { n: 1, s: 20 },
-    //     })
-    //   )
-    // );
+    this.salers = await this.api.getsalersList(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 6, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 20 },
+        })
+      )
+    );
     // 获取客户区域
     this.cusArea = await this.api.getCustomerArea(
       encodeURIComponent(
@@ -1497,6 +1405,16 @@ export default {
         })
       )
     );
+    // 获取购买类型
+    this.purchasetypeListt = await this.api.getBuysTypeList(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 4, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 20 },
+        })
+      )
+    );
     // 意向等级
     this.intentLevelList = await this.api.getWxIntentionLevel({
       p: { n: 1, s: 20 },
@@ -1522,7 +1440,9 @@ export default {
     //  获取老客户介绍人
     this.introducers = await this.api.getOldCustomer("");
   },
-  mounted() {},
+  mounted() {
+    console.log(111111, this.albums);
+  },
 };
 </script>
 <style lang="less">
@@ -1626,6 +1546,9 @@ export default {
         height: 0.4rem;
         margin-right: 0.1rem;
       }
+    }
+    .radiobuytype:last-child {
+      margin-top: 10px;
     }
   }
   .top {
@@ -1777,6 +1700,7 @@ export default {
         .lowprice {
           display: flex;
           padding: 0.06rem 0.2rem;
+          border: 1px solid #d8d8d8;
         }
 
         .connector {
@@ -1788,6 +1712,7 @@ export default {
         .highprice {
           display: flex;
           padding: 0.06rem 0.2rem;
+          border: 1px solid #d8d8d8;
         }
 
         .confirm {

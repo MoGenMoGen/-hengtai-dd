@@ -505,16 +505,18 @@ export default {
         position: absolute;
         top:0;
         right: 0rem;
-        width: 0.44rem;
+        width: 0.88rem;
         height: 0.44rem;
         font-size: 0.26rem;
         text-align: center;
         line-height: 0.44rem;
         font-weight: bold;
         color: #ffffff;
-        background-image: url("~@/assets/img/level.png");
+        // background-image: url("~@/assets/img/level.png");
+        background-image: url("~@/assets/img/biglevel.png");
         background-repeat: no-repeat;
-        background-size: 0.44rem;
+        background-size: 0.78rem;
+        background-position:center center;
       }
       .left {
         margin-right: 0.24rem;

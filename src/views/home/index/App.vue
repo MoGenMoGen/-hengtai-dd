@@ -74,7 +74,7 @@
 				console.log(111);
 				this.code = this.until.getQueryString('code')
 				if (!this.code) {
-					this.until.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww45310caa5a15d5b4&redirect_uri=http%3A%2F%2F5q35epf.nat.ipyingshe.com%2Fstatic%2Fwechat%2Fviews%2Fprofile%2Flogin.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
+					this.until.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww45310caa5a15d5b4&redirect_uri=http%3A%2F%2Fhsstest.jinkworld.com%2Fviews%2Fprofile%2Flogin.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
 	  	  `)
 				} 
 				else {

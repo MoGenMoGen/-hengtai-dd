@@ -2,21 +2,20 @@
 const hostUrl = "http://hsstest.jinkworld.com"
 // const hostUrl = "http://u2768442w0.qicp.vip/";
 // const hostUrl = "http://5anpucq.nat.ipyingshe.com";
-const token = 'yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47'
+// const token = 'yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47'
 import Vue from 'vue'
 import axios from 'axios'
 import { Toast } from 'mint-ui';
 import { until} from '@/assets/js/until'
-// const until1=new until();
-// const token=until1.loGet("token")
-// const token=localStorage.getItem('token')
+const until1=new until();
+const token=until1.loGet("token")
+const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
     let headers = { ...header, ...{ "yui3-token": token } }
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
-       console.log(1111222,res);
             if (res.data.code == 0 || res.data.error_code == 0) {
                 resolve(res.data)
             }
@@ -523,7 +522,16 @@ class api {
     gettrail(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxTrajectory/page?query=' + data).then(res => {
-                resolve(res.data.list)
+                resolve(res)
+            })
+
+        })
+    }
+    // 订单
+    getorder(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxOrder/page?query=' + data).then(res => {
+                resolve(res)
             })
 
         })

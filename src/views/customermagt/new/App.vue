@@ -2,7 +2,7 @@
   <div id="container">
     <div class="title">
       <img src="~@/assets/img/arrowback.png" @click="back" />
-      新增客户
+      {{ Title }}
     </div>
     <!-- 门店和销售开始 -->
     <div class="top">
@@ -914,6 +914,7 @@
             style="flex: 1"
             preview-size="1.5rem"
             :after-read="afterRead"
+            :before-delete="beforeDel"
             v-model="albums"
             multiple="true"
           />
@@ -928,9 +929,15 @@
 
 <script>
 import moment from "moment";
+import { Toast } from "mint-ui";
 export default {
   data() {
     return {
+      // 用户id
+      id: "",
+      // 接待id
+      cusid: "",
+      Title: "新增客户",
       albums: [],
       isvanloading: false,
       datepicker: "",
@@ -941,20 +948,10 @@ export default {
       btypeobj: {},
       sseriseobj: {},
       stypeobj: {},
-      // 选中买车品牌、车系、车型ID
-      currentBbrandID: "sds",
-      currentBseriesID: "sds",
-      currentBmodelID: "sds",
-      buybrandname: "",
-      // 选中卖车品牌、车系、车型ID
-      currentSbrandID: "sds",
-      currentSseriesID: "sds",
-      currentSmodelID: "sds",
-      sellbrandname: "",
       // 更多品牌弹窗
       searchvalue: "",
       // 选中ID
-      currentID: "fds",
+      currentID: "",
       brandlist: [],
       // 更多买车
       showmorebuybrand: false,
@@ -1080,68 +1077,6 @@ export default {
     },
   },
   watch: {
-    // 买车品牌id变换请求车系列表
-    "hssWxBusinessBuyRo.brandId"() {
-      // 清空车型、车系
-      this.hssWxBusinessBuyRo.series = "";
-      this.hssWxBusinessBuyRo.model = "";
-      this.hssWxBusinessBuyRo.seriesId = "";
-      this.hssWxBusinessBuyRo.modelId = "";
-      this.bseriseobj = {};
-      this.btypeobj = {};
-
-      // 获取买车车系列表
-      this.api
-        .getCarSeries({ brandid: this.hssWxBusinessBuyRo.brandId })
-        .then((res) => {
-          this.Bcarseries = res;
-        });
-    },
-    // 买车车系id变化请求车型
-    "hssWxBusinessBuyRo.seriesId"() {
-      // 车型清空
-      this.hssWxBusinessBuyRo.model = "";
-      this.hssWxBusinessBuyRo.modelId = "";
-      this.btypeobj = {};
-
-      // 获取买车车型列表
-      this.api
-        .getCarModels({ seriesId: this.hssWxBusinessBuyRo.seriesId })
-        .then((res) => {
-          this.Bcartypes = res.result;
-        });
-    },
-
-    // 卖车品牌id变换请求车系列表
-    "hssWxBusinessSellRo.brandId"() {
-      // 清空车系、车型
-      this.hssWxBusinessSellRo.series = "";
-      this.hssWxBusinessSellRo.model = "";
-      this.hssWxBusinessSellRo.seriesId = "";
-      this.hssWxBusinessSellRo.modelId = "";
-      this.sseriseobj = {};
-      this.stypeobj = {};
-      // 获取买车车系列表
-      this.api
-        .getCarSeries({ brandid: this.hssWxBusinessSellRo.brandId })
-        .then((res) => {
-          this.Scarseries = res;
-        });
-    },
-    // 卖车车系id变化请求车型
-    "hssWxBusinessSellRo.seriesId"() {
-      // 车型清空
-      this.hssWxBusinessSellRo.model = "";
-      this.hssWxBusinessSellRo.modelId = "";
-      this.stypeobj = {};
-
-      // 获取卖车车型列表
-      this.api
-        .getCarModels({ seriesId: this.hssWxBusinessSellRo.seriesId })
-        .then((res) => {
-          this.Scartypes = res.result;
-        });
-    },
     // 清空搜索框就重新请求列表
     searchvalue() {
       if (this.searchvalue == "") {
@@ -1153,11 +1088,15 @@ export default {
   },
   methods: {
     async save() {
-      await this.api.commitNewCustomer({
+      let data = await this.api.commitNewCustomer({
         hssWxCustomerRo: this.hssWxCustomerRo,
         hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
         hssWxBusinessSellRo: this.hssWxBusinessSellRo,
       });
+      if (data.code == 0) {
+        Toast("保存成功");
+        this.until.href('/views/customermagt/index.html')
+      }
     },
     back() {
       this.until.back();
@@ -1247,14 +1186,23 @@ export default {
         .join("/");
       // 设置请求条件，下次请求还是先请求省
     },
-
+    // 文件删除前的回调
+    beforeDel(file, detail) {
+      // detail.index为图片下标
+      let fileList = this.hssWxCustomerRo.pic.split(",");
+      fileList.splice(detail.index, 1);
+      this.hssWxCustomerRo.pic = fileList.join(",");
+      // albums里面内容为文件格式，不能直接传给后台
+      this.albums.splice(detail.index, 1);
+    },
+    // 文件读取完成后的回调
     async afterRead(e) {
       console.log(e);
       // this.$loading.show("正在上传");
       this.isvanloading = true;
       const formData = new FormData();
       if (e.file.size > 1048576) {
-        console.log("压缩图片");
+        // console.log("压缩图片");
         const img = await readImg(e.file);
         let blob = await compressImg(img);
         formData.append("file", blob, "file.jpg");
@@ -1299,12 +1247,40 @@ export default {
       if (this.showmorebuybrand) {
         this.hssWxBusinessBuyRo.brandId = brand.id;
         this.hssWxBusinessBuyRo.brand = brand.brand_name;
+        // 清空车型、车系
+        this.hssWxBusinessBuyRo.series = "";
+        this.hssWxBusinessBuyRo.model = "";
+        this.hssWxBusinessBuyRo.seriesId = "";
+        this.hssWxBusinessBuyRo.modelId = "";
+        this.bseriseobj = {};
+        this.btypeobj = {};
+        // 获取买车车系列表
+        this.api
+          .getCarSeries({ brandid: this.hssWxBusinessBuyRo.brandId })
+          .then((res) => {
+            this.Bcarseries = res;
+          });
         setTimeout(() => {
           this.showmorebuybrand = false;
         }, 200);
       } else {
         this.currentSbrandID = brand.id;
         this.hssWxBusinessSellRo.brand = brand.brand_name;
+
+        // 清空车型、车系
+        this.hssWxBusinessSellRo.series = "";
+        this.hssWxBusinessSellRo.model = "";
+        this.hssWxBusinessSellRo.seriesId = "";
+        this.hssWxBusinessSellRo.modelId = "";
+        this.bseriseobj = {};
+        this.btypeobj = {};
+        // 获取买车车系列表
+        this.api
+          .getCarSeries({ brandid: this.hssWxBusinessSellRo.brandId })
+          .then((res) => {
+            this.Bcarseries = res;
+          });
+
         setTimeout(() => {
           this.showmoresellbrand = false;
         }, 200);
@@ -1317,17 +1293,52 @@ export default {
     handlecheckBcarlogo(brand) {
       this.hssWxBusinessBuyRo.brandId = brand.id;
       this.hssWxBusinessBuyRo.brand = brand.brand_name;
+      // 清空车型、车系
+      this.hssWxBusinessBuyRo.series = "";
+      this.hssWxBusinessBuyRo.model = "";
+      this.hssWxBusinessBuyRo.seriesId = "";
+      this.hssWxBusinessBuyRo.modelId = "";
+      this.bseriseobj = {};
+      this.btypeobj = {};
+      // 获取买车车系列表
+      this.api
+        .getCarSeries({ brandid: this.hssWxBusinessBuyRo.brandId })
+        .then((res) => {
+          this.Bcarseries = res;
+        });
     },
     handlecheckScarlogo(brand) {
       this.hssWxBusinessSellRo.brandId = brand.id;
       this.hssWxBusinessSellRo.brand = brand.brand_name;
+      // 清空车型、车系
+      this.hssWxBusinessSellRo.series = "";
+      this.hssWxBusinessSellRo.model = "";
+      this.hssWxBusinessSellRo.seriesId = "";
+      this.hssWxBusinessSellRo.modelId = "";
+      this.bseriseobj = {};
+      this.btypeobj = {};
+      // 获取卖车车系列表
+      this.api
+        .getCarSeries({ brandid: this.hssWxBusinessSellRo.brandId })
+        .then((res) => {
+          this.Scarseries = res;
+        });
     },
     // 处理买车车系选中值变化
     handlecheckBseries(brand) {
-      console.log(11111, brand);
       this.hssWxBusinessBuyRo.seriesId = brand.id;
       this.hssWxBusinessBuyRo.series = brand.name;
-      console.log(555555555, this.hssWxBusinessBuyRo.seriesId);
+      // 车型清空
+      this.hssWxBusinessBuyRo.model = "";
+      this.hssWxBusinessBuyRo.modelId = "";
+      this.btypeobj = {};
+
+      // 获取买车车型列表
+      this.api
+        .getCarModels({ seriesId: this.hssWxBusinessBuyRo.seriesId })
+        .then((res) => {
+          this.Bcartypes = res.result;
+        });
     },
     handlecheckBtypes(brand) {
       this.hssWxBusinessBuyRo.modelId = brand.id;
@@ -1336,6 +1347,17 @@ export default {
     handlecheckSseries(brand) {
       this.hssWxBusinessSellRo.seriesId = brand.id;
       this.hssWxBusinessSellRo.series = brand.name;
+      // 车型清空
+      this.hssWxBusinessSellRo.model = "";
+      this.hssWxBusinessSellRo.modelId = "";
+      this.stypeobj = {};
+
+      // 获取卖车车型列表
+      this.api
+        .getCarModels({ seriesId: this.hssWxBusinessSellRo.seriesId })
+        .then((res) => {
+          this.Scartypes = res.result;
+        });
     },
     handlecheckStypes(brand) {
       this.hssWxBusinessSellRo.modelId = brand.id;
@@ -1344,6 +1366,14 @@ export default {
   },
   async created() {
     moment.locale("zh-cn");
+    // 用户id
+    this.id = this.until.getQueryString("id");
+    // 接待id
+    this.cusid = this.until.getQueryString("cusid");
+
+    if (this.id) {
+      this.Title = "修改需求";
+    }
     // 获取门店列表
     this.shopList = await this.api.getstoreList(
       encodeURIComponent(
@@ -1436,12 +1466,70 @@ export default {
         })
       )
     );
-    console.log(this.priceList);
+
+    // 修改需求
+    // 详情数据复写
+    if (this.id) {
+      let detailData = await this.api.getcustomerDetail(this.id);
+      this.hssWxBusinessBuyRo = detailData.buy.data;
+      this.hssWxBusinessSellRo = detailData.sell.data;
+      this.hssWxCustomerRo = detailData.customer.data;
+      // 是否显示宁波以外区域
+      let cusAreaindex = this.cusArea.findIndex(
+        (item) => item.content == this.hssWxCustomerRo.region
+      );
+      this.showAreaOutside = this.cusArea[cusAreaindex].outside;
+      // 自定义价格是否显示
+      let priceindex = this.priceList.findIndex(
+        (item) => item.content == this.hssWxBusinessBuyRo.priceId
+      );
+      this.showdiyprice = this.priceList[priceindex].outside;
+      // 买车车系列表
+      this.Bcarseries = await this.api.getCarSeries({
+        brandid: this.hssWxBusinessBuyRo.brandId,
+      });
+      // 买车车型列表
+      let bshortTypes = await this.api.getCarModels({
+        seriesId: this.hssWxBusinessBuyRo.seriesId,
+      });
+      this.Bcartypes = bshortTypes.result;
+      // 卖车车系列表
+      this.Scarseries = await this.api.getCarSeries({
+        brandid: this.hssWxBusinessSellRo.brandId,
+      });
+      // 卖车车型列表
+      let sshortTypes = await this.api.getCarModels({
+        seriesId: this.hssWxBusinessSellRo.seriesId,
+      });
+      this.Scartypes = sshortTypes.result;
+
+      // 买车车系、车型复写
+      this.$set(this.bseriseobj, "id", this.hssWxBusinessBuyRo.seriesId);
+      this.$set(this.bseriseobj, "name", this.hssWxBusinessBuyRo.series);
+      this.$set(this.btypeobj, "id", this.hssWxBusinessBuyRo.modelId);
+      this.$set(this.btypeobj, "name", this.hssWxBusinessBuyRo.model);
+      // 卖车车系、车型复写
+      this.$set(this.sseriseobj, "id", this.hssWxBusinessSellRo.seriesId);
+      this.$set(this.sseriseobj, "name", this.hssWxBusinessSellRo.series);
+      this.$set(this.stypeobj, "id", this.hssWxBusinessSellRo.modelId);
+      this.$set(this.stypeobj, "name", this.hssWxBusinessSellRo.model);
+
+      // 相册图片处理
+      this.albums = this.hssWxCustomerRo.pic.split(",").map((item) => {
+        url: item;
+      });
+    }
+    // 接待信息完善
+    else if (this.cusid) {
+      let data = await this.api.getWxCheckinDetail(this.cusid);
+      console.log(data);
+      this.hssWxCustomerRo = { ...this.hssWxCustomerRo, ...data };
+      console.log(this.hssWxCustomerRo);
+    }
+  },
+  async mounted() {
     //  获取老客户介绍人
     this.introducers = await this.api.getOldCustomer("");
-  },
-  mounted() {
-    console.log(111111, this.albums);
   },
 };
 </script>

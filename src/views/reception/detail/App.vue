@@ -110,7 +110,7 @@
 			},
 			//跳转至新增客户页面
 			perfectTo(){
-				this.until.href(`/views/customermagt/new.html?id=${this.info.id}`)
+				this.until.href(`/views/customermagt/new.html?cusid=${this.info.id}`)
 			}
 		},
 	};

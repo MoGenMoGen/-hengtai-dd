@@ -30,9 +30,10 @@
         <div class="name">
           {{ userinfo.data.name }}
         </div>
-        <div class="rmks" v-if="userinfo.data.sex == 1">（女）</div>
+        <!-- <div class="rmks" v-if="userinfo.data.sex == 1">（女）</div>
         <div class="rmks" v-else-if="userinfo.data.sex == 2">（女）</div>
-        <div class="rmks" v-else>（未知）</div>
+        <div class="rmks" v-else>（未知）</div> -->
+        <div class="rmks">({{ userinfo.data.sex }})</div>
         <div class="clock">
           <img src="~@/assets/img/clock.png" />
           <span>{{ relativeTime }}跟进</span>
@@ -82,9 +83,10 @@
       <div class="bodyList">
         <div class="list">
           <div class="listHead">性别:</div>
-          <div class="listContent" v-if="userinfo.data.sex == 1">女</div>
+          <!-- <div class="listContent" v-if="userinfo.data.sex == 1">女</div>
           <div class="listContent" v-else-if="userinfo.data.sex == 2">男</div>
-          <div class="listContent" v-else>未知</div>
+          <div class="listContent" v-else>未知</div> -->
+          <div class="listContent">{{ userinfo.data.sex }}</div>
         </div>
         <div class="list">
           <div class="listHead">重点客户:</div>
@@ -122,6 +124,12 @@
           </div>
         </div>
         <div class="list">
+          <div class="listHead">车系:</div>
+          <div class="listContent">
+            {{ buyInfo.data.series }}
+          </div>
+        </div>
+        <div class="list">
           <div class="listHead">车型:</div>
           <div class="listContent">
             {{ buyInfo.data.model }}
@@ -133,12 +141,12 @@
             {{ buyInfo.data.minPrice }}~{{ buyInfo.data.maxPrice }}万
           </div>
         </div>
-        <div class="list">
+        <!-- <div class="list">
           <div class="listHead">车身颜色:</div>
           <div class="listContent">
             {{ buyInfo.data.color }}
           </div>
-        </div>
+        </div> -->
         <div class="list">
           <div class="listHead">里程数:</div>
           <div class="listContent">
@@ -160,7 +168,7 @@
         <div class="list">
           <div class="listHead">意向等级:</div>
           <div class="listContent">
-            {{ buyInfo.data.intentionLevel }}
+            {{ userinfo.data.intentionLevelInfo }}
           </div>
         </div>
         <div class="list">
@@ -182,10 +190,29 @@
             {{ userinfo.data.isSell ? "是" : "否" }}
           </div>
         </div>
-        <div class="list">
+        <!-- <div class="list">
           <div class="listHead">品牌车系:</div>
           <div class="listContent">
             {{ sellInfo.data.brandModel }}
+          </div>
+        </div> -->
+
+        <div class="list">
+          <div class="listHead">品牌:</div>
+          <div class="listContent">
+            {{ sellInfo.data.brand }}
+          </div>
+        </div>
+        <div class="list">
+          <div class="listHead">车系:</div>
+          <div class="listContent">
+            {{ sellInfo.data.series }}
+          </div>
+        </div>
+        <div class="list">
+          <div class="listHead">车型:</div>
+          <div class="listContent">
+            {{ sellInfo.data.model }}
           </div>
         </div>
         <div class="list">
@@ -287,8 +314,13 @@
         </div>
       </div>
       <div class="" style="margin-top: 0.6rem">
-        <el-timeline :reverse="true">
-          <el-timeline-item v-for="(item, index) in trailList" :key="index" :color='activeColor(item.nextFollowUpTime)'>
+        <!-- 轨迹 -->
+        <el-timeline :reverse="true" v-if="currentIndex == 0">
+          <el-timeline-item
+            v-for="(item, index) in trailList"
+            :key="index"
+            :color="activeColor(item.nextFollowUpTime)"
+          >
             <div class="content">
               <div class="head">
                 <span>{{ item.behavior }}</span>
@@ -307,10 +339,17 @@
                 >
                   <span>{{ conitem }}</span>
                 </div>
-                <div style="display:flex;flex-wrap:wrap;width:100%">
-                  <div style="width:30%;" v-for="(picitem,picindex) in item.pic.split(',')" :key="picindex">
-                  <img :src="picitem" style="width:1.6rem;height:1.6rem;" alt="" >
-
+                <div style="display: flex; flex-wrap: wrap; width: 100%">
+                  <div
+                    style="width: 30%"
+                    v-for="(picitem, picindex) in item.pic.split(',')"
+                    :key="picindex"
+                  >
+                    <img
+                      :src="picitem"
+                      style="width: 1.6rem; height: 1.6rem"
+                      alt=""
+                    />
                   </div>
                 </div>
                 <!-- <div class="type">{{item.content}}</div> -->
@@ -322,6 +361,27 @@
             </div>
           </el-timeline-item>
         </el-timeline>
+        <!-- 订单 -->
+        <el-timeline :reverse="true" v-else>
+          <el-timeline-item
+            v-for="(item, index) in orderList"
+            :key="index"
+            :color="activeColor(item.crtTm)"
+          >
+            <div class="content">
+              <div class="head">
+                <span>{{ item.behavior }}</span>
+                <span>
+                  {{ item.saler }}
+                </span>
+                <div class="time">
+                  {{ item.crtTm }}
+                </div>
+              </div>
+              <span>{{item.content}}</span>
+            </div>
+          </el-timeline-item>
+        </el-timeline>
       </div>
     </div>
   </div>
@@ -330,7 +390,6 @@
 <script>
 import Bg from "@/assets/img/bg.png";
 import moment from "moment";
-import Fg from "@/assets/img/arrow.png";
 import { Toast } from "mint-ui";
 export default {
   data() {
@@ -338,7 +397,7 @@ export default {
       id: "",
       Bg,
       currentIndex: 0,
-      info: { name: "zs" },
+      info: {},
       // 用户信息
       userinfo: {},
       // 买车信息
@@ -352,10 +411,12 @@ export default {
       },
       // 轨迹内容列表
       trailList: [],
+      // 订单列表
+      orderList: [],
       tabList: [
         {
           name: "轨迹",
-          num: 1,
+          num: 0,
         },
         {
           name: "订单",
@@ -369,16 +430,19 @@ export default {
     relativeTime() {
       // return moment([this.userinfo.data.nextFollowUpTime]).fromNow();
       let year = moment(this.userinfo.data.nextFollowUpTime).format("YYYY");
-      let month =
-        parseInt(moment(this.userinfo.data.nextFollowUpTime).format("M")) - 1;
+      let month = parseInt(
+        moment(this.userinfo.data.nextFollowUpTime).format("MM")
+      );
       let day = moment(this.userinfo.data.nextFollowUpTime).format("DD");
       // 跟进时间在现在之前
       if (
         moment(this.userinfo.data.nextFollowUpTime).valueOf() <
         moment().valueOf()
-      )
-        return moment([year, month, day]).fromNow();
-      else return moment([year, month, day]).toNow();
+      ) {
+        return moment(this.userinfo.data.nextFollowUpTime).to(moment());
+      } else {
+        return moment(this.userinfo.data.nextFollowUpTime).from(moment());
+      }
     },
     // 轨迹变更列表
     trailContentList() {
@@ -391,21 +455,21 @@ export default {
         }
       };
     },
+     
     // 时间线颜色
-    activeColor()
-    {
-      return function(nexttime){
-        if(moment(nexttime).valueOf()<moment().valueOf())
-        return '#09c076'
-        return '';
-      }
-    }
+    activeColor() {
+      return function (nexttime) {
+        if (moment(nexttime).valueOf() < moment().valueOf()) return "#09c076";
+        return "";
+      };
+    },
   },
   async mounted() {
     // console.log("相对日期", this.relativeTime);
   },
   async created() {
     moment.locale("zh-cn");
+    console.log(typeof moment().format("YYYY"));
     this.id = this.until.getQueryString("id");
     // 获取详情信息
     let info = await this.api.getcustomerDetail(this.id);
@@ -413,17 +477,34 @@ export default {
     this.sellInfo = info.sell;
     this.buyInfo = info.buy;
     console.log("userinfo", this.userinfo);
+
     // 获取轨迹信息
-    this.trailList = await this.api.gettrail(
+    let trailData = await this.api.gettrail(
       encodeURIComponent(
         JSON.stringify({
-          w: [{ customerId: "50" }],
+          w: [{ customerId: this.id }],
           o: [{ k: "id", t: "desc" }],
-          p: { n: 1, s: 10 },
+          p: { n: 1, s: 100 },
         })
       )
     );
-    console.log("轨迹", this.trailList);
+    console.log(111111,trailData);
+    this.trailList =trailData.data.list;
+    this.tabList[0].num=trailData.page.total;
+
+    // 获取订单信息
+     let orderData= await this.api.getorder(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ customerId: this.id }],
+          o: [{ k: "id", t: "desc" }],
+          p: { n: 1, s: 100 },
+        })
+      )
+    );
+    this.orderList=orderData.data.list;
+    this.tabList[1].num=orderData.page.total;
+
   },
   methods: {
     back() {
@@ -433,7 +514,7 @@ export default {
       this.currentIndex = index;
     },
     toChange() {
-      this.until.href("/views/customermagt/new.html");
+      this.until.href("/views/customermagt/new.html?id=" + this.id);
     },
     tofollow() {
       this.until.href("/views/customermagt/newfollow.html?id=" + this.id);

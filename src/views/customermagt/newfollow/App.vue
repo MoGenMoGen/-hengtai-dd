@@ -117,6 +117,8 @@
               class="followdatepicker"
               v-model="datepicker3"
               type="datetime"
+              :min-date="mindatevisit"
+              :max-date="maxdatevisit"
               title="请选择来访时间"
               @cancel="showvisitTime = false"
               @confirm="handlevisitTimeconfirm"
@@ -143,6 +145,8 @@
             <van-datetime-picker
               class="followdatepicker"
               v-model="datepicker4"
+              :min-date="mindateleft"
+              :max-date="maxdateleft"
               type="datetime"
               title="请选择离店时间"
               @cancel="showleftTime = false"
@@ -220,11 +224,7 @@
     <!-- 本次沟通记录 结束-->
 
     <!-- 更多品牌弹窗 开始 -->
-    <van-popup
-      v-model="showmorebrand"
-      position="bottom"
-      @open="handleshowmore"
-    >
+    <van-popup v-model="showmorebrand" position="bottom" @open="handleshowmore">
       <div class="morebrand">
         <van-search
           v-model="searchvalue"
@@ -559,10 +559,13 @@
 import brand from "@/assets/img/brand.png";
 import moment from "moment";
 import { compressImg, readImg } from "@/assets/js/imageUtil";
+import { Toast } from "mint-ui";
+
 
 export default {
   data() {
     return {
+      id: "",
       albums: [],
       // 显示更多品牌弹窗
       showmorebrand: false,
@@ -608,7 +611,7 @@ export default {
 
           minPrice: "", //最低价格
           maxPrice: "", //最高价格
-          color: "", //颜色
+          // color: "", 颜色
           mileage: "", //里程数
           isMortgage: 0, //是否按揭
           describes: "", //意向描述
@@ -621,7 +624,6 @@ export default {
       showfollowtime1: false,
       showfollowtime2: false,
       minDate: new Date(),
-
       // 购买类型
       purchasetypeList: [],
       // 沟通方式
@@ -631,15 +633,8 @@ export default {
       albums: [],
       // 沟通意向等级
       intentLevelList: [],
-      // 来访时间
-      visitTime: "",
-      // 离店时间
-      leaveTime: "",
-      // 客户人数
-      cusnums: "",
       // 沟通下次跟进时间
       followdate1: "",
-      followdateofweek1: "",
       // 汽车品牌弹窗列表
       brandlist: [],
       // 买车品牌列表
@@ -653,10 +648,8 @@ export default {
     };
   },
   computed: {
+    // 接待时长
     receptionDuration() {
-      console.log(11111);
-      console.log(this.info.hssWxFollowupRo.visitingTime);
-      console.log(this.info.hssWxFollowupRo.departureTime);
       if (
         this.info.hssWxFollowupRo.visitingTime &&
         this.info.hssWxFollowupRo.departureTime
@@ -666,11 +659,30 @@ export default {
           "hours",
           true
         );
-        console.log(s);
         return s.toFixed(2);
       }
 
       return "";
+    },
+    // 来访最小时间限制
+    mindatevisit() {
+      // 当天0点的时间格式
+      return new Date(moment().startOf("day").format());
+    },
+    maxdatevisit() {
+      if (this.info.hssWxFollowupRo.departureTime)
+        return new Date(this.info.hssWxFollowupRo.departureTime);
+      // 当天23点59分59秒的时间格式
+      return new Date(moment().endOf("day").format());
+    },
+    // 离店最小时间限制
+    mindateleft() {
+      if (this.info.hssWxFollowupRo.visitingTime)
+        return new Date(this.info.hssWxFollowupRo.visitingTime);
+      return new Date(moment().startOf("day").format());
+    },
+    maxdateleft() {
+      return new Date(moment().endOf("day").format());
     },
   },
   watch: {
@@ -694,38 +706,7 @@ export default {
     receptionDuration() {
       this.info.hssWxFollowupRo.receptionDuration = this.receptionDuration;
     },
-    // 买车品牌id变换请求车系列表
-    "info.hssWxBusinessBuyRo.brandId"() {
-      // 清空车型、车系
-      this.info.hssWxBusinessBuyRo.series = "";
-      this.info.hssWxBusinessBuyRo.model = "";
-      this.info.hssWxBusinessBuyRo.seriesId = "";
-      this.info.hssWxBusinessBuyRo.modelId = "";
-      this.bseriseobj = {};
-      this.btypeobj = {};
-
-      // 获取买车车系列表
-      this.api
-        .getCarSeries({ brandid: this.info.hssWxBusinessBuyRo.brandId })
-        .then((res) => {
-          this.Bcarseries = res;
-        });
-    },
-    // 买车车系id变化请求车型
-    "info.hssWxBusinessBuyRo.seriesId"() {
-      // 车型清空
-      this.info.hssWxBusinessBuyRo.model = "";
-      this.info.hssWxBusinessBuyRo.modelId = "";
-      this.btypeobj = {};
-
-      // 获取买车车型列表
-      this.api
-        .getCarModels({ seriesId: this.info.hssWxBusinessBuyRo.seriesId })
-        .then((res) => {
-          this.Bcartypes = res.result;
-        });
-    },
-     searchvalue() {
+    searchvalue() {
       if (this.searchvalue == "") {
         this.api.searchbrandlist("").then((res) => {
           this.brandlist = res;
@@ -807,6 +788,19 @@ export default {
     handlecheckbrand(brand) {
       this.currentID = brand.id;
       this.info.hssWxBusinessBuyRo.brandId = brand.id;
+      // 清空车型、车系
+      this.info.hssWxBusinessBuyRo.series = "";
+      this.info.hssWxBusinessBuyRo.model = "";
+      this.info.hssWxBusinessBuyRo.seriesId = "";
+      this.info.hssWxBusinessBuyRo.modelId = "";
+      this.bseriseobj = {};
+      this.btypeobj = {};
+      // 获取买车车系列表
+      this.api
+        .getCarSeries({ brandid: this.info.hssWxBusinessBuyRo.brandId })
+        .then((res) => {
+          this.Bcarseries = res;
+        });
       setTimeout(() => {
         this.showmorebrand = false;
       }, 200);
@@ -818,11 +812,35 @@ export default {
     handlecheckBcarlogo(brand) {
       this.info.hssWxBusinessBuyRo.brandId = brand.id;
       this.info.hssWxBusinessBuyRo.brand = brand.brand_name;
+      // 清空车型、车系
+      this.info.hssWxBusinessBuyRo.series = "";
+      this.info.hssWxBusinessBuyRo.model = "";
+      this.info.hssWxBusinessBuyRo.seriesId = "";
+      this.info.hssWxBusinessBuyRo.modelId = "";
+      this.bseriseobj = {};
+      this.btypeobj = {};
+      // 获取买车车系列表
+      this.api
+        .getCarSeries({ brandid: this.info.hssWxBusinessBuyRo.brandId })
+        .then((res) => {
+          this.Bcarseries = res;
+        });
     },
     // 处理买车车系选中值变化
     handlecheckBseries(brand) {
       this.info.hssWxBusinessBuyRo.seriesId = brand.id;
       this.info.hssWxBusinessBuyRo.series = brand.name;
+      // 车型清空
+      this.info.hssWxBusinessBuyRo.model = "";
+      this.info.hssWxBusinessBuyRo.modelId = "";
+      this.btypeobj = {};
+
+      // 获取买车车型列表
+      this.api
+        .getCarModels({ seriesId: this.info.hssWxBusinessBuyRo.seriesId })
+        .then((res) => {
+          this.Bcartypes = res.result;
+        });
     },
     handlecheckBtypes(brand) {
       this.info.hssWxBusinessBuyRo.modelId = brand.id;
@@ -839,9 +857,8 @@ export default {
       this.searchvalue = "";
       // 将买车id赋值给currentID
       this.currentID = this.info.hssWxBusinessBuyRo.brandId;
-      console.log(this.brandlist);
     },
-     // 选中价格
+    // 选中价格
     hanglecheckprice(item, index) {
       this.showdiyprice = item.outside;
       this.info.hssWxBusinessBuyRo.priceId = item.content;
@@ -850,15 +867,17 @@ export default {
     handleconfirmPrice() {
       this.confirmprice = true;
     },
-    async save(){
-        await this.api.commitNewfollow(this.info)
-    }
+    async save() {
+    let data=  await this.api.commitNewfollow(this.info);
+    if (data.code == 0) {
+        Toast("保存成功");
+        this.until.href('/views/customermagt/index.html')
+      }
+    },
   },
   async created() {
     // 设置moment.js(时间库)中文环境
     moment.locale("zh-cn");
-    this.info.hssWxFollowupRo.customerId = this.until.getQueryString("id");
-    // let data = await this.api.followDetail(this.info.hssWxFollowupRo.customerId);
 
     // 沟通方式
     this.commtypeList = await this.api.getcommtypeList(
@@ -919,6 +938,44 @@ export default {
         })
       )
     );
+
+    // 用户id
+    this.id = this.until.getQueryString("id");
+    // 详情数据复写
+    let detailData = await this.api.getcustomerDetail(this.id);
+    this.info.hssWxBusinessBuyRo = detailData.buy.data
+    // this.info.hssWxBusinessBuyRo = {
+    //   ...detailData.buy.data,
+    //   ...this.info.hssWxBusinessBuyRo,
+    // };
+    // 购买类型
+    this.info.hssWxFollowupRo.business = detailData.customer.data.business;
+    // 意向等级
+    this.info.hssWxFollowupRo.intentionLevel =
+      detailData.customer.data.intentionLevel;
+      // 用户id
+    this.info.hssWxFollowupRo.customerId =
+      detailData.customer.data.id;
+    // 自定义价格是否显示
+    let priceindex = this.priceList.findIndex(
+      (item) => item.content == this.info.hssWxBusinessBuyRo.priceId
+    );
+    this.showdiyprice = this.priceList[priceindex].outside;
+    // 车系列表
+    this.Bcarseries = await this.api.getCarSeries({
+      brandid: this.info.hssWxBusinessBuyRo.brandId,
+    });
+    // 车型列表
+    let bshortTypes = await this.api.getCarModels({
+      seriesId: this.info.hssWxBusinessBuyRo.seriesId,
+    });
+    this.Bcartypes = bshortTypes.result;
+
+    // 车系、车型复写
+    this.$set(this.bseriseobj, "id", this.info.hssWxBusinessBuyRo.seriesId);
+    this.$set(this.bseriseobj, "name", this.info.hssWxBusinessBuyRo.series);
+    this.$set(this.btypeobj, "id", this.info.hssWxBusinessBuyRo.modelId);
+    this.$set(this.btypeobj, "name", this.info.hssWxBusinessBuyRo.model);
   },
 };
 </script>

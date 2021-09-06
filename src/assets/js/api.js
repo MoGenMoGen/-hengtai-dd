@@ -2,13 +2,13 @@
 const hostUrl = "http://hsstest.jinkworld.com"
 // const hostUrl = "http://u2768442w0.qicp.vip/";
 // const hostUrl = "http://5anpucq.nat.ipyingshe.com";
-// const token = 'yui3-sid-01b6df85-2af4-409a-b902-60e8ab0a9b47'
+const token = 'yui3-sid-77210d1d-4dc4-4cdd-a688-c257c9b8d226'
 import Vue from 'vue'
 import axios from 'axios'
 import { Toast } from 'mint-ui';
 import { until} from '@/assets/js/until'
 const until1=new until();
-const token=until1.loGet("token")
+// const token=until1.loGet("token")
 // const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart

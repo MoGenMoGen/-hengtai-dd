@@ -15,6 +15,7 @@
         <el-select
           v-model="hssWxCustomerRo.store"
           filterable
+          clearable 
           placeholder="请选择门店"
           class="row_between"
         >
@@ -35,6 +36,7 @@
         </div>
         <el-select
           filterable
+          clearable 
           v-model="hssWxCustomerRo.saler"
           placeholder="请选择销售顾问"
           class="row_between"
@@ -132,7 +134,7 @@
             <img
               src="~@/assets/img/radio.png"
               alt=""
-              v-if="hssWxCustomerRo.sex == '男' || hssWxCustomerRo.sex == '女'"
+              v-if="hssWxCustomerRo.sex == '未知'"
             />
             <img src="~@/assets/img/radioselect.png" alt="" v-else />
 
@@ -235,6 +237,7 @@
         </div>
         <el-select
           filterable
+          clearable 
           v-model="hssWxCustomerRo.nature"
           placeholder="请选择客流性质"
           class="row_between"
@@ -256,6 +259,7 @@
         </div>
         <el-select
           filterable
+          clearable 
           v-model="hssWxCustomerRo.source"
           placeholder="请选择客户来源"
           class="row_between"
@@ -353,6 +357,7 @@
         </div>
         <el-select
           filterable
+          clearable 
           v-model="bseriseobj"
           placeholder="请选择车系"
           class="row_between"
@@ -376,6 +381,7 @@
         </div>
         <el-select
           filterable
+          clearable 
           v-model="btypeobj"
           placeholder="请选择车型"
           class="row_between"
@@ -668,6 +674,7 @@
           </div>
           <el-select
             filterable
+            clearable 
             v-model="sseriseobj"
             placeholder="请选择车系"
             class="row_between"
@@ -691,6 +698,7 @@
           </div>
           <el-select
             filterable
+            clearable 
             v-model="stypeobj"
             placeholder="请选择车型"
             class="row_between"
@@ -770,6 +778,7 @@
           </div>
           <el-select
             filterable
+            clearable 
             v-model="hssWxCustomerRo.introducer"
             placeholder="请选择"
             class="row_between"
@@ -1088,14 +1097,54 @@ export default {
   },
   methods: {
     async save() {
-      let data = await this.api.commitNewCustomer({
-        hssWxCustomerRo: this.hssWxCustomerRo,
-        hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
-        hssWxBusinessSellRo: this.hssWxBusinessSellRo,
-      });
-      if (data.code == 0) {
-        Toast("保存成功");
-        this.until.href('/views/customermagt/index.html')
+      // 数据校验
+      // 必填
+      if (this.hssWxCustomerRo.store == "") {
+        Toast("门店不能为空");
+      } else if (this.hssWxCustomerRo.sex == "") {
+        Toast("性别不能为空");
+      } else if (this.hssWxCustomerRo.important == "") {
+        Toast("重点客户不能为空");
+      } else if (this.hssWxCustomerRo.region == "") {
+        Toast("客户区域不能为空");
+      } else if (this.hssWxCustomerRo.nature == "") {
+        Toast("客户性质不能为空");
+      } else if (this.hssWxCustomerRo.source == "") {
+        Toast("客户来源不能为空");
+      } else if (this.hssWxBusinessBuyRo.brand == "") {
+        Toast("买车品牌不能为空");
+      } else if (this.hssWxCustomerRo.intentionLevel == "") {
+        Toast("意向等级不能为空");
+      } else if (this.hssWxBusinessSellRo.brand == "") {
+        if (this.hssWxCustomerRo.isSell) Toast("卖车品牌不能为空");
+      }
+      // 非必填，填了就需校验
+      else if (this.hssWxCustomerRo.phone != "") {
+        let msg = this.reg.checkPhone(this.hssWxCustomerRo.phone);
+        if (msg != "ok") Toast(msg);
+      } else if (this.showdiyprice) {
+        if (this.hssWxBusinessBuyRo.minPrice > this.hssWxBusinessBuyRo.maxPrice)
+          Toast("请重填自定义价格");
+      } else if (this.hssWxCustomerRo.sparePhone != "") {
+        let msg = this.reg.checkPhone(this.hssWxCustomerRo.sparePhone);
+        if (msg != "ok") Toast(msg);
+      } else if (this.hssWxCustomerRo.idcard != "") {
+        let msg = this.reg.checkCard(this.hssWxCustomerRo.idcard);
+        if (msg != "ok") Toast(msg);
+      }
+      // 校验结束
+      else {
+        let data = await this.api.commitNewCustomer({
+          hssWxCustomerRo: this.hssWxCustomerRo,
+          hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
+          hssWxBusinessSellRo: this.hssWxBusinessSellRo,
+        });
+        if (data.code == 0) {
+          Toast("保存成功");
+          this.until.back();
+        }
+        else
+        Toast("保存失败");
       }
     },
     back() {

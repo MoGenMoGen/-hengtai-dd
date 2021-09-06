@@ -305,6 +305,7 @@
         </div>
         <el-select
           filterable
+          clearable 
           v-model="bseriseobj"
           placeholder="请选择车系"
           class="row_between"
@@ -328,6 +329,7 @@
         </div>
         <el-select
           filterable
+          clearable 
           v-model="btypeobj"
           placeholder="请选择车型"
           class="row_between"
@@ -560,7 +562,6 @@ import brand from "@/assets/img/brand.png";
 import moment from "moment";
 import { compressImg, readImg } from "@/assets/js/imageUtil";
 import { Toast } from "mint-ui";
-
 
 export default {
   data() {
@@ -868,10 +869,32 @@ export default {
       this.confirmprice = true;
     },
     async save() {
-    let data=  await this.api.commitNewfollow(this.info);
-    if (data.code == 0) {
-        Toast("保存成功");
-        this.until.href('/views/customermagt/index.html')
+      // 数据校验开始
+      // 必填项
+      if (this.info.hssWxFollowupRo.content == "") Toast("请输入跟进内容");
+      else if (this.info.hssWxFollowupRo.mode == "") Toast("请选择沟通方式");
+      else if (this.showToStoreContent) {
+        if (this.info.hssWxFollowupRo.visitingTime == "")
+          Toast("请选择来访时间");
+        else if (this.info.hssWxFollowupRo.departureTime == "")
+          Toast("请选择离店时间");
+        else if (this.info.hssWxFollowupRo.customerNumber == "")
+          Toast("请选择客户人数");
+      } else if (this.info.hssWxBusinessBuyRo.brand == "")
+        Toast("请选择买车品牌");
+      else if (this.info.hssWxFollowupRo.intentionLevel == "")
+        Toast("请选择意向等级");
+      else if (this.showdiyprice) {
+        if (this.hssWxBusinessBuyRo.minPrice > this.hssWxBusinessBuyRo.maxPrice)
+          Toast("请重填自定义价格");
+      }
+      // 数据校验结束
+      else {
+        let data = await this.api.commitNewfollow(this.info);
+        if (data.code == 0) {
+          Toast("保存成功");
+          this.until.back();
+        }
       }
     },
   },
@@ -943,7 +966,7 @@ export default {
     this.id = this.until.getQueryString("id");
     // 详情数据复写
     let detailData = await this.api.getcustomerDetail(this.id);
-    this.info.hssWxBusinessBuyRo = detailData.buy.data
+    this.info.hssWxBusinessBuyRo = detailData.buy.data;
     // this.info.hssWxBusinessBuyRo = {
     //   ...detailData.buy.data,
     //   ...this.info.hssWxBusinessBuyRo,
@@ -953,9 +976,8 @@ export default {
     // 意向等级
     this.info.hssWxFollowupRo.intentionLevel =
       detailData.customer.data.intentionLevel;
-      // 用户id
-    this.info.hssWxFollowupRo.customerId =
-      detailData.customer.data.id;
+    // 用户id
+    this.info.hssWxFollowupRo.customerId = detailData.customer.data.id;
     // 自定义价格是否显示
     let priceindex = this.priceList.findIndex(
       (item) => item.content == this.info.hssWxBusinessBuyRo.priceId

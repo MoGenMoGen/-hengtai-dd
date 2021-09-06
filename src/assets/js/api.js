@@ -9,7 +9,7 @@ import { Toast } from 'mint-ui';
 import { until} from '@/assets/js/until'
 const until1=new until();
 const token=until1.loGet("token")
-const token=localStorage.getItem('token')
+// const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {

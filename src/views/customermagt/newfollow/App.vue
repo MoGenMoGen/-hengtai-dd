@@ -104,7 +104,7 @@
             <div class="rowtitle">来访时间</div>
           </div>
           <van-field
-            style="padding: 0; height: 19px; line-height: 19px"
+            style="padding: 0; height: .38rem; line-height: .38rem"
             readonly
             clickable
             label=""
@@ -133,7 +133,7 @@
             <div class="rowtitle">离店时间</div>
           </div>
           <van-field
-            style="padding: 0; height: 19px; line-height: 19px"
+            style="padding: 0; height: .38rem; line-height: .38rem"
             readonly
             clickable
             label=""
@@ -200,7 +200,7 @@
           <div class="rowtitle">下次跟进时间</div>
         </div>
         <van-field
-          style="padding: 0; height: 19px; line-height: 19px"
+          style="padding: 0; height: .38rem; line-height: .38rem"
           readonly
           clickable
           label=""
@@ -271,7 +271,7 @@
         <div style="display: flex">
           <div class="placeholder">*</div>
           <div class="rowtitle" v-if="!info.hssWxBusinessBuyRo.brand">品牌</div>
-          <div class="rowtitle" style="width: 200px" v-else>
+          <div class="rowtitle" style="width: 4rem" v-else>
             品牌：{{ info.hssWxBusinessBuyRo.brand }}
           </div>
         </div>
@@ -532,7 +532,7 @@
           <div class="rowtitle">下次跟进时间</div>
         </div>
         <van-field
-          style="padding: 0; height: 19px; line-height: 19px"
+          style="padding: 0; height: .38rem; line-height: .38rem"
           readonly
           clickable
           label=""
@@ -1063,6 +1063,7 @@ export default {
     background: #fff;
     display: flex;
     border-bottom: 1px solid #e7e7e7;
+    align-items: center;
 
     .placeholder {
       width: 0.18rem;
@@ -1101,7 +1102,7 @@ export default {
       }
     }
     .radiobuytype:last-child {
-      margin-top: 10px;
+      margin-top: .2rem;
     }
   }
   .morebrand {
@@ -1136,24 +1137,24 @@ export default {
     .brand_list {
       .brand_item {
         .letter_title {
-          padding: 5px 10px;
+          padding: .1rem .2rem;
         }
 
         .son_brand_list {
           background: #ffffff;
           .son_item {
-            padding: 10px;
+            padding: .2rem;
             display: flex;
             align-items: center;
             .brand_icon {
-              width: 50px;
-              height: 50px;
-              margin-right: 10px;
+              width: 1rem;
+              height: 1rem;
+              margin-right: .2rem;
             }
             .item_name {
-              font-size: 16px;
-              height: 30px;
-              line-height: 30px;
+              font-size: .32rem;
+              height: .6rem;
+              line-height: .6rem;
             }
           }
         }

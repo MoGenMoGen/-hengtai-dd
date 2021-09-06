@@ -245,6 +245,14 @@
 
 			})
 		
+				this.api.searchbrandlist('').then(res => {
+					
+				 for(let i=0;i<res.length;i++)
+				 {
+					 this.options = [...this.options, ...res[i].result]
+				 }
+					
+				})
 
 	},
 	methods: {

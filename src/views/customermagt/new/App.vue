@@ -205,8 +205,8 @@
           style="
             align-item: center;
             padding: 0;
-            height: 19px;
-            line-height: 19px;
+            height: .38rem;
+            line-height: .38rem;
           "
           class="row_between"
           v-model="hssWxCustomerRo.regionOutside"
@@ -324,7 +324,7 @@
         <div style="display: flex">
           <div class="placeholder">*</div>
           <div class="rowtitle" v-if="!hssWxBusinessBuyRo.brand">品牌</div>
-          <div class="rowtitle" style="width: 200px" v-else>
+          <div class="rowtitle" style="width: 4rem" v-else>
             品牌：{{ hssWxBusinessBuyRo.brand }}
           </div>
         </div>
@@ -581,7 +581,7 @@
           <div class="rowtitle">下次跟进时间</div>
         </div>
         <van-field
-          style="padding: 0; height: 19px; line-height: 19px"
+          style="padding: 0; height: .38rem; line-height: .38rem"
           readonly
           clickable
           label=""
@@ -641,7 +641,7 @@
           <div style="display: flex">
             <div class="placeholder">*</div>
             <div class="rowtitle" v-if="!hssWxBusinessSellRo.brandId">品牌</div>
-            <div class="rowtitle" style="width: 200px" v-else>
+            <div class="rowtitle" style="width: 4rem" v-else>
               品牌：{{ hssWxBusinessSellRo.brand }}
             </div>
           </div>
@@ -848,8 +848,8 @@
             style="
               align-item: center;
               padding: 0;
-              height: 19px;
-              line-height: 19px;
+              height: .38rem;
+              line-height: .38rem;
             "
             class="row_between"
             v-model="hssWxCustomerRo.location"
@@ -1646,6 +1646,7 @@ export default {
     padding-right: 0.48rem;
     background: #fff;
     display: flex;
+    align-items: center;
     border-bottom: 1px solid #e7e7e7;
 
     .placeholder {
@@ -1685,7 +1686,7 @@ export default {
       }
     }
     .radiobuytype:last-child {
-      margin-top: 10px;
+      margin-top: .2rem;
     }
   }
   .top {
@@ -1750,24 +1751,24 @@ export default {
     .brand_list {
       .brand_item {
         .letter_title {
-          padding: 5px 10px;
+          padding: .1rem .2rem;
         }
 
         .son_brand_list {
           background: #ffffff;
           .son_item {
-            padding: 10px;
+            padding: .2rem;
             display: flex;
             align-items: center;
             .brand_icon {
-              width: 50px;
-              height: 50px;
-              margin-right: 10px;
+              width: 1rem;
+              height: 1rem;
+              margin-right: .2rem;
             }
             .item_name {
-              font-size: 16px;
-              height: 30px;
-              line-height: 30px;
+              font-size: .32rem;
+              height: .6rem;
+              line-height: .6rem;
             }
           }
         }

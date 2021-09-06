@@ -12,12 +12,17 @@
       <div class="query">
         <div class="left">
           <div class="row1">
-            <el-input
+            <!-- <el-input
               class="leftpart bg input"
               v-model="info.nameAndphone"
               placeholder="姓名、手机号"
-            ></el-input>
-            <el-select
+            ></el-input> -->
+            <van-field
+              class="leftpart bg input"
+              v-model="info.nameAndphone"
+              placeholder="姓名、手机号"
+            ></van-field>
+            <!-- <el-select
               clearable
               filterable
               class="rightpart bg"
@@ -32,7 +37,32 @@
                 :value="item.content"
               >
               </el-option>
-            </el-select>
+            </el-select> -->
+            <van-field
+              class="rightpart input bg"
+              readonly
+              clickable
+              label=""
+              :value="info.business"
+              placeholder="选择购买类型"
+              @click="showPicker123 = true"
+            />
+            <van-popup v-model="showPicker123" round position="bottom">
+              <van-search
+                v-model="search123"
+                shape="round"
+                background="#09c076"
+                @input="onSearch123"
+                placeholder="请输入搜索关键词"
+              />
+              <van-picker
+                value-key="content"
+                show-toolbar
+                :columns="searchbuytypes"
+                @cancel="showPicker123 = false"
+                @confirm="handleBuysType"
+              />
+            </van-popup>
           </div>
           <div class="row2">
             <el-select
@@ -112,7 +142,7 @@
       >
         <van-cell
           class="item"
-          v-for="(item,index) in customerList"
+          v-for="(item, index) in customerList"
           :key="index"
           @click="toDetail(item.id)"
         >
@@ -147,6 +177,9 @@ import moment from "moment";
 export default {
   data() {
     return {
+      searchbuytypes:[],
+      search123: "",
+      showPicker123: false,
       // 上拉加载loading
       loading: false,
       finished: false,
@@ -229,6 +262,7 @@ export default {
     this.buytypes = await this.api.getBuysTypeList(
       this.query.toEncode(this.newqry(query_buys_type))
     );
+    this.searchbuytypes=this.buytypes;
     // 销售顾问
     let query_sales = {
       w: [
@@ -283,12 +317,12 @@ export default {
     },
     // 下拉刷新
     onRefresh() {
-      this.customerList=[];
-      this.finished=false;
-      this.loading=true;
+      this.customerList = [];
+      this.finished = false;
+      this.loading = true;
       this.info.pageNo = 1;
-      this.isfirstload=true;
-      this.handleLoad()
+      this.isfirstload = true;
+      this.handleLoad();
       setTimeout(() => {
         this.isLoading = false;
       }, 1000);
@@ -296,30 +330,44 @@ export default {
     back() {
       this.until.back();
     },
-    handleBuysType(id) {},
+    onSearch123(a) {
+      if (a != "")
+        this.searchbuytypes = this.buytypes.filter((item) =>
+          item.content.includes(a)
+        );
+        else
+        this.searchbuytypes=this.buytypes
+    },
+    handleBuysType(e, v) {
+      console.log(123, e);
+      console.log(456, v);
+      this.info.business=e.content;
+      this.showPicker123=false;
+      
+    },
     // 新增客户
     newcustomer() {
       this.until.href("/views/customermagt/new.html");
     },
     toDetail(id) {
-      this.until.href("/views/customermagt/detail.html?id="+id);
+      this.until.href("/views/customermagt/detail.html?id=" + id);
     },
     // 获取列表
     async getList(data) {
       let res = await this.api.getcustomerList(data);
       this.customerList = [...this.customerList, ...res.data.list];
-      console.table(this.customerList)
+      console.table(this.customerList);
       this.total = res.page.total;
     },
     // 查询
     handleQuery() {
       // 每次点击请求第一页数据
-       this.customerList=[];
-      this.finished=false;
-      this.loading=true;
+      this.customerList = [];
+      this.finished = false;
+      this.loading = true;
       this.info.pageNo = 1;
-      this.isfirstload=true;
-      this.handleLoad()
+      this.isfirstload = true;
+      this.handleLoad();
     },
     startTimeChange(val) {
       this.info.beginFollowUpTime = moment(val).format("YYYY-MM-DD");
@@ -429,6 +477,8 @@ export default {
 
         .leftpart {
           flex: 1;
+          border: 1px solid #dddddd;
+          border-radius: 0.06rem;
           margin-right: 0.1rem;
 
           .input {
@@ -440,6 +490,8 @@ export default {
 
         .rightpart {
           flex: 1;
+          border: 1px solid #dddddd;
+          border-radius: 0.06rem;
         }
       }
 
@@ -503,7 +555,7 @@ export default {
       position: relative;
       .level {
         position: absolute;
-        top:0;
+        top: 0;
         right: 0rem;
         width: 0.88rem;
         height: 0.44rem;
@@ -516,7 +568,7 @@ export default {
         background-image: url("~@/assets/img/biglevel.png");
         background-repeat: no-repeat;
         background-size: 0.78rem;
-        background-position:center center;
+        background-position: center center;
       }
       .left {
         margin-right: 0.24rem;

@@ -7,7 +7,7 @@
 		<div class="searchBox">
 			<div class="leftBox">
 				<input type="" name="" id="" value="" placeholder="姓名、电话、销售顾问" v-model="searchStr" />
-				<el-select v-model="value" filterable placeholder="留档状态" class="select" @change="postId">
+				<el-select v-model="value" filterable clearable placeholder="留档状态" class="select" @change="postId">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
 				</el-select>

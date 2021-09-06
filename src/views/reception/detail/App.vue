@@ -178,7 +178,7 @@
 					color: #303030;
 
 					.listHead {
-						width: 55px;
+						width: 1.4rem;
 
 					}
 

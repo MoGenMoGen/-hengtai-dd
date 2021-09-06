@@ -126,15 +126,15 @@
 				this.infoList.phone = this.info.mob
 				this.infoList.imgUrl=this.info.imgUrl
 				this.api.postUpdPerson(this.infoList)
-				console.log(this.info);
+				console.log("sa",this.infoList);
 			},
 			handleAvatarSuccess(res, file) {
-				
-				this.imageUrl = res[0]
+				console.log(111,res);
+				this.imageUrl = res.data
 				console.log(this.infoList)
 				this.info.imgUrl=this.imageUrl
 			
-				console.log(this.info.imgUrl);
+				console.log(222,this.info.imgUrl);
 				
 			},
 			beforeAvatarUpload(file) {

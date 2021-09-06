@@ -52,6 +52,9 @@
 				</div>
 			</div>
 		</div>
+		 <span id="">
+		 	{{code}}
+		 </span>
 		<tabbar :currentIndex="0"> </tabbar>
 	</div>
 </template>
@@ -63,7 +66,9 @@
 	import tabbar from "@/components/tabbar";
 	export default {
 		data() {
-			return {};
+			return {
+				code:""
+			};
 		},
 		components: {
 			tabbar,
@@ -74,11 +79,11 @@
 				console.log(111);
 				this.code = this.until.getQueryString('code')
 				if (!this.code) {
-					this.until.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wwa9310f942b8696dc&redirect_uri=http%3A%2F%2Fhsstest.jinkworld.com%2Fviews%2Fprofile%2Flogin.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
+					this.until.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wwa9310f942b8696dc&redirect_uri=http%3A%2F%2Fhsstest.jinkworld.com%2Fviews%2Fhome%2Findex.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
 	  	  `)
 				} 
 				else {
-					this.api.getWxlogin(this.code).then(res => {
+					this.api.getWxlogin({code:this.code}).then(res => {
 						this.until.loSave('token', res.data.token)
 						// window.location.replace("/static/wechat/views/home/index.html")
 					})

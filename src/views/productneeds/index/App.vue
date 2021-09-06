@@ -180,7 +180,7 @@
 					brand: "", //车牌
 					series: "", //车系	
 					model: "", //车型
-					saler:"",//销售
+					saler: "", //销售
 					beginTime: "", //发布开始时间
 					endTime: "", //发布结束时间（两个时间应该同时存在或者不存在）
 					n: 1, //起始位置
@@ -236,19 +236,18 @@
 			// })
 			window.addEventListener('scroll', this.menu)
 			// let list = "abcdefghijklmnopqrstuvwxyz"
-		
-				this.api.searchbrandlist('').then(res => {
-					
-				 for(let i=0;i<res.length;i++)
-				 {
-					 this.options = [...this.options, ...res[i].result]
-				 }
-					
-				})
-			}
 
-		},
-		methods: {
+			this.api.searchbrandlist('').then(res => {
+
+				for (let i = 0; i < res.length; i++) {
+					this.options = [...this.options, ...res[i].result]
+				}
+
+			})
+		
+
+	},
+	methods: {
 			cancel() {
 				console.log('cancel')
 				this.result = 'click cancel result: null'
@@ -281,17 +280,17 @@
 			changePage(index) {
 				this.currentIndex = index
 				// this.optionsTwo=[]
-				this.value=""
-				this.value1=""
-				this.value2=""
-				this.value3=""
-				this.optionsThree=[]
-				this.optionsFour=[]
-				this.levelId=""
+				this.value = ""
+				this.value1 = ""
+				this.value2 = ""
+				this.value3 = ""
+				this.optionsThree = []
+				this.optionsFour = []
+				this.levelId = ""
 				this.brand = ""
 				this.series = ""
 				this.model = ""
-				this.salesman=""
+				this.salesman = ""
 				this.infoList = []
 				this.startTime = ""
 				this.endTime = ""
@@ -334,7 +333,7 @@
 					this.page1.model = this.model
 					this.page1.beginTime = this.startTime
 					this.page1.endTime = this.endTime
-					this.page1.saler=this.salesman
+					this.page1.saler = this.salesman
 					this.api.getWxBusinessSell(this.page1).then(res => {
 						console.log(res);
 						this.total = res.page.total
@@ -374,11 +373,11 @@
 				this.getList()
 			},
 			postId(val) {
-			this.brand=val
+				this.brand = val
 				this.api.getCarSeries({
 					brandid: val
 				}).then(res => {
-					console.log("kankan",res);
+					console.log("kankan", res);
 					this.optionsThree = res
 					console.log("测试", this.optionsThree);
 				})
@@ -387,8 +386,8 @@
 				this.levelId = val
 			},
 			postIdThree(val) {
-				this.series=val
-				this.api.getCarModels(val).then(res => {
+				this.series = val
+				this.api.getCarModels({seriesId:val}).then(res => {
 					this.optionsFour = res.result
 				})
 			},

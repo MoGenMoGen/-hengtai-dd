@@ -85,7 +85,7 @@ export default {
 		  this.until.href("/views/customermagt/index.html")
 	  },
 	  quit(){
-		  this.api.postUpdPerson().then(()=>{
+		  this.api.logout().then(()=>{
 				 localStorage.clear()
 			  	window.location.replace("/views/profile/login.html")
 		  })

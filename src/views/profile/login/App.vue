@@ -144,11 +144,11 @@
 				}
 				this.api.login(p).then((res) => {
 					console.log(1111111, res);
-
+					
 					this.until.loSave('token', res.data.token)
 					this.until.loSave('userInfo', res.data.userInfo)
 					this.api.getWxlogin(this.code)
-					window.location.replace("/views/profile/index.html")
+					window.location.replace("/views/home/index.html")
 
 				})
 				//   let that = this

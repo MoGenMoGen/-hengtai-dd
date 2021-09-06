@@ -12,6 +12,37 @@
           <div class="placeholder">*</div>
           <div class="rowtitle">门店</div>
         </div>
+        <van-field
+          readonly
+          clickable
+          label=""
+          :value="hssWxCustomerRo.store"
+          placeholder="请选择门店"
+          @click="showPicker123 = true"
+        />
+        <van-popup v-model="showPicker123" round position="bottom">
+          <van-search
+            v-model="search123"
+            shape="round"
+            background="#09c076"
+            @input="onSearch123"
+            placeholder="请输入搜索关键词"
+          />
+          <van-picker
+            value-key="content"
+            show-toolbar
+            :columns="searchshoplist"
+            @cancel="showPicker123 = false"
+            @confirm="handleBuysType"
+          />
+        </van-popup>
+      </div>
+      <!-- <div class="row shopbox">
+        占位符
+        <div style="display: flex">
+          <div class="placeholder">*</div>
+          <div class="rowtitle">门店</div>
+        </div>
         <el-select
           v-model="hssWxCustomerRo.store"
           filterable
@@ -27,7 +58,8 @@
           >
           </el-option>
         </el-select>
-      </div>
+      </div> -->
+
       <div class="row shopbox">
         <!-- 占位符 -->
         <div style="display: flex">
@@ -36,7 +68,7 @@
         </div>
         <el-select
           filterable
-          clearable 
+          clearable
           v-model="hssWxCustomerRo.saler"
           placeholder="请选择销售顾问"
           class="row_between"
@@ -205,8 +237,8 @@
           style="
             align-item: center;
             padding: 0;
-            height: .38rem;
-            line-height: .38rem;
+            height: 0.38rem;
+            line-height: 0.38rem;
           "
           class="row_between"
           v-model="hssWxCustomerRo.regionOutside"
@@ -237,7 +269,7 @@
         </div>
         <el-select
           filterable
-          clearable 
+          clearable
           v-model="hssWxCustomerRo.nature"
           placeholder="请选择客流性质"
           class="row_between"
@@ -259,7 +291,7 @@
         </div>
         <el-select
           filterable
-          clearable 
+          clearable
           v-model="hssWxCustomerRo.source"
           placeholder="请选择客户来源"
           class="row_between"
@@ -357,7 +389,7 @@
         </div>
         <el-select
           filterable
-          clearable 
+          clearable
           v-model="bseriseobj"
           placeholder="请选择车系"
           class="row_between"
@@ -381,7 +413,7 @@
         </div>
         <el-select
           filterable
-          clearable 
+          clearable
           v-model="btypeobj"
           placeholder="请选择车型"
           class="row_between"
@@ -581,7 +613,7 @@
           <div class="rowtitle">下次跟进时间</div>
         </div>
         <van-field
-          style="padding: 0; height: .38rem; line-height: .38rem"
+          style="padding: 0; height: 0.38rem; line-height: 0.38rem"
           readonly
           clickable
           label=""
@@ -674,7 +706,7 @@
           </div>
           <el-select
             filterable
-            clearable 
+            clearable
             v-model="sseriseobj"
             placeholder="请选择车系"
             class="row_between"
@@ -698,7 +730,7 @@
           </div>
           <el-select
             filterable
-            clearable 
+            clearable
             v-model="stypeobj"
             placeholder="请选择车型"
             class="row_between"
@@ -778,7 +810,7 @@
           </div>
           <el-select
             filterable
-            clearable 
+            clearable
             v-model="hssWxCustomerRo.introducer"
             placeholder="请选择"
             class="row_between"
@@ -848,8 +880,8 @@
             style="
               align-item: center;
               padding: 0;
-              height: .38rem;
-              line-height: .38rem;
+              height: 0.38rem;
+              line-height: 0.38rem;
             "
             class="row_between"
             v-model="hssWxCustomerRo.location"
@@ -942,6 +974,8 @@ import { Toast } from "mint-ui";
 export default {
   data() {
     return {
+      showPicker123: false,
+      searchshoplist: [],
       // 用户id
       id: "",
       // 接待id
@@ -1096,6 +1130,19 @@ export default {
     },
   },
   methods: {
+    onSearch123(a) {
+      if (a != "")
+        this.searchshoplist = this.buytypes.filter((item) =>
+          item.content.includes(a)
+        );
+      else this.searchbuytypes = this.buytypes;
+    },
+    handleBuysType(e, v) {
+      console.log(123, e);
+      console.log(456, v);
+      this.hssWxCustomerRo.store = e.content;
+      this.showPicker123 = false;
+    },
     async save() {
       // 数据校验
       // 必填
@@ -1142,9 +1189,7 @@ export default {
         if (data.code == 0) {
           Toast("保存成功");
           this.until.back();
-        }
-        else
-        Toast("保存失败");
+        } else Toast("保存失败");
       }
     },
     back() {
@@ -1433,6 +1478,7 @@ export default {
         })
       )
     );
+    this.searchshoplist = this.shopList;
     // 获取销售顾问列表
     this.salers = await this.api.getsalersList(
       encodeURIComponent(
@@ -1686,7 +1732,7 @@ export default {
       }
     }
     .radiobuytype:last-child {
-      margin-top: .2rem;
+      margin-top: 0.2rem;
     }
   }
   .top {
@@ -1751,24 +1797,24 @@ export default {
     .brand_list {
       .brand_item {
         .letter_title {
-          padding: .1rem .2rem;
+          padding: 0.1rem 0.2rem;
         }
 
         .son_brand_list {
           background: #ffffff;
           .son_item {
-            padding: .2rem;
+            padding: 0.2rem;
             display: flex;
             align-items: center;
             .brand_icon {
               width: 1rem;
               height: 1rem;
-              margin-right: .2rem;
+              margin-right: 0.2rem;
             }
             .item_name {
-              font-size: .32rem;
-              height: .6rem;
-              line-height: .6rem;
+              font-size: 0.32rem;
+              height: 0.6rem;
+              line-height: 0.6rem;
             }
           }
         }

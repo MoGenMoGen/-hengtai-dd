@@ -235,11 +235,15 @@
 			// 	console.log(888,this.infoList);
 			// })
 			window.addEventListener('scroll', this.menu)
-			let list = "abcdefghijklmnopqrstuvwxyz"
-			for (let i = 0; i < list.length; i++) {
-				this.api.getWxCommonfield(list[i]).then(res => {
+			// let list = "abcdefghijklmnopqrstuvwxyz"
+		
+				this.api.searchbrandlist('').then(res => {
 					
-					this.options = [...this.options, ...res]
+				 for(let i=0;i<res.length;i++)
+				 {
+					 this.options = [...this.options, ...res[i].result]
+				 }
+					
 				})
 			}
 

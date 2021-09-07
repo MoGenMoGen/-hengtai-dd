@@ -104,7 +104,7 @@
             <div class="rowtitle">来访时间</div>
           </div>
           <van-field
-            style="padding: 0; height: .38rem; line-height: .38rem"
+            style="padding: 0; height: 0.38rem; line-height: 0.38rem"
             readonly
             clickable
             label=""
@@ -133,7 +133,7 @@
             <div class="rowtitle">离店时间</div>
           </div>
           <van-field
-            style="padding: 0; height: .38rem; line-height: .38rem"
+            style="padding: 0; height: 0.38rem; line-height: 0.38rem"
             readonly
             clickable
             label=""
@@ -161,14 +161,24 @@
             <div class="placeholder">*</div>
             <div class="rowtitle">客户人数</div>
           </div>
+          <van-field
+            clickable
+            label=""
+            v-model="info.hssWxFollowupRo.customerNumber"
+            style="width: 3rem"
+            class="van_field"
+            type="number"
+            oninput="if(value.length>2)value=value.slice(0,2)"
+            placeholder="请输入客户人数"
+          />
 
-          <el-input
+          <!-- <el-input
             v-model="info.hssWxFollowupRo.customerNumber"
             type="number"
             oninput="if(value.length>6)value=value.slice(0,6)"
             placeholder="请输入人数"
             style="flex: 1"
-          ></el-input>
+          ></el-input> -->
         </div>
         <!-- <div class="row">
           占位符
@@ -303,7 +313,32 @@
           <div class="placeholder"></div>
           <div class="rowtitle">车系</div>
         </div>
-        <el-select
+        <van-field
+          @click="showPicker6 = true"
+          class="van_field"
+          readonly
+          clickable
+          label=""
+          v-model="info.hssWxBusinessBuyRo.series"
+          placeholder="请选择车系"
+        />
+        <van-popup v-model="showPicker6" round position="bottom">
+          <van-search
+            v-model="search6"
+            shape="round"
+            background="#09c076"
+            @input="onSearch6"
+            placeholder="请输入搜索关键词"
+          />
+          <van-picker
+            value-key="name"
+            show-toolbar
+            :columns="searchBcarseries"
+            @cancel="showPicker6 = false"
+            @confirm="handlecheckBseries"
+          />
+        </van-popup>
+        <!-- <el-select
           filterable
           clearable 
           v-model="bseriseobj"
@@ -319,7 +354,7 @@
             :value="item"
           >
           </el-option>
-        </el-select>
+        </el-select> -->
       </div>
       <div class="row">
         <!-- 占位符 -->
@@ -327,9 +362,34 @@
           <div class="placeholder"></div>
           <div class="rowtitle">车型</div>
         </div>
-        <el-select
+        <van-field
+          @click="showPicker7 = true"
+          class="van_field"
+          readonly
+          clickable
+          label=""
+          v-model="info.hssWxBusinessBuyRo.model"
+          placeholder="请选择车型"
+        />
+        <van-popup v-model="showPicker7" round position="bottom">
+          <van-search
+            v-model="search7"
+            shape="round"
+            background="#09c076"
+            @input="onSearch7"
+            placeholder="请输入搜索关键词"
+          />
+          <van-picker
+            value-key="name"
+            show-toolbar
+            :columns="searchBcartypes"
+            @cancel="showPicker7 = false"
+            @confirm="handlecheckBtypes"
+          />
+        </van-popup>
+        <!-- <el-select
           filterable
-          clearable 
+          clearable
           v-model="btypeobj"
           placeholder="请选择车型"
           class="row_between"
@@ -343,7 +403,7 @@
             :value="item"
           >
           </el-option>
-        </el-select>
+        </el-select> -->
       </div>
       <!-- 价格区间开始 -->
       <div class="pricebox">
@@ -422,13 +482,23 @@
           <div class="rowtitle">里程数</div>
         </div>
         <div class="row_between">
-          <el-input
+          <van-field
+            clickable
+            label=""
+            v-model="info.hssWxBusinessBuyRo.mileage"
+            style="width: 3rem"
+            class="prititle van_field"
+            type="number"
+            oninput="if(value.length>4)value=value.slice(0,4)"
+            placeholder="请输入里程数"
+          />
+          <!-- <el-input
             style="width: 3rem"
             v-model="info.hssWxBusinessBuyRo.mileage"
             type="number"
             oninput="if(value.length>3)value=value.slice(0,3)"
             placeholder="请输入"
-          ></el-input>
+          ></el-input> -->
           <span style="font-weight: bold; color: #303030">万公里</span>
         </div>
       </div>
@@ -532,7 +602,7 @@
           <div class="rowtitle">下次跟进时间</div>
         </div>
         <van-field
-          style="padding: 0; height: .38rem; line-height: .38rem"
+          style="padding: 0; height: 0.38rem; line-height: 0.38rem"
           readonly
           clickable
           label=""
@@ -568,6 +638,14 @@ export default {
     return {
       id: "",
       albums: [],
+      // 买车车系搜索列表、搜索值、是否显示picker
+      searchBcarseries: [],
+      search6: "",
+      showPicker6: false,
+      // 买车车型搜索列表、搜索值、是否显示picker
+      searchBcartypes: [],
+      search7: "",
+      showPicker7: false,
       // 显示更多品牌弹窗
       showmorebrand: false,
       showdiyprice: false,
@@ -577,8 +655,8 @@ export default {
       showleftTime: false,
       searchvalue: "",
       currentID: "",
-      bseriseobj: {},
-      btypeobj: {},
+      // bseriseobj: {},
+      // btypeobj: {},
       info: {
         hssWxFollowupRo: {
           customerId: "", //用户id
@@ -789,18 +867,20 @@ export default {
     handlecheckbrand(brand) {
       this.currentID = brand.id;
       this.info.hssWxBusinessBuyRo.brandId = brand.id;
+      this.info.hssWxBusinessBuyRo.brand = brand.brand_name;
       // 清空车型、车系
       this.info.hssWxBusinessBuyRo.series = "";
       this.info.hssWxBusinessBuyRo.model = "";
       this.info.hssWxBusinessBuyRo.seriesId = "";
       this.info.hssWxBusinessBuyRo.modelId = "";
-      this.bseriseobj = {};
-      this.btypeobj = {};
+      // this.bseriseobj = {};
+      // this.btypeobj = {};
       // 获取买车车系列表
       this.api
         .getCarSeries({ brandid: this.info.hssWxBusinessBuyRo.brandId })
         .then((res) => {
           this.Bcarseries = res;
+          this.searchBcarseries = res;
         });
       setTimeout(() => {
         this.showmorebrand = false;
@@ -818,13 +898,14 @@ export default {
       this.info.hssWxBusinessBuyRo.model = "";
       this.info.hssWxBusinessBuyRo.seriesId = "";
       this.info.hssWxBusinessBuyRo.modelId = "";
-      this.bseriseobj = {};
-      this.btypeobj = {};
+      // this.bseriseobj = {};
+      // this.btypeobj = {};
       // 获取买车车系列表
       this.api
         .getCarSeries({ brandid: this.info.hssWxBusinessBuyRo.brandId })
         .then((res) => {
           this.Bcarseries = res;
+          this.searchBcarseries = res;
         });
     },
     // 处理买车车系选中值变化
@@ -834,18 +915,22 @@ export default {
       // 车型清空
       this.info.hssWxBusinessBuyRo.model = "";
       this.info.hssWxBusinessBuyRo.modelId = "";
-      this.btypeobj = {};
+      this.showPicker6 = false;
+
+      // this.btypeobj = {};
 
       // 获取买车车型列表
       this.api
         .getCarModels({ seriesId: this.info.hssWxBusinessBuyRo.seriesId })
         .then((res) => {
           this.Bcartypes = res.result;
+          this.searchBcartypes = res.result;
         });
     },
     handlecheckBtypes(brand) {
       this.info.hssWxBusinessBuyRo.modelId = brand.id;
       this.info.hssWxBusinessBuyRo.model = brand.name;
+      this.showPicker7 = false;
     },
     // 选中沟通方式
     handlecheckcontact(item) {
@@ -868,25 +953,61 @@ export default {
     handleconfirmPrice() {
       this.confirmprice = true;
     },
+    // 买车车系
+    onSearch6(a) {
+      if (a != "")
+        this.searchBcarseries = this.Bcarseries.filter((item) =>
+          item.name.includes(a)
+        );
+      else this.searchBcarseries = this.Bcarseries;
+    },
+    //  买车车型
+    onSearch7(a) {
+      if (a != "")
+        this.searchBcartypes = this.Bcartypes.filter((item) =>
+          item.name.includes(a)
+        );
+      else this.searchBcartypes = this.Bcartypes;
+    },
     async save() {
       // 数据校验开始
       // 必填项
-      if (this.info.hssWxFollowupRo.content == "") Toast("请输入跟进内容");
-      else if (this.info.hssWxFollowupRo.mode == "") Toast("请选择沟通方式");
-      else if (this.showToStoreContent) {
-        if (this.info.hssWxFollowupRo.visitingTime == "")
+      if (this.info.hssWxFollowupRo.content == "") {
+        Toast("请输入跟进内容");
+        return false;
+      } else if (this.info.hssWxFollowupRo.mode == "") {
+        Toast("请选择沟通方式");
+        return false;
+      } else if (this.showToStoreContent) {
+        if (this.info.hssWxFollowupRo.visitingTime == "") {
           Toast("请选择来访时间");
-        else if (this.info.hssWxFollowupRo.departureTime == "")
+          return false;
+        } else if (this.info.hssWxFollowupRo.departureTime == "") {
           Toast("请选择离店时间");
-        else if (this.info.hssWxFollowupRo.customerNumber == "")
+          return false;
+        } else if (this.info.hssWxFollowupRo.customerNumber == "") {
           Toast("请选择客户人数");
-      } else if (this.info.hssWxBusinessBuyRo.brand == "")
+          return false;
+        }
+      }
+
+      if (this.info.hssWxBusinessBuyRo.brand == "") {
         Toast("请选择买车品牌");
-      else if (this.info.hssWxFollowupRo.intentionLevel == "")
+        return false;
+      }
+
+      if (this.info.hssWxFollowupRo.intentionLevel == "") {
         Toast("请选择意向等级");
-      else if (this.showdiyprice) {
-        if (this.hssWxBusinessBuyRo.minPrice > this.hssWxBusinessBuyRo.maxPrice)
-          Toast("请重填自定义价格");
+        return false;
+      }
+
+      if (
+        this.showdiyprice &&
+        Number(this.info.hssWxBusinessBuyRo.minPrice) >
+          Number(this.info.hssWxBusinessBuyRo.maxPrice)
+      ) {
+        Toast("最低价格应小于最高价格");
+        return false;
       }
       // 数据校验结束
       else {
@@ -894,7 +1015,7 @@ export default {
         if (data.code == 0) {
           Toast("保存成功");
           this.until.back();
-        }
+        } else Toast("保存失败");
       }
     },
   },
@@ -979,25 +1100,30 @@ export default {
     // 用户id
     this.info.hssWxFollowupRo.customerId = detailData.customer.data.id;
     // 自定义价格是否显示
-    let priceindex = this.priceList.findIndex(
-      (item) => item.content == this.info.hssWxBusinessBuyRo.priceId
-    );
-    this.showdiyprice = this.priceList[priceindex].outside;
+    if (this.info.hssWxBusinessBuyRo.priceId) {
+      let priceindex = this.priceList.findIndex(
+        (item) => item.content == this.info.hssWxBusinessBuyRo.priceId
+      );
+      this.showdiyprice = this.priceList[priceindex].outside;
+    }
+
     // 车系列表
     this.Bcarseries = await this.api.getCarSeries({
       brandid: this.info.hssWxBusinessBuyRo.brandId,
     });
+    this.searchBcarseries = this.Bcarseries;
     // 车型列表
     let bshortTypes = await this.api.getCarModels({
       seriesId: this.info.hssWxBusinessBuyRo.seriesId,
     });
     this.Bcartypes = bshortTypes.result;
+    this.searchBcartypes = this.Bcartypes;
 
     // 车系、车型复写
-    this.$set(this.bseriseobj, "id", this.info.hssWxBusinessBuyRo.seriesId);
-    this.$set(this.bseriseobj, "name", this.info.hssWxBusinessBuyRo.series);
-    this.$set(this.btypeobj, "id", this.info.hssWxBusinessBuyRo.modelId);
-    this.$set(this.btypeobj, "name", this.info.hssWxBusinessBuyRo.model);
+    // this.$set(this.bseriseobj, "id", this.info.hssWxBusinessBuyRo.seriesId);
+    // this.$set(this.bseriseobj, "name", this.info.hssWxBusinessBuyRo.series);
+    // this.$set(this.btypeobj, "id", this.info.hssWxBusinessBuyRo.modelId);
+    // this.$set(this.btypeobj, "name", this.info.hssWxBusinessBuyRo.model);
   },
 };
 </script>
@@ -1057,6 +1183,11 @@ export default {
       transform: translateY(-50%);
     }
   }
+  .van_field {
+    padding: 0;
+    height: 0.38rem;
+    line-height: 0.38rem;
+  }
   .row {
     padding: 0.3rem;
     padding-right: 0.48rem;
@@ -1102,7 +1233,7 @@ export default {
       }
     }
     .radiobuytype:last-child {
-      margin-top: .2rem;
+      margin-top: 0.2rem;
     }
   }
   .morebrand {
@@ -1137,24 +1268,24 @@ export default {
     .brand_list {
       .brand_item {
         .letter_title {
-          padding: .1rem .2rem;
+          padding: 0.1rem 0.2rem;
         }
 
         .son_brand_list {
           background: #ffffff;
           .son_item {
-            padding: .2rem;
+            padding: 0.2rem;
             display: flex;
             align-items: center;
             .brand_icon {
               width: 1rem;
               height: 1rem;
-              margin-right: .2rem;
+              margin-right: 0.2rem;
             }
             .item_name {
-              font-size: .32rem;
-              height: .6rem;
-              line-height: .6rem;
+              font-size: 0.32rem;
+              height: 0.6rem;
+              line-height: 0.6rem;
             }
           }
         }
@@ -1343,7 +1474,7 @@ export default {
     }
   }
   .btn_save {
-    margin: 0.96rem auto 0px;
+    // margin: 0.96rem auto 0px;
     width: 5.7rem;
     height: 0.7rem;
     background: #09c076;
@@ -1353,6 +1484,10 @@ export default {
     color: #ffffff;
     line-height: 0.7rem;
     text-align: center;
+    position: fixed;
+    bottom:1.04rem;
+    left:50%;
+    transform: translateX(-50%);
   }
 }
 </style>

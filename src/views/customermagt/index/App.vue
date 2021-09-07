@@ -12,107 +12,152 @@
       <div class="query">
         <div class="left">
           <div class="row1">
-            <!-- <el-input
-              class="leftpart bg input"
-              v-model="info.nameAndphone"
-              placeholder="姓名、手机号"
-            ></el-input> -->
             <van-field
               class="leftpart bg input"
               v-model="info.nameAndphone"
               placeholder="姓名、手机号"
             ></van-field>
-            <!-- <el-select
-              clearable
-              filterable
-              class="rightpart bg"
-              v-model="info.business"
-              placeholder="购买类型"
-              @change="handleBuysType"
-            >
-              <el-option
-                v-for="(item, index) in buytypes"
-                :label="item.content"
-                :key="index"
-                :value="item.content"
-              >
-              </el-option>
-            </el-select> -->
             <van-field
               class="rightpart input bg"
               readonly
-              clickable
               label=""
               :value="info.business"
               placeholder="选择购买类型"
-              @click="showPicker123 = true"
+              @click="showPicker1 = true"
             />
-            <van-popup v-model="showPicker123" round position="bottom">
+            <van-popup v-model="showPicker1" round position="bottom">
               <van-search
-                v-model="search123"
+                v-model="search1"
                 shape="round"
                 background="#09c076"
-                @input="onSearch123"
+                @input="onSearch1"
                 placeholder="请输入搜索关键词"
               />
               <van-picker
                 value-key="content"
                 show-toolbar
                 :columns="searchbuytypes"
-                @cancel="showPicker123 = false"
+                @cancel="showPicker1 = false"
                 @confirm="handleBuysType"
               />
             </van-popup>
           </div>
           <div class="row2">
-            <el-select
-              clearable
-              filterable
-              class="leftpart bg"
-              v-model="info.nature"
+            <van-field
+              class="input bg leftpart"
+              readonly
+              label=""
+              :value="info.nature"
               placeholder="客流性质"
-            >
-              <el-option
-                v-for="item in flowtypes"
-                :key="item.id"
-                :value="item.content"
-                :label="item.content"
-              >
-              </el-option>
-            </el-select>
-            <el-select
-              clearable
-              filterable
-              class="centerpart bg"
-              v-model="info.saler"
+              @click="showPicker2 = true"
+            />
+            <van-popup v-model="showPicker2" round position="bottom">
+              <van-search
+                v-model="search2"
+                shape="round"
+                background="#09c076"
+                @input="onSearch2"
+                placeholder="请输入搜索关键词"
+              />
+              <van-picker
+                value-key="content"
+                show-toolbar
+                :columns="searchflowtypes"
+                @cancel="showPicker2 = false"
+                @confirm="handleFlowtype"
+              />
+            </van-popup>
+
+            <van-field
+              class="input bg centerpart"
+              readonly
+              label=""
+              :value="info.saler"
               placeholder="销售顾问"
-            >
-              <el-option
-                v-for="item in salers"
-                :key="item.id"
-                :label="item.arg7"
-                :value="item.arg7"
-              >
-              </el-option>
-            </el-select>
-            <el-select
-              clearable
-              filterable
-              class="rightpart bg"
-              v-model="info.intentionLevel"
+              @click="showPicker3 = true"
+            />
+            <van-popup v-model="showPicker3" round position="bottom">
+              <van-search
+                v-model="search3"
+                shape="round"
+                background="#09c076"
+                @input="onSearch3"
+                placeholder="请输入搜索关键词"
+              />
+              <van-picker
+                value-key="arg7"
+                show-toolbar
+                :columns="searchsalers"
+                @cancel="showPicker3 = false"
+                @confirm="handleSaler"
+              />
+            </van-popup>
+
+            <van-field
+              class="input bg rightpart"
+              readonly
+              label=""
+              :value="info.intentionLevel"
               placeholder="意向等级"
-            >
-              <el-option
-                v-for="item in intentLevels"
-                :key="item.id"
-                :value="item.id"
-                :label="item.content"
-              >
-              </el-option>
-            </el-select>
+              @click="showPicker4 = true"
+            />
+            <van-popup v-model="showPicker4" round position="bottom">
+              <van-search
+                v-model="search4"
+                shape="round"
+                background="#09c076"
+                @input="onSearch4"
+                placeholder="请输入搜索关键词"
+              />
+              <van-picker
+                value-key="content"
+                show-toolbar
+                :columns="searchintentLevels"
+                @cancel="showPicker4 = false"
+                @confirm="handleIntentionLevel"
+              />
+            </van-popup>
           </div>
           <div class="row3">
-            <el-date-picker
+            <van-field
+              class="picker son leftpart bg"
+              readonly
+              label=""
+              :value="info.beginFollowUpTime"
+              placeholder="选择开始日期"
+              @click="showPicker5 = true"
+            />
+            <van-popup v-model="showPicker5" round position="bottom">
+              <van-datetime-picker
+                type="date"
+                title="选择开始日期"
+                :max-date="maxStdate"
+                @confirm="startTimeChange"
+            @cancel="showPicker5 = false"
+
+              />
+            </van-popup>
+            <!-- 结束日期 -->
+            <van-field
+              class="picker son leftpart bg"
+              readonly
+              label=""
+              :value="info.endFollowUpTime"
+              placeholder="选择结束日期"
+              @click="showPicker6 = true"
+            />
+            <van-popup v-model="showPicker6" round position="bottom">
+              <van-datetime-picker
+                type="date"
+                :min-date="minEtdate"
+                :max-date="maxEtdate"
+                @confirm="endTimeChange"
+            @cancel="showPicker6 = false"
+
+              />
+            </van-popup>
+
+            <!-- <el-date-picker
               type="date"
               placeholder="开始日期"
               v-model="info.beginFollowUpTime"
@@ -127,7 +172,7 @@
               @change="endTimeChange"
               :picker-options="etOptions"
               class="picker son rightpart bg"
-            ></el-date-picker>
+            ></el-date-picker> -->
           </div>
         </div>
         <div class="right" @click="handleQuery">查询</div>
@@ -177,9 +222,27 @@ import moment from "moment";
 export default {
   data() {
     return {
-      searchbuytypes:[],
-      search123: "",
-      showPicker123: false,
+      // 购买类型、搜索列表、搜索值、是否显示picker
+      searchbuytypes: [],
+      search1: "",
+      showPicker1: false,
+      // 客流性质
+      searchflowtypes: [],
+      search2: "",
+      showPicker2: false,
+      // 销售顾问
+      searchsalers: [],
+      search3: "",
+      showPicker3: false,
+      // 意向等级
+      searchintentLevels: [],
+      search4: "",
+      showPicker4: false,
+      // 开始日期
+      showPicker5: false,
+
+      // 结束日期
+      showPicker6: false,
       // 上拉加载loading
       loading: false,
       finished: false,
@@ -216,31 +279,44 @@ export default {
   computed: {
     // 开始日期限制
     // 有结束日期时禁止大于结束日期的日期
-    stOptions() {
-      let _this = this;
-      return {
-        disabledDate(time) {
-          if (_this.info.endFollowUpTime)
-            return (
-              time.getTime() > moment(_this.info.endFollowUpTime).valueOf()
-            );
-        },
-      };
+    // stOptions() {
+    //   let _this = this;
+    //   return {
+    //     disabledDate(time) {
+    //       if (_this.info.endFollowUpTime)
+    //         return (
+    //           time.getTime() > moment(_this.info.endFollowUpTime).valueOf()
+    //         );
+    //     },
+    //   };
+    // },
+    maxStdate() {
+      if (this.info.endFollowUpTime != "")
+        return new Date(this.info.endFollowUpTime);
+      return new Date();
     },
     // 结束日期限制
     // 有开始日期时禁止小于开始日期的日期
-    etOptions() {
-      let _this = this;
-      return {
-        disabledDate(time) {
-          if (_this.info.beginFollowUpTime) {
-            return (
-              time.getTime() < moment(_this.info.beginFollowUpTime).valueOf()
-            );
-          }
-        },
-      };
+    minEtdate() {
+      if (this.info.beginFollowUpTime != "")
+        return new Date(this.info.beginFollowUpTime);
+      return new Date(moment().add(20, "years"));
     },
+    maxEtdate() {
+      return new Date();
+    },
+    // etOptions() {
+    //   let _this = this;
+    //   return {
+    //     disabledDate(time) {
+    //       if (_this.info.beginFollowUpTime) {
+    //         return (
+    //           time.getTime() < moment(_this.info.beginFollowUpTime).valueOf()
+    //         );
+    //       }
+    //     },
+    //   };
+    // },
   },
   async created() {
     // 获取公共列表
@@ -253,6 +329,7 @@ export default {
     this.flowtypes = await this.api.getFlowtypeList(
       this.query.toEncode(this.newqry(query_flow_type))
     );
+    this.searchflowtypes = this.flowtypes;
     // 购买类型
     let query_buys_type = {
       w: [["category", 4, "EQ"]],
@@ -262,7 +339,7 @@ export default {
     this.buytypes = await this.api.getBuysTypeList(
       this.query.toEncode(this.newqry(query_buys_type))
     );
-    this.searchbuytypes=this.buytypes;
+    this.searchbuytypes = this.buytypes;
     // 销售顾问
     let query_sales = {
       w: [
@@ -270,20 +347,22 @@ export default {
         ["arg6", "销售", "LK"],
       ],
       o: ["crtTm", "esc"],
-      p: [1, 10],
+      p: [1, 1000],
     };
-    this.salers = await this.api.getsalersList(
-      this.query.toEncode(this.newqry(query_sales))
-    );
+    this.salers = await this.api.getsalersList();
+    this.searchsalers = this.salers;
+
     // 意向等级
     this.intentLevels = await this.api.getWxIntentionLevel({
       p: { n: 1, s: 20 },
     });
+    this.searchintentLevels = this.intentLevels;
   },
   mounted() {
     console.log("mounted");
   },
   methods: {
+    // 上拉加载
     handleLoad() {
       if (this.isfirstload) {
         // 页码不增加
@@ -330,20 +409,51 @@ export default {
     back() {
       this.until.back();
     },
-    onSearch123(a) {
+    // 购买类型
+    onSearch1(a) {
       if (a != "")
         this.searchbuytypes = this.buytypes.filter((item) =>
           item.content.includes(a)
         );
-        else
-        this.searchbuytypes=this.buytypes
+      else this.searchbuytypes = this.buytypes;
     },
-    handleBuysType(e, v) {
-      console.log(123, e);
-      console.log(456, v);
-      this.info.business=e.content;
-      this.showPicker123=false;
-      
+    handleBuysType(e) {
+      this.info.business = e.content;
+      this.showPicker1 = false;
+    },
+    // 客流性质
+    onSearch2(a) {
+      if (a != "")
+        this.searchflowtypes = this.flowtypes.filter((item) =>
+          item.content.includes(a)
+        );
+      else this.searchflowtypes = this.flowtypes;
+    },
+    handleFlowtype(e) {
+      this.info.nature = e.content;
+      this.showPicker2 = false;
+    },
+    // 销售顾问
+    onSearch3(a) {
+      if (a != "")
+        this.searchsalers = this.salers.filter((item) => item.arg7.includes(a));
+      else this.searchsalers = this.salers;
+    },
+    handleSaler(e) {
+      this.info.saler = e.arg7;
+      this.showPicker3 = false;
+    },
+    // 意向等级
+    onSearch4(a) {
+      if (a != "")
+        this.searchintentLevels = this.intentLevels.filter((item) =>
+          item.content.includes(a)
+        );
+      else this.searchintentLevels = this.intentLevels;
+    },
+    handleIntentionLevel(e) {
+      this.info.intentionLevel = e.content;
+      this.showPicker4 = false;
     },
     // 新增客户
     newcustomer() {
@@ -356,7 +466,6 @@ export default {
     async getList(data) {
       let res = await this.api.getcustomerList(data);
       this.customerList = [...this.customerList, ...res.data.list];
-      console.table(this.customerList);
       this.total = res.page.total;
     },
     // 查询
@@ -371,9 +480,11 @@ export default {
     },
     startTimeChange(val) {
       this.info.beginFollowUpTime = moment(val).format("YYYY-MM-DD");
+      this.showPicker5=false;
     },
     endTimeChange(val) {
       this.info.endFollowUpTime = moment(val).format("YYYY-MM-DD");
+      this.showPicker6=false;
     },
   },
 };

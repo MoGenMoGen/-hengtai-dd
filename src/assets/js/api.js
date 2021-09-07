@@ -3,17 +3,15 @@ const hostUrl = "http://hsstest.jinkworld.com"
 // const hostUrl = "http://u2768442w0.qicp.vip/";
 // const hostUrl = "http://5anpucq.nat.ipyingshe.com";
 
- token = 'yui3-sid-77210d1d-4dc4-4cdd-a688-c257c9b8d226'
 
-// const token = 'yui3-sid-8692435b-ab41-46a2-9a58-b6f3cd294b23'
-
+const token = 'yui3-sid-8692435b-ab41-46a2-9a58-b6f3cd294b23'
 
 import Vue from 'vue'
 import axios from 'axios'
 import { Toast } from 'mint-ui';
-import { until} from '@/assets/js/until'
-const until1=new until();
-// const token=until1.loGet("token")
+import { until } from '@/assets/js/until'
+const until1 = new until();
+// const token = until1.loGet("token")
 // const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
@@ -21,14 +19,15 @@ function get(url, data, header, cache = false) {
     let headers = { ...header, ...{ "yui3-token": token } }
     let promise = new Promise((resolve, reject) => {
         axios.get(url, { params: data, headers }).then(res => {
-       console.log(1111222,res);
             if (res.data.code == 0 || res.data.error_code == 0) {
                 resolve(res.data)
             }
-			else if(res.data.code == 401){
-				window.location.replace("/views/profile/login.html")
-			}
-			 else {
+            else if (res.data.code == 401) {
+                // 
+
+                window.location.replace("/views/profile/login.html")
+            }
+            else {
 
                 Toast(res.data.msg)
             }
@@ -45,7 +44,6 @@ function post(url, data, header) {
 
 
     let headers = { ...header, ...{ "yui3-token": token } }
-    console.log(data)
     let promise = new Promise((resolve, reject) => {
         axios.post(url, data, { headers })
             .then(function (response) {
@@ -83,7 +81,7 @@ class api {
         //     'Content-Type': 'application/json',
         // }
         // return get2(hostUrl + '/general/access/ddLogin', { code: code }, '')
-      let header = {
+        let header = {
             // 'Content-Type': 'application/json',
             // 'yui3-token': localStorage.getItem('token')
         }
@@ -93,6 +91,7 @@ class api {
 		    })
 		})
 		
+
     }
     //绑定手机号 DD
     setTel(data) {
@@ -349,7 +348,6 @@ class api {
                 param.append('files', obj);
             })
             this.upLoad(param).then(res => {
-                console.log(res)
                 resolve(res.data)
 
             })
@@ -364,7 +362,6 @@ class api {
             let obj = blob;
             param.append('files', obj);
             this.upLoad(param).then(res => {
-                console.log(res)
                 resolve(res.data)
 
             })
@@ -395,7 +392,6 @@ class api {
         }
         return new Promise((resolve, reject) => {
             get('/hss/wxBusinessBuy/pageList', data, header).then(res => {
-                console.log(res);
                 resolve(res)
 
             })
@@ -471,7 +467,6 @@ class api {
         }
         return new Promise((resolve, reject) => {
             get('/hss/wxBusinessBuy/pageList', data, header).then(res => {
-                console.log(res);
                 resolve(res)
 
             })
@@ -571,9 +566,9 @@ class api {
         })
     }
     // 获取销售顾问列表
-    getsalersList(data) {
+    getsalersList() {
         return new Promise((resolve, reject) => {
-            get('/sys/user/page?query=' + data).then(res => {
+            get('/sys/user/listByDepart?orgCode=10000.30').then(res => {
                 resolve(res.data.list)
             })
 
@@ -655,7 +650,7 @@ class api {
     }
 
     // 获取价格区间
-    getpriceList(data){
+    getpriceList(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxCommonfield/page?query=' + data).then(res => {
                 resolve(res.data.list)
@@ -751,10 +746,8 @@ class api {
     }
     //提交修改个人修改信息
     postUpdPerson(data) {
-		console.log(11,data)
         return new Promise(resolve => {
             post("/sys/user/updPerson", data, {}).then(res => {
-				console.log(res)
                 resolve(res.data)
             })
         })
@@ -796,6 +789,7 @@ class api {
 		    })
 		}
  
+
     //获取品牌列表
     // getWxCommonfield(data) {
     //     let header = {
@@ -816,7 +810,7 @@ class api {
             // 'yui3-token': localStorage.getItem('token')
         }
         return new Promise((resolve, reject) => {
-            get('/hss/wxCommonfield/search?firstLetter='+data, header).then(res => {
+            get('/hss/wxCommonfield/search?firstLetter=' + data, header).then(res => {
                 resolve(res.data)
             })
 
@@ -843,7 +837,35 @@ class api {
             // 'yui3-token': localStorage.getItem('token')
         }
         return new Promise((resolve, reject) => {
-            get('/hss/wxCommonfield/models' , data, header).then(res => {
+            get('/hss/wxCommonfield/models', data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    // 获取沟通方式列表
+    getcommtypeList(data) {
+
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+    // 提交新增客户数据
+    commitNewCustomer(data) {
+        return new Promise((resolve, reject) => {
+            post('/hss/wxCustomer/add', data).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    // 提交新增跟进数据
+    commitNewfollow(data) {
+        return new Promise((resolve, reject) => {
+            post('/hss/wxFollowup/add', data).then(res => {
                 resolve(res)
             })
 

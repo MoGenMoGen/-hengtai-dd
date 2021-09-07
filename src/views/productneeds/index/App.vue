@@ -122,7 +122,7 @@
 						品牌车系:
 					</div>
 					<div class="itemListcontent">
-						{{item1.brandModel}}
+						{{item1.brand}}{{"  "}}{{ item1.series}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -147,7 +147,7 @@
 						销售人员:
 					</div>
 					<div class="itemListcontent">
-						{{item1.crtBy}}
+						{{item1.saler}}
 					</div>
 				</div>
 
@@ -162,6 +162,7 @@
 </template>
 
 <script>
+	import moment from "moment";
 	export default {
 		data() {
 			return {
@@ -278,11 +279,11 @@
 				return year + '-' + month + '-' + day;
 			},
 			startTimeChang(val) {
-				let startTime = this.dateFilter(val);
+				let startTime = moment(val).format("YYYY-MM-DD");
 				this.startTime = startTime;
 			},
 			endTimeChang(val) {
-				let endTime = this.dateFilter(val);
+				let endTime = moment(val).format("YYYY-MM-DD");
 				this.endTime = endTime;
 			},
 			changePage(index) {
@@ -485,8 +486,8 @@
 					width: 2.866rem;
 					height: 0.8rem;
 					background: #FFFFFF;
-					border: 0.01px solid #DDDDDD;
-					border-radius: 0rem;
+					border: 0.02rem solid #DDDDDD;
+					border-radius: 0.1rem;
 					font-size: 0.24rem;
 					padding: 0 0.32rem;
 

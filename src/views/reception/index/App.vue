@@ -6,7 +6,7 @@
 		</div>
 		<div class="searchBox">
 			<div class="leftBox">
-				<input type="" name="" id="" value="" placeholder="姓名、电话、销售顾问" v-model="searchStr" />
+				<input type="" name="" id="" value="" placeholder="客户姓名、电话、销售" v-model="searchStr" />
 				<el-select v-model="value" filterable clearable placeholder="留档状态" class="select" @change="postId">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
@@ -75,6 +75,7 @@
 </template>
 
 <script>
+	import moment from "moment";
 	export default {
 		data() {
 			return {
@@ -116,11 +117,11 @@
 				this.until.back()
 			},
 			startTimeChang(val) {
-				let startTime = this.dateFilter(val);
+				let startTime = moment(val).format("YYYY-MM-DD");
 				this.startTime = startTime;
 			},
 			endTimeChang(val) {
-				let endTime = this.dateFilter(val);
+				let endTime = moment(val).format("YYYY-MM-DD");
 				this.endTime = endTime;
 			},
 			//新增接待
@@ -233,11 +234,11 @@
 					width: 2.9rem;
 					height: 0.8rem;
 					background: #FFFFFF;
-					border: 0.01px solid #DDDDDD;
+					border: 0.02rem solid #DDDDDD;
 					border-radius: 0rem;
 					font-size: 0.24rem;
 					padding: 0 0.1rem;
-					border: 0.02rem solid rgb(192,196,204);
+					// border: 0.02rem solid rgb(192,196,204);
 					border-radius: 0.1rem;
 
 				}
@@ -312,7 +313,6 @@
 					img{
 						width: 0.56rem;
 						height: 0.28rem;
-						position: absolute;
 						right: -0.56rem;
 						top: -0.15rem;
 					}

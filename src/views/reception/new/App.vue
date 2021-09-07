@@ -35,7 +35,10 @@
 					<div class="listHead">
 						客户类型
 					</div>
-					<input class="listContent" placeholder="请输入客户类型"  v-model="customerType"/>
+					<el-select v-model="value2" filterable placeholder="请选择客户类型" class="select" @change="postIdTwo">
+						<el-option v-for="item in optionsTwo" :key="item.value" :label="item.content" :value="item.content">
+						</el-option>
+					</el-select>
 				</div>
 			</div>
 			<div class="bodyTitle">
@@ -48,7 +51,7 @@
 						客流性质
 					</div>
 					<el-select v-model="value" filterable placeholder="请选择客流性质" class="select" @change="postId">
-						<el-option v-for="item in options" :key="item.value" :label="item.content" :value="item.id">
+						<el-option v-for="item in options" :key="item.value" :label="item.content" :value="item.content">
 						</el-option>
 					</el-select>
 
@@ -57,7 +60,10 @@
 					<div class="listHead">
 						销售顾问
 					</div>
-					<input class="listContent" placeholder="请输入姓名" v-model="saler" />
+					<el-select v-model="value3" filterable placeholder="请选择客流性质" class="select" @change="postIdThree">
+						<el-option v-for="item in optionsThree" :key="item.value" :label="item.arg7" :value="item.arg7">
+						</el-option>
+					</el-select>
 				</div>
 			</div>
 			<div class="btn">
@@ -72,6 +78,9 @@
 		data() {
 			return {
 				value: '',
+				value2:"",
+				value3:"",
+				
 				name:"",
 				phone:"",
 				wxId:"",
@@ -83,7 +92,10 @@
 				info: {
 					
 				},
-				options: []
+				options: [],
+				optionsTwo:[],
+				optionsThree:[],
+				
 			};
 		},
 		components: {},
@@ -95,10 +107,26 @@
 				o: ["id", "esc"],
 				p: [1, 10],
 			}
+			let querysTwo = {
+				w: [
+					["category", 9, "EQ"],
+				],
+				o: ["id", "esc"],
+				p: [1, 10],
+			}
+			
 			this.api.getCustomerCommonfield(this.query.toEncode(this.newqry(querys))).then(res=>{
-				console.log(121312,res);
+				
 				this.options=res
 			})
+			this.api.getWxCommonfield(this.query.toEncode(this.newqry(querysTwo))).then(res=>{
+				this.optionsTwo=res.list
+			})
+			this.api.staffList().then(res=>{
+				console.log("ceshi",res);
+				this.optionsThree=res
+			})
+			
 		},
 		methods: {
 			// 处理公共字段参数生成qry(使用query.js)
@@ -120,6 +148,12 @@
 			postId(val){
 				this.nature=val
 			},
+			postIdTwo(val){
+				this.customerType=val
+			},
+			postIdThree(val){
+				this.saler=val
+			},
 			confirm(){
 				this.info.name=this.name
 				this.info.phone=this.phone
@@ -129,6 +163,7 @@
 				this.info.nature=this.nature
 				this.info.saler=this.saler
 				this.api.postWxCheckin(this.info)
+				this.until.back()
 			}
 		},
 		computed: {

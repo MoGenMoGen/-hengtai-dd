@@ -3,7 +3,10 @@ const hostUrl = "http://hsstest.jinkworld.com"
 // const hostUrl = "http://u2768442w0.qicp.vip/";
 // const hostUrl = "http://5anpucq.nat.ipyingshe.com";
 
-const token = 'yui3-sid-77210d1d-4dc4-4cdd-a688-c257c9b8d226'
+ token = 'yui3-sid-77210d1d-4dc4-4cdd-a688-c257c9b8d226'
+
+// const token = 'yui3-sid-8692435b-ab41-46a2-9a58-b6f3cd294b23'
+
 
 import Vue from 'vue'
 import axios from 'axios'
@@ -85,7 +88,7 @@ class api {
             // 'yui3-token': localStorage.getItem('token')
         }
 		return new Promise(resolve => {
-		    get('/general/access/login', data,header).then(res => {
+		    get('/general/access/appLogin', data,header).then(res => {
 		        resolve(res)
 		    })
 		})
@@ -286,7 +289,7 @@ class api {
             // 'yui3-token': localStorage.getItem('token')
         }
         return new Promise((resolve, reject) => {
-            get('/sys/user/listByDepart', { reqType: 22 }, header).then(res => {
+            get('/sys/user/listByDepart', { orgCode:10000.30 }, header).then(res => {
                 resolve(res.data.list)
             })
 
@@ -728,7 +731,7 @@ class api {
     //提交新增接待
     postWxCheckin(data) {
         return new Promise(resolve => {
-            post("/hss/wxCheckin/add", data, {}).then(res => {
+            post("/hss/wxCheckin/add", data, {'Content-Type':'application/json; charset=UTF-8'}).then(res => {
                 resolve(res.data)
             })
         })
@@ -784,7 +787,7 @@ class api {
 		//退出登录
 		logout() {
 		    return new Promise(resolve => {
-		        post("/sys/user/updPerson",{}, {}).then(res => {
+		        post("/general/access/logout",{}, {}).then(res => {
 					
 		            resolve(res.data)
 				
@@ -846,6 +849,16 @@ class api {
 
         })
     }
+	//获取客户类型
+	getWxCommonfield(data) {
+	    return new Promise((resolve, reject) => {
+	        get('/hss/wxCommonfield/page?query=' + data).then(res => {
+	            resolve(res.data)
+	        })
+	
+	    })
+	}
+	
 
 }
 

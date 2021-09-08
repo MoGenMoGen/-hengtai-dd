@@ -41,11 +41,8 @@ export default {
           icon: [home, homeselected],
         },
         {
-
           // path: "/views/profile/index.html",
           path: "/views/profile/index.html",
-
- 
           title: "个人中心",
           icon: [person, personselected],
         },

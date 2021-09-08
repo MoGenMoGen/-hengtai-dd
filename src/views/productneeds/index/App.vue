@@ -6,32 +6,6 @@
 		</div>
 		<div class="searchBox">
 			<div class="leftBox">
-			<!-- 	<van-field
-				  class="vantSelect"
-				  readonly
-				  label=""
-				  :value="info.business"
-				  placeholder="选择品牌"
-				  @click="showPicker1 = true"
-				/>
-				<van-popup v-model="showPicker1" round position="bottom">
-				  <van-search
-				    v-model="search1"
-				    shape="round"
-				    background="#09c076"
-				    @input="onSearch1"
-				    placeholder="请输入搜索关键词"
-				  />
-				  <van-picker
-				    value-key="content"
-				    show-toolbar
-				    :columns="searchbuytypes"
-				    @cancel="showPicker1 = false"
-				    @confirm="handleBuysType"
-				  />
-				</van-popup> -->
-		
-		
 				<el-select v-model="value" filterable placeholder="品牌" class="select2" @change="postId">
 					<el-option v-for="item in options" :key="item.value" :label="item.brand_name" :value="item.id">
 					</el-option>
@@ -189,7 +163,6 @@
 
 <script>
 	import moment from "moment";
-
 	export default {
 		data() {
 			return {
@@ -273,14 +246,14 @@
 
 			})
 		
-				// this.api.searchbrandlist('').then(res => {
+				this.api.searchbrandlist('').then(res => {
 					
-				//  for(let i=0;i<res.length;i++)
-				//  {
-				// 	 this.options = [...this.options, ...res[i].result]
-				//  }
+				 for(let i=0;i<res.length;i++)
+				 {
+					 this.options = [...this.options, ...res[i].result]
+				 }
 					
-				// })
+				})
 
 	},
 	methods: {
@@ -409,7 +382,6 @@
 				this.getList()
 			},
 			postId(val) {
-				console.log(4878,val);
 				this.brand = val
 				this.api.getCarSeries({
 					brandid: val
@@ -649,7 +621,7 @@
 
 				.itemList {
 					display: flex;
-					margin-bottom: 0.2rem;
+					margin-bottom: 0.25rem;
 
 					.itemListHead {
 						width: 1.1rem;

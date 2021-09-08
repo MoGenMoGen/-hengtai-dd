@@ -35,10 +35,35 @@
 					<div class="listHead">
 						客户类型
 					</div>
-					<el-select v-model="value2" filterable placeholder="请选择客户类型" class="select" @change="postIdTwo">
+					<van-field
+					  class="vantSelect"
+					  readonly
+					  clickable
+					  label=""
+					  :value="customerType"
+					  placeholder="选择客户类型"
+					  @click="showPicker123 = true"
+					/>
+					<van-popup v-model="showPicker123" round position="bottom">
+					  <van-search
+					    v-model="search123"
+					    shape="round"
+					    background="#09c076"
+					    @input="onSearch123"
+					    placeholder="请输入搜索关键词"
+					  />
+					  <van-picker
+					    value-key="content"
+					    show-toolbar
+					    :columns="searchoptions"
+					    @cancel="showPicker123 = false"
+					    @confirm="handleBuysType"
+					  />
+					</van-popup>
+					<!-- <el-select v-model="value2" filterable placeholder="请选择客户类型" class="select" @change="postIdTwo">
 						<el-option v-for="item in optionsTwo" :key="item.value" :label="item.content" :value="item.content">
 						</el-option>
-					</el-select>
+					</el-select> -->
 				</div>
 			</div>
 			<div class="bodyTitle">
@@ -74,9 +99,15 @@
 </template>
 
 <script>
+	import {
+		Toast
+	} from "mint-ui";
 	export default {
 		data() {
 			return {
+				showPicker123:false,
+				search123:"",
+				
 				value: '',
 				value2:"",
 				value3:"",
@@ -93,6 +124,8 @@
 					
 				},
 				options: [],
+				searchoptions:[],
+				
 				optionsTwo:[],
 				optionsThree:[],
 				
@@ -118,6 +151,7 @@
 			this.api.getCustomerCommonfield(this.query.toEncode(this.newqry(querys))).then(res=>{
 				
 				this.options=res
+				this.searchoptions=this.options
 			})
 			this.api.getWxCommonfield(this.query.toEncode(this.newqry(querysTwo))).then(res=>{
 				this.optionsTwo=res.list
@@ -155,6 +189,42 @@
 				this.saler=val
 			},
 			async confirm(){
+				if(this.name==""){
+					Toast("名字不能为空")
+					return false
+				}
+				else if(this.phone==""){
+					Toast("电话不能为空")
+					return false
+				}
+				else if(this.reg.checkPhone(this.phone)!="ok")
+				{
+					Toast("请输入正确的手机号")
+					return false
+				}
+				else if(this.wxId==""){
+					Toast("微信号不能为空")
+					return false
+				}
+				else if(this.customerType==""){
+					Toast("客户类型不能为空")
+					return false
+				}
+				else if(this.demand==""){
+					Toast("客户需求不能为空")
+					return false
+				}
+				else if(this.nature==""){
+					Toast("客流性质不能为空")
+					return false
+				}
+				else if(this.saler==""){
+					Toast("销售顾问不能为空")
+					return false
+				}
+				
+				
+				
 				this.info.name=this.name
 				this.info.phone=this.phone
 				this.info.wxId=this.wxId
@@ -162,10 +232,25 @@
 				this.info.demand=this.demand
 				this.info.nature=this.nature
 				this.info.saler=this.saler
+				
 				console.log(11111111111);
 				await this.api.postWxCheckin(JSON.stringify(this.info))
 				console.log(4445,JSON.stringify(this.info));
 				this.until.back()
+			},
+			onSearch123(a){
+				if(a!=""){
+					this.searchoptions = this.options.filter((item) =>
+					  item.content.includes(a)
+					);
+				}
+				else{
+					this.searchoptions=this.options
+				}
+			},
+			handleBuysType(e,v){
+				this.customerType=e.content;
+				this.showPicker123=false;
 			}
 		},
 		computed: {
@@ -188,6 +273,20 @@
 	}
 	.el-input__suffix{
 		right: -0.52rem;
+	}
+	.van-cell--clickable{
+		width: 4rem;
+		padding: 0;
+		margin-left:0.84rem;
+		font-size: 0.24rem;
+		font-weight: bold;
+		color: #303030;
+	}
+	.van-field__control{
+		font-weight: bold;
+	}
+	.van-field__control::placeholder{
+		color: rgb(192,196,204);
 	}
 </style>
 
@@ -254,6 +353,8 @@
 					color: #303030;
 
 					.listHead {
+						display: flex;
+						align-items: center;
 						width: 1rem;
 						font-size: 0.24rem;
 						font-weight: bold;

@@ -7,7 +7,8 @@
 		<div class="searchBox">
 			<div class="leftBox">
 				<input type="" name="" id="" value="" placeholder="客户姓名、电话、销售" v-model="searchStr" />
-				<el-select v-model="value" filterable clearable placeholder="留档状态" class="select" @change="postId">
+				<el-select v-model="value" filterable clearable placeholder="留档状态" class="select" @change="postId" @hook:mounted="cancalReadOnly"
+        @visible-change="cancalReadOnly">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
 				</el-select>
@@ -165,6 +166,15 @@
 							this.getList()
 						}
 					}
+			},
+			cancalReadOnly(onOff){
+				  this.$nextTick(() => {
+				                    if (!onOff) {
+				                        const {select} = this.$refs;
+				                        const input = select.$el.querySelector('.el-input__inner');
+				                        input.removeAttribute('readonly');
+				                    }
+				                });
 			}
 		},
 		computed: {
@@ -297,7 +307,7 @@
 			.list{
 				display: flex;
 				position: relative;
-				margin-bottom: 0.3rem;
+				margin-bottom: 0.2rem;
 				.listhead{
 					
 					font-size: 0.24rem;

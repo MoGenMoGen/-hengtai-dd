@@ -891,6 +891,30 @@ class api {
 	    })
 	}
 	
+	//获取接待未读
+	getGetnotread(data) {
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxCheckin/getnotread', data, header).then(res => {
+		        resolve(res)
+		    })
+		
+		})
+	   
+	}
+	//获取客服电话
+	getTelNumber(data) {
+	    return new Promise((resolve, reject) => {
+	        get('/hss/wxCommonfield/page?query=' + data).then(res => {
+	            resolve(res.data)
+	        })
+	
+	    })
+	}
+	
 
 }
 

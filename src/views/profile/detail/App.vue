@@ -6,7 +6,7 @@
 			个人详情
 		</div>
 		<div class="bodyOne">
-			<img :src="info.imgUrl"/>
+			<img :src="info.imgUrl" style="object-fit:cover;"/>
 			<el-upload class="imgChange" action="http://hsstest.jinkworld.com/general/oss/upload" :show-file-list="false"
 				:on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" v-if="isChange == true">
 				
@@ -38,10 +38,10 @@
 			<div class="bodyList">
 				<div class="head">联系电话</div>
 				<div class="content" v-if="isChange == false">
-					{{ info.mob }}
+					{{ info.phone}}
 				</div>
 				<div class="content" v-if="isChange == true">
-					<input class="" type="" name="" id="" v-model="info.mob" />
+					<input class="" type="" name="" id="" v-model="info.phone" />
 					<img src="~@/assets/img/change.png" />
 				</div>
 			</div>
@@ -123,7 +123,7 @@
 				this.infoList.nickname = this.info.nickname
 				this.infoList.sex = this.info.sex
 				this.infoList.id = this.info.id
-				this.infoList.phone = this.info.mob
+				this.infoList.phone = this.info.phone
 				this.infoList.imgUrl=this.info.imgUrl
 				this.api.postUpdPerson(this.infoList)
 				console.log("sa",this.infoList);

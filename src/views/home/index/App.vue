@@ -1,5 +1,6 @@
 <!-- 互生升首页 -->
 <template>
+
   <div id="container">
     <div class="top">
       <div class="toptitle"></div>
@@ -202,4 +203,4 @@ export default {
     }
   }
 }
-</style>
+

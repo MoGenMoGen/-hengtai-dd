@@ -6,7 +6,7 @@ const hostUrl = "http://hsstest.jinkworld.com"
 
 // const token = 'yui3-sid-8692435b-ab41-46a2-9a58-b6f3cd294b23'
 
-const token = 'yui3-sid-8692435b-ab41-46a2-9a58-b6f3cd294b23'
+
 
 import Vue from 'vue'
 import axios from 'axios'
@@ -681,14 +681,14 @@ class api {
 
         })
     }
-    //提交新增接待
-    postWxCheckin(data) {
-        return new Promise(resolve => {
-            post("/hss/wxCheckin/add", data, {}).then(res => {
-                resolve(res.data)
-            })
-        })
-    }
+    // //提交新增接待
+    // postWxCheckin(data) {
+    //     return new Promise(resolve => {
+    //         post("/hss/wxCheckin/add", data, {}).then(res => {
+    //             resolve(res.data)
+    //         })
+    //     })
+    // }
 
     //获取留言列表
     getWxCommunicate(data) {

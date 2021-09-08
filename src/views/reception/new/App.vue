@@ -154,7 +154,7 @@
 			postIdThree(val){
 				this.saler=val
 			},
-			confirm(){
+			async confirm(){
 				this.info.name=this.name
 				this.info.phone=this.phone
 				this.info.wxId=this.wxId
@@ -162,7 +162,9 @@
 				this.info.demand=this.demand
 				this.info.nature=this.nature
 				this.info.saler=this.saler
-				this.api.postWxCheckin(this.info)
+				console.log(11111111111);
+				await this.api.postWxCheckin(JSON.stringify(this.info))
+				console.log(4445,JSON.stringify(this.info));
 				this.until.back()
 			}
 		},

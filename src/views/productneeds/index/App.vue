@@ -101,10 +101,10 @@
 				</div>
 				<div class="itemList" style="margin-bottom: 0;">
 					<div class="itemListHead">
-						发布时间:
+						跟进时间:
 					</div>
 					<div class="itemListcontent">
-						{{item1.crtTm}}
+						{{item1.updTm}}
 					</div>
 				</div>
 				<div class="btn">

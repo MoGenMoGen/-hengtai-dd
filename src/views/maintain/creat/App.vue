@@ -8,6 +8,27 @@
     display: flex;
     display: -webkit-flex;
     flex-direction: column;
+    .title {
+    width: 100%;
+    height: 1.28rem;
+    position: relative;
+    line-height: 1.28rem;
+    text-align: center;
+    font-size: 0.36rem;
+    font-weight: 500;
+    color: #ffffff;
+  background: url("~@/assets/img/header.png") no-repeat;
+
+
+    img {
+      height: 0.31rem;
+      width: 0.17rem;
+      position: absolute;
+      top: 50%;
+      left: 0.36rem;
+      transform: translateY(-50%);
+    }
+  }
     .typeList{
         background: #ffffff;
         position: fixed;
@@ -73,6 +94,10 @@
 
 <template>
     <div id="container">
+        <div class="title">
+      <img src="~@/assets/img/arrowback.png" @click="back" />
+      新增跟进记录
+    </div>
         <div class="typeList" v-if="typeSHow" >
             <div class="top">
                 <p @click="cancel">取消</p>
@@ -227,7 +252,10 @@ export default {
       toSave(){
           // console.log(this.form)
           this.api.followAdd(this.form)
-      }
+      },
+      back() {
+      this.until.back();
+    },
   }
 };
 </script>

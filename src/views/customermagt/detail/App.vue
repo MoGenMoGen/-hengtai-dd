@@ -23,9 +23,9 @@
       客户详情
     </div>
     <div class="head">
-      <!-- <div class="level">
-				{{userinfo.data.intentionLevel}}
-			</div> -->
+      <div class="level">
+        {{ userinfo.data.intentionLevelInfo }}
+      </div>
       <div class="headTitle">
         <div class="name">
           {{ userinfo.data.name }}
@@ -290,8 +290,12 @@
             <el-image
               style="width: 1.6rem; height: 1.6rem; margin-right: 0.2rem"
               :src="item"
-              :preview-src-list="userinfo.data.pic.split(',')"
-              v-for="(item, index) in userinfo.data.pic.split(',')"
+              :preview-src-list="
+                userinfo.data.pic.split(',').filter((item) => item != '')
+              "
+              v-for="(item, index) in userinfo.data.pic
+                .split(',')
+                .filter((item) => item != '')"
               :key="index"
             >
             </el-image>
@@ -341,7 +345,9 @@
                 <div style="display: flex; flex-wrap: wrap; width: 100%">
                   <div
                     style="width: 30%"
-                    v-for="(picitem, picindex) in item.pic.split(',')"
+                    v-for="(picitem, picindex) in item.pic
+                      .split(',')
+                      .filter((item) => item != '')"
                     :key="picindex"
                   >
                     <img
@@ -377,7 +383,7 @@
                   {{ item.crtTm }}
                 </div>
               </div>
-              <span>{{item.content}}</span>
+              <span>{{ item.content }}</span>
             </div>
           </el-timeline-item>
         </el-timeline>
@@ -454,7 +460,7 @@ export default {
         }
       };
     },
-     
+
     // 时间线颜色
     activeColor() {
       return function (nexttime) {
@@ -482,29 +488,28 @@ export default {
     let trailData = await this.api.gettrail(
       encodeURIComponent(
         JSON.stringify({
-          w: [{ customerId: this.id }],
-          o: [{ k: "id", t: "desc" }],
+          w: [{ k: "customerId", v: this.id, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
           p: { n: 1, s: 100 },
         })
       )
     );
-    console.log(111111,trailData);
-    this.trailList =trailData.data.list;
-    this.tabList[0].num=trailData.page.total;
+    console.log(111111, trailData);
+    this.trailList = trailData.data.list;
+    this.tabList[0].num = trailData.page.total;
 
     // 获取订单信息
-     let orderData= await this.api.getorder(
+    let orderData = await this.api.getorder(
       encodeURIComponent(
         JSON.stringify({
           w: [{ customerId: this.id }],
-          o: [{ k: "id", t: "desc" }],
+          o: [{ k: "id", t: "esc" }],
           p: { n: 1, s: 100 },
         })
       )
     );
-    this.orderList=orderData.data.list;
-    this.tabList[1].num=orderData.page.total;
-
+    this.orderList = orderData.data.list;
+    this.tabList[1].num = orderData.page.total;
   },
   methods: {
     back() {
@@ -651,7 +656,7 @@ export default {
         font-size: 0.24rem;
         font-weight: 500;
         color: #606060;
-        margin-top: 0.2rem;
+        margin-top: .12rem;
 
         .listHead {
           width: 1.6rem;
@@ -664,16 +669,16 @@ export default {
     }
 
     .level {
-      background: url("~@/assets/img/level.png") no-repeat;
-      background-size: 0.76rem 0.74rem;
+      background: url("~@/assets/img/biglevel.png") no-repeat;
+      background-size: 1rem 0.5rem;
       position: absolute;
-      top: 0.48rem;
+      // top: 0.48rem;
       right: 0.46rem;
-      width: 0.76rem;
-      height: 0.74rem;
+      width: 1rem;
+      height: 0.5rem;
       text-align: center;
-      line-height: 0.74rem;
-      font-size: 0.44rem;
+      line-height: 0.5rem;
+      font-size: .3rem;
       font-weight: bold;
       color: #ffffff;
     }
@@ -698,7 +703,7 @@ export default {
 
       .list {
         display: flex;
-        margin-top: 0.3rem;
+        margin-top: 0.16rem;
         font-size: 0.24rem;
         font-family: PingFang SC;
         font-weight: bold;

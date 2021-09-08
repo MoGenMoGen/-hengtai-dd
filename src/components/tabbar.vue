@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import home from '@/assets/img/index.png'
-import homeselected from '@/assets/img/indexun.png'
-import person from '@/assets/img/personal.png'
-import personselected from '@/assets/img/personalun.png'
+import home from "@/assets/img/index.png";
+import homeselected from "@/assets/img/indexun.png";
+import person from "@/assets/img/personal.png";
+import personselected from "@/assets/img/personalun.png";
 export default {
   props: {
     currentIndex: {
@@ -31,9 +31,9 @@ export default {
       },
     },
   },
-  data() {  
+  data() {
     return {
-        home,
+      home,
       tabList: [
         {
           path: "/views/home/index.html",
@@ -42,7 +42,7 @@ export default {
         },
         {
           // path: "/views/profile/index.html",
-		   path: "/views/profile/index.html",
+          path: "/views/profile/index.html",
           title: "个人中心",
           icon: [person, personselected],
         },
@@ -64,9 +64,12 @@ export default {
 @import url("../assets/css/mobile.less");
 @import url("../assets/css/common.css");
 #tabbar {
+  padding-bottom: constant(safe-area-inset-bottom); /*兼容 IOS<11.2*/
+  padding-bottom: env(safe-area-inset-bottom); /*兼容 IOS>11.2*/
   background-color: #fff;
   position: fixed;
-  z-index: 1000;
+  z-index: 100;
+  box-shadow: 0 0 0.1rem rgba(0, 0, 0, 0.3);
   bottom: 0;
   width: 100%;
   height: 0.99rem;

@@ -298,11 +298,13 @@
           v-for="item in BbrandList"
           :key="item.id"
           @click="handlecheckBcarlogo(item)"
-          :style="{
-            background:
-              item.id == info.hssWxBusinessBuyRo.brandId ? '#09c076' : '',
-          }"
         >
+        <img
+            src="~@/assets/img/selectbrand.png"
+            class="selectbrand"
+            v-if="item.id == info.hssWxBusinessBuyRo.brandId"
+            alt=""
+          />
           <img :src="item.brand_logo" alt="" />
         </div>
       </div>
@@ -623,7 +625,7 @@
         </van-popup>
       </div>
     </div>
-    <div class="btn_save" @click="save">保存</div>
+    <div class="btn_save" @click="save" v-show="hideshow">保存</div>
   </div>
 </template>
 
@@ -636,6 +638,9 @@ import { Toast } from "mint-ui";
 export default {
   data() {
     return {
+      defaultHeight: "0", // 默认屏幕高度
+      showHeight: 0, // 实时屏幕高度
+      hideshow: true, // 显示或者隐藏保存按钮,
       id: "",
       albums: [],
       // 买车车系搜索列表、搜索值、是否显示picker
@@ -790,6 +795,16 @@ export default {
         this.api.searchbrandlist("").then((res) => {
           this.brandlist = res;
         });
+      }
+    },
+    // 监听键盘弹出后屏幕高度变化
+    showHeight: function () {
+      if (this.defaultHeight !== this.showHeight) {
+        // 键盘弹出操作
+        this.hideshow = false;
+      } else {
+        // 键盘不弹出操作
+        this.hideshow = true;
       }
     },
   },
@@ -1011,11 +1026,11 @@ export default {
         return false;
       }
       // 数据校验结束
-        let data = await this.api.commitNewfollow(this.info);
-        if (data.code == 0) {
-          Toast("保存成功");
-          this.until.back();
-        } else Toast("保存失败");
+      let data = await this.api.commitNewfollow(this.info);
+      if (data.code == 0) {
+        Toast("保存成功");
+        this.until.back();
+      } else Toast("保存失败");
     },
   },
   async created() {
@@ -1124,9 +1139,21 @@ export default {
     // this.$set(this.btypeobj, "id", this.info.hssWxBusinessBuyRo.modelId);
     // this.$set(this.btypeobj, "name", this.info.hssWxBusinessBuyRo.model);
   },
+  mounted() {
+    this.defaultHeight = $(window).height();
+    // window.onresize监听页面高度的变化
+    window.onresize = () => {
+      return (() => {
+        this.showHeight = document.body.clientHeight;
+      })();
+    };
+  },
 };
 </script>
 <style lang="less">
+.van-cell::after {
+  border-bottom: none;
+}
 .el-input__inner {
   border: none;
   height: 0.28rem !important;
@@ -1361,6 +1388,14 @@ export default {
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
         background: #fff;
+        position: relative;
+        .selectbrand {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100% !important;
+          height: 100% !important;
+        }
         img {
           width: 1.24rem;
           height: 1.24rem;
@@ -1484,11 +1519,10 @@ export default {
     line-height: 0.7rem;
     text-align: center;
     position: fixed;
-    bottom:0.7rem;
-    left:50%;
+    bottom: 0.7rem;
+    left: 50%;
     transform: translateX(-50%);
     z-index: 999;
-
   }
 }
 </style>

@@ -143,7 +143,7 @@
             <!-- 结束日期 -->
             <van-field
               style="padding: 0;text-align:center;"
-              class="picker son leftpart bg"
+              class="picker son rightpart bg"
               readonly
               label=""
               :value="info.endFollowUpTime"
@@ -154,7 +154,6 @@
               <van-datetime-picker
                 type="date"
                 :min-date="minEtdate"
-                :max-date="maxEtdate"
                 @confirm="endTimeChange"
                 @cancel="showPicker6 = false"
               />
@@ -300,12 +299,15 @@ export default {
     },
     // 结束日期限制
     // 有开始日期时禁止小于开始日期的日期
-    minEtdate() {
+    maxEtdate() {
       if (this.info.beginFollowUpTime != "")
         return new Date(this.info.beginFollowUpTime);
-      return new Date(moment().add(20, "years"));
+        
+      return new Date(moment().add(10, 'years'));
+      // return new Date(moment().add(20, 'days'));
+
     },
-    maxEtdate() {
+    minEtdate() {
       return new Date();
     },
     // etOptions() {
@@ -494,6 +496,9 @@ export default {
 </script>
 
 <style lang="less">
+.van-cell::after {
+  border-bottom: none;
+}
 .van-field__control {
 text-align: center !important;
 }
@@ -709,7 +714,7 @@ text-align: center !important;
       .item_row {
         display: flex;
         align-items: center;
-        margin-top: 0.3rem;
+        // margin-top: 0.3rem;
         .key {
           font-size: 0.24rem;
           font-weight: 500;

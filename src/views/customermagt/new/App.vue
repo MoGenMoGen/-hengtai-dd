@@ -422,10 +422,13 @@
           v-for="item in BbrandList"
           :key="item.id"
           @click="handlecheckBcarlogo(item)"
-          :style="{
-            background: item.id == hssWxBusinessBuyRo.brandId ? '#09c076' : '',
-          }"
         >
+          <img
+            src="~@/assets/img/selectbrand.png"
+            class="selectbrand"
+            v-if="item.id == hssWxBusinessBuyRo.brandId"
+            alt=""
+          />
           <img :src="item.brand_logo" alt="" />
         </div>
       </div>
@@ -820,11 +823,13 @@
             v-for="item in SbrandList"
             :key="item.id"
             @click="handlecheckScarlogo(item)"
-            :style="{
-              background:
-                item.id == hssWxBusinessSellRo.brandId ? '#09c076' : '',
-            }"
           >
+            <img
+              src="~@/assets/img/selectbrand.png"
+              class="selectbrand"
+              v-if="item.id == hssWxBusinessSellRo.brandId"
+              alt=""
+            />
             <img :src="item.brand_logo" alt="" />
           </div>
         </div>
@@ -1248,7 +1253,7 @@
       </div>
       <!-- 更多信息结束-->
     </div>
-    <div class="btn_save" @click="save" v-show='hideshow'>保存</div>
+    <div class="btn_save" @click="save" v-show="hideshow">保存</div>
   </div>
 </template>
 
@@ -1260,9 +1265,9 @@ import { compressImg, readImg } from "@/assets/js/imageUtil";
 export default {
   data() {
     return {
-      defaultHeight: '0', // 默认屏幕高度
-	      showHeight: 0, // 实时屏幕高度
-	      hideshow: true, // 显示或者隐藏保存按钮,
+      defaultHeight: "0", // 默认屏幕高度
+      showHeight: 0, // 实时屏幕高度
+      hideshow: true, // 显示或者隐藏保存按钮,
       // 门店搜索列表、搜索值、是否显示picker
       searchshoplist: [],
       search1: "",
@@ -1462,16 +1467,15 @@ export default {
       }
     },
     // 监听键盘弹出后屏幕高度变化
-    showHeight: function() {
+    showHeight: function () {
       if (this.defaultHeight !== this.showHeight) {
         // 键盘弹出操作
-        this.hideshow = false
+        this.hideshow = false;
       } else {
         // 键盘不弹出操作
-        this.hideshow = true
+        this.hideshow = true;
       }
-    }
-
+    },
   },
   methods: {
     // 门店
@@ -1991,6 +1995,10 @@ export default {
     if (this.id) {
       this.Title = "修改需求";
     }
+    else if(this.cusid)
+    {
+      this.Title = "完善信息";
+    }
     // 获取门店列表
     this.shopList = await this.api.getstoreList(
       encodeURIComponent(
@@ -2143,19 +2151,18 @@ export default {
     // 接待信息完善
     else if (this.cusid) {
       let data = await this.api.getWxCheckinDetail(this.cusid);
-      console.log(data);
       this.hssWxCustomerRo = { ...this.hssWxCustomerRo, ...data };
-      console.log(this.hssWxCustomerRo);
+      this.hssWxCustomerRo.chcekinId =this.cusid;
     }
   },
   async mounted() {
-     this.defaultHeight = $(window).height()
+    this.defaultHeight = $(window).height();
     // window.onresize监听页面高度的变化
     window.onresize = () => {
       return (() => {
-        this.showHeight = document.body.clientHeight
-      })()
-    }
+        this.showHeight = document.body.clientHeight;
+      })();
+    };
     //  获取老客户介绍人
     this.introducers = await this.api.getOldCustomer("");
     this.searchintroducers = this.introducers;
@@ -2163,6 +2170,9 @@ export default {
 };
 </script>
 <style lang="less">
+.van-cell::after {
+  border-bottom: none;
+}
 .el-input__inner {
   border: none;
   height: 0.28rem !important;
@@ -2376,6 +2386,14 @@ export default {
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
         background: #fff;
+        position: relative;
+        .selectbrand {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100% !important;
+          height: 100% !important;
+        }
         img {
           width: 1.24rem;
           height: 1.24rem;
@@ -2497,6 +2515,14 @@ export default {
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
         background: #fff;
+        position: relative;
+        .selectbrand {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100% !important;
+          height: 100% !important;
+        }
         img {
           width: 1.24rem;
           height: 1.24rem;

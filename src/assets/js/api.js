@@ -524,7 +524,16 @@ class api {
     gettrail(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxTrajectory/page?query=' + data).then(res => {
-                resolve(res.data.list)
+                resolve(res)
+            })
+
+        })
+    }
+     // 订单
+     getorder(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxOrder/page?query=' + data).then(res => {
+                resolve(res)
             })
 
         })

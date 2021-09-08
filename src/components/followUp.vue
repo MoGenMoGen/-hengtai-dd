@@ -323,11 +323,11 @@
 
             },
             toPage(id){
-              let url = '@/maintain/detail.html?id='+id
+              let url = '/views/maintain/detail.html?id='+id
                 this.until.href(url)
             },
             toCreat(){
-                this.until.href('@/maintain/creat.html')
+                this.until.href('/views/maintain/creat.html')
             },
             loadBottom(){
                 if(this.total==this.list.length){

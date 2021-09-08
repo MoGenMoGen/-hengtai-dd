@@ -5,7 +5,7 @@
         <img src="~@/assets/img/followup.png" />
         <div>跟进</div>
       </div>
-      <a :href="'tel:' + info.tel" class="item">
+      <a :href="'tel:' + userinfo.data.phone" class="item">
         <img src="~@/assets/img/tel.png" />
         <div>电话</div>
       </a>
@@ -196,7 +196,6 @@
             {{ sellInfo.data.brandModel }}
           </div>
         </div> -->
-
         <div class="list">
           <div class="listHead">品牌:</div>
           <div class="listContent">
@@ -217,7 +216,7 @@
         </div>
         <div class="list">
           <div class="listHead">里程数:</div>
-          <div class="listContent">{{ sellInfo.data.mileage }}万公里</div>
+          <div class="listContent">{{ sellInfo.data.mileage }}（万公里）</div>
         </div>
         <div class="list">
           <div class="listHead">上牌时间:</div>
@@ -474,6 +473,7 @@ export default {
     // 获取详情信息
     let info = await this.api.getcustomerDetail(this.id);
     this.userinfo = info.customer;
+
     this.sellInfo = info.sell;
     this.buyInfo = info.buy;
     console.log("userinfo", this.userinfo);
@@ -520,7 +520,7 @@ export default {
       this.until.href("/views/customermagt/newfollow.html?id=" + this.id);
     },
     copywxtap() {
-      this.copyContent = this.info.vx; //也可以直接写上等于你想要复制的内容
+      this.copyContent = this.userinfo.data.wxId; //也可以直接写上等于你想要复制的内容
       var input = document.createElement("input"); // 直接构建input
       input.value = this.copyContent; // 设置内容
       console.log(input.value);

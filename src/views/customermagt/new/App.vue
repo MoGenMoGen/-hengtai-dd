@@ -973,6 +973,7 @@
           />
           <van-popup v-model="showPicker11" round position="bottom">
             <van-datetime-picker
+              v-model="currentlicenseDate"
               :min-date="minDate1"
               class="followdatepicker"
               type="date"
@@ -1128,6 +1129,7 @@
               type="date"
               title="选择完整时间"
               :min-date="minDate2"
+              v-model="currentbirthdayDate"
               @cancel="showPicker13 = false"
               @confirm="handlebirthday"
             />
@@ -1246,16 +1248,21 @@
       </div>
       <!-- 更多信息结束-->
     </div>
-    <div class="btn_save" @click="save">保存</div>
+    <div class="btn_save" @click="save" v-show='hideshow'>保存</div>
   </div>
 </template>
 
 <script>
 import moment from "moment";
 import { Toast } from "mint-ui";
+import { compressImg, readImg } from "@/assets/js/imageUtil";
+
 export default {
   data() {
     return {
+      defaultHeight: '0', // 默认屏幕高度
+	      showHeight: 0, // 实时屏幕高度
+	      hideshow: true, // 显示或者隐藏保存按钮,
       // 门店搜索列表、搜索值、是否显示picker
       searchshoplist: [],
       search1: "",
@@ -1310,6 +1317,8 @@ export default {
       minDate: new Date(),
       minDate1: new Date(1970, 0, 1),
       minDate2: new Date(1930, 0, 1),
+      currentlicenseDate: new Date(2015, 0, 1),
+      currentbirthdayDate: new Date(1991, 0, 1),
       // 买车车系绑定对象，用于给后台传递多个值
       // bseriseobj: {},
       // btypeobj: {},
@@ -1452,6 +1461,17 @@ export default {
         });
       }
     },
+    // 监听键盘弹出后屏幕高度变化
+    showHeight: function() {
+      if (this.defaultHeight !== this.showHeight) {
+        // 键盘弹出操作
+        this.hideshow = false
+      } else {
+        // 键盘不弹出操作
+        this.hideshow = true
+      }
+    }
+
   },
   methods: {
     // 门店
@@ -1557,37 +1577,57 @@ export default {
     async save() {
       // 数据校验
       // 必填
+      console.log(11);
       if (this.hssWxCustomerRo.store == "") {
+        console.log(22);
+
         Toast("门店不能为空");
         return false;
       } else if (this.hssWxCustomerRo.sex == "") {
+        console.log(33);
+
         Toast("性别不能为空");
         return false;
       } else if (this.hssWxCustomerRo.important == "") {
+        console.log(44);
         Toast("重点客户不能为空");
         return false;
       } else if (this.hssWxCustomerRo.region == "") {
+        console.log(55);
+
         Toast("客户区域不能为空");
         return false;
       } else if (this.hssWxCustomerRo.nature == "") {
+        console.log(66);
+
         Toast("客户性质不能为空");
         return false;
       } else if (this.hssWxCustomerRo.source == "") {
+        console.log(77);
+
         Toast("客户来源不能为空");
         return false;
       } else if (this.hssWxBusinessBuyRo.brand == "") {
+        console.log(77);
+
         Toast("买车品牌不能为空");
         return false;
       } else if (this.hssWxCustomerRo.intentionLevel == "") {
+        console.log(88);
+
         Toast("意向等级不能为空");
         return false;
       } else if (this.hssWxCustomerRo.nextFollowUpTime == "") {
+        console.log(99);
+
         Toast("下次跟进时间不能为空");
         return false;
       } else if (
         this.hssWxBusinessSellRo.brand == "" &&
         this.hssWxCustomerRo.isSell
       ) {
+        console.log(1010);
+
         Toast("卖车品牌不能为空");
         return false;
       }
@@ -1597,42 +1637,60 @@ export default {
         Number(this.hssWxBusinessBuyRo.minPrice) >
           Number(this.hssWxBusinessBuyRo.maxPrice)
       ) {
+        console.log(1111);
+
         Toast("最低价格应小于最高价格");
         return false;
       }
       if (this.hssWxCustomerRo.phone != "") {
+        console.log(1212);
+
         let msg = this.reg.checkPhone(this.hssWxCustomerRo.phone);
         if (msg != "ok") {
+          console.log(1313);
           Toast(msg);
           return false;
         }
       }
 
       if (this.hssWxCustomerRo.sparePhone != "") {
+        console.log(1414);
+
         let msg = this.reg.checkPhone(this.hssWxCustomerRo.sparePhone);
         if (msg != "ok") {
+          console.log(1515);
+
           Toast(msg);
           return false;
         }
       }
       if (this.hssWxCustomerRo.idcard != "") {
+        console.log(1616);
+
         let msg = this.reg.checkCard(this.hssWxCustomerRo.idcard);
         if (msg != "ok") {
+          console.log(1717);
+
           Toast(msg);
           return false;
         }
       }
       // 校验结束
-      else {
-        let data = await this.api.commitNewCustomer({
-          hssWxCustomerRo: this.hssWxCustomerRo,
-          hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
-          hssWxBusinessSellRo: this.hssWxBusinessSellRo,
-        });
-        if (data.code == 0) {
-          Toast("保存成功");
-          this.until.back();
-        } else Toast("保存失败");
+      console.log(1818);
+
+      let data = await this.api.commitNewCustomer({
+        hssWxCustomerRo: this.hssWxCustomerRo,
+        hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
+        hssWxBusinessSellRo: this.hssWxBusinessSellRo,
+      });
+      if (data.code == 0) {
+        console.log(2020);
+
+        Toast("保存成功");
+        this.until.back();
+      } else {
+        console.log(2121);
+        Toast("保存失败");
       }
     },
     back() {
@@ -1749,13 +1807,13 @@ export default {
         formData.append("file", e.file, "file.jpg");
       }
       this.api.upnewimg(formData).then((imgurl) => {
+        this.isvanloading = false;
         console.log("上传后地址", imgurl.data);
         if (!this.hssWxCustomerRo.pic) {
           this.hssWxCustomerRo.pic = imgurl.data;
         } else {
           this.hssWxCustomerRo.pic += `,${imgurl.data}`;
         }
-        this.isvanloading = false;
       });
     },
     // 处理确定跟进时间
@@ -2091,6 +2149,13 @@ export default {
     }
   },
   async mounted() {
+     this.defaultHeight = $(window).height()
+    // window.onresize监听页面高度的变化
+    window.onresize = () => {
+      return (() => {
+        this.showHeight = document.body.clientHeight
+      })()
+    }
     //  获取老客户介绍人
     this.introducers = await this.api.getOldCustomer("");
     this.searchintroducers = this.introducers;
@@ -2487,10 +2552,11 @@ export default {
     color: #ffffff;
     line-height: 0.7rem;
     text-align: center;
-     position: fixed;
-    bottom:.7rem;
-    left:50%;
+    position: fixed;
+    bottom: 0.7rem;
+    left: 50%;
     transform: translateX(-50%);
+    z-index: 999;
   }
 }
 </style>

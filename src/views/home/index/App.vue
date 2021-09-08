@@ -81,10 +81,10 @@
 	  	  `)
 				} 
 				else {
-					this.api.getWxlogin({code:this.code}).then(res => {
-						this.until.loSave('token', res.data.token)
+					// this.api.getWxlogin({code:this.code}).then(res => {
+					// 	this.until.loSave('token', res.data.token)
 						// window.location.replace("/static/wechat/views/home/index.html")
-					})
+					// })
 				}
 			}
 		},

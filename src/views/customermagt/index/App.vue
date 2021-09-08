@@ -44,6 +44,7 @@
           </div>
           <div class="row2">
             <van-field
+              style="padding: 0;text-align:center;"
               class="input bg leftpart"
               readonly
               label=""
@@ -69,6 +70,7 @@
             </van-popup>
 
             <van-field
+              style="padding: 0;text-align:center;"
               class="input bg centerpart"
               readonly
               label=""
@@ -94,6 +96,7 @@
             </van-popup>
 
             <van-field
+              style="padding: 0;text-align:center;"
               class="input bg rightpart"
               readonly
               label=""
@@ -120,6 +123,7 @@
           </div>
           <div class="row3">
             <van-field
+              style="padding: 0;text-align:center;"
               class="picker son leftpart bg"
               readonly
               label=""
@@ -133,12 +137,12 @@
                 title="选择开始日期"
                 :max-date="maxStdate"
                 @confirm="startTimeChange"
-            @cancel="showPicker5 = false"
-
+                @cancel="showPicker5 = false"
               />
             </van-popup>
             <!-- 结束日期 -->
             <van-field
+              style="padding: 0;text-align:center;"
               class="picker son leftpart bg"
               readonly
               label=""
@@ -152,8 +156,7 @@
                 :min-date="minEtdate"
                 :max-date="maxEtdate"
                 @confirm="endTimeChange"
-            @cancel="showPicker6 = false"
-
+                @cancel="showPicker6 = false"
               />
             </van-popup>
 
@@ -194,8 +197,8 @@
           <div class="level">{{ item.intentionLevel }}</div>
           <div class="row1">
             <div class="name">{{ item.name }}</div>
-            <div class="type" v-if="item.sex == 1">(男)</div>
-            <div class="type" v-else-if="item.sex == 2">(女)</div>
+            <div class="type" v-if="item.sex == '先生'">(先生)</div>
+            <div class="type" v-else-if="item.sex == '女士'">(女士)</div>
             <div class="type" v-else>(未知)</div>
           </div>
           <div class="item_row">
@@ -480,17 +483,21 @@ export default {
     },
     startTimeChange(val) {
       this.info.beginFollowUpTime = moment(val).format("YYYY-MM-DD");
-      this.showPicker5=false;
+      this.showPicker5 = false;
     },
     endTimeChange(val) {
       this.info.endFollowUpTime = moment(val).format("YYYY-MM-DD");
-      this.showPicker6=false;
+      this.showPicker6 = false;
     },
   },
 };
 </script>
 
 <style lang="less">
+.van-field__control {
+text-align: center !important;
+}
+
 .el-input__inner {
   border: none;
 }
@@ -545,7 +552,7 @@ export default {
   .query {
     box-sizing: border-box;
     width: 100%;
-    height: 2.92rem;
+    height: 3rem;
     padding: 0.32rem 0.3rem;
     display: flex;
     justify-content: space-between;
@@ -554,7 +561,7 @@ export default {
       background: #fff;
       // padding: .24rem .22rem;
       // padding-left: .22rem;
-      border: 1px solid #dddddd;
+      // border: 1px solid #dddddd;
       border-radius: 0.06rem;
       display: flex;
       align-items: center;
@@ -588,7 +595,7 @@ export default {
 
         .leftpart {
           flex: 1;
-          border: 1px solid #dddddd;
+          // border: 1px solid #dddddd;
           border-radius: 0.06rem;
           margin-right: 0.1rem;
 
@@ -601,7 +608,7 @@ export default {
 
         .rightpart {
           flex: 1;
-          border: 1px solid #dddddd;
+          // border: 1px solid #dddddd;
           border-radius: 0.06rem;
         }
       }

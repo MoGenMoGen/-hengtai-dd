@@ -257,13 +257,13 @@
             },
             toCustomer(id){
                 console.log('customer')
-                let url = '.@/maintain/customerDetail.html?id='+id
+                let url = '/views/maintain/customerDetail.html?id='+id
                 this.until.href(url)
 
             },
             toCar(id){
                 console.log('car')
-                let url = '@/maintain/carDetail.html?id='+id
+                let url = '/views/maintain/carDetail.html?id='+id
                 this.until.href(url)
 
             },

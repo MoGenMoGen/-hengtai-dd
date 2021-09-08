@@ -329,7 +329,7 @@
         },
         methods: {
             toEdit(){
-               let url = '@/maintain/serviceDetail.html?id='+this.id
+               let url = '/views/maintain/serviceDetail.html?id='+this.id
                 this.until.href(url)
             },
             bigImg(item){

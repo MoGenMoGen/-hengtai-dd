@@ -239,7 +239,7 @@
         },
         methods: {
             toDetail(id){
-                this.until.href('@/maintain/finished.html?id='+id)
+                this.until.href('/views/maintain/finished.html?id='+id)
             },
             async getInfo(){
 
@@ -274,7 +274,7 @@
             },
 
             toPage(){
-                let url = '@/maintain/creat.html?carInfo='+JSON.stringify(this.info)
+                let url = '/views/maintain/creat.html?carInfo='+JSON.stringify(this.info)
                 this.until.href(url)
             }
         }

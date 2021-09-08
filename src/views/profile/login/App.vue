@@ -112,7 +112,7 @@
 			//               this.until.loSave('userInfo',JSON.stringify(res.data.userInfo))
 			//               // console.log(res.data.userInfo)
 			//               // console.log(this.until.loGet('userInfo'))
-			//               this.until.href('@/maintain/index.html')
+			//               this.until.href('views/maintain/index.html')
 			//           }else {
 			//               this.ifShow = true
 			//               Toast(JSON.stringify(res))
@@ -168,7 +168,7 @@
 				//               that.until.loSave('pwd',that.pwd)
 				//               that.until.loSave('token',res.data.token)
 				//               that.until.loSave('userInfo',JSON.stringify(res.data.userInfo))
-				//               that.until.href('@/maintain/index.html')
+				//               that.until.href('views/maintain/index.html')
 				//           })
 				//       },
 				//       onFail : function(err) {

@@ -824,13 +824,14 @@ export default {
         formData.append("file", e.file, "file.jpg");
       }
       this.api.upnewimg(formData).then((imgurl) => {
+        this.isvanloading = false;
+
         console.log("上传后地址", imgurl.data);
         if (!this.info.hssWxFollowupRo.pic) {
           this.info.hssWxFollowupRo.pic = imgurl.data;
         } else {
           this.info.hssWxFollowupRo.pic += `,${imgurl.data}`;
         }
-        this.isvanloading = false;
       });
     },
 
@@ -1010,13 +1011,11 @@ export default {
         return false;
       }
       // 数据校验结束
-      else {
         let data = await this.api.commitNewfollow(this.info);
         if (data.code == 0) {
           Toast("保存成功");
           this.until.back();
         } else Toast("保存失败");
-      }
     },
   },
   async created() {
@@ -1163,7 +1162,7 @@ export default {
   background-color: #f1f3f2;
   background-size: 100% 1.28rem;
   min-height: 100vh;
-  padding-bottom: 1.04rem;
+  padding-bottom: 2rem;
   .title {
     width: 100%;
     height: 1.28rem;
@@ -1485,9 +1484,11 @@ export default {
     line-height: 0.7rem;
     text-align: center;
     position: fixed;
-    bottom:1.04rem;
+    bottom:0.7rem;
     left:50%;
     transform: translateX(-50%);
+    z-index: 999;
+
   }
 }
 </style>

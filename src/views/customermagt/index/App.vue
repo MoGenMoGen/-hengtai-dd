@@ -700,13 +700,13 @@ text-align: center !important;
         display: flex;
         align-items: center;
         .name {
-          font-size: 0.28rem;
+          font-size: 0.32rem;
           font-weight: bold;
           color: #303030;
           margin-right: 0.12rem;
         }
         .type {
-          font-size: 0.24rem;
+          font-size: 0.28rem;
           font-weight: 500;
           color: #303030;
         }
@@ -716,12 +716,12 @@ text-align: center !important;
         align-items: center;
         // margin-top: 0.3rem;
         .key {
-          font-size: 0.24rem;
+          font-size: 0.28rem;
           font-weight: 500;
           color: #606060;
         }
         .value {
-          font-size: 0.24rem;
+          font-size: 0.28rem;
           font-weight: 500;
           color: #606060;
         }

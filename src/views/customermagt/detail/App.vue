@@ -354,6 +354,12 @@
                       :src="picitem"
                       style="width: 1.6rem; height: 1.6rem"
                       alt=""
+                      @click="
+                        Imagepreview(
+                          picindex,
+                          item.pic.split(',').filter((item) => item != '')
+                        )
+                      "
                     />
                   </div>
                 </div>
@@ -396,6 +402,7 @@
 import Bg from "@/assets/img/bg.png";
 import moment from "moment";
 import { Toast } from "mint-ui";
+import { ImagePreview } from "vant";
 export default {
   data() {
     return {
@@ -433,21 +440,18 @@ export default {
   computed: {
     // 相对时间
     relativeTime() {
-      // return moment([this.userinfo.data.nextFollowUpTime]).fromNow();
-      let year = moment(this.userinfo.data.nextFollowUpTime).format("YYYY");
-      let month = parseInt(
-        moment(this.userinfo.data.nextFollowUpTime).format("MM")
-      );
-      let day = moment(this.userinfo.data.nextFollowUpTime).format("DD");
-      // 跟进时间在现在之前
-      if (
-        moment(this.userinfo.data.nextFollowUpTime).valueOf() <
-        moment().valueOf()
-      ) {
-        return moment(this.userinfo.data.nextFollowUpTime).to(moment());
-      } else {
-        return moment(this.userinfo.data.nextFollowUpTime).from(moment());
-      }
+      return moment(this.userinfo.data.nextFollowUpTime).from(new Date());
+
+      // if (
+      //   moment(this.userinfo.data.nextFollowUpTime).valueOf() <
+      //   moment().valueOf()
+      // ) {
+      //   console.log(111);
+      //   return moment(this.userinfo.data.nextFollowUpTime).from(new Date());
+      // } else {
+      //   console.log(222222);
+      //   return moment(this.userinfo.data.nextFollowUpTime).from(new Date());
+      // }
     },
     // 轨迹变更列表
     trailContentList() {
@@ -470,9 +474,11 @@ export default {
     },
   },
   async mounted() {
+    console.log("mounted");
     // console.log("相对日期", this.relativeTime);
   },
   async created() {
+    console.log("created");
     moment.locale("zh-cn");
     console.log(typeof moment().format("YYYY"));
     this.id = this.until.getQueryString("id");
@@ -502,9 +508,9 @@ export default {
     let orderData = await this.api.getorder(
       encodeURIComponent(
         JSON.stringify({
-          w: [{ customerId: this.id }],
-          o: [{ k: "id", t: "esc" }],
-          p: { n: 1, s: 100 },
+          w: [{ k: "customerId", v: 75, m: "EQ" }],
+          o: [{ k: "id", t: "desc" }],
+          p: { n: 1, s: 10 },
         })
       )
     );
@@ -513,6 +519,8 @@ export default {
   },
   methods: {
     back() {
+      // window.location.go(-1);     //返回上一页并刷新
+
       this.until.back();
     },
     tabChange(index) {
@@ -534,6 +542,12 @@ export default {
       document.execCommand("Copy"); // 执行复制
       document.body.removeChild(input); // 删除临时实例
       Toast("微信号复制成功");
+    },
+    Imagepreview(index, list) {
+      ImagePreview({
+        images: list,
+        startPosition: index,
+      });
     },
   },
 };
@@ -616,13 +630,13 @@ export default {
       align-items: center;
 
       .name {
-        font-size: 0.28rem;
+        font-size: 0.32rem;
         font-weight: bold;
         color: #303030;
       }
 
       .rmks {
-        font-size: 0.24rem;
+        font-size: 0.28rem;
         font-weight: 500;
         color: #303030;
         margin-left: 0.1rem;
@@ -653,17 +667,19 @@ export default {
 
       .list {
         display: flex;
-        font-size: 0.24rem;
+        font-size: 0.28rem;
         font-weight: 500;
         color: #606060;
-        margin-top: .12rem;
+        margin-top: 0.12rem;
 
         .listHead {
-          width: 1.6rem;
+          width: 2rem;
+          font-size: 0.28rem;
         }
 
         .listContent {
           margin-left: 0.24rem;
+          font-size: 0.28rem;
         }
       }
     }
@@ -678,7 +694,7 @@ export default {
       height: 0.5rem;
       text-align: center;
       line-height: 0.5rem;
-      font-size: .3rem;
+      font-size: 0.3rem;
       font-weight: bold;
       color: #ffffff;
     }
@@ -693,7 +709,7 @@ export default {
     .contentTitle {
       border-left: 0.06rem solid #09c076;
       padding: 0 0.1rem;
-      font-size: 0.24rem;
+      font-size: 0.28rem;
       font-weight: bold;
       color: #09c076;
     }
@@ -711,11 +727,13 @@ export default {
 
         .listHead {
           width: 1.7rem;
+          font-size: 0.28rem;
         }
 
         .listContent {
           margin-left: 0.16rem;
           width: 4.7rem;
+          font-size: 0.28rem;
           overflow: hidden;
           white-space: normal;
           word-break: break-all;

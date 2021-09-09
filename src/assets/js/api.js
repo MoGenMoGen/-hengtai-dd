@@ -872,6 +872,15 @@ class api {
 
         })
     }
+    // 修改用户需求
+    modifyCustomer(data) {
+        return new Promise((resolve, reject) => {
+            post('/hss/wxCustomer/upd', data).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
     // 提交新增跟进数据
     commitNewfollow(data) {
         return new Promise((resolve, reject) => {

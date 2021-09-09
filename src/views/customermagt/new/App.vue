@@ -751,7 +751,7 @@
           readonly
           clickable
           label=""
-          v-model="hssWxCustomerRo.nextFollowUpTime"
+          v-model="momentNextFollowUpTime"
           placeholder="选择下次跟进时间"
           @click="showfollowtime = true"
         />
@@ -1343,6 +1343,8 @@ export default {
       showdiyprice: 0,
       // 确定自定义价格
       confirmprice: false,
+      // 显示的带星期的下次跟进时间(不传给后台)
+      momentNextFollowUpTime: "",
       hssWxCustomerRo: {
         chcekinId: "", //接待表id，用于是否留档
         name: "", //用户姓名
@@ -1681,20 +1683,42 @@ export default {
       }
       // 校验结束
       console.log(1818);
+      // 修改客户需求
+      if (this.cusid) {
+        let data = await this.api.commitNewCustomer({
+          hssWxCustomerRo: this.hssWxCustomerRo,
+          hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
+          hssWxBusinessSellRo: this.hssWxBusinessSellRo,
+        });
+        if (data.code == 0) {
+          console.log(2020);
 
-      let data = await this.api.commitNewCustomer({
-        hssWxCustomerRo: this.hssWxCustomerRo,
-        hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
-        hssWxBusinessSellRo: this.hssWxBusinessSellRo,
-      });
-      if (data.code == 0) {
-        console.log(2020);
+          Toast("保存成功");
+          this.until.back();
+          location.reload(); 
+        } else {
+          console.log(2121);
+          Toast("保存失败");
+        }
+      }
+      // 新增客户
+      else {
+        let data = await this.api.modifyCustomer({
+          hssWxCustomerRo: this.hssWxCustomerRo,
+          hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
+          hssWxBusinessSellRo: this.hssWxBusinessSellRo,
+        });
+        if (data.code == 0) {
+          console.log(2020);
 
-        Toast("保存成功");
-        this.until.back();
-      } else {
-        console.log(2121);
-        Toast("保存失败");
+          Toast("保存成功");
+          this.until.back();
+          location.reload(); 
+
+        } else {
+          console.log(2121);
+          Toast("保存失败");
+        }
       }
     },
     back() {
@@ -1822,9 +1846,8 @@ export default {
     },
     // 处理确定跟进时间
     handlefollowConfirm(e) {
-      this.hssWxCustomerRo.nextFollowUpTime = moment(e).format(
-        "YYYY-MM-DD dddd HH:mm"
-      );
+      this.momentNextFollowUpTime = moment(e).format("YYYY-MM-DD dddd HH:mm");
+      this.hssWxCustomerRo.nextFollowUpTime = e;
       this.showfollowtime = false;
     },
     // 跳到品牌列表页
@@ -1901,6 +1924,10 @@ export default {
       this.hssWxBusinessBuyRo.model = "";
       this.hssWxBusinessBuyRo.seriesId = "";
       this.hssWxBusinessBuyRo.modelId = "";
+      this.searchBcarseries = [];
+      this.Bcarseries = [];
+      this.searchBcartypes = [];
+      this.Bcartypes = [];
       // this.bseriseobj = {};
       // this.btypeobj = {};
       // 获取买车车系列表
@@ -1919,6 +1946,10 @@ export default {
       this.hssWxBusinessSellRo.model = "";
       this.hssWxBusinessSellRo.seriesId = "";
       this.hssWxBusinessSellRo.modelId = "";
+      this.searchScarseries = [];
+      this.Scarseries = [];
+      this.searchScartypes = [];
+      this.Scartypes = [];
       // this.bseriseobj = {};
       // this.btypeobj = {};
       // 获取卖车车系列表
@@ -1944,6 +1975,8 @@ export default {
       // 车型清空
       this.hssWxBusinessBuyRo.model = "";
       this.hssWxBusinessBuyRo.modelId = "";
+      this.searchBcartypes = [];
+      this.Bcartypes = [];
       this.showPicker6 = false;
 
       // this.btypeobj = {};
@@ -1967,6 +2000,8 @@ export default {
       // 车型清空
       this.hssWxBusinessSellRo.model = "";
       this.hssWxBusinessSellRo.modelId = "";
+      this.searchScartypes = [];
+      this.Scartypes = [];
       this.showPicker9 = false;
 
       // this.stypeobj = {};
@@ -1994,9 +2029,7 @@ export default {
 
     if (this.id) {
       this.Title = "修改需求";
-    }
-    else if(this.cusid)
-    {
+    } else if (this.cusid) {
       this.Title = "完善信息";
     }
     // 获取门店列表
@@ -2152,7 +2185,7 @@ export default {
     else if (this.cusid) {
       let data = await this.api.getWxCheckinDetail(this.cusid);
       this.hssWxCustomerRo = { ...this.hssWxCustomerRo, ...data };
-      this.hssWxCustomerRo.chcekinId =this.cusid;
+      this.hssWxCustomerRo.chcekinId = this.cusid;
     }
   },
   async mounted() {

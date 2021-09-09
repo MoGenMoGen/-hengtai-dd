@@ -299,7 +299,7 @@
           :key="item.id"
           @click="handlecheckBcarlogo(item)"
         >
-        <img
+          <img
             src="~@/assets/img/selectbrand.png"
             class="selectbrand"
             v-if="item.id == info.hssWxBusinessBuyRo.brandId"
@@ -608,7 +608,7 @@
           readonly
           clickable
           label=""
-          :value="info.hssWxFollowupRo.nextFollowUpTime"
+          :value="momentNextFollowUpTime"
           placeholder="选择完整时间"
           @click="showfollowtime2 = true"
         />
@@ -662,6 +662,8 @@ export default {
       currentID: "",
       // bseriseobj: {},
       // btypeobj: {},
+      // 显示的带星期的下次跟进时间(不传给后台)
+      momentNextFollowUpTime: "",
       info: {
         hssWxFollowupRo: {
           customerId: "", //用户id
@@ -864,9 +866,8 @@ export default {
       this.showfollowtime1 = false;
     },
     handlefollowConfirm2(e) {
-      this.info.hssWxFollowupRo.nextFollowUpTime = moment(e).format(
-        "YYYY-MM-DD dddd HH:mm"
-      );
+      this.info.hssWxFollowupRo.nextFollowUpTime = e;
+      this.momentNextFollowUpTime = moment(e).format("YYYY-MM-DD dddd HH:mm");
       this.showfollowtime2 = false;
     },
     handlevisitTimeconfirm(e) {

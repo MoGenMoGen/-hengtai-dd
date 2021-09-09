@@ -94,17 +94,19 @@ export default {
 			  	console.log(1213,res);
 			  	this.total=res.data
 			  })
-		  },1000)
+		  },100)
 		 
       
         });
       }
     }
 	else{
-		this.api.getGetnotread({}).then(res=>{
-			console.log(1213,res);
-			this.total=res.data
-		})
+	setTimeout(()=>{
+				  this.api.getGetnotread({}).then(res=>{
+				  	console.log(1213,res);
+				  	this.total=res.data
+				  })
+	},100)
 	}
 	
   },

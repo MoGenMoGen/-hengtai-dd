@@ -186,9 +186,9 @@
 				id: "",
 				reply: "",
 				isbuy: true,
-				istrue:true,
-				num:1,
-				
+				istrue: true,
+				num: 1,
+
 				total: "",
 				info: {
 					pinpai: "奔驰",
@@ -204,8 +204,8 @@
 					shangpai: "2020-06-01"
 				},
 				replayList: [],
-			
-			
+
+
 
 
 			};
@@ -217,14 +217,14 @@
 
 					this.info = res
 					this.isbuy = true
-	 let querys= {
-					w: [
-						["businessId",this.info.id, "EQ"],
-						["isbuy", "1", "EQ"],
-					],
-					o: ["id", "desc"],
-					p: [1, 10],
-				}
+					let querys = {
+						w: [
+							["businessId", this.info.id, "EQ"],
+							["isbuy", "1", "EQ"],
+						],
+						o: ["id", "desc"],
+						p: [1, 10],
+					}
 					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(res => {
 						this.replayList = [...this.replayList, ...res.data.list]
 						this.total = res.page.total
@@ -247,7 +247,7 @@
 						p: [1, 10],
 					}
 					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querystwo))).then(res => {
-						this.replayList = [...this.replayList,...res.data.list]
+						this.replayList = [...this.replayList, ...res.data.list]
 						this.total = res.page.total
 					})
 
@@ -281,21 +281,21 @@
 				if (this.istrue == true) {
 					console.log(1);
 					if (scrollBottom < 100) {
-						console.log(2,this.currentindex,this.replayList.length < this.total);
+						console.log(2, this.currentindex, this.replayList.length < this.total);
 						this.istrue = false
 						if (this.currentindex == 0 && this.replayList.length < this.total) {
 							console.log(3);
 							this.num++
-							let querys= {
-												w: [
-													["business_id", this.info.id, "EQ"],
-													["isbuy", "1", "EQ"],
-												],
-												o: ["id", "desc"],
-												p: [this.num, 10],
-											}
-							
-							console.log(44545,querys.p[0]);
+							let querys = {
+								w: [
+									["business_id", this.info.id, "EQ"],
+									["isbuy", "1", "EQ"],
+								],
+								o: ["id", "desc"],
+								p: [this.num, 10],
+							}
+
+							console.log(44545, querys.p[0]);
 							this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(res => {
 								this.replayList = [...this.replayList, ...res.data.list]
 								this.istrue = true
@@ -305,7 +305,7 @@
 
 						} else if (this.currentindex == 1 && this.replayList.length < this.total) {
 							this.num++
-							
+
 							let querystwo = {
 								w: [
 									["business_id", this.info.id, "EQ"],
@@ -314,9 +314,9 @@
 								o: ["id", "desc"],
 								p: [this.num, 10],
 							}
-							
+
 							this.api.getWxCommunicate(this.query.toEncode(this.newqry(querystwo))).then(res => {
-								this.replayList = [...this.replayList,...res.data.list]
+								this.replayList = [...this.replayList, ...res.data.list]
 								this.istrue = true
 							})
 
@@ -348,9 +348,54 @@
 				p.businessId = this.info.id
 				p.customerId = this.info.customerId
 				p.isbuy = this.isbuy
-				this.api.postWxCommunicate(p)
+				this.api.postWxCommunicate(p).then(res => {
+					if (this.currentindex == 0) {
+						this.api.getWxBusinessBuyDetail(this.id).then(res => {
 
-				this.isPopShow = false
+							this.info = res
+							this.isbuy = true
+							let querys = {
+								w: [
+									["businessId", this.info.id, "EQ"],
+									["isbuy", "1", "EQ"],
+								],
+								o: ["id", "desc"],
+								p: [1, 10],
+							}
+							this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(
+							res => {
+								this.replayList = [...this.replayList, ...res.data.list]
+								this.total = res.page.total
+
+							})
+
+						})
+
+					} else if (this.currentindex == 1) {
+						this.api.getWxBusinessSellDetail(this.id).then(res => {
+
+							this.info = res
+							this.isbuy = false
+							let querystwo = {
+								w: [
+									["businessId", this.info.id, "EQ"],
+									["isbuy", "0", "EQ"],
+								],
+								o: ["id", "desc"],
+								p: [1, 10],
+							}
+							this.api.getWxCommunicate(this.query.toEncode(this.newqry(querystwo))).then(
+								res => {
+									this.replayList = [...this.replayList, ...res.data.list]
+									this.total = res.page.total
+								})
+
+						})
+					}
+					this.isPopShow = false
+				})
+
+
 			}
 		},
 		computed: {

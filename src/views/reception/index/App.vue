@@ -113,7 +113,7 @@
 		async mounted() {
 			setTimeout(()=>{
 				this.getList()
-			},1000)
+			},200)
 		 
 			window.addEventListener('scroll', this.menu)
 			

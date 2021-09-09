@@ -72,7 +72,8 @@
 			</div>
 		</div>
 		<div class="btn">
-			<button type="button" @click="perfectTo">信息完善</button>
+			<button type="button" @click="perfectTo" v-if="info.gearStatus==false">信息完善</button>
+			<button type="button"  v-if="info.gearStatus==true" style="background-color:rgb(132,132,132);">已完善</button>
 		</div>
 	</div>
 

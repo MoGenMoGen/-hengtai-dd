@@ -188,8 +188,7 @@ export default {
             display: inline-block;
 			position: relative;
 			.total{
-				width: 0.26rem;
-				height: 0.26rem;
+				padding: 0.05rem;
 				font-size: 0.18rem;
 				position: absolute;
 				top: 0rem;
@@ -198,7 +197,7 @@ export default {
 				color: #ffffff;
 				text-align: center;
 				line-height: 0.26rem;
-				border-radius: 0.13rem;
+				border-radius: 0.18rem;
 			}
             .title {
               font-size: 0.3rem;

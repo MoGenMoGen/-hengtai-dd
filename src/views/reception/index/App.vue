@@ -7,8 +7,8 @@
 		<div class="searchBox">
 			<div class="leftBox">
 				<input type="" name="" id="" value="" placeholder="客户姓名、电话、销售" v-model="searchStr" />
-				<el-select v-model="value" filterable clearable placeholder="留档状态" class="select" @change="postId" @hook:mounted="cancalReadOnly"
-        @visible-change="cancalReadOnly">
+				<el-select v-model="value" filterable clearable placeholder="留档状态" class="select" @change="postId"
+     >
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
 				</el-select>
@@ -109,9 +109,12 @@
 			};
 		},
 		components: {},
+
 		async mounted() {
-		    this.getList()
+		
+		  this.getList()
 			window.addEventListener('scroll', this.menu)
+			
 		},
 		methods: {
 			back() {
@@ -167,15 +170,7 @@
 						}
 					}
 			},
-			cancalReadOnly(onOff){
-				  this.$nextTick(() => {
-				                    if (!onOff) {
-				                        const {select} = this.$refs;
-				                        const input = select.$el.querySelector('.el-input__inner');
-				                        input.removeAttribute('readonly');
-				                    }
-				                });
-			}
+		
 		},
 		computed: {
 			pickerOptionsStart: {

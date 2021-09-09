@@ -420,6 +420,9 @@ class until{
   back(){
     window.history.back();
   }
+  backTwo(){  
+      window.location.reload(true)
+  }
   //session存取
   seSave(name,obj){
     sessionStorage.setItem(name,obj);

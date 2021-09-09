@@ -219,7 +219,7 @@
 					this.isbuy = true
 	 let querys= {
 					w: [
-						["business_id",this.info.id, "EQ"],
+						["businessId",this.info.id, "EQ"],
 						["isbuy", "1", "EQ"],
 					],
 					o: ["id", "desc"],
@@ -240,7 +240,7 @@
 					this.isbuy = false
 					let querystwo = {
 						w: [
-							["business_id", this.info.id, "EQ"],
+							["businessId", this.info.id, "EQ"],
 							["isbuy", "0", "EQ"],
 						],
 						o: ["id", "desc"],

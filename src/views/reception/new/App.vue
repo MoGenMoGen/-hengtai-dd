@@ -55,7 +55,7 @@
 					  <van-picker
 					    value-key="content"
 					    show-toolbar
-					    :columns="searchoptions"
+					    :columns="searchoptionsTwo"
 					    @cancel="showPicker123 = false"
 					    @confirm="handleBuysType"
 					  />
@@ -71,24 +71,74 @@
 			</div>
 			<div class="bodyList">
 				<textarea rows="" cols="" class="listContent" placeholder="请输入需求" v-model="demand"></textarea>
-				<div class="list" style="padding-bottom: 0.1rem;">
+				<div class="list" >
 					<div class="listHead">
 						客流性质
 					</div>
-					<el-select v-model="value" filterable placeholder="请选择客流性质" class="select" @change="postId">
+					<van-field
+					  class="vantSelect"
+					  readonly
+					  clickable
+					  label=""
+					  :value="nature"
+					  placeholder="请选择客流性质"
+					  @click="showPicker1 = true"
+					/>
+					<van-popup v-model="showPicker1" round position="bottom">
+					  <van-search
+					    v-model="search1"
+					    shape="round"
+					    background="#09c076"
+					    @input="onSearch1"
+					    placeholder="请输入搜索关键词"
+					  />
+					  <van-picker
+					    value-key="content"
+					    show-toolbar
+					    :columns="searchoptions"
+					    @cancel="showPicker1 = false"
+					    @confirm="handleBuysTypeTwo"
+					  />
+					</van-popup>
+				<!-- 	<el-select v-model="value" filterable placeholder="请选择客流性质" class="select" @change="postId">
 						<el-option v-for="item in options" :key="item.value" :label="item.content" :value="item.content">
 						</el-option>
-					</el-select>
+					</el-select> -->
 
 				</div>
-				<div class="list">
+				<div class="list" >
 					<div class="listHead">
 						销售顾问
 					</div>
-					<el-select v-model="value3" filterable placeholder="请选择客流性质" class="select" @change="postIdThree">
+					<van-field
+					  class="vantSelect"
+					  readonly
+					  clickable
+					  label=""
+					  :value="saler"
+					  placeholder="请选择销售顾问 "
+					  @click="showPicker2 = true"
+					/>
+					<van-popup v-model="showPicker2" round position="bottom">
+					  <van-search
+					    v-model="search2"
+					    shape="round"
+					    background="#09c076"
+					    @input="onSearch2"
+					    placeholder="请输入搜索关键词"
+					  />
+					  <van-picker
+					    value-key="arg7"
+					    show-toolbar
+					    :columns="searchoptionsThree"
+					    @cancel="showPicker2= false"
+					    @confirm="handleBuysTypeThree"
+					  />
+					</van-popup>
+				<!-- 	<el-select v-model="value3" filterable placeholder="请选择客流性质" class="select" @change="postIdThree">
 						<el-option v-for="item in optionsThree" :key="item.value" :label="item.arg7" :value="item.arg7">
 						</el-option>
-					</el-select>
+					</el-select> -->
 				</div>
 			</div>
 			<div class="btn">
@@ -106,7 +156,12 @@
 		data() {
 			return {
 				showPicker123:false,
+				showPicker1:false,
+				showPicker2:false,
+				
 				search123:"",
+				search1:"",
+				search2:"",
 				
 				value: '',
 				value2:"",
@@ -127,7 +182,10 @@
 				searchoptions:[],
 				
 				optionsTwo:[],
+				searchoptionsTwo:[],
 				optionsThree:[],
+				searchoptionsThree:[],
+				
 				
 			};
 		},
@@ -155,10 +213,12 @@
 			})
 			this.api.getWxCommonfield(this.query.toEncode(this.newqry(querysTwo))).then(res=>{
 				this.optionsTwo=res.list
+				this.searchoptionsTwo=this.optionsTwo
 			})
 			this.api.staffList().then(res=>{
 				console.log("ceshi",res);
 				this.optionsThree=res
+				this.searchoptionsThree=this.optionsThree
 			})
 			
 		},
@@ -234,9 +294,14 @@
 				this.info.saler=this.saler
 				
 				console.log(11111111111);
-				await this.api.postWxCheckin(JSON.stringify(this.info))
-				console.log(4445,JSON.stringify(this.info));
-				this.until.back()
+				this.api.postWxCheckin(JSON.stringify(this.info)).then(res=>{
+					setTimeout(()=>{
+						this.until.back()
+					})
+					
+				})
+				
+				
 			},
 			onSearch123(a){
 				if(a!=""){
@@ -251,10 +316,38 @@
 			handleBuysType(e,v){
 				this.customerType=e.content;
 				this.showPicker123=false;
-			}
+			},
+			onSearch1(a){
+				if(a!=""){
+					this.searchoptionsTwo = this.optionsTwo.filter((item) =>
+					  item.content.includes(a)
+					);
+				}
+				else{
+					this.searchoptionsTwo=this.optionsTwo
+				}
+			},
+			handleBuysTypeTwo(e,v){
+				this.nature=e.content
+				this.showPicker1=false
+			},
+			onSearch2(a){
+				if(a!=""){
+					this.searchoptionsThree = this.optionsThree.filter((item) =>
+					  item.content.includes(a)
+					);
+				}
+				else{
+					this.searchoptionsThree=this.optionsThree
+				}
+			},
+			handleBuysTypeThree(e,v){
+				this.saler=e.arg7
+				this.showPicker2=false
+			},
 		},
 		computed: {
-
+			
 		}
 	};
 </script>

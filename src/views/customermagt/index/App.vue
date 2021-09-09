@@ -135,7 +135,6 @@
               <van-datetime-picker
                 type="date"
                 title="选择开始日期"
-                :max-date="maxStdate"
                 @confirm="startTimeChange"
                 @cancel="showPicker5 = false"
               />
@@ -153,7 +152,6 @@
             <van-popup v-model="showPicker6" round position="bottom">
               <van-datetime-picker
                 type="date"
-                :min-date="minEtdate"
                 @confirm="endTimeChange"
                 @cancel="showPicker6 = false"
               />
@@ -215,15 +213,19 @@
         </van-cell>
       </van-list>
     </van-pull-refresh>
-    <div class="newbtn" @click="newcustomer">新增客户</div>
+    <div class="newbtn" @click="newcustomer" v-show="hideshow">新增客户</div>
   </div>
 </template>
 
 <script>
 import moment from "moment";
+import { Toast } from "vant";
 export default {
   data() {
     return {
+      defaultHeight: "0", // 默认屏幕高度
+      showHeight: 0, // 实时屏幕高度
+      hideshow: true, // 显示或者隐藏保存按钮,
       // 购买类型、搜索列表、搜索值、是否显示picker
       searchbuytypes: [],
       search1: "",
@@ -278,6 +280,18 @@ export default {
       customerList: [],
     };
   },
+  watch: {
+    // 监听键盘弹出后屏幕高度变化
+    showHeight: function () {
+      if (this.defaultHeight !== this.showHeight) {
+        // 键盘弹出操作
+        this.hideshow = false;
+      } else {
+        // 键盘不弹出操作
+        this.hideshow = true;
+      }
+    },
+  },
   computed: {
     // 开始日期限制
     // 有结束日期时禁止大于结束日期的日期
@@ -307,7 +321,8 @@ export default {
       // return new Date(moment().add(20, 'days'));
     },
     minEtdate() {
-      return new Date();
+      if (this.info.beginFollowUpTime != "")
+        return new Date(this.info.beginFollowUpTime);
     },
     // etOptions() {
     //   let _this = this;
@@ -362,8 +377,18 @@ export default {
     });
     this.searchintentLevels = this.intentLevels;
   },
-  mounted() {
+  async mounted() {
     console.log("mounted");
+    this.defaultHeight = $(window).height();
+    // window.onresize监听页面高度的变化
+    window.onresize = () => {
+      return (() => {
+        this.showHeight = document.body.clientHeight;
+      })();
+    };
+    //  获取老客户介绍人
+    this.introducers = await this.api.getOldCustomer("");
+    this.searchintroducers = this.introducers;
   },
   methods: {
     // 上拉加载
@@ -485,11 +510,26 @@ export default {
       this.handleLoad();
     },
     startTimeChange(val) {
-      this.info.beginFollowUpTime = moment(val).format("YYYY-MM-DD");
+      if (
+        this.info.endFollowUpTime &&
+        moment(this.info.endFollowUpTime).valueOf() < moment(val).valueOf()
+      ) {
+        Toast("日期区间选择错误");
+      } else {
+        this.info.beginFollowUpTime = moment(val).format("YYYY-MM-DD");
+      }
       this.showPicker5 = false;
     },
     endTimeChange(val) {
-      this.info.endFollowUpTime = moment(val).format("YYYY-MM-DD");
+      if (
+        this.info.beginFollowUpTime &&
+        moment(this.info.beginFollowUpTime).valueOf() > moment(val).valueOf()
+      ) {
+        Toast("日期区间选择错误");
+      } else {
+        this.info.endFollowUpTime = moment(val).format("YYYY-MM-DD");
+      }
+
       this.showPicker6 = false;
     },
   },

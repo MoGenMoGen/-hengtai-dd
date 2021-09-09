@@ -1684,7 +1684,7 @@ export default {
       // 校验结束
       console.log(1818);
       // 修改客户需求
-      if (this.cusid) {
+      if (this.id) {
         let data = await this.api.modifyCustomer({
           hssWxCustomerRo: this.hssWxCustomerRo,
           hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,

@@ -215,8 +215,8 @@
           </div>
         </div>
         <div class="list">
-          <div class="listHead">里程数:</div>
-          <div class="listContent">{{ sellInfo.data.mileage }}（万公里）</div>
+          <div class="listHead">里程数<span style="font-size:12px">(万公里)</span>:</div>
+          <div class="listContent">{{ sellInfo.data.mileage }}</div>
         </div>
         <div class="list">
           <div class="listHead">上牌时间:</div>
@@ -322,7 +322,7 @@
           <el-timeline-item
             v-for="(item, index) in trailList"
             :key="index"
-            :color="trailList.length-1!=index?'#09c076':''"
+            :color="trailList.length - 1 != index ? '#09c076' : ''"
           >
             <div class="content">
               <div class="head">
@@ -668,13 +668,14 @@ export default {
       .list {
         display: flex;
         font-size: 0.28rem;
-        font-weight: 500;
+        // font-weight: 500;
         color: #606060;
         margin-top: 0.12rem;
 
         .listHead {
           width: 2rem;
           font-size: 0.28rem;
+          font-weight: bold;
         }
 
         .listContent {
@@ -722,12 +723,14 @@ export default {
         margin-top: 0.16rem;
         font-size: 0.24rem;
         font-family: PingFang SC;
-        font-weight: bold;
+        // font-weight: bold;
         color: #303030;
 
         .listHead {
-          width: 1.7rem;
+          width: 2rem;
           font-size: 0.28rem;
+          font-weight: bold;
+
         }
 
         .listContent {

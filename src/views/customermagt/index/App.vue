@@ -674,7 +674,7 @@ text-align: center !important;
       padding: 0.3rem;
       background: #fff;
       border-radius: 0.12rem;
-      box-shadow: 0 0 0.06rem rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 0.04rem rgba(0, 0, 0, 0.3);
       position: relative;
       .level {
         position: absolute;
@@ -706,23 +706,23 @@ text-align: center !important;
           margin-right: 0.12rem;
         }
         .type {
-          font-size: 0.28rem;
-          font-weight: 500;
+          font-size: 0.32rem;
+          // font-weight: 500;
           color: #303030;
         }
       }
       .item_row {
         display: flex;
         align-items: center;
-        // margin-top: 0.3rem;
+        margin-top: 0.1rem;
         .key {
-          font-size: 0.28rem;
-          font-weight: 500;
+          font-size: 0.26rem;
+          // font-weight: 500;
           color: #606060;
         }
         .value {
-          font-size: 0.28rem;
-          font-weight: 500;
+          font-size: 0.26rem;
+          // font-weight: 500;
           color: #606060;
         }
       }

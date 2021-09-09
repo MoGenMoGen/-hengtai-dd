@@ -295,15 +295,27 @@
 				
 				console.log(11111111111);
 				this.api.postWxCheckin(JSON.stringify(this.info)).then(res=>{
-					setTimeout(()=>{
 						this.until.back()
-					})
-					
+
 				})
 				
 				
 			},
 			onSearch123(a){
+			if(a!=""){
+				this.searchoptionsTwo = this.optionsTwo.filter((item) =>
+				  item.content.includes(a)
+				);
+			}
+			else{
+				this.searchoptionsTwo=this.optionsTwo
+			}
+			},
+			handleBuysType(e,v){
+				this.customerType=e.content;
+				this.showPicker123=false;
+			},
+			onSearch1(a){
 				if(a!=""){
 					this.searchoptions = this.options.filter((item) =>
 					  item.content.includes(a)
@@ -312,20 +324,7 @@
 				else{
 					this.searchoptions=this.options
 				}
-			},
-			handleBuysType(e,v){
-				this.customerType=e.content;
-				this.showPicker123=false;
-			},
-			onSearch1(a){
-				if(a!=""){
-					this.searchoptionsTwo = this.optionsTwo.filter((item) =>
-					  item.content.includes(a)
-					);
-				}
-				else{
-					this.searchoptionsTwo=this.optionsTwo
-				}
+			
 			},
 			handleBuysTypeTwo(e,v){
 				this.nature=e.content
@@ -334,7 +333,7 @@
 			onSearch2(a){
 				if(a!=""){
 					this.searchoptionsThree = this.optionsThree.filter((item) =>
-					  item.content.includes(a)
+					  item.arg7.includes(a)
 					);
 				}
 				else{
@@ -381,6 +380,10 @@
 	.van-field__control::placeholder{
 		color: rgb(192,196,204);
 	}
+	.van-cell::after {
+		border-bottom: 0;
+	}
+
 </style>
 
 <style lang="less" scoped>

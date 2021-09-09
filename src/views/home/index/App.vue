@@ -89,14 +89,24 @@ export default {
         this.api.getWxlogin({ code: this.code }).then((res) => {
           this.until.loSave("token", res.data.token);
           this.until.loSave("userInfo", res.data.userInfo);
-          // window.location.replace("/static/wechat/views/home/index.html")
+		  setTimeout(()=>{
+			  this.api.getGetnotread({}).then(res=>{
+			  	console.log(1213,res);
+			  	this.total=res.data
+			  })
+		  },1000)
+		 
+      
         });
       }
     }
-	this.api.getGetnotread({}).then(res=>{
-		console.log(1213,res);
-		this.total=res.data
-	})
+	else{
+		this.api.getGetnotread({}).then(res=>{
+			console.log(1213,res);
+			this.total=res.data
+		})
+	}
+	
   },
   methods: {
     toDetail(url) {
@@ -185,7 +195,8 @@ export default {
             display: inline-block;
 			position: relative;
 			.total{
-				padding: 0.05rem;
+				width: 0.25rem;
+				height: 0.25rem;
 				font-size: 0.18rem;
 				position: absolute;
 				top: 0rem;
@@ -193,8 +204,8 @@ export default {
 				background-color: red;
 				color: #ffffff;
 				text-align: center;
-				line-height: 0.26rem;
-				border-radius: 0.18rem;
+				line-height: 0.25rem;
+				border-radius: 0.125rem;
 			}
             .title {
               font-size: 0.3rem;

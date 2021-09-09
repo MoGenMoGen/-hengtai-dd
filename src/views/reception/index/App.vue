@@ -111,8 +111,10 @@
 		components: {},
 
 		async mounted() {
-		
-		  this.getList()
+			setTimeout(()=>{
+				this.getList()
+			},1000)
+		 
 			window.addEventListener('scroll', this.menu)
 			
 		},

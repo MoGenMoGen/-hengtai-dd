@@ -70,12 +70,12 @@ export default {
   padding-bottom: constant(safe-area-inset-bottom); /*兼容 IOS<11.2*/
   padding-bottom: env(safe-area-inset-bottom); /*兼容 IOS>11.2*/
   background-color: #fff;
-  position: fixed;
-  z-index: 100;
+  // position: fixed;
+  // z-index: 100;
   box-shadow: 0 0 0.1rem rgba(0, 0, 0, 0.3);
-  bottom: 0;
+  // bottom: 0;
   width: 100%;
-  height: 0.99rem;
+  height: 1.2rem;
   justify-content: space-around;
   align-items: center;
   display: flex;

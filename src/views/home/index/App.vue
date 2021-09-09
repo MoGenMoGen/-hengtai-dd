@@ -113,16 +113,13 @@ export default {
 
 #container {
   width: 100%;
-  height: 100%;
   background: @backgroundColor;
-  min-height: 100vh;
-  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   .top {
-    position: fixed;
-    top: 0;
-    bottom: 1.2rem;
+    flex:1;
     overflow-y: scroll;
-    height: auto;
     -webkit-overflow-scrolling: touch; /*这句是为了滑动更顺畅*/
 
     .toptitle {

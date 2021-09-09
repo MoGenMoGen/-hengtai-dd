@@ -1,5 +1,6 @@
 <!-- 互生升首页 -->
 <template>
+
   <div id="container">
     <div class="top">
       <div class="toptitle"></div>
@@ -12,6 +13,9 @@
             <div class="left">
               <img src="~@/assets/img/icon1.png" alt="" class="icon" />
               <div class="text">
+				  <div class="total">
+				  	{{total}}
+				  </div>
                 <div class="title">接待</div>
                 <div class="en">Reception</div>
               </div>
@@ -66,6 +70,7 @@ export default {
   data() {
     return {
       code: "",
+	  total:""
     };
   },
   components: {
@@ -88,6 +93,10 @@ export default {
         });
       }
     }
+	this.api.getGetnotread({}).then(res=>{
+		console.log(1213,res);
+		this.total=res.data
+	})
   },
   methods: {
     toDetail(url) {
@@ -177,7 +186,20 @@ export default {
 
           .text {
             display: inline-block;
-
+			position: relative;
+			.total{
+				width: 0.26rem;
+				height: 0.26rem;
+				font-size: 0.18rem;
+				position: absolute;
+				top: 0rem;
+				right: 0;
+				background-color: red;
+				color: #ffffff;
+				text-align: center;
+				line-height: 0.26rem;
+				border-radius: 0.13rem;
+			}
             .title {
               font-size: 0.3rem;
               font-family: PingFang SC;
@@ -203,3 +225,4 @@ export default {
   }
 }
 </style>
+

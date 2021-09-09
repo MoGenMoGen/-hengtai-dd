@@ -137,7 +137,10 @@
         </div>
         <div class="list">
           <div class="listHead">价格区间:</div>
-          <div class="listContent">
+          <div
+            class="listContent"
+            v-if="buyInfo.data.minPrice && buyInfo.data.maxPrice"
+          >
             {{ buyInfo.data.minPrice }}~{{ buyInfo.data.maxPrice }}万
           </div>
         </div>
@@ -215,7 +218,9 @@
           </div>
         </div>
         <div class="list">
-          <div class="listHead">里程数<span style="font-size:12px">(万公里)</span>:</div>
+          <div class="listHead">
+            里程数<span style="font-size: 12px">(万公里)</span>:
+          </div>
           <div class="listContent">{{ sellInfo.data.mileage }}</div>
         </div>
         <div class="list">
@@ -478,44 +483,46 @@ export default {
     // console.log("相对日期", this.relativeTime);
   },
   async created() {
-    console.log("created");
-    moment.locale("zh-cn");
-    console.log(typeof moment().format("YYYY"));
-    this.id = this.until.getQueryString("id");
-    // 获取详情信息
-    let info = await this.api.getcustomerDetail(this.id);
-    this.userinfo = info.customer;
+    setTimeout(async () => {
+      console.log("created");
+      moment.locale("zh-cn");
+      console.log(typeof moment().format("YYYY"));
+      this.id = this.until.getQueryString("id");
+      // 获取详情信息
+      let info = await this.api.getcustomerDetail(this.id);
+      this.userinfo = info.customer;
 
-    this.sellInfo = info.sell;
-    this.buyInfo = info.buy;
-    console.log("userinfo", this.userinfo);
+      this.sellInfo = info.sell;
+      this.buyInfo = info.buy;
+      console.log("userinfo", this.userinfo);
 
-    // 获取轨迹信息
-    let trailData = await this.api.gettrail(
-      encodeURIComponent(
-        JSON.stringify({
-          w: [{ k: "customerId", v: this.id, m: "EQ" }],
-          o: [{ k: "id", t: "esc" }],
-          p: { n: 1, s: 100 },
-        })
-      )
-    );
-    console.log(111111, trailData);
-    this.trailList = trailData.data.list;
-    this.tabList[0].num = trailData.page.total;
+      // 获取轨迹信息
+      let trailData = await this.api.gettrail(
+        encodeURIComponent(
+          JSON.stringify({
+            w: [{ k: "customerId", v: this.id, m: "EQ" }],
+            o: [{ k: "id", t: "esc" }],
+            p: { n: 1, s: 100 },
+          })
+        )
+      );
+      console.log(111111, trailData);
+      this.trailList = trailData.data.list;
+      this.tabList[0].num = trailData.page.total;
 
-    // 获取订单信息
-    let orderData = await this.api.getorder(
-      encodeURIComponent(
-        JSON.stringify({
-          w: [{ k: "customerId", v: 75, m: "EQ" }],
-          o: [{ k: "id", t: "desc" }],
-          p: { n: 1, s: 10 },
-        })
-      )
-    );
-    this.orderList = orderData.data.list;
-    this.tabList[1].num = orderData.page.total;
+      // 获取订单信息
+      let orderData = await this.api.getorder(
+        encodeURIComponent(
+          JSON.stringify({
+            w: [{ k: "customerId", v: 75, m: "EQ" }],
+            o: [{ k: "id", t: "desc" }],
+            p: { n: 1, s: 10 },
+          })
+        )
+      );
+      this.orderList = orderData.data.list;
+      this.tabList[1].num = orderData.page.total;
+    }, 100);
   },
   methods: {
     back() {
@@ -730,7 +737,6 @@ export default {
           width: 2rem;
           font-size: 0.28rem;
           font-weight: bold;
-
         }
 
         .listContent {

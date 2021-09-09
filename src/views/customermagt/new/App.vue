@@ -1560,7 +1560,7 @@ export default {
     },
     // 上牌日期
     handlelicensedate(e) {
-      this.hssWxBusinessSellRo.licensingTime = moment(e).format("YYYY-MM-DD");
+      this.hssWxBusinessSellRo.licensingTime = moment(e).format("YYYY-MM-DD HH:mm:ss");
       this.showPicker11 = false;
     },
     // 老客户介绍人
@@ -1577,7 +1577,7 @@ export default {
     },
     // 生日
     handlebirthday(e) {
-      this.hssWxCustomerRo.birthday = moment(e).format("YYYY-MM-DD");
+      this.hssWxCustomerRo.birthday = moment(e).format("YYYY-MM-DD HH:mm:ss");
       this.showPicker13 = false;
     },
     async save() {
@@ -1685,24 +1685,6 @@ export default {
       console.log(1818);
       // 修改客户需求
       if (this.cusid) {
-        let data = await this.api.commitNewCustomer({
-          hssWxCustomerRo: this.hssWxCustomerRo,
-          hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
-          hssWxBusinessSellRo: this.hssWxBusinessSellRo,
-        });
-        if (data.code == 0) {
-          console.log(2020);
-
-          Toast("保存成功");
-          this.until.back();
-          location.reload(); 
-        } else {
-          console.log(2121);
-          Toast("保存失败");
-        }
-      }
-      // 新增客户
-      else {
         let data = await this.api.modifyCustomer({
           hssWxCustomerRo: this.hssWxCustomerRo,
           hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
@@ -1713,7 +1695,23 @@ export default {
 
           Toast("保存成功");
           this.until.back();
-          location.reload(); 
+        } else {
+          console.log(2121);
+          Toast("保存失败");
+        }
+      }
+      // 新增客户
+      else {
+        let data = await this.api.commitNewCustomer({
+          hssWxCustomerRo: this.hssWxCustomerRo,
+          hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
+          hssWxBusinessSellRo: this.hssWxBusinessSellRo,
+        });
+        if (data.code == 0) {
+          console.log(2020);
+
+          Toast("保存成功");
+          this.until.back();
 
         } else {
           console.log(2121);
@@ -1847,7 +1845,7 @@ export default {
     // 处理确定跟进时间
     handlefollowConfirm(e) {
       this.momentNextFollowUpTime = moment(e).format("YYYY-MM-DD dddd HH:mm");
-      this.hssWxCustomerRo.nextFollowUpTime = e;
+      this.hssWxCustomerRo.nextFollowUpTime = moment(e).format("YYYY-MM-DD HH:mm:ss");
       this.showfollowtime = false;
     },
     // 跳到品牌列表页

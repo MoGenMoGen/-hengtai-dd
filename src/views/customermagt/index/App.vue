@@ -44,7 +44,7 @@
           </div>
           <div class="row2">
             <van-field
-              style="padding: 0;text-align:center;"
+              style="padding: 0; text-align: center"
               class="input bg leftpart"
               readonly
               label=""
@@ -70,7 +70,7 @@
             </van-popup>
 
             <van-field
-              style="padding: 0;text-align:center;"
+              style="padding: 0; text-align: center"
               class="input bg centerpart"
               readonly
               label=""
@@ -96,7 +96,7 @@
             </van-popup>
 
             <van-field
-              style="padding: 0;text-align:center;"
+              style="padding: 0; text-align: center"
               class="input bg rightpart"
               readonly
               label=""
@@ -123,7 +123,7 @@
           </div>
           <div class="row3">
             <van-field
-              style="padding: 0;text-align:center;"
+              style="padding: 0; text-align: center"
               class="picker son leftpart bg"
               readonly
               label=""
@@ -142,7 +142,7 @@
             </van-popup>
             <!-- 结束日期 -->
             <van-field
-              style="padding: 0;text-align:center;"
+              style="padding: 0; text-align: center"
               class="picker son rightpart bg"
               readonly
               label=""
@@ -302,10 +302,9 @@ export default {
     maxEtdate() {
       if (this.info.beginFollowUpTime != "")
         return new Date(this.info.beginFollowUpTime);
-        
-      return new Date(moment().add(10, 'years'));
-      // return new Date(moment().add(20, 'days'));
 
+      return new Date(moment().add(10, "years"));
+      // return new Date(moment().add(20, 'days'));
     },
     minEtdate() {
       return new Date();
@@ -369,22 +368,24 @@ export default {
   methods: {
     // 上拉加载
     handleLoad() {
-      if (this.isfirstload) {
-        // 页码不增加
-        this.getList(this.info);
-        this.isfirstload = false;
-        this.loading = false;
-      } else {
-        if (this.total > this.customerList.length) {
-          this.info.pageNo += 1;
+      setTimeout(() => {
+        if (this.isfirstload) {
+          // 页码不增加
           this.getList(this.info);
+          this.isfirstload = false;
           this.loading = false;
         } else {
-          this.loading = false;
+          if (this.total > this.customerList.length) {
+            this.info.pageNo += 1;
+            this.getList(this.info);
+            this.loading = false;
+          } else {
+            this.loading = false;
 
-          this.finished = true;
+            this.finished = true;
+          }
         }
-      }
+      }, 100);
     },
     // 处理公共字段参数生成qry(使用query.js)
     newqry(obj) {
@@ -500,7 +501,7 @@ export default {
   border-bottom: none;
 }
 .van-field__control {
-text-align: center !important;
+  text-align: center !important;
 }
 
 .el-input__inner {

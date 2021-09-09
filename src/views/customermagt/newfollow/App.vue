@@ -866,7 +866,7 @@ export default {
       this.showfollowtime1 = false;
     },
     handlefollowConfirm2(e) {
-      this.info.hssWxFollowupRo.nextFollowUpTime = e;
+      this.info.hssWxFollowupRo.nextFollowUpTime = moment(e).format("YYYY-MM-DD HH:mm:ss");
       this.momentNextFollowUpTime = moment(e).format("YYYY-MM-DD dddd HH:mm");
       this.showfollowtime2 = false;
     },

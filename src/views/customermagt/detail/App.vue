@@ -322,7 +322,7 @@
           <el-timeline-item
             v-for="(item, index) in trailList"
             :key="index"
-            :color="activeColor(item.nextFollowUpTime)"
+            :color="trailList.length-1!=index?'#09c076':''"
           >
             <div class="content">
               <div class="head">
@@ -377,7 +377,7 @@
           <el-timeline-item
             v-for="(item, index) in orderList"
             :key="index"
-            :color="activeColor(item.crtTm)"
+            color="#09c076"
           >
             <div class="content">
               <div class="head">

@@ -64,6 +64,19 @@
             {{ userinfo.data.saler }}
           </div>
         </div>
+        <div class="list" v-if="userinfo.data.intentionLevelInfo==10||userinfo.data.intentionLevelInfo==9">
+          <div class="listHead" v-if="userinfo.data.intentionLevelInfo==10">无效原因:</div>
+          <div class="listHead" v-else-if="userinfo.data.intentionLevelInfo==9">战败原因:</div>
+          <div class="listContent">
+            {{ userinfo.data.supplement }}
+          </div>
+        </div>
+         <div class="list" v-if="userinfo.data.intentionLevelInfo==10&&userinfo.data.supplement=='其他'">
+          <div class="listHead">其他原因:</div>
+          <div class="listContent">
+            {{ userinfo.data.supplementInfo }}
+          </div>
+        </div>
         <div class="list">
           <div class="listHead">最近跟进时间:</div>
           <div class="listContent">
@@ -477,17 +490,63 @@ export default {
         return "";
       };
     },
+  
   },
   async mounted() {
     console.log("mounted");
     // console.log("相对日期", this.relativeTime);
   },
   async created() {
-    setTimeout(async () => {
-      console.log("created");
-      moment.locale("zh-cn");
-      console.log(typeof moment().format("YYYY"));
-      this.id = this.until.getQueryString("id");
+    // setTimeout(async () => {
+    // console.log("created");
+    moment.locale("zh-cn");
+    // console.log(typeof moment().format("YYYY"));
+    this.id = this.until.getQueryString("id");
+    this.getList();
+
+    // // 获取详情信息
+    // let info = await this.api.getcustomerDetail(this.id);
+    // this.userinfo = info.customer;
+
+    // this.sellInfo = info.sell;
+    // this.buyInfo = info.buy;
+    // console.log("userinfo", this.userinfo);
+
+    // // 获取轨迹信息
+    // let trailData = await this.api.gettrail(
+    //   encodeURIComponent(
+    //     JSON.stringify({
+    //       w: [{ k: "customerId", v: this.id, m: "EQ" }],
+    //       o: [{ k: "id", t: "esc" }],
+    //       p: { n: 1, s: 100 },
+    //     })
+    //   )
+    // );
+    // console.log(111111, trailData);
+    // this.trailList = trailData.data.list;
+    // this.tabList[0].num = trailData.page.total;
+
+    // // 获取订单信息
+    // let orderData = await this.api.getorder(
+    //   encodeURIComponent(
+    //     JSON.stringify({
+    //       w: [{ k: "customerId", v: 75, m: "EQ" }],
+    //       o: [{ k: "id", t: "desc" }],
+    //       p: { n: 1, s: 10 },
+    //     })
+    //   )
+    // );
+    // this.orderList = orderData.data.list;
+    // this.tabList[1].num = orderData.page.total;
+    // }, 100);
+    // 返回刷新
+    window.onpageshow = () => {
+      console.log("返回刷新32423");
+      this.getList();
+    };
+  },
+  methods: {
+    async getList() {
       // 获取详情信息
       let info = await this.api.getcustomerDetail(this.id);
       this.userinfo = info.customer;
@@ -522,9 +581,7 @@ export default {
       );
       this.orderList = orderData.data.list;
       this.tabList[1].num = orderData.page.total;
-    }, 100);
-  },
-  methods: {
+    },
     back() {
       // window.location.go(-1);     //返回上一页并刷新
 

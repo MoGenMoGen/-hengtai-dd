@@ -452,6 +452,24 @@ class api {
         })
 
     }
+    // 获取意愿战败原因
+    getReasonFordefeat(data) {
+        return new Promise((resolve, reject) => {
+            get(' /hss/wxCommonfield/page?query='+data).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    // 获取意愿无效原因
+    getReasonForinvalid(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query='+data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
     //买车买车回复提交
     postWxCommunicate(data) {
         return new Promise(resolve => {

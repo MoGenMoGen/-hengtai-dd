@@ -60,7 +60,7 @@
         <div class="intent_level_list">
           <div
             class="intent_level_item"
-            @click="info.hssWxFollowupRo.intentionLevel = item.id"
+            @click="handlechecklevel(item)"
             v-for="item in intentLevelList"
             :key="item.id"
             :class="{
@@ -73,6 +73,55 @@
         </div>
       </div>
       <!-- 意向等级结束 -->
+      <!-- 无效/战败原因开始 -->
+      <div class="row" v-if="showInvalid == 1 || showInvalid == 2">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle" v-if="showInvalid == 2">无效原因</div>
+          <div class="rowtitle" v-if="showInvalid == 1">战败原因</div>
+        </div>
+
+        <van-field
+          @click="showPicker3 = true"
+          class="van_field"
+          readonly
+          label=""
+          v-model="info.hssWxFollowupRo.supplement"
+          placeholder="请选择原因"
+        />
+
+        <van-popup
+          v-model="showPicker3"
+          round
+          position="bottom"
+          @open="getReasons"
+        >
+          <van-picker
+            value-key="content"
+            show-toolbar
+            :columns="Reasons"
+            @cancel="showPicker3 = false"
+            @confirm="handleReasons"
+          />
+        </van-popup>
+      </div>
+      <div class="row" v-if="showInvalidDetail">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">其他无效原因</div>
+        </div>
+
+        <van-field
+          class="van_field"
+          label=""
+          v-model="info.hssWxFollowupRo.supplementInfo"
+          placeholder="请输入无效原因"
+        />
+      </div>
+
+      <!-- 无效/战败原因结束 -->
       <!-- 沟通方式开始 -->
       <div class="intent_level">
         <div class="row" style="border: none">
@@ -273,7 +322,7 @@
     <!-- 更多品牌弹窗 结束 -->
     <!-- 买车需求开始 -->
     <div class="textbox">
-      <div class="texttitle">买车需求</div>
+      <div class="texttitle">求购</div>
     </div>
     <div class="buyneeds">
       <div class="row" @click="showmorebrand = true">
@@ -597,7 +646,7 @@
           </div>
         </div>
       </div>
-      <div class="row" style="align-items: center">
+      <div class="row" style="align-items: center" v-if="showfollow">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder"></div>
@@ -643,6 +692,9 @@ export default {
       hideshow: true, // 显示或者隐藏保存按钮,
       id: "",
       albums: [],
+
+      // 显示无效/战败
+      showPicker3: false,
       // 买车车系搜索列表、搜索值、是否显示picker
       searchBcarseries: [],
       search6: "",
@@ -677,6 +729,8 @@ export default {
           receptionDuration: "", //接待时长
           nextFollowUpTime: "", //下次跟进时间
           intentionLevel: "", //意向等级
+          supplement: "", //战败/无效原因
+          supplementInfo: "", //其他无效原因
           business: "",
         }, //跟进信息
         hssWxBusinessBuyRo: {
@@ -719,6 +773,7 @@ export default {
       albums: [],
       // 沟通意向等级
       intentLevelList: [],
+      Reasons: [], //无效/战败列表
       // 沟通下次跟进时间
       followdate1: "",
       // 汽车品牌弹窗列表
@@ -769,6 +824,37 @@ export default {
     },
     maxdateleft() {
       return new Date(moment().endOf("day").format());
+    },
+    // 是否显示跟进时间(战败、无效，不显示)
+    showfollow() {
+      let index = this.intentLevelList.findIndex(
+        (item) => item.id == this.info.hssWxFollowupRo.intentionLevel
+      );
+
+      if (
+        index >= 0 &&
+        (this.intentLevelList[index].outside >= 9 ||
+          this.intentLevelList[index].outside == 1)
+      )
+        return false;
+      return true;
+    },
+    // 显示战败/无效原因
+    showInvalid() {
+      let index = this.intentLevelList.findIndex(
+        (item) => item.id == this.info.hssWxFollowupRo.intentionLevel
+      );
+      // 无效
+      if (index >= 0 && this.intentLevelList[index].outside == 10) return 2;
+      // 战败
+      else if (index >= 0 && this.intentLevelList[index].outside == 9) return 1;
+      // 其他
+      return 0;
+    },
+    // 其他无效原因
+    showInvalidDetail() {
+      if (this.info.hssWxFollowupRo.supplement != "其他") return false;
+      return true;
     },
   },
   watch: {
@@ -866,7 +952,9 @@ export default {
       this.showfollowtime1 = false;
     },
     handlefollowConfirm2(e) {
-      this.info.hssWxFollowupRo.nextFollowUpTime = moment(e).format("YYYY-MM-DD HH:mm:ss");
+      this.info.hssWxFollowupRo.nextFollowUpTime = moment(e).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
       this.momentNextFollowUpTime = moment(e).format("YYYY-MM-DD dddd HH:mm");
       this.showfollowtime2 = false;
     },
@@ -986,6 +1074,42 @@ export default {
         );
       else this.searchBcartypes = this.Bcartypes;
     },
+    // 选择意向等级
+    handlechecklevel(item) {
+      this.info.hssWxFollowupRo.intentionLevel = item.id;
+      // 清空无效/战败原因
+        this.info.hssWxFollowupRo.supplement = '';
+      // 清空其他无效原因
+      this.info.hssWxFollowupRo.supplementInfo = '';
+    },
+    // 获取战败/无效原因
+    async getReasons() {
+      let qry = {};
+      // 战败
+      if (this.showInvalid == 1)
+        qry = {
+          w: [{ k: "category", v: 11, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 10 },
+        };
+      // 无效
+      else if (this.showInvalid == 2)
+        qry = {
+          w: [{ k: "category", v: 12, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 10 },
+        };
+      this.Reasons = await this.api.getReasonForinvalid(
+        encodeURIComponent(JSON.stringify(qry))
+      );
+    },
+    // 选择战败、无效原因
+    handleReasons(e) {
+      this.info.hssWxFollowupRo.supplement = e.content;
+      // 清空其他无效原因
+      this.info.hssWxFollowupRo.supplementInfo = '';
+      this.showPicker3 = false;
+    },
     async save() {
       // 数据校验开始
       // 必填项
@@ -1013,7 +1137,7 @@ export default {
         return false;
       }
 
-      if (this.info.hssWxFollowupRo.intentionLevel == "") {
+      if (this.info.hssWxFollowupRo.intentionLevel == "" && this.showfollow) {
         Toast("请选择意向等级");
         return false;
       }

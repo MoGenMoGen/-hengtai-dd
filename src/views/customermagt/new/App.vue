@@ -41,7 +41,7 @@
       <div class="row shopbox">
         <!-- 占位符 -->
         <div style="display: flex">
-          <div class="placeholder"></div>
+          <div class="placeholder">*</div>
           <div class="rowtitle">销售</div>
         </div>
 
@@ -397,7 +397,7 @@
     <!-- 更多品牌弹窗 结束 -->
     <!-- 买车需求开始 -->
     <div class="textbox">
-      <div class="texttitle">买车需求</div>
+      <div class="texttitle">求购</div>
     </div>
     <div class="buyneeds">
       <div class="row" @click="showmorebuybrand = true">
@@ -717,7 +717,50 @@
         </div>
       </div>
       <!-- 意向等级结束 -->
-      <div class="row">
+      <!-- 无效原因开始 -->
+      <div class="row" v-if="showInvalid">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">无效原因</div>
+        </div>
+
+        <van-field
+          @click="showPicker3 = true"
+          class="van_field"
+          readonly
+          label=""
+          v-model="hssWxCustomerRo.supplement"
+          placeholder="请选择无效原因"
+        />
+
+        <van-popup v-model="showPicker3" round position="bottom">
+          <van-picker
+            value-key="content"
+            show-toolbar
+            :columns="InvalidReasons"
+            @cancel="showPicker3 = false"
+            @confirm="handleInvalidRea"
+          />
+        </van-popup>
+      </div>
+      <div class="row" v-if="showInvalidDetail">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">其他原因</div>
+        </div>
+
+        <van-field
+          class="van_field"
+          label=""
+          v-model="hssWxCustomerRo.supplementInfo"
+          placeholder="请输入无效原因"
+        />
+      </div>
+
+      <!-- 无效原因结束 -->
+      <div class="row" v-if="showBtype">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder"></div>
@@ -740,7 +783,8 @@
           </div>
         </div>
       </div>
-      <div class="row" style="align-items: center">
+
+      <div class="row" style="align-items: center" v-if="showfollow">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder">*</div>
@@ -770,13 +814,13 @@
     <!-- 买车需求结束 -->
     <!-- 卖车需求开始 -->
     <div class="textbox">
-      <div class="texttitle">卖车需求</div>
+      <div class="texttitle">寄卖</div>
     </div>
     <div class="row">
       <!-- 占位符 -->
       <div style="display: flex">
         <div class="placeholder"></div>
-        <div class="rowtitle">卖车需求</div>
+        <div class="rowtitle">寄卖</div>
       </div>
       <div class="row_radio">
         <div class="radiobox" @click="hssWxCustomerRo.isSell = 0">
@@ -1015,43 +1059,45 @@
         </div>
       </div>
       <!-- 卖车需求结束 -->
-      <!-- 更多信息开始 -->
-      <div class="textbox">
-        <div class="texttitle">更多信息</div>
-      </div>
-      <div class="moreinfobox">
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">老客户介绍人</div>
-          </div>
-          <van-field
-            @click="showPicker12 = true"
-            class="van_field"
-            readonly
-            clickable
-            label=""
-            v-model="hssWxCustomerRo.introducer"
-            placeholder="请选择介绍人"
+    </div>
+
+    <!-- 更多信息开始 -->
+    <div class="textbox">
+      <div class="texttitle">更多信息</div>
+    </div>
+    <div class="moreinfobox">
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">老客户介绍人</div>
+        </div>
+        <van-field
+          @click="showPicker12 = true"
+          class="van_field"
+          readonly
+          clickable
+          label=""
+          v-model="hssWxCustomerRo.introducer"
+          placeholder="请选择介绍人"
+        />
+        <van-popup v-model="showPicker12" round position="bottom">
+          <van-search
+            v-model="search12"
+            shape="round"
+            background="#09c076"
+            @input="onSearch12"
+            placeholder="请输入搜索关键词"
           />
-          <van-popup v-model="showPicker12" round position="bottom">
-            <van-search
-              v-model="search12"
-              shape="round"
-              background="#09c076"
-              @input="onSearch12"
-              placeholder="请输入搜索关键词"
-            />
-            <van-picker
-              value-key="name"
-              show-toolbar
-              :columns="searchintroducers"
-              @cancel="showPicker12 = false"
-              @confirm="handleintroducers"
-            />
-          </van-popup>
-          <!-- <el-select
+          <van-picker
+            value-key="name"
+            show-toolbar
+            :columns="searchintroducers"
+            @cancel="showPicker12 = false"
+            @confirm="handleintroducers"
+          />
+        </van-popup>
+        <!-- <el-select
             filterable
             clearable
             v-model="hssWxCustomerRo.introducer"
@@ -1066,193 +1112,192 @@
             >
             </el-option>
           </el-select> -->
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">备用号</div>
         </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">备用号</div>
-          </div>
-          <div class="row_between">
-            <van-field
-              type="digit"
-              class="van_field"
-              label=""
-              v-model="hssWxCustomerRo.sparePhone"
-              placeholder="请输入备用号"
-              maxlength="11"
-            />
-            <!-- <el-input
+        <div class="row_between">
+          <van-field
+            type="digit"
+            class="van_field"
+            label=""
+            v-model="hssWxCustomerRo.sparePhone"
+            placeholder="请输入备用号"
+            maxlength="11"
+          />
+          <!-- <el-input
               style="width: 3rem"
               v-model="hssWxCustomerRo.sparePhone"
               type="number"
               oninput="if(value.length>11)value=value.slice(0,11)"
               placeholder="请输入"
             ></el-input> -->
-            <!-- <span style="color: #09c076">通讯录匹配</span> -->
-          </div>
+          <!-- <span style="color: #09c076">通讯录匹配</span> -->
         </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">身份证号</div>
-          </div>
-          <van-field
-            class="van_field"
-            label=""
-            v-model="hssWxCustomerRo.idcard"
-            placeholder="请输入身份证号"
-            maxlength="18"
-          />
-          <!-- <el-input
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">身份证号</div>
+        </div>
+        <van-field
+          class="van_field"
+          label=""
+          v-model="hssWxCustomerRo.idcard"
+          placeholder="请输入身份证号"
+          maxlength="18"
+        />
+        <!-- <el-input
             v-model="hssWxCustomerRo.idcard"
             type="text"
             maxlength="18"
             placeholder="请输入"
             style="flex: 1"
           ></el-input> -->
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">生日</div>
         </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">生日</div>
-          </div>
-          <van-field
-            class="van_field"
-            readonly
-            clickable
-            label=""
-            v-model="hssWxCustomerRo.birthday"
-            placeholder="请选择生日"
-            @click="showPicker13 = true"
+        <van-field
+          class="van_field"
+          readonly
+          clickable
+          label=""
+          v-model="hssWxCustomerRo.birthday"
+          placeholder="请选择生日"
+          @click="showPicker13 = true"
+        />
+        <van-popup v-model="showPicker13" round position="bottom">
+          <van-datetime-picker
+            class="followdatepicker"
+            type="date"
+            title="选择完整时间"
+            :min-date="minDate2"
+            v-model="currentbirthdayDate"
+            @cancel="showPicker13 = false"
+            @confirm="handlebirthday"
           />
-          <van-popup v-model="showPicker13" round position="bottom">
-            <van-datetime-picker
-              class="followdatepicker"
-              type="date"
-              title="选择完整时间"
-              :min-date="minDate2"
-              v-model="currentbirthdayDate"
-              @cancel="showPicker13 = false"
-              @confirm="handlebirthday"
-            />
-          </van-popup>
-          <!-- <el-date-picker
+        </van-popup>
+        <!-- <el-date-picker
             v-model="hssWxCustomerRo.birthday"
             type="date"
             placeholder="请选择"
           >
           </el-date-picker> -->
-        </div>
-        <div class="row" style="padding-right: 0.24rem">
-          <!-- 占位符 -->
-          <div style="display: flex; align-items: center">
-            <div class="placeholder"></div>
-            <div class="rowtitle">所在地</div>
-          </div>
-
-          <van-field
-            class="row_between van_field"
-            v-model="hssWxCustomerRo.location"
-            readonly
-            label=""
-            placeholder="请选择所在地区"
-            @click="showlocation = true"
-          />
-          <van-popup v-model="showlocation" round position="bottom">
-            <van-cascader
-              v-model="cascaderValue1"
-              title="请选择所在地区"
-              :options="locations"
-              :field-names="{ text: 'nm', value: 'id' }"
-              active-color="#09C076"
-              @close="showlocation = false"
-              @change="changelocations"
-              @finish="onFinishlocation"
-            />
-          </van-popup>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">联系地址</div>
-          </div>
-          <van-field
-            class="van_field"
-            label=""
-            v-model="hssWxCustomerRo.contactAddress"
-            placeholder="请输入联系地址"
-            maxlength="18"
-          />
-          <!-- <el-input
-            v-model="hssWxCustomerRo.contactAddress"
-            type="text"
-            maxlength="18"
-            placeholder="请输入"
-            style="flex: 1"
-          ></el-input> -->
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">兴趣</div>
-          </div>
-          <van-field
-            class="van_field"
-            label=""
-            v-model="hssWxCustomerRo.hobby"
-            placeholder="请输入兴趣"
-            maxlength="18"
-          />
-          <!-- <el-input
-            v-model="hssWxCustomerRo.hobby"
-            type="text"
-            maxlength="18"
-            placeholder="请输入"
-            style="flex: 1"
-          ></el-input> -->
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">职业</div>
-          </div>
-          <van-field
-            class="van_field"
-            label=""
-            v-model="hssWxCustomerRo.occupation"
-            placeholder="请输入职业"
-            maxlength="18"
-          />
-          <!-- <el-input
-            v-model="hssWxCustomerRo.occupation"
-            type="text"
-            maxlength="18"
-            placeholder="请输入"
-            style="flex: 1"
-          ></el-input> -->
-        </div>
-
-        <div class="albums">
-          <div class="album_title">相册</div>
-          <van-uploader
-            style="flex: 1"
-            preview-size="1.5rem"
-            :after-read="afterRead"
-            :before-delete="beforeDel"
-            v-model="albums"
-            multiple="true"
-          />
-          <van-loading v-if="isvanloading" type="spinner" class="van_loading" />
-        </div>
       </div>
-      <!-- 更多信息结束-->
+      <div class="row" style="padding-right: 0.24rem">
+        <!-- 占位符 -->
+        <div style="display: flex; align-items: center">
+          <div class="placeholder"></div>
+          <div class="rowtitle">所在地</div>
+        </div>
+
+        <van-field
+          class="row_between van_field"
+          v-model="hssWxCustomerRo.location"
+          readonly
+          label=""
+          placeholder="请选择所在地区"
+          @click="showlocation = true"
+        />
+        <van-popup v-model="showlocation" round position="bottom">
+          <van-cascader
+            v-model="cascaderValue1"
+            title="请选择所在地区"
+            :options="locations"
+            :field-names="{ text: 'nm', value: 'id' }"
+            active-color="#09C076"
+            @close="showlocation = false"
+            @change="changelocations"
+            @finish="onFinishlocation"
+          />
+        </van-popup>
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">联系地址</div>
+        </div>
+        <van-field
+          class="van_field"
+          label=""
+          v-model="hssWxCustomerRo.contactAddress"
+          placeholder="请输入联系地址"
+          maxlength="18"
+        />
+        <!-- <el-input
+            v-model="hssWxCustomerRo.contactAddress"
+            type="text"
+            maxlength="18"
+            placeholder="请输入"
+            style="flex: 1"
+          ></el-input> -->
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">兴趣</div>
+        </div>
+        <van-field
+          class="van_field"
+          label=""
+          v-model="hssWxCustomerRo.hobby"
+          placeholder="请输入兴趣"
+          maxlength="18"
+        />
+        <!-- <el-input
+            v-model="hssWxCustomerRo.hobby"
+            type="text"
+            maxlength="18"
+            placeholder="请输入"
+            style="flex: 1"
+          ></el-input> -->
+      </div>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">职业</div>
+        </div>
+        <van-field
+          class="van_field"
+          label=""
+          v-model="hssWxCustomerRo.occupation"
+          placeholder="请输入职业"
+          maxlength="18"
+        />
+        <!-- <el-input
+            v-model="hssWxCustomerRo.occupation"
+            type="text"
+            maxlength="18"
+            placeholder="请输入"
+            style="flex: 1"
+          ></el-input> -->
+      </div>
+
+      <div class="albums">
+        <div class="album_title">相册</div>
+        <van-uploader
+          style="flex: 1"
+          preview-size="1.5rem"
+          :after-read="afterRead"
+          :before-delete="beforeDel"
+          v-model="albums"
+          multiple="true"
+        />
+        <van-loading v-if="isvanloading" type="spinner" class="van_loading" />
+      </div>
     </div>
+    <!-- 更多信息结束-->
     <div class="btn_save" @click="save" v-show="hideshow">保存</div>
   </div>
 </template>
@@ -1276,6 +1321,9 @@ export default {
       searchsalers: [],
       search2: "",
       showPicker2: false,
+      // 无效原因列表
+      showPicker3: false,
+      InvalidReasons: [],
       // 客户性质搜索列表、搜索值、是否显示picker
       searchcustypeList: [],
       search4: "",
@@ -1369,7 +1417,9 @@ export default {
         business: "", //(购买类型)1增购，2置换，3求购
         nextFollowUpTime: "", //下次跟进时间
         intentionLevel: "", //意向等级（保存意向等级id）
-        isSell: true, //是否卖车
+        supplement:'',//无效原因
+        supplementInfo:'',//其他无效原因
+        isSell: 0, //是否卖车
         pic: "",
       }, //用户信息
       hssWxBusinessBuyRo: {
@@ -1443,7 +1493,9 @@ export default {
       Bcartypes: [],
       // 价格区间列表
       priceList: [],
+      // 意向等级列表
       intentLevelList: [],
+
       SbrandList: [],
       // 车系列表
       Scarseries: [],
@@ -1457,6 +1509,48 @@ export default {
   computed: {
     showmorebrand() {
       return this.showmorebuybrand == true || this.showmoresellbrand == true;
+    },
+    // 是否显示购买类型(意向等级O成交、j、s、p、无效，不显示)
+    showBtype() {
+      let index = this.intentLevelList.findIndex(
+        (item) => item.id == this.hssWxCustomerRo.intentionLevel
+      );
+
+      if (
+        index >= 0 &&
+        (this.intentLevelList[index].outside >= 6 ||
+          this.intentLevelList[index].outside == 1)
+      )
+        return false;
+      return true;
+    },
+    // 是否显示跟进时间(O成交、战败、无效，不显示)
+    showfollow() {
+      let index = this.intentLevelList.findIndex(
+        (item) => item.id == this.hssWxCustomerRo.intentionLevel
+      );
+
+      if (
+        index >= 0 &&
+        (this.intentLevelList[index].outside >= 9 ||
+          this.intentLevelList[index].outside == 1)
+      )
+        return false;
+      return true;
+    },
+    // 显示无效原因
+    showInvalid() {
+      let index = this.intentLevelList.findIndex(
+        (item) => item.id == this.hssWxCustomerRo.intentionLevel
+      );
+      if (index >= 0 && this.intentLevelList[index].outside == 10) return true;
+      return false;
+    },
+    // 其他无效原因
+    showInvalidDetail() {
+      if (this.hssWxCustomerRo.supplement != "其他") 
+      return false;
+        return true;
     },
   },
   watch: {
@@ -1476,6 +1570,49 @@ export default {
       } else {
         // 键盘不弹出操作
         this.hideshow = true;
+      }
+    },
+    // 监听意向等级变化设置默认下次跟进时间
+    "hssWxCustomerRo.intentionLevel"() {
+      let index = this.intentLevelList.findIndex(
+        (item) => item.id == this.hssWxCustomerRo.intentionLevel
+      );
+      let outside = this.intentLevelList[index].outside;
+      // 意向等级outside,按顺序值1-10，对应O、K、A···
+      // 1：意向及跟进时间不用选择，2：24小时内跟进，3：每3天内跟进，4：每7天内跟进，5：每30天内跟进，6、7、8：购买类型固定，9战败，10无效
+      if (index >= 0) {
+        if (outside == 2) {
+          this.momentNextFollowUpTime = moment()
+            .add(1, "d")
+            .format("YYYY-MM-DD dddd HH:mm");
+          this.hssWxCustomerRo.nextFollowUpTime = moment()
+            .add(1, "d")
+            .format("YYYY-MM-DD HH:mm:ss");
+        } else if (outside == 3) {
+          this.momentNextFollowUpTime = moment()
+            .add(3, "d")
+            .format("YYYY-MM-DD dddd HH:mm");
+          this.hssWxCustomerRo.nextFollowUpTime = moment()
+            .add(3, "d")
+            .format("YYYY-MM-DD HH:mm:ss");
+        } else if (outside == 4) {
+          this.momentNextFollowUpTime = moment()
+            .add(7, "d")
+            .format("YYYY-MM-DD dddd HH:mm");
+          this.hssWxCustomerRo.nextFollowUpTime = moment()
+            .add(7, "d")
+            .format("YYYY-MM-DD HH:mm:ss");
+        } else if (outside == 5) {
+          this.momentNextFollowUpTime = moment()
+            .add(30, "d")
+            .format("YYYY-MM-DD dddd HH:mm");
+          this.hssWxCustomerRo.nextFollowUpTime = moment()
+            .add(30, "d")
+            .format("YYYY-MM-DD HH:mm:ss");
+        } else {
+          this.momentNextFollowUpTime = "";
+          this.hssWxCustomerRo.nextFollowUpTime = "";
+        }
       }
     },
   },
@@ -1501,6 +1638,12 @@ export default {
     handleSaler(e) {
       this.hssWxCustomerRo.saler = e.arg7;
       this.showPicker2 = false;
+    },
+    // 无效原因
+    handleInvalidRea(e) {
+      this.hssWxCustomerRo.supplement = e.content;
+      console.log(this.hssWxCustomerRo.supplement);
+      this.showPicker3 = false;
     },
     // 客户性质
     onSearch4(a) {
@@ -1560,7 +1703,9 @@ export default {
     },
     // 上牌日期
     handlelicensedate(e) {
-      this.hssWxBusinessSellRo.licensingTime = moment(e).format("YYYY-MM-DD HH:mm:ss");
+      this.hssWxBusinessSellRo.licensingTime = moment(e).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
       this.showPicker11 = false;
     },
     // 老客户介绍人
@@ -1588,6 +1733,11 @@ export default {
         console.log(22);
 
         Toast("门店不能为空");
+        return false;
+      } else if (this.hssWxCustomerRo.saler == "") {
+        console.log(212);
+
+        Toast("销售不能为空");
         return false;
       } else if (this.hssWxCustomerRo.sex == "") {
         console.log(33);
@@ -1623,7 +1773,10 @@ export default {
 
         Toast("意向等级不能为空");
         return false;
-      } else if (this.hssWxCustomerRo.nextFollowUpTime == "") {
+      } else if (
+        this.hssWxCustomerRo.nextFollowUpTime == "" &&
+        this.showfollow
+      ) {
         console.log(99);
 
         Toast("下次跟进时间不能为空");
@@ -1712,7 +1865,6 @@ export default {
 
           Toast("保存成功");
           this.until.back();
-
         } else {
           console.log(2121);
           Toast("保存失败");
@@ -1845,7 +1997,9 @@ export default {
     // 处理确定跟进时间
     handlefollowConfirm(e) {
       this.momentNextFollowUpTime = moment(e).format("YYYY-MM-DD dddd HH:mm");
-      this.hssWxCustomerRo.nextFollowUpTime = moment(e).format("YYYY-MM-DD HH:mm:ss");
+      this.hssWxCustomerRo.nextFollowUpTime = moment(e).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
       this.showfollowtime = false;
     },
     // 跳到品牌列表页
@@ -2103,6 +2257,22 @@ export default {
     this.intentLevelList = await this.api.getWxIntentionLevel({
       p: { n: 1, s: 20 },
     });
+    // 新增中去掉无效
+    this.intentLevelList = this.intentLevelList.filter(
+      (item) => item.content != "战败"
+    );
+    // 无效原因
+    this.InvalidReasons = await this.api.getReasonForinvalid(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 12, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 10 },
+        })
+      )
+    );
+    console.log(1111111, this.InvalidReasons);
+
     // 获取八个常用车标
     let BbrandList = await this.api.getCommonCarIcon();
     this.BbrandList = JSON.parse(BbrandList);
@@ -2509,7 +2679,7 @@ export default {
       .intent_level_list {
         padding: 0px 0.48rem 0px 0.48rem;
         display: flex;
-        justify-content: space-between;
+        // justify-content: space-between;
         flex-wrap: wrap;
         .intent_level_item {
           margin-bottom: 0.3rem;

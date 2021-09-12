@@ -133,6 +133,7 @@
             />
             <van-popup v-model="showPicker5" round position="bottom">
               <van-datetime-picker
+                v-model="currentDate"
                 type="date"
                 title="选择开始日期"
                 @confirm="startTimeChange"
@@ -151,6 +152,7 @@
             />
             <van-popup v-model="showPicker6" round position="bottom">
               <van-datetime-picker
+                v-model="currentDate"
                 type="date"
                 @confirm="endTimeChange"
                 @cancel="showPicker6 = false"
@@ -226,6 +228,9 @@ export default {
       defaultHeight: "0", // 默认屏幕高度
       showHeight: 0, // 实时屏幕高度
       hideshow: true, // 显示或者隐藏保存按钮,
+
+        currentDate: new Date(),
+
       // 购买类型、搜索列表、搜索值、是否显示picker
       searchbuytypes: [],
       search1: "",
@@ -338,6 +343,8 @@ export default {
     // },
   },
   async created() {
+    console.log('cereated');
+   
     // 获取公共列表
     // 客流性质
     let query_flow_type = {
@@ -348,6 +355,7 @@ export default {
     this.flowtypes = await this.api.getFlowtypeList(
       this.query.toEncode(this.newqry(query_flow_type))
     );
+    this.flowtypes.unshift({content:'全部'})
     this.searchflowtypes = this.flowtypes;
     // 购买类型
     let query_buys_type = {
@@ -358,27 +366,36 @@ export default {
     this.buytypes = await this.api.getBuysTypeList(
       this.query.toEncode(this.newqry(query_buys_type))
     );
+    this.buytypes.unshift({content:'全部'})
     this.searchbuytypes = this.buytypes;
     // 销售顾问
-    let query_sales = {
-      w: [
-        ["arg8", 20002.1, "LK"],
-        ["arg6", "销售", "LK"],
-      ],
-      o: ["crtTm", "esc"],
-      p: [1, 1000],
-    };
+    // let query_sales = {
+    //   w: [
+    //     ["arg8", 20002.1, "LK"],
+    //     ["arg6", "销售", "LK"],
+    //   ],
+    //   o: ["crtTm", "esc"],
+    //   p: [1, 1000],
+    // };
     this.salers = await this.api.getsalersList();
+    this.salers.unshift({arg7:'全部'})
     this.searchsalers = this.salers;
 
     // 意向等级
     this.intentLevels = await this.api.getWxIntentionLevel({
       p: { n: 1, s: 20 },
     });
+    this.intentLevels.unshift({content:'全部'})
     this.searchintentLevels = this.intentLevels;
+
+   
   },
   async mounted() {
     console.log("mounted");
+      // 返回刷新
+    window.onpageshow=()=>{
+      this.onRefresh();
+    }
     this.defaultHeight = $(window).height();
     // window.onresize监听页面高度的变化
     window.onresize = () => {
@@ -393,7 +410,6 @@ export default {
   methods: {
     // 上拉加载
     handleLoad() {
-      setTimeout(() => {
         if (this.isfirstload) {
           // 页码不增加
           this.getList(this.info);
@@ -410,7 +426,6 @@ export default {
             this.finished = true;
           }
         }
-      }, 100);
     },
     // 处理公共字段参数生成qry(使用query.js)
     newqry(obj) {

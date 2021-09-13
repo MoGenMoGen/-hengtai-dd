@@ -623,7 +623,7 @@
       </div> -->
       <!-- 意向等级结束 -->
       <!-- 购买类型 -->
-      <div class="row">
+      <div class="row" v-if="showBtype">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder"></div>
@@ -856,6 +856,15 @@ export default {
       if (this.info.hssWxFollowupRo.supplement != "其他") return false;
       return true;
     },
+    // 是否显示购买类型(意向等级O成交、j、s、p、无效，不显示)
+    showBtype() {
+      let index = this.intentLevelList.findIndex(
+        (item) => item.id == this.info.hssWxFollowupRo.intentionLevel
+      );
+
+      if (index >= 0 && this.intentLevelList[index].outside >= 6) return false;
+      return true;
+    },
   },
   watch: {
     // visitTime: function () {
@@ -959,13 +968,15 @@ export default {
       this.showfollowtime2 = false;
     },
     handlevisitTimeconfirm(e) {
-      this.info.hssWxFollowupRo.visitingTime =
-        moment(e).format("YYYY-MM-DD HH:mm");
+      this.info.hssWxFollowupRo.visitingTime = moment(e).format(
+        "YYYY-MM-DD HH:mm"
+      );
       this.showvisitTime = false;
     },
     handleleftTimeconfirm(e) {
-      this.info.hssWxFollowupRo.departureTime =
-        moment(e).format("YYYY-MM-DD HH:mm");
+      this.info.hssWxFollowupRo.departureTime = moment(e).format(
+        "YYYY-MM-DD HH:mm"
+      );
       this.showleftTime = false;
     },
     // 更多品牌中选择
@@ -1078,9 +1089,9 @@ export default {
     handlechecklevel(item) {
       this.info.hssWxFollowupRo.intentionLevel = item.id;
       // 清空无效/战败原因
-        this.info.hssWxFollowupRo.supplement = '';
+      this.info.hssWxFollowupRo.supplement = "";
       // 清空其他无效原因
-      this.info.hssWxFollowupRo.supplementInfo = '';
+      this.info.hssWxFollowupRo.supplementInfo = "";
     },
     // 获取战败/无效原因
     async getReasons() {
@@ -1107,7 +1118,7 @@ export default {
     handleReasons(e) {
       this.info.hssWxFollowupRo.supplement = e.content;
       // 清空其他无效原因
-      this.info.hssWxFollowupRo.supplementInfo = '';
+      this.info.hssWxFollowupRo.supplementInfo = "";
       this.showPicker3 = false;
     },
     async save() {

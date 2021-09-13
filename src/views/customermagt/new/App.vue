@@ -400,72 +400,74 @@
       <div class="texttitle">求购</div>
     </div>
     <div class="buyneeds">
-      <div class="row" @click="showmorebuybrand = true">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder">*</div>
-          <div class="rowtitle" v-if="!hssWxBusinessBuyRo.brand">品牌</div>
-          <div class="rowtitle" style="width: 4rem" v-else>
-            品牌：{{ hssWxBusinessBuyRo.brand }}
+      <!-- 无效则隐藏 -->
+      <div class="Invalidhide" v-if="!showInvalid">
+        <div class="row" @click="showmorebuybrand = true">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder">*</div>
+            <div class="rowtitle" v-if="!hssWxBusinessBuyRo.brand">品牌</div>
+            <div class="rowtitle" style="width: 4rem" v-else>
+              品牌：{{ hssWxBusinessBuyRo.brand }}
+            </div>
+          </div>
+          <div class="row_between">
+            <div style="flex: 1"></div>
+            <div style="wdith: 0.64rem; font-weight: 500; color: #909090">
+              更多>
+            </div>
           </div>
         </div>
-        <div class="row_between">
-          <div style="flex: 1"></div>
-          <div style="wdith: 0.64rem; font-weight: 500; color: #909090">
-            更多>
+        <div class="brand_list">
+          <div
+            class="brand_item"
+            v-for="item in BbrandList"
+            :key="item.id"
+            @click="handlecheckBcarlogo(item)"
+          >
+            <img
+              src="~@/assets/img/selectbrand.png"
+              class="selectbrand"
+              v-if="item.id == hssWxBusinessBuyRo.brandId"
+              alt=""
+            />
+            <img :src="item.brand_logo" alt="" />
           </div>
         </div>
-      </div>
-      <div class="brand_list">
-        <div
-          class="brand_item"
-          v-for="item in BbrandList"
-          :key="item.id"
-          @click="handlecheckBcarlogo(item)"
-        >
-          <img
-            src="~@/assets/img/selectbrand.png"
-            class="selectbrand"
-            v-if="item.id == hssWxBusinessBuyRo.brandId"
-            alt=""
-          />
-          <img :src="item.brand_logo" alt="" />
-        </div>
-      </div>
 
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">车系</div>
-        </div>
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">车系</div>
+          </div>
 
-        <van-field
-          @click="showPicker6 = true"
-          class="van_field"
-          readonly
-          clickable
-          label=""
-          v-model="hssWxBusinessBuyRo.series"
-          placeholder="请选择车系"
-        />
-        <van-popup v-model="showPicker6" round position="bottom">
-          <van-search
-            v-model="search6"
-            shape="round"
-            background="#09c076"
-            @input="onSearch6"
-            placeholder="请输入搜索关键词"
+          <van-field
+            @click="showPicker6 = true"
+            class="van_field"
+            readonly
+            clickable
+            label=""
+            v-model="hssWxBusinessBuyRo.series"
+            placeholder="请选择车系"
           />
-          <van-picker
-            value-key="name"
-            show-toolbar
-            :columns="searchBcarseries"
-            @cancel="showPicker6 = false"
-            @confirm="handlecheckBseries"
-          />
-        </van-popup>
-        <!-- <el-select
+          <van-popup v-model="showPicker6" round position="bottom">
+            <van-search
+              v-model="search6"
+              shape="round"
+              background="#09c076"
+              @input="onSearch6"
+              placeholder="请输入搜索关键词"
+            />
+            <van-picker
+              value-key="name"
+              show-toolbar
+              :columns="searchBcarseries"
+              @cancel="showPicker6 = false"
+              @confirm="handlecheckBseries"
+            />
+          </van-popup>
+          <!-- <el-select
           filterable
           clearable
           v-model="bseriseobj"
@@ -482,39 +484,39 @@
           >
           </el-option>
         </el-select> -->
-      </div>
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">车型</div>
         </div>
-        <van-field
-          @click="showPicker7 = true"
-          class="van_field"
-          readonly
-          clickable
-          label=""
-          v-model="hssWxBusinessBuyRo.model"
-          placeholder="请选择车型"
-        />
-        <van-popup v-model="showPicker7" round position="bottom">
-          <van-search
-            v-model="search7"
-            shape="round"
-            background="#09c076"
-            @input="onSearch7"
-            placeholder="请输入搜索关键词"
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">车型</div>
+          </div>
+          <van-field
+            @click="showPicker7 = true"
+            class="van_field"
+            readonly
+            clickable
+            label=""
+            v-model="hssWxBusinessBuyRo.model"
+            placeholder="请选择车型"
           />
-          <van-picker
-            value-key="name"
-            show-toolbar
-            :columns="searchBcartypes"
-            @cancel="showPicker7 = false"
-            @confirm="handlecheckBtypes"
-          />
-        </van-popup>
-        <!-- <el-select
+          <van-popup v-model="showPicker7" round position="bottom">
+            <van-search
+              v-model="search7"
+              shape="round"
+              background="#09c076"
+              @input="onSearch7"
+              placeholder="请输入搜索关键词"
+            />
+            <van-picker
+              value-key="name"
+              show-toolbar
+              :columns="searchBcartypes"
+              @cancel="showPicker7 = false"
+              @confirm="handlecheckBtypes"
+            />
+          </van-popup>
+          <!-- <el-select
           filterable
           clearable
           v-model="btypeobj"
@@ -531,75 +533,75 @@
           >
           </el-option>
         </el-select> -->
-      </div>
-      <!-- 价格区间开始 -->
-      <div class="pricebox">
-        <div class="prititle">价格区间 / 万元</div>
-        <div class="pricelist">
-          <div
-            class="priceitem"
-            @click="hanglecheckprice(item, index)"
-            v-for="(item, index) in priceList"
-            :key="item.id"
-            :class="{
-              select_price_region: item.content == hssWxBusinessBuyRo.priceId,
-            }"
-          >
-            {{ item.content }}
-          </div>
         </div>
-        <div class="custom_price_box" v-if="showdiyprice">
-          <span class="prititle">自定义价格</span>
-          <div style="display: flex; align-items: center">
-            <div class="lowprice">
-              <!-- <van-field
-                clickable
-                label=""
-                v-model="hssWxBusinessBuyRo.minPrice"
-                style="width: 0.6rem; text-align: right"
-                class="prititle"
-                type="digit"
-                maxlength="4"
-              /> -->
-              <input
-                style="width: 0.6rem; text-align: right"
-                class="prititle"
-                v-model="hssWxBusinessBuyRo.minPrice"
-                type="number"
-                oninput="if(value.length>4)value=value.slice(0,4)"
-                placeholder=""
-              />
-              <span class="prititle">万</span>
-            </div>
-            <span class="connector">~</span>
-            <div class="highprice">
-              <!-- <van-field
-                clickable
-                label=""
-                v-model="hssWxBusinessBuyRo.maxPrice"
-                style="width: 0.6rem; text-align: right"
-                class="prititle"
-                type="digit"
-                maxlength="4"
-              /> -->
-              <input
-                style="width: 0.6rem; text-align: right"
-                class="prititle"
-                v-model="hssWxBusinessBuyRo.maxPrice"
-                type="number"
-                oninput="if(value.length>4)value=value.slice(0,4)"
-                placeholder=""
-              />
-              <span class="prititle">万</span>
+        <!-- 价格区间开始 -->
+        <div class="pricebox">
+          <div class="prititle">价格区间 / 万元</div>
+          <div class="pricelist">
+            <div
+              class="priceitem"
+              @click="hanglecheckprice(item, index)"
+              v-for="(item, index) in priceList"
+              :key="item.id"
+              :class="{
+                select_price_region: item.content == hssWxBusinessBuyRo.priceId,
+              }"
+            >
+              {{ item.content }}
             </div>
           </div>
-          <div style="width: 1rem"></div>
-          <!-- <div class="confirm" @click="!confirmprice" v-if="!confirmprice">确定</div>
+          <div class="custom_price_box" v-if="showdiyprice">
+            <span class="prititle">自定义价格</span>
+            <div style="display: flex; align-items: center">
+              <div class="lowprice">
+                <!-- <van-field
+                clickable
+                label=""
+                v-model="hssWxBusinessBuyRo.minPrice"
+                style="width: 0.6rem; text-align: right"
+                class="prititle"
+                type="digit"
+                maxlength="4"
+              /> -->
+                <input
+                  style="width: 0.6rem; text-align: right"
+                  class="prititle"
+                  v-model="hssWxBusinessBuyRo.minPrice"
+                  type="number"
+                  oninput="if(value.length>4)value=value.slice(0,4)"
+                  placeholder=""
+                />
+                <span class="prititle">万</span>
+              </div>
+              <span class="connector">~</span>
+              <div class="highprice">
+                <!-- <van-field
+                clickable
+                label=""
+                v-model="hssWxBusinessBuyRo.maxPrice"
+                style="width: 0.6rem; text-align: right"
+                class="prititle"
+                type="digit"
+                maxlength="4"
+              /> -->
+                <input
+                  style="width: 0.6rem; text-align: right"
+                  class="prititle"
+                  v-model="hssWxBusinessBuyRo.maxPrice"
+                  type="number"
+                  oninput="if(value.length>4)value=value.slice(0,4)"
+                  placeholder=""
+                />
+                <span class="prititle">万</span>
+              </div>
+            </div>
+            <div style="width: 1rem"></div>
+            <!-- <div class="confirm" @click="!confirmprice" v-if="!confirmprice">确定</div>
           <div class="confirm" style='background:"#EE5A24"' @click="!confirmprice" v-else>编辑</div>  -->
+          </div>
         </div>
-      </div>
-      <!-- 价格区间结束 -->
-      <!-- <div class="row">
+        <!-- 价格区间结束 -->
+        <!-- <div class="row">
         占位符
         <div style="display: flex">
           <div class="placeholder"></div>
@@ -619,81 +621,82 @@
           </el-option>
         </el-select>
       </div> -->
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">里程数</div>
-        </div>
-        <div class="row_between">
-          <div>
-            <van-field
-              clickable
-              label=""
-              v-model="hssWxBusinessBuyRo.mileage"
-              style="width: 3rem"
-              class="prititle van_field"
-              type="number"
-              oninput="if(value.length>4)value=value.slice(0,4)"
-              placeholder="请输入里程数"
-            />
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">里程数</div>
           </div>
+          <div class="row_between">
+            <div>
+              <van-field
+                clickable
+                label=""
+                v-model="hssWxBusinessBuyRo.mileage"
+                style="width: 3rem"
+                class="prititle van_field"
+                type="number"
+                oninput="if(value.length>4)value=value.slice(0,4)"
+                placeholder="请输入里程数"
+              />
+            </div>
 
-          <!-- <el-input
+            <!-- <el-input
             style="width: 3rem"
             v-model="hssWxBusinessBuyRo.mileage"
             type="number"
             oninput="if(value.length>3)value=value.slice(0,3)"
             placeholder="请输入"
           ></el-input> -->
-          <span style="font-weight: bold; color: #303030">万公里</span>
-        </div>
-      </div>
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">是否按揭</div>
-        </div>
-        <div class="row_radio">
-          <div class="radiobox" @click="hssWxBusinessBuyRo.isMortgage = 1">
-            <img
-              src="~@/assets/img/radioselect.png"
-              alt=""
-              v-if="hssWxBusinessBuyRo.isMortgage == 1"
-            />
-            <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>否</span>
-          </div>
-          <div class="radiobox" @click="hssWxBusinessBuyRo.isMortgage = 2">
-            <img
-              src="~@/assets/img/radioselect.png"
-              alt=""
-              v-if="hssWxBusinessBuyRo.isMortgage == 2"
-            />
-            <img src="~@/assets/img/radio.png" alt="" v-else />
-            <span>是</span>
+            <span style="font-weight: bold; color: #303030">万公里</span>
           </div>
         </div>
-      </div>
-      <div class="intent_desc">
-        <div
-          style="
-            font-size: 0.24rem;
-            font-weight: bold;
-            color: #303030;
-            margin-bottom: 0.16rem;
-          "
-        >
-          意向描述
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">是否按揭</div>
+          </div>
+          <div class="row_radio">
+            <div class="radiobox" @click="hssWxBusinessBuyRo.isMortgage = 1">
+              <img
+                src="~@/assets/img/radioselect.png"
+                alt=""
+                v-if="hssWxBusinessBuyRo.isMortgage == 1"
+              />
+              <img src="~@/assets/img/radio.png" alt="" v-else />
+              <span>否</span>
+            </div>
+            <div class="radiobox" @click="hssWxBusinessBuyRo.isMortgage = 2">
+              <img
+                src="~@/assets/img/radioselect.png"
+                alt=""
+                v-if="hssWxBusinessBuyRo.isMortgage == 2"
+              />
+              <img src="~@/assets/img/radio.png" alt="" v-else />
+              <span>是</span>
+            </div>
+          </div>
         </div>
-        <el-input
-          type="textarea"
-          autosize
-          placeholder="请输入内容"
-          v-model="hssWxBusinessBuyRo.describes"
-        >
-        </el-input>
+        <div class="intent_desc">
+          <div
+            style="
+              font-size: 0.24rem;
+              font-weight: bold;
+              color: #303030;
+              margin-bottom: 0.16rem;
+            "
+          >
+            意向描述
+          </div>
+          <el-input
+            type="textarea"
+            autosize
+            placeholder="请输入内容"
+            v-model="hssWxBusinessBuyRo.describes"
+          >
+          </el-input>
+        </div>
       </div>
       <!--意向等级开始  -->
       <div class="intent_level">
@@ -813,102 +816,105 @@
     </div>
     <!-- 买车需求结束 -->
     <!-- 卖车需求开始 -->
-    <div class="textbox">
-      <div class="texttitle">寄卖</div>
-    </div>
-    <div class="row">
-      <!-- 占位符 -->
-      <div style="display: flex">
-        <div class="placeholder"></div>
-        <div class="rowtitle">寄卖</div>
+    <div class="sellwrapper" v-if="!showInvalid">
+      <div class="textbox">
+        <div class="texttitle">寄卖</div>
       </div>
-      <div class="row_radio">
-        <div class="radiobox" @click="hssWxCustomerRo.isSell = 0">
-          <img
-            src="~@/assets/img/radioselect.png"
-            alt=""
-            v-if="!hssWxCustomerRo.isSell"
-          />
-          <img src="~@/assets/img/radio.png" alt="" v-else />
-          <span>否</span>
+      <div class="row">
+        <!-- 占位符 -->
+        <div style="display: flex">
+          <div class="placeholder"></div>
+          <div class="rowtitle">寄卖</div>
         </div>
-        <div class="radiobox" @click="hssWxCustomerRo.isSell = 1">
-          <img
-            src="~@/assets/img/radioselect.png"
-            alt=""
-            v-if="hssWxCustomerRo.isSell"
-          />
-          <img src="~@/assets/img/radio.png" alt="" v-else />
-          <span>是</span>
-        </div>
-      </div>
-    </div>
-    <div class="ifsellbox" v-if="hssWxCustomerRo.isSell">
-      <div class="sellcarbox">
-        <div class="row" @click="showmoresellbrand = true">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder">*</div>
-            <div class="rowtitle" v-if="!hssWxBusinessSellRo.brandId">品牌</div>
-            <div class="rowtitle" style="width: 4rem" v-else>
-              品牌：{{ hssWxBusinessSellRo.brand }}
-            </div>
-          </div>
-          <div class="row_between">
-            <div style="flex: 1"></div>
-            <div style="wdith: 0.64rem; font-weight: 500; color: #909090">
-              更多>
-            </div>
-          </div>
-        </div>
-        <div class="brand_list">
-          <div
-            class="brand_item"
-            v-for="item in SbrandList"
-            :key="item.id"
-            @click="handlecheckScarlogo(item)"
-          >
+        <div class="row_radio">
+          <div class="radiobox" @click="hssWxCustomerRo.isSell = 0">
             <img
-              src="~@/assets/img/selectbrand.png"
-              class="selectbrand"
-              v-if="item.id == hssWxBusinessSellRo.brandId"
+              src="~@/assets/img/radioselect.png"
               alt=""
+              v-if="!hssWxCustomerRo.isSell"
             />
-            <img :src="item.brand_logo" alt="" />
+            <img src="~@/assets/img/radio.png" alt="" v-else />
+            <span>否</span>
+          </div>
+          <div class="radiobox" @click="hssWxCustomerRo.isSell = 1">
+            <img
+              src="~@/assets/img/radioselect.png"
+              alt=""
+              v-if="hssWxCustomerRo.isSell"
+            />
+            <img src="~@/assets/img/radio.png" alt="" v-else />
+            <span>是</span>
           </div>
         </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">车系</div>
+      </div>
+      <div class="ifsellbox" v-if="hssWxCustomerRo.isSell">
+        <div class="sellcarbox">
+          <div class="row" @click="showmoresellbrand = true">
+            <!-- 占位符 -->
+            <div style="display: flex">
+              <div class="placeholder">*</div>
+              <div class="rowtitle" v-if="!hssWxBusinessSellRo.brandId">
+                品牌
+              </div>
+              <div class="rowtitle" style="width: 4rem" v-else>
+                品牌：{{ hssWxBusinessSellRo.brand }}
+              </div>
+            </div>
+            <div class="row_between">
+              <div style="flex: 1"></div>
+              <div style="wdith: 0.64rem; font-weight: 500; color: #909090">
+                更多>
+              </div>
+            </div>
           </div>
-          <van-field
-            @click="showPicker9 = true"
-            class="van_field"
-            readonly
-            clickable
-            label=""
-            v-model="hssWxBusinessSellRo.series"
-            placeholder="请选择车系"
-          />
-          <van-popup v-model="showPicker9" round position="bottom">
-            <van-search
-              v-model="search9"
-              shape="round"
-              background="#09c076"
-              @input="onSearch9"
-              placeholder="请输入搜索关键词"
+          <div class="brand_list">
+            <div
+              class="brand_item"
+              v-for="item in SbrandList"
+              :key="item.id"
+              @click="handlecheckScarlogo(item)"
+            >
+              <img
+                src="~@/assets/img/selectbrand.png"
+                class="selectbrand"
+                v-if="item.id == hssWxBusinessSellRo.brandId"
+                alt=""
+              />
+              <img :src="item.brand_logo" alt="" />
+            </div>
+          </div>
+          <div class="row">
+            <!-- 占位符 -->
+            <div style="display: flex">
+              <div class="placeholder"></div>
+              <div class="rowtitle">车系</div>
+            </div>
+            <van-field
+              @click="showPicker9 = true"
+              class="van_field"
+              readonly
+              clickable
+              label=""
+              v-model="hssWxBusinessSellRo.series"
+              placeholder="请选择车系"
             />
-            <van-picker
-              value-key="name"
-              show-toolbar
-              :columns="searchScarseries"
-              @cancel="showPicker9 = false"
-              @confirm="handlecheckSseries"
-            />
-          </van-popup>
-          <!-- <el-select
+            <van-popup v-model="showPicker9" round position="bottom">
+              <van-search
+                v-model="search9"
+                shape="round"
+                background="#09c076"
+                @input="onSearch9"
+                placeholder="请输入搜索关键词"
+              />
+              <van-picker
+                value-key="name"
+                show-toolbar
+                :columns="searchScarseries"
+                @cancel="showPicker9 = false"
+                @confirm="handlecheckSseries"
+              />
+            </van-popup>
+            <!-- <el-select
             filterable
             clearable
             v-model="sseriseobj"
@@ -925,39 +931,39 @@
             >
             </el-option>
           </el-select> -->
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">车型</div>
           </div>
-          <van-field
-            @click="showPicker10 = true"
-            class="van_field"
-            readonly
-            clickable
-            label=""
-            v-model="hssWxBusinessSellRo.model"
-            placeholder="请选择车型"
-          />
-          <van-popup v-model="showPicker10" round position="bottom">
-            <van-search
-              v-model="search10"
-              shape="round"
-              background="#09c076"
-              @input="onSearch10"
-              placeholder="请输入搜索关键词"
+          <div class="row">
+            <!-- 占位符 -->
+            <div style="display: flex">
+              <div class="placeholder"></div>
+              <div class="rowtitle">车型</div>
+            </div>
+            <van-field
+              @click="showPicker10 = true"
+              class="van_field"
+              readonly
+              clickable
+              label=""
+              v-model="hssWxBusinessSellRo.model"
+              placeholder="请选择车型"
             />
-            <van-picker
-              value-key="name"
-              show-toolbar
-              :columns="searchScartypes"
-              @cancel="showPicker10 = false"
-              @confirm="handlecheckStypes"
-            />
-          </van-popup>
-          <!-- <el-select
+            <van-popup v-model="showPicker10" round position="bottom">
+              <van-search
+                v-model="search10"
+                shape="round"
+                background="#09c076"
+                @input="onSearch10"
+                placeholder="请输入搜索关键词"
+              />
+              <van-picker
+                value-key="name"
+                show-toolbar
+                :columns="searchScartypes"
+                @cancel="showPicker10 = false"
+                @confirm="handlecheckStypes"
+              />
+            </van-popup>
+            <!-- <el-select
             filterable
             clearable
             v-model="stypeobj"
@@ -974,130 +980,131 @@
             >
             </el-option>
           </el-select> -->
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">里程数</div>
           </div>
-          <div class="row_between">
-            <div>
-              <van-field
-                clickable
-                label=""
-                v-model="hssWxBusinessSellRo.mileage"
-                style="width: 3rem"
-                class="prititle van_field"
-                type="number"
-                oninput="if(value.length>4)value=value.slice(0,4)"
-                placeholder="请输入里程数"
-              />
+          <div class="row">
+            <!-- 占位符 -->
+            <div style="display: flex">
+              <div class="placeholder"></div>
+              <div class="rowtitle">里程数</div>
             </div>
+            <div class="row_between">
+              <div>
+                <van-field
+                  clickable
+                  label=""
+                  v-model="hssWxBusinessSellRo.mileage"
+                  style="width: 3rem"
+                  class="prititle van_field"
+                  type="number"
+                  oninput="if(value.length>4)value=value.slice(0,4)"
+                  placeholder="请输入里程数"
+                />
+              </div>
 
-            <!-- <el-input
+              <!-- <el-input
               style="width: 3rem"
               v-model="hssWxBusinessSellRo.mileage"
               type="number"
               oninput="if(value.length>3)value=value.slice(0,3)"
               placeholder="请输入"
             ></el-input> -->
-            <span style="font-weight: bold; color: #303030">万公里</span>
+              <span style="font-weight: bold; color: #303030">万公里</span>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <!-- 占位符 -->
-          <div style="display: flex">
-            <div class="placeholder"></div>
-            <div class="rowtitle">上牌时间</div>
-          </div>
-          <van-field
-            class="van_field"
-            readonly
-            clickable
-            label=""
-            v-model="hssWxBusinessSellRo.licensingTime"
-            placeholder="选择上牌日期"
-            @click="showPicker11 = true"
-          />
-          <van-popup v-model="showPicker11" round position="bottom">
-            <van-datetime-picker
-              v-model="currentlicenseDate"
-              :min-date="minDate1"
-              class="followdatepicker"
-              type="date"
-              title="选择完整时间"
-              @cancel="showPicker11 = false"
-              @confirm="handlelicensedate"
+          <div class="row">
+            <!-- 占位符 -->
+            <div style="display: flex">
+              <div class="placeholder"></div>
+              <div class="rowtitle">上牌时间</div>
+            </div>
+            <van-field
+              class="van_field"
+              readonly
+              clickable
+              label=""
+              v-model="hssWxBusinessSellRo.licensingTime"
+              placeholder="选择上牌日期"
+              @click="showPicker11 = true"
             />
-          </van-popup>
-          <!-- <el-date-picker
+            <van-popup v-model="showPicker11" round position="bottom">
+              <van-datetime-picker
+                v-model="currentlicenseDate"
+                :min-date="minDate1"
+                class="followdatepicker"
+                type="date"
+                title="选择完整时间"
+                @cancel="showPicker11 = false"
+                @confirm="handlelicensedate"
+              />
+            </van-popup>
+            <!-- <el-date-picker
             v-model="hssWxBusinessSellRo.licensingTime"
             type="date"
             placeholder="选择上牌日期"
           >
           </el-date-picker> -->
-        </div>
-        <div class="intent_desc">
-          <div
-            style="
-              font-size: 0.24rem;
-              font-weight: bold;
-              color: #303030;
-              margin-bottom: 0.16rem;
-            "
-          >
-            备注
           </div>
-          <el-input
-            type="textarea"
-            autosize
-            placeholder="请输入"
-            v-model="hssWxBusinessSellRo.remarks"
-          >
-          </el-input>
+          <div class="intent_desc">
+            <div
+              style="
+                font-size: 0.24rem;
+                font-weight: bold;
+                color: #303030;
+                margin-bottom: 0.16rem;
+              "
+            >
+              备注
+            </div>
+            <el-input
+              type="textarea"
+              autosize
+              placeholder="请输入"
+              v-model="hssWxBusinessSellRo.remarks"
+            >
+            </el-input>
+          </div>
         </div>
+        <!-- 卖车需求结束 -->
       </div>
-      <!-- 卖车需求结束 -->
     </div>
-
     <!-- 更多信息开始 -->
-    <div class="textbox">
-      <div class="texttitle">更多信息</div>
-    </div>
-    <div class="moreinfobox">
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">老客户介绍人</div>
-        </div>
-        <van-field
-          @click="showPicker12 = true"
-          class="van_field"
-          readonly
-          clickable
-          label=""
-          v-model="hssWxCustomerRo.introducer"
-          placeholder="请选择介绍人"
-        />
-        <van-popup v-model="showPicker12" round position="bottom">
-          <van-search
-            v-model="search12"
-            shape="round"
-            background="#09c076"
-            @input="onSearch12"
-            placeholder="请输入搜索关键词"
+    <div class="moreinfowrapper" v-if="!showInvalid">
+      <div class="textbox">
+        <div class="texttitle">更多信息</div>
+      </div>
+      <div class="moreinfobox">
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">老客户介绍人</div>
+          </div>
+          <van-field
+            @click="showPicker12 = true"
+            class="van_field"
+            readonly
+            clickable
+            label=""
+            v-model="hssWxCustomerRo.introducer"
+            placeholder="请选择介绍人"
           />
-          <van-picker
-            value-key="name"
-            show-toolbar
-            :columns="searchintroducers"
-            @cancel="showPicker12 = false"
-            @confirm="handleintroducers"
-          />
-        </van-popup>
-        <!-- <el-select
+          <van-popup v-model="showPicker12" round position="bottom">
+            <van-search
+              v-model="search12"
+              shape="round"
+              background="#09c076"
+              @input="onSearch12"
+              placeholder="请输入搜索关键词"
+            />
+            <van-picker
+              value-key="name"
+              show-toolbar
+              :columns="searchintroducers"
+              @cancel="showPicker12 = false"
+              @confirm="handleintroducers"
+            />
+          </van-popup>
+          <!-- <el-select
             filterable
             clearable
             v-model="hssWxCustomerRo.introducer"
@@ -1112,191 +1119,193 @@
             >
             </el-option>
           </el-select> -->
-      </div>
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">备用号</div>
         </div>
-        <div class="row_between">
-          <van-field
-            type="digit"
-            class="van_field"
-            label=""
-            v-model="hssWxCustomerRo.sparePhone"
-            placeholder="请输入备用号"
-            maxlength="11"
-          />
-          <!-- <el-input
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">备用号</div>
+          </div>
+          <div class="row_between">
+            <van-field
+              type="digit"
+              class="van_field"
+              label=""
+              v-model="hssWxCustomerRo.sparePhone"
+              placeholder="请输入备用号"
+              maxlength="11"
+            />
+            <!-- <el-input
               style="width: 3rem"
               v-model="hssWxCustomerRo.sparePhone"
               type="number"
               oninput="if(value.length>11)value=value.slice(0,11)"
               placeholder="请输入"
             ></el-input> -->
-          <!-- <span style="color: #09c076">通讯录匹配</span> -->
+            <!-- <span style="color: #09c076">通讯录匹配</span> -->
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">身份证号</div>
-        </div>
-        <van-field
-          class="van_field"
-          label=""
-          v-model="hssWxCustomerRo.idcard"
-          placeholder="请输入身份证号"
-          maxlength="18"
-        />
-        <!-- <el-input
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">身份证号</div>
+          </div>
+          <van-field
+            class="van_field"
+            label=""
+            v-model="hssWxCustomerRo.idcard"
+            placeholder="请输入身份证号"
+            maxlength="18"
+          />
+          <!-- <el-input
             v-model="hssWxCustomerRo.idcard"
             type="text"
             maxlength="18"
             placeholder="请输入"
             style="flex: 1"
           ></el-input> -->
-      </div>
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">生日</div>
         </div>
-        <van-field
-          class="van_field"
-          readonly
-          clickable
-          label=""
-          v-model="hssWxCustomerRo.birthday"
-          placeholder="请选择生日"
-          @click="showPicker13 = true"
-        />
-        <van-popup v-model="showPicker13" round position="bottom">
-          <van-datetime-picker
-            class="followdatepicker"
-            type="date"
-            title="选择完整时间"
-            :min-date="minDate2"
-            v-model="currentbirthdayDate"
-            @cancel="showPicker13 = false"
-            @confirm="handlebirthday"
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">生日</div>
+          </div>
+          <van-field
+            class="van_field"
+            readonly
+            clickable
+            label=""
+            v-model="hssWxCustomerRo.birthday"
+            placeholder="请选择生日"
+            @click="showPicker13 = true"
           />
-        </van-popup>
-        <!-- <el-date-picker
+          <van-popup v-model="showPicker13" round position="bottom">
+            <van-datetime-picker
+              class="followdatepicker"
+              type="date"
+              title="选择完整时间"
+              :min-date="minDate2"
+              v-model="currentbirthdayDate"
+              @cancel="showPicker13 = false"
+              @confirm="handlebirthday"
+            />
+          </van-popup>
+          <!-- <el-date-picker
             v-model="hssWxCustomerRo.birthday"
             type="date"
             placeholder="请选择"
           >
           </el-date-picker> -->
-      </div>
-      <div class="row" style="padding-right: 0.24rem">
-        <!-- 占位符 -->
-        <div style="display: flex; align-items: center">
-          <div class="placeholder"></div>
-          <div class="rowtitle">所在地</div>
         </div>
+        <div class="row" style="padding-right: 0.24rem">
+          <!-- 占位符 -->
+          <div style="display: flex; align-items: center">
+            <div class="placeholder"></div>
+            <div class="rowtitle">所在地</div>
+          </div>
 
-        <van-field
-          class="row_between van_field"
-          v-model="hssWxCustomerRo.location"
-          readonly
-          label=""
-          placeholder="请选择所在地区"
-          @click="showlocation = true"
-        />
-        <van-popup v-model="showlocation" round position="bottom">
-          <van-cascader
-            v-model="cascaderValue1"
-            title="请选择所在地区"
-            :options="locations"
-            :field-names="{ text: 'nm', value: 'id' }"
-            active-color="#09C076"
-            @close="showlocation = false"
-            @change="changelocations"
-            @finish="onFinishlocation"
+          <van-field
+            class="row_between van_field"
+            v-model="hssWxCustomerRo.location"
+            readonly
+            label=""
+            placeholder="请选择所在地区"
+            @click="showlocation = true"
           />
-        </van-popup>
-      </div>
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">联系地址</div>
+          <van-popup v-model="showlocation" round position="bottom">
+            <van-cascader
+              v-model="cascaderValue1"
+              title="请选择所在地区"
+              :options="locations"
+              :field-names="{ text: 'nm', value: 'id' }"
+              active-color="#09C076"
+              @close="showlocation = false"
+              @change="changelocations"
+              @finish="onFinishlocation"
+            />
+          </van-popup>
         </div>
-        <van-field
-          class="van_field"
-          label=""
-          v-model="hssWxCustomerRo.contactAddress"
-          placeholder="请输入联系地址"
-          maxlength="18"
-        />
-        <!-- <el-input
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">联系地址</div>
+          </div>
+          <van-field
+            class="van_field"
+            label=""
+            v-model="hssWxCustomerRo.contactAddress"
+            placeholder="请输入联系地址"
+            maxlength="18"
+          />
+          <!-- <el-input
             v-model="hssWxCustomerRo.contactAddress"
             type="text"
             maxlength="18"
             placeholder="请输入"
             style="flex: 1"
           ></el-input> -->
-      </div>
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">兴趣</div>
         </div>
-        <van-field
-          class="van_field"
-          label=""
-          v-model="hssWxCustomerRo.hobby"
-          placeholder="请输入兴趣"
-          maxlength="18"
-        />
-        <!-- <el-input
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">兴趣</div>
+          </div>
+          <van-field
+            class="van_field"
+            label=""
+            v-model="hssWxCustomerRo.hobby"
+            placeholder="请输入兴趣"
+            maxlength="18"
+          />
+          <!-- <el-input
             v-model="hssWxCustomerRo.hobby"
             type="text"
             maxlength="18"
             placeholder="请输入"
             style="flex: 1"
           ></el-input> -->
-      </div>
-      <div class="row">
-        <!-- 占位符 -->
-        <div style="display: flex">
-          <div class="placeholder"></div>
-          <div class="rowtitle">职业</div>
         </div>
-        <van-field
-          class="van_field"
-          label=""
-          v-model="hssWxCustomerRo.occupation"
-          placeholder="请输入职业"
-          maxlength="18"
-        />
-        <!-- <el-input
+        <div class="row">
+          <!-- 占位符 -->
+          <div style="display: flex">
+            <div class="placeholder"></div>
+            <div class="rowtitle">职业</div>
+          </div>
+          <van-field
+            class="van_field"
+            label=""
+            v-model="hssWxCustomerRo.occupation"
+            placeholder="请输入职业"
+            maxlength="18"
+          />
+          <!-- <el-input
             v-model="hssWxCustomerRo.occupation"
             type="text"
             maxlength="18"
             placeholder="请输入"
             style="flex: 1"
           ></el-input> -->
-      </div>
+        </div>
 
-      <div class="albums">
-        <div class="album_title">相册</div>
-        <van-uploader
-          style="flex: 1"
-          preview-size="1.5rem"
-          :after-read="afterRead"
-          :before-delete="beforeDel"
-          v-model="albums"
-          multiple="true"
-        />
-        <van-loading v-if="isvanloading" type="spinner" class="van_loading" />
+        <div class="albums">
+          <div class="album_title">相册</div>
+          <van-uploader
+            style="flex: 1"
+            preview-size="1.5rem"
+            :after-read="afterRead"
+            :before-delete="beforeDel"
+            v-model="albums"
+            multiple="true"
+          />
+          <van-loading v-if="isvanloading" type="spinner" class="van_loading" />
+        </div>
       </div>
     </div>
+
     <!-- 更多信息结束-->
     <div class="btn_save" @click="save" v-show="hideshow">保存</div>
   </div>
@@ -1358,7 +1367,7 @@ export default {
       // 生日是否显示picker
       showPicker13: false,
 
-      // 用户id
+      // 修改用户id
       id: "",
       // 接待id
       cusid: "",
@@ -1417,8 +1426,8 @@ export default {
         business: "", //(购买类型)1增购，2置换，3求购
         nextFollowUpTime: "", //下次跟进时间
         intentionLevel: "", //意向等级（保存意向等级id）
-        supplement:'',//无效原因
-        supplementInfo:'',//其他无效原因
+        supplement: "", //无效原因
+        supplementInfo: "", //其他无效原因
         isSell: 0, //是否卖车
         pic: "",
       }, //用户信息
@@ -1516,12 +1525,7 @@ export default {
         (item) => item.id == this.hssWxCustomerRo.intentionLevel
       );
 
-      if (
-        index >= 0 &&
-        (this.intentLevelList[index].outside >= 6 ||
-          this.intentLevelList[index].outside == 1)
-      )
-        return false;
+      if (index >= 0 && this.intentLevelList[index].outside >= 6) return false;
       return true;
     },
     // 是否显示跟进时间(O成交、战败、无效，不显示)
@@ -1548,9 +1552,8 @@ export default {
     },
     // 其他无效原因
     showInvalidDetail() {
-      if (this.hssWxCustomerRo.supplement != "其他") 
-      return false;
-        return true;
+      if (this.hssWxCustomerRo.supplement != "其他") return false;
+      return true;
     },
   },
   watch: {
@@ -1763,7 +1766,7 @@ export default {
 
         Toast("客户来源不能为空");
         return false;
-      } else if (this.hssWxBusinessBuyRo.brand == "") {
+      } else if (this.hssWxBusinessBuyRo.brand == ""&&!this.showInvalid) {
         console.log(77);
 
         Toast("买车品牌不能为空");
@@ -1783,7 +1786,7 @@ export default {
         return false;
       } else if (
         this.hssWxBusinessSellRo.brand == "" &&
-        this.hssWxCustomerRo.isSell
+        this.hssWxCustomerRo.isSell && !this.showInvalid
       ) {
         console.log(1010);
 
@@ -2227,10 +2230,22 @@ export default {
       o: ["id", "esc"],
       p: [1, 10],
     };
-    this.custypeList = await this.api.getFlowtypeList(
-      this.query.toEncode(this.newqry(query_flow_type))
-    );
-    this.searchcustypeList = this.custypeList;
+    if (this.id || this.cusid) {
+      this.custypeList = await this.api.getFlowtypeList(
+        this.query.toEncode(this.newqry(query_flow_type))
+      );
+      this.searchcustypeList = this.custypeList;
+    }
+    // 不经过接待或修改需求，直接新增则只能选未到店
+    else {
+      let custype = await this.api.getFlowtypeList(
+        this.query.toEncode(this.newqry(query_flow_type))
+      );
+      this.custypeList = custype.filter((item) => item.content == "未到店");
+      this.searchcustypeList = this.custypeList;
+      this.hssWxCustomerRo.nature = this.searchcustypeList[0].content;
+    }
+
     // 获取客户来源
     this.customerofList = await this.api.getCustomerSource(
       encodeURIComponent(
@@ -2271,7 +2286,6 @@ export default {
         })
       )
     );
-    console.log(1111111, this.InvalidReasons);
 
     // 获取八个常用车标
     let BbrandList = await this.api.getCommonCarIcon();

@@ -13,7 +13,7 @@
             <div class="left">
               <img src="~@/assets/img/icon1.png" alt="" class="icon" />
               <div class="text">
-				  <div class="total">
+				  <div class="total" v-if="total!=0&&total!=''">
 				  	{{total}}
 				  </div>
                 <div class="title">接待</div>
@@ -49,6 +49,9 @@
             <div class="left">
               <img src="~@/assets/img/icon4.png" alt="" class="icon" />
               <div class="text">
+				  <div class="total" v-if="replay!=0&&replay!=''">
+				  	{{replay}}
+				  </div>
                 <div class="title">产品需求</div>
                 <div class="en">Product demand</div>
               </div>
@@ -70,13 +73,15 @@ export default {
   data() {
     return {
       code: "",
-	  total:""
+	  total:"",
+	  replay:"",
     };
   },
   components: {
     tabbar,
   },
   async mounted() {
+	  
     console.log(this.until.loGet("token"), 55);
     if (!this.until.loGet("token")) {
       console.log(111);
@@ -90,11 +95,18 @@ export default {
           this.until.loSave("token", res.data.token);
           this.until.loSave("userInfo", res.data.userInfo);
 		  setTimeout(()=>{
+		  			  this.api.getIsRead({}).then(res=>{
+		  			  	console.log(1213,res);
+		  			  	this.replay=res.data
+		  			  })
+		  },100)
+		  setTimeout(()=>{
 			  this.api.getGetnotread({}).then(res=>{
 			  	console.log(1213,res);
 			  	this.total=res.data
 			  })
 		  },100)
+		
 		 
       
         });
@@ -107,7 +119,23 @@ export default {
 				  	this.total=res.data
 				  })
 	},100)
+	setTimeout(()=>{
+				  this.api.getIsRead({}).then(res=>{
+				  	console.log(1213,res);
+				  	this.replay=res.data
+				  })
+	},100)
 	}
+	var isPageHide = false;
+	  window.addEventListener('pageshow', function () {
+	    if (isPageHide) {
+	      window.location.reload();
+	    }
+	  });
+	  window.addEventListener('pagehide', function () {
+	    isPageHide = true;
+	  });
+				
 	
   },
   methods: {

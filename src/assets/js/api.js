@@ -941,7 +941,29 @@ class api {
 	
 	    })
 	}
-	
+	//获取访问时间段
+	getVisiteTime(data){
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxCommonfield/page?query=' + data).then(res => {
+		        resolve(res.data)
+		    })
+			
+		})
+	}
+	//获取留言未读
+	getIsRead(data){
+		let header = {
+		    // 'Content-Type': 'application/json',
+		    // 'yui3-token': localStorage.getItem('token')
+		}
+		return new Promise((resolve, reject) => {
+		    get('/hss/wxCommunicate/isRead', data, header).then(res => {
+		        resolve(res)
+		    })
+		
+		})
+	}
+
 
 }
 

@@ -6,33 +6,35 @@
 		</div>
 		<div class="searchBox">
 			<div class="leftBox">
-			<!-- 	<van-field
-				  class="vantSelect"
-				  readonly
-				  label=""
-				  :value="info.business"
-				  placeholder="选择品牌"
-				  @click="showPicker1 = true"
-				/>
+				<div id="" style="display: flex;">
+					
+				
+				<van-field class="vantSelect" readonly clickable label="" :value="brandname" placeholder="选择品牌"
+					@click="showPicker1 = true" />
 				<van-popup v-model="showPicker1" round position="bottom">
-				  <van-search
-				    v-model="search1"
-				    shape="round"
-				    background="#09c076"
-				    @input="onSearch1"
-				    placeholder="请输入搜索关键词"
-				  />
-				  <van-picker
-				    value-key="content"
-				    show-toolbar
-				    :columns="searchbuytypes"
-				    @cancel="showPicker1 = false"
-				    @confirm="handleBuysType"
-				  />
-				</van-popup> -->
-		
-		
-				<el-select v-model="value" filterable placeholder="品牌" class="select2" @change="postId">
+					<van-search v-model="search1" shape="round" background="#09c076" @input="onSearch1"
+						placeholder="请输入搜索关键词" />
+					<van-picker value-key="brand_name" show-toolbar :columns="searchoptions"
+						@cancel="showPicker1 = false" @confirm="handleBuysType" />
+				</van-popup>
+				<van-field class="vantSelect" readonly clickable label="" :value="seriesname" placeholder="选择车系"
+					@click="showPicker2 = true" />
+				<van-popup v-model="showPicker2" round position="bottom">
+					<van-search v-model="search2" shape="round" background="#09c076" @input="onSearch2"
+						placeholder="请输入搜索关键词" />
+					<van-picker value-key="name" show-toolbar :columns="searchoptionsTwo"
+						@cancel="showPicker2= false" @confirm="handleBuysTypeTwo" />
+				</van-popup>
+				<van-field class="vantSelect" readonly clickable label="" :value="modelname" placeholder="选择车型"
+					@click="showPicker3 = true" />
+				<van-popup v-model="showPicker3" round position="bottom">
+					<van-search v-model="search3" shape="round" background="#09c076" @input="onSearch3"
+						placeholder="请输入搜索关键词" />
+					<van-picker value-key="name" show-toolbar :columns="searchoptionsThree"
+						@cancel="showPicker3= false" @confirm="handleBuysTypeThree" />
+				</van-popup>
+				</div>
+				<!-- <el-select v-model="value" filterable placeholder="品牌" class="select2" @change="postId">
 					<el-option v-for="item in options" :key="item.value" :label="item.brand_name" :value="item.id">
 					</el-option>
 				</el-select>
@@ -43,8 +45,9 @@
 				<el-select v-model="value3" filterable placeholder="车型" class="select2" @change="postIdFour">
 					<el-option v-for="item in optionsFour" :key="item.value" :label="item.name" :value="item.id">
 					</el-option>
-				</el-select>
-
+				</el-select> -->
+					<div id="" style="display: flex;">
+						
 				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" v-model="phone" />
 				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" v-model="salesman"
 					class="putin" />
@@ -58,11 +61,21 @@
 					<el-option v-for="item in optionsThree" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
 				</el-select> -->
-				<el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0"
+				<van-field class="vantSelectTwo" readonly clickable label="" :value="levelname" placeholder="选择意向等级"
+					@click="showPicker4 = true"   v-if="currentIndex==0"/>
+				<van-popup v-model="showPicker4" round position="bottom">
+					<van-search v-model="search4" shape="round" background="#09c076" @input="onSearch4"
+						placeholder="请输入搜索关键词" />
+					<van-picker value-key="content" show-toolbar :columns="searchoptionsFour"
+						@cancel="showPicker4= false" @confirm="handleBuysTypeFour" />
+				</van-popup>
+				</div>
+			
+				<!-- <el-select v-model="value1" filterable placeholder="意向等级" class="select" v-if="currentIndex==0"
 					@change="postIdTwo" style="margin-bottom: 0;">
 					<el-option v-for="item in optionsTwo" :key="item.value" :label="item.content" :value="item.id">
 					</el-option>
-				</el-select>
+				</el-select> -->
 				<div class="pick">
 					<el-date-picker type="date" placeholder="选择开始日期" :picker-options="pickerOptionsStart"
 						v-model="startTime" @change="startTimeChang" class="picker"></el-date-picker>
@@ -136,6 +149,9 @@
 				<div class="btn">
 					<button type="button">回复</button>
 				</div>
+				<div class="newReport" v-if="item1.notreadnumber!=''&&item1.notreadnumber>0">
+					新消息{{item1.notreadnumber}}条
+				</div>
 			</div>
 
 
@@ -148,7 +164,7 @@
 						品牌车系:
 					</div>
 					<div class="itemListcontent">
-						{{item1.brand}}{{"  "}}{{ item1.series}}
+						{{item1.brand}}{{" "}}{{ item1.series}}
 					</div>
 				</div>
 				<div class="itemList">
@@ -176,6 +192,9 @@
 						{{item1.saler}}
 					</div>
 				</div>
+				<div class="newReport" v-if="item1.notreadnumber!=''&&item1.notreadnumber>0">
+					新消息{{item1.notreadnumber}}条
+				</div>
 
 				<div class="btn">
 					<button type="button">回复</button>
@@ -193,6 +212,15 @@
 	export default {
 		data() {
 			return {
+				showPicker1: false,
+				showPicker2: false,
+				showPicker3:false,
+				showPicker4:false,
+				search1: "",
+				search2: "",
+				search3:"",
+				search4:"",
+
 				page: {
 					brand: "", //车牌
 					series: "", //车系	
@@ -215,12 +243,18 @@
 					s: 5 //长度
 				},
 				salesman: "",
-				brand: "", //车牌
-				series: "", //车系	
-				model: "", //车型
+				brand: "", //车牌id
+				brandname: "", //车牌
+				series: "", //车系id
+				seriesname: "", //车系
+				model: "", //车型id
+				modelname:"", //车型
+				
 				phone: "",
 				pickerVisible: true,
 				levelId: '',
+				levelname:"",
+				
 				result: '',
 				show: true,
 				startTime: '',
@@ -233,10 +267,13 @@
 				value3: "",
 				total: '',
 				options: [],
+				searchoptions: [],
 				optionsTwo: [],
-
+				searchoptionsTwo: [],
 				optionsThree: [],
+					searchoptionsThree: [],
 				optionsFour: [],
+				searchoptionsFour:[],
 				infoList: [
 
 
@@ -253,8 +290,8 @@
 			}
 			this.api.getWxIntentionLevel(p).then(res => {
 
-				this.optionsTwo = res
-
+				this.optionsFour = res
+				this.searchoptionsFour=this.optionsFour
 			})
 			this.getList()
 			// this.api.getWxBusinessBuy(this.page).then(res => {
@@ -270,20 +307,21 @@
 				for (let i = 0; i < res.length; i++) {
 					this.options = [...this.options, ...res[i].result]
 				}
+				this.searchoptions = this.options
 
 			})
-		
-				// this.api.searchbrandlist('').then(res => {
-					
-				//  for(let i=0;i<res.length;i++)
-				//  {
-				// 	 this.options = [...this.options, ...res[i].result]
-				//  }
-					
-				// })
 
-	},
-	methods: {
+			// this.api.searchbrandlist('').then(res => {
+
+			//  for(let i=0;i<res.length;i++)
+			//  {
+			// 	 this.options = [...this.options, ...res[i].result]
+			//  }
+
+			// })
+
+		},
+		methods: {
 			cancel() {
 				console.log('cancel')
 				this.result = 'click cancel result: null'
@@ -360,6 +398,7 @@
 						console.log("kankan", res);
 						this.infoList = [...this.infoList, ...res.data.list]
 						this.istrue = true
+						
 
 					})
 
@@ -409,7 +448,7 @@
 				this.getList()
 			},
 			postId(val) {
-				console.log(4878,val);
+				console.log(4878, val);
 				this.brand = val
 				this.api.getCarSeries({
 					brandid: val
@@ -424,17 +463,95 @@
 			},
 			postIdThree(val) {
 				this.series = val
-				this.api.getCarModels({seriesId:val}).then(res => {
+				this.api.getCarModels({
+					seriesId: val
+				}).then(res => {
 					this.optionsFour = res.result
 				})
 			},
 			postIdFour(val) {
 				this.model = val
-			}
+			},
+			onSearch1(a) {
+				if (a != "") {
+					this.searchoptions = this.options.filter((item) =>
+						item.brand_name.includes(a)
+					);
+				} else {
+					this.searchoptions = this.options
+				}
+			},
+			handleBuysType(e, v) {
+			
+				this.brand = e.id
+				this.brandname = e.brand_name
+				this.api.getCarSeries({
+					brandid: this.brand
+				}).then(res => {
+
+					this.optionsTwo = res
+					this.searchoptionsTwo = this.optionsTwo
+					this.showPicker1 = false
+				})
+			},
+
+			onSearch2(a) {
+				if (a != "") {
+					this.searchoptionsTwo = this.optionsTwo.filter((item) =>
+						item.content.includes(a)
+					);
+				} else {
+					this.searchoptionsTwo = this.optionsTwo
+				}
 
 
-
-
+			},
+			handleBuysTypeTwo(e, v) { 
+			
+				this.series = e.id
+				this.seriesname = e.name
+			this.api.getCarModels({
+				seriesId: this.series
+			}).then(res => {
+				this.optionsThree = res.result
+				this.searchoptionsThree=this.optionsThree
+				this.showPicker2=false
+			})
+			},
+			onSearch3(a) {
+				if (a != "") {
+					this.searchoptionsThree = this.optionsThree.filter((item) =>
+						item.content.includes(a)
+					);
+				} else {
+					this.searchoptionsThree = this.optionsThree
+				}
+			
+			
+			},
+			handleBuysTypeThree(e, v) {
+				
+				this.model = e.id
+				this.modelname = e.name
+				this.showPicker3=false
+				},
+			onSearch4(a) {
+				if (a != "") {
+					this.searchoptionsFour = this.optionsFour.filter((item) =>
+						item.content.includes(a)
+					);
+				} else {
+					this.searchoptionsFour = this.optionsFour
+				}
+			
+			
+			},	
+			handleBuysTypeFour(e, v) {
+				console.log(e)
+				this.levelId = e.id
+				this.levelname = e.content
+				this.showPicker4=false
+				},
 
 		},
 		computed: {
@@ -510,11 +627,39 @@
 			box-sizing: border-box;
 
 			.leftBox {
+				.vantSelect{
+						width: 1.88rem;
+					  margin-right: 0.09rem;
+					  border-radius: 0.1rem;
+					  height: 0.8rem;
+					  margin-bottom: 0.1rem;
+					  font-size:0.24rem ;
+					  text-align: center;
+					  display: flex;
+					  align-items: center;
+					  justify-content: center;
+					  padding: 0.4rem 0.4rem;
+						// line-height: 0.8rem;
+				}
+				.vantSelectTwo{
+					width: 2.866rem;
+					height: 0.8rem;
+					border-radius: 0.1rem;
+					height: 0.8rem;
+					// margin-bottom: 0.1rem;
+					font-size:0.24rem ;
+					text-align: center;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					padding: 0.4rem 0.65rem;
+					margin-left: 0.09rem;
+				}
 				input {
 					width: 2.866rem;
 					height: 0.8rem;
 					background: #FFFFFF;
-					border: 0.02rem solid #DDDDDD;
+					// border: 0.02rem solid #DDDDDD;
 					border-radius: 0.1rem;
 					font-size: 0.24rem;
 					padding: 0 0.32rem;
@@ -674,6 +819,22 @@
 						right: 0.3rem;
 						bottom: 0.3rem;
 					}
+
+				}
+
+				.newReport {
+					width: 1.3rem;
+					height: 0.51rem;
+					background-color: red;
+					border-radius: 0.2rem;
+					font-size: 0.24rem;
+					color: #ffffff;
+					position: absolute;
+					right: 0.3rem;
+					top: 0.3rem;
+					text-align: center;
+					line-height: 0.51rem;
+
 				}
 			}
 		}

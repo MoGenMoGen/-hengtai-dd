@@ -33,6 +33,12 @@
 				</div>
 				<div class="list">
 					<div class="listHead">
+						客户人数
+					</div>
+					<input class="listContent" placeholder="请输入客户人数" v-model="people" />
+				</div>
+				<div class="list">
+					<div class="listHead">
 						客户类型
 					</div>
 					<van-field
@@ -64,6 +70,37 @@
 						<el-option v-for="item in optionsTwo" :key="item.value" :label="item.content" :value="item.content">
 						</el-option>
 					</el-select> -->
+				</div>
+				<div class="list">
+					<div class="listHead">
+						来访时间
+					</div>
+					<van-field
+					  class="vantSelect"
+					  readonly
+					  clickable
+					  label=""
+					  :value="visitingTime "
+					  placeholder="请选择来访时间 "
+					  @click="showPicker3 = true"
+					/>
+					<van-popup v-model="showPicker3" round position="bottom">
+					  <van-search
+					    v-model="search3"
+					    shape="round"
+					    background="#09c076"
+					    @input="onSearch3"
+					    placeholder="请输入搜索关键词"
+					  />
+					  <van-picker
+					    value-key="content"
+					    show-toolbar
+					    :columns="searchoptionsFour"
+					    @cancel="showPicker3= false"
+					    @confirm="handleBuysTypeFour"
+					  />
+					</van-popup>
+			
 				</div>
 			</div>
 			<div class="bodyTitle">
@@ -106,7 +143,7 @@
 					</el-select> -->
 
 				</div>
-				<div class="list" >
+				<div class="list" v-if="nature!='售后服务'&&nature!='证牌服务'&&nature!='其他服务'&&nature!=''">
 					<div class="listHead">
 						销售顾问
 					</div>
@@ -158,19 +195,26 @@
 				showPicker123:false,
 				showPicker1:false,
 				showPicker2:false,
+				showPicker3:false,
+				
 				
 				search123:"",
 				search1:"",
 				search2:"",
+				search3:"",
+				
 				
 				value: '',
 				value2:"",
 				value3:"",
 				
+				
 				name:"",
 				phone:"",
 				wxId:"",
 				customerType:"",
+				people:"",
+				visitingTime:"",
 				demand:"",
 				nature:"",
 				saler:"",
@@ -185,6 +229,9 @@
 				searchoptionsTwo:[],
 				optionsThree:[],
 				searchoptionsThree:[],
+				optionsFour:[],
+				searchoptionsFour:[],
+				
 				
 				
 			};
@@ -205,6 +252,13 @@
 				o: ["id", "esc"],
 				p: [1, 10],
 			}
+			let querysThree = {
+				w: [
+					["category", 5, "EQ"],
+				],
+				o: ["id", "esc"],
+				p: [1, 10],
+			}
 			
 			this.api.getCustomerCommonfield(this.query.toEncode(this.newqry(querys))).then(res=>{
 				
@@ -219,6 +273,11 @@
 				console.log("ceshi",res);
 				this.optionsThree=res
 				this.searchoptionsThree=this.optionsThree
+			})
+			this.api.getVisiteTime(this.query.toEncode(this.newqry(querysThree))).then(res=>{
+				console.log(11112123,res);
+				this.optionsFour=res.list
+				this.searchoptionsFour=this.optionsFour
 			})
 			
 		},
@@ -248,26 +307,35 @@
 			postIdThree(val){
 				this.saler=val
 			},
+			
 			async confirm(){
-				if(this.name==""){
-					Toast("名字不能为空")
-					return false
-				}
-				else if(this.phone==""){
-					Toast("电话不能为空")
-					return false
-				}
-				else if(this.reg.checkPhone(this.phone)!="ok")
-				{
-					Toast("请输入正确的手机号")
-					return false
-				}
-				else if(this.wxId==""){
+				// if(this.name==""){
+				// 	Toast("名字不能为空")
+				// 	return false
+				// }
+				// else if(this.phone==""){
+				// 	Toast("电话不能为空")
+				// 	return false
+				// }
+				// else if(this.reg.checkPhone(this.phone)!="ok")
+				// {
+				// 	Toast("请输入正确的手机号")
+				// 	return false
+				// }
+				 if(this.wxId==""){
 					Toast("微信号不能为空")
+					return false
+				}
+				else if(this.people==""){
+					Toast("客户人数不能为空")
 					return false
 				}
 				else if(this.customerType==""){
 					Toast("客户类型不能为空")
+					return false
+				}
+				else if(this.visitingTime==""){
+					Toast("来访时间不能为空")
 					return false
 				}
 				else if(this.demand==""){
@@ -278,7 +346,7 @@
 					Toast("客流性质不能为空")
 					return false
 				}
-				else if(this.saler==""){
+				else if(this.nature!='售后服务'&&this.nature!='证牌服务'&&this.nature!='其他服务'&&this.nature!=''&&this.saler==""){
 					Toast("销售顾问不能为空")
 					return false
 				}
@@ -288,10 +356,13 @@
 				this.info.name=this.name
 				this.info.phone=this.phone
 				this.info.wxId=this.wxId
+				this.info.people=this.people
 				this.info.customerType=this.customerType
+				this.info.visitingPeriod=this.visitingTime
 				this.info.demand=this.demand
 				this.info.nature=this.nature
 				this.info.saler=this.saler
+				
 				
 				console.log(11111111111);
 				this.api.postWxCheckin(JSON.stringify(this.info)).then(res=>{
@@ -343,7 +414,22 @@
 			handleBuysTypeThree(e,v){
 				this.saler=e.arg7
 				this.showPicker2=false
+				
 			},
+			onSearch3(a){
+				if(a!=""){
+					this.searchoptionsFour = this.optionsFour.filter((item) =>
+					  item.content.includes(a)
+					);
+				}
+				else{
+					this.searchoptionsFour=this.optionsFour
+				}
+			},
+			handleBuysTypeFour(e,v){
+				this.visitingTime=e.content
+				this.showPicker3=false
+			}
 		},
 		computed: {
 			

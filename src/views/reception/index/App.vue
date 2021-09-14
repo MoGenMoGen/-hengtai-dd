@@ -111,9 +111,20 @@
 		components: {},
 
 		async mounted() {
-			setTimeout(()=>{
-				this.getList()
-			},200)
+			this.getList()
+			  var isPageHide = false;
+			    window.addEventListener('pageshow', function () {
+			      if (isPageHide) {
+			        window.location.reload();
+			      }
+			    });
+			    window.addEventListener('pagehide', function () {
+			      isPageHide = true;
+			    });
+			
+		
+				
+		
 		 
 			window.addEventListener('scroll', this.menu)
 			

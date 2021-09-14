@@ -42,6 +42,22 @@
 						{{info.customerType}}
 					</div>
 				</div>
+				<div class="list">
+					<div class="listHead">
+						来访人数:
+					</div>
+					<div class="listContent">
+						{{info.people}}
+					</div>
+				</div>
+				<div class="list">
+					<div class="listHead">
+						来访时间:
+					</div>
+					<div class="listContent">
+						{{info.visitingPeriod}}
+					</div>
+				</div>
 			</div>
 		</div>
 		<div class="bodyContent">

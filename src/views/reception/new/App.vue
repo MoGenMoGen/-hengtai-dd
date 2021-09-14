@@ -22,7 +22,7 @@
 						联系电话
 					</div>
 
-					<input class="listContent" placeholder="请输入联系电话" v-model="phone"/>
+					<input class="listContent" placeholder="请输入联系电话" v-model="phone"  @blur="test"/>
 
 				</div>
 				<div class="list">
@@ -218,6 +218,7 @@
 				demand:"",
 				nature:"",
 				saler:"",
+				isNewCustomer:'',
 				
 				info: {
 					
@@ -309,10 +310,7 @@
 			},
 			
 			async confirm(){
-				// if(this.name==""){
-				// 	Toast("名字不能为空")
-				// 	return false
-				// }
+				
 				// else if(this.phone==""){
 				// 	Toast("电话不能为空")
 				// 	return false
@@ -322,33 +320,37 @@
 				// 	Toast("请输入正确的手机号")
 				// 	return false
 				// }
-				 if(this.wxId==""){
-					Toast("微信号不能为空")
-					return false
-				}
-				else if(this.people==""){
+				//  if(this.wxId==""){
+				// 	Toast("微信号不能为空")
+				// 	return false
+				// }
+				
+				 if(this.people==""){
 					Toast("客户人数不能为空")
 					return false
 				}
-				else if(this.customerType==""){
+				 if(this.customerType==""){
 					Toast("客户类型不能为空")
 					return false
 				}
-				else if(this.visitingTime==""){
+				if(this.visitingTime==""){
 					Toast("来访时间不能为空")
 					return false
 				}
-				else if(this.demand==""){
+				 if(this.demand==""){
 					Toast("客户需求不能为空")
 					return false
 				}
-				else if(this.nature==""){
+				 if(this.nature==""){
 					Toast("客流性质不能为空")
 					return false
 				}
-				else if(this.nature!='售后服务'&&this.nature!='证牌服务'&&this.nature!='其他服务'&&this.nature!=''&&this.saler==""){
+			if(this.nature!='售后服务'&&this.nature!='证牌服务'&&this.nature!='其他服务'&&this.nature!=''&&this.saler==""){
 					Toast("销售顾问不能为空")
 					return false
+				}
+				if(this.name==""){
+					this.name="(未留名)"
 				}
 				
 				
@@ -429,7 +431,73 @@
 			handleBuysTypeFour(e,v){
 				this.visitingTime=e.content
 				this.showPicker3=false
-			}
+			},
+			test(){
+				this.api.getStoreagain({phone:this.phone}).then(res=>{
+				
+					 this.isNewCustomer=res.data
+				
+					if( this.isNewCustomer==1){
+					let querys = {
+						w: [
+							["category", 2, "EQ"],
+							["outside",3,"EQ"]
+						],
+						
+						o: ["id", "esc"],
+						p: [1, 10],
+					}
+					let querys2= {
+						w: [
+							["category", 9, "EQ"],
+							["outside",3,"EQ"]
+						],
+						
+						o: ["id", "esc"],
+						p: [1, 10],
+					}
+					
+					 this.api.getCustomerCommonfieldAgain( this.query.toEncode( this.newqry(querys))).then(res=>{
+						 console.log("qw",res);
+						 this.options=res
+						 this.searchoptions=this.options
+					 })
+					 this.api.getWxCommonfieldAgain(this.query.toEncode(this.newqry(querys2))).then(res=>{
+						 this.optionsTwo=res
+						 this.searchoptionsTwo=this.optionsTwo
+					 })
+					
+					}
+					else{
+						let querys = {
+							w: [
+								["category", 2, "EQ"],
+							],
+							o: ["id", "esc"],
+							p: [1, 10],
+						}
+						let querys2 = {
+							w: [
+								["category", 9, "EQ"],
+							],
+							o: ["id", "esc"],
+							p: [1, 10],
+						}
+						this.api.getCustomerCommonfield(this.query.toEncode(this.newqry(querys))).then(res=>{
+							
+							this.options=res
+							this.searchoptions=this.options
+						})
+						this.api.getWxCommonfield(this.query.toEncode(this.newqry(querys2))).then(res=>{
+							this.optionsTwo=res.list
+							this.searchoptionsTwo=this.optionsTwo
+						})
+					}
+					}
+				)
+				},
+				
+			
 		},
 		computed: {
 			

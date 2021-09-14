@@ -963,7 +963,38 @@ class api {
 		
 		})
 	}
-
+	//获取客户是否为再次到店
+   getStoreagain(data){
+   	let header = {
+   	    // 'Content-Type': 'application/json',
+   	    // 'yui3-token': localStorage.getItem('token')
+   	}
+   	return new Promise((resolve, reject) => {
+   	    get('/hss/wxCustomer/storeagain', data, header).then(res => {
+   	        resolve(res)
+   	    })
+   	
+   	})
+   }
+   //根据是否再次到店再次获取客户性质
+    getCustomerCommonfieldAgain(data){
+   	return new Promise((resolve, reject) => {
+   	    get('/hss/wxCommonfield/page?query=' + data).then(res => {
+   	        resolve(res.data.list)
+   	    })
+   		
+   	})
+   }
+   //根据是否再次到店再次获取客户类型
+ getWxCommonfieldAgain(data){
+	   return new Promise((resolve, reject) => {
+	       get('/hss/wxCommonfield/page?query=' + data).then(res => {
+	           resolve(res.data.list)
+	       })
+	   	
+	   })
+   }
+   
 
 }
 

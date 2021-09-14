@@ -98,7 +98,7 @@
 					销售人员
 				</div>
 				<div class="listContent">
-					{{info.crtBy}}
+					{{info.saler}}
 				</div>
 			</div>
 		</div>
@@ -185,7 +185,7 @@
 				currentindex: 0,
 				id: "",
 				reply: "",
-				isbuy: true,
+				isBuy: true,
 				istrue: true,
 				num: 1,
 
@@ -216,7 +216,7 @@
 				this.api.getWxBusinessBuyDetail(this.id).then(res => {
 
 					this.info = res
-					this.isbuy = true
+					this.isBuy = true
 					let querys = {
 						w: [
 							["businessId", this.info.id, "EQ"],
@@ -226,7 +226,7 @@
 						p: [1, 10],
 					}
 					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(res => {
-						this.replayList = [...this.replayList, ...res.data.list]
+						this.replayList = res.data.list
 						this.total = res.page.total
 
 					})
@@ -237,7 +237,7 @@
 				this.api.getWxBusinessSellDetail(this.id).then(res => {
 
 					this.info = res
-					this.isbuy = false
+					this.isBuy = false
 					let querystwo = {
 						w: [
 							["businessId", this.info.id, "EQ"],
@@ -247,7 +247,7 @@
 						p: [1, 10],
 					}
 					this.api.getWxCommunicate(this.query.toEncode(this.newqry(querystwo))).then(res => {
-						this.replayList = [...this.replayList, ...res.data.list]
+						this.replayList = res.data.list
 						this.total = res.page.total
 					})
 
@@ -341,19 +341,19 @@
 				let p = {
 					businessId: "",
 					customerId: "",
-					isbuy: "",
+					isBuy: "",
 					content: "",
 				}
 				p.content = this.reply
 				p.businessId = this.info.id
 				p.customerId = this.info.customerId
-				p.isbuy = this.isbuy
+				p.isBuy = this.isBuy
 				this.api.postWxCommunicate(p).then(res => {
 					if (this.currentindex == 0) {
 						this.api.getWxBusinessBuyDetail(this.id).then(res => {
 
 							this.info = res
-							this.isbuy = true
+							this.isBuy = true
 							let querys = {
 								w: [
 									["businessId", this.info.id, "EQ"],
@@ -364,7 +364,7 @@
 							}
 							this.api.getWxCommunicate(this.query.toEncode(this.newqry(querys))).then(
 							res => {
-								this.replayList = [...this.replayList, ...res.data.list]
+								this.replayList = res.data.list
 								this.total = res.page.total
 
 							})
@@ -375,7 +375,7 @@
 						this.api.getWxBusinessSellDetail(this.id).then(res => {
 
 							this.info = res
-							this.isbuy = false
+							this.isBuy = false
 							let querystwo = {
 								w: [
 									["businessId", this.info.id, "EQ"],
@@ -386,7 +386,7 @@
 							}
 							this.api.getWxCommunicate(this.query.toEncode(this.newqry(querystwo))).then(
 								res => {
-									this.replayList = [...this.replayList, ...res.data.list]
+									this.replayList = res.data.list
 									this.total = res.page.total
 								})
 
@@ -434,6 +434,7 @@
 		}
 
 		.popBox {
+		
 			position: fixed;
 			top: 5.65rem;
 			left: 50%;
@@ -446,6 +447,7 @@
 
 			.title {
 				width: 100%;
+				
 				height: 1.06rem;
 				text-align: center;
 				line-height: 1.06rem;

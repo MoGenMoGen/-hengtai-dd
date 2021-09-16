@@ -77,10 +77,45 @@
 					</el-option>
 				</el-select> -->
 				<div class="pick">
-					<el-date-picker type="date" placeholder="选择开始日期" :picker-options="pickerOptionsStart"
+					<van-field
+					  style="padding: 0; text-align: center"
+					  class="picker son leftpart bg"
+					  readonly
+					  label=""
+					  :value="startTime"
+					  placeholder="选择开始日期"
+					  @click="showPicker5 = true"
+					/>
+					<van-popup v-model="showPicker5" round position="bottom">
+					  <van-datetime-picker
+					    v-model="currentDate"
+					    type="date"
+					    title="选择开始日期"
+					    @confirm="startTimeChange"
+					    @cancel="showPicker5 = false"
+					  />
+					</van-popup>
+					<van-field
+					  style="padding: 0; text-align: center"
+					  class="picker son rightpart bg"
+					  readonly
+					  label=""
+					  :value="endTime"
+					  placeholder="选择结束日期"
+					  @click="showPicker6 = true"
+					/>
+					<van-popup v-model="showPicker6" round position="bottom">
+					  <van-datetime-picker
+					    v-model="currentDate"
+					    type="date"
+					    @confirm="endTimeChange"
+					    @cancel="showPicker6 = false"
+					  />
+					</van-popup>
+					<!-- <el-date-picker type="date" placeholder="选择开始日期" :picker-options="pickerOptionsStart"
 						v-model="startTime" @change="startTimeChang" class="picker"></el-date-picker>
 					<el-date-picker type="date" placeholder="选择结束日期" :picker-options="pickerOptionsOver"
-						v-model="endTime" @change="endTimeChang" class="picker"></el-date-picker>
+						v-model="endTime" @change="endTimeChang" class="picker"></el-date-picker> -->
 				</div>
 			</div>
 			<div class="rightBox">
@@ -216,6 +251,8 @@
 				showPicker2: false,
 				showPicker3:false,
 				showPicker4:false,
+				showPicker5:false,
+				showPicker6:false,
 				search1: "",
 				search2: "",
 				search3:"",
@@ -249,6 +286,7 @@
 				seriesname: "", //车系
 				model: "", //车型id
 				modelname:"", //车型
+				currentDate:"",
 				
 				phone: "",
 				pickerVisible: true,
@@ -322,6 +360,14 @@
 
 		},
 		methods: {
+			startTimeChange(val){
+				this.startTime=moment(val).format("YYYY-MM-DD");
+				this.showPicker5=false
+			},
+			endTimeChange(val){
+				this.endTime=moment(val).format("YYYY-MM-DD");
+				this.showPicker6=false
+			},
 			cancel() {
 				console.log('cancel')
 				this.result = 'click cancel result: null'
@@ -570,6 +616,13 @@
 	};
 </script>
 <style lang="less">
+	.van-field__control {
+	  text-align: center !important;
+	      width: 2.866rem;
+		  height: 0.8rem;
+		  border-radius: 0.1rem;
+	}
+	
 	.el-select-dropdown__item {
 		text-align: center;
 	}
@@ -671,6 +724,7 @@
 				}
 
 				input::placeholder {
+					text-align: center;
 					font-size: 0.24rem;
 					color: #909090;
 					opacity: 0.8;

@@ -325,26 +325,26 @@
 				// 	return false
 				// }
 				
-				 if(this.people==""){
-					Toast("客户人数不能为空")
-					return false
-				}
-				 if(this.customerType==""){
-					Toast("客户类型不能为空")
-					return false
-				}
-				if(this.visitingTime==""){
-					Toast("来访时间不能为空")
-					return false
-				}
-				 if(this.demand==""){
-					Toast("客户需求不能为空")
-					return false
-				}
-				 if(this.nature==""){
-					Toast("客流性质不能为空")
-					return false
-				}
+				//  if(this.people==""){
+				// 	Toast("客户人数不能为空")
+				// 	return false
+				// }
+				//  if(this.customerType==""){
+				// 	Toast("客户类型不能为空")
+				// 	return false
+				// }
+				// if(this.visitingTime==""){
+				// 	Toast("来访时间不能为空")
+				// 	return false
+				// }
+				//  if(this.demand==""){
+				// 	Toast("客户需求不能为空")
+				// 	return false
+				// }
+				//  if(this.nature==""){
+				// 	Toast("客流性质不能为空")
+				// 	return false
+				// }
 			if(this.nature!='售后服务'&&this.nature!='证牌服务'&&this.nature!='其他服务'&&this.nature!=''&&this.saler==""){
 					Toast("销售顾问不能为空")
 					return false

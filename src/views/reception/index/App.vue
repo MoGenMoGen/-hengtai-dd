@@ -6,17 +6,64 @@
 		</div>
 		<div class="searchBox">
 			<div class="leftBox">
+				<div id="" style="display: flex;">
+					
+		
 				<input type="" name="" id="" value="" placeholder="客户姓名、电话、销售" v-model="searchStr" />
-				<el-select v-model="value" filterable clearable placeholder="留档状态" class="select" @change="postId"
+				<van-field class="vantSelect" readonly clickable label="" :value="gearStatus" placeholder="选择留档状态"
+					@click="showPicker4 = true" />
+				<van-popup v-model="showPicker4" round position="bottom">
+					<van-search v-model="search4" shape="round" background="#09c076" @input="onSearch4"
+						placeholder="请输入搜索关键词" />
+					<van-picker value-key="label" show-toolbar :columns="searchoptionsFour"
+						@cancel="showPicker4= false" @confirm="handleBuysTypeFour" />
+				</van-popup>
+						</div>
+				<!-- <el-select v-model="value" filterable clearable placeholder="留档状态" class="select" @change="postId"
      >
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.id">
 					</el-option>
-				</el-select>
+				</el-select> -->
 				<div class="pick">
-					<el-date-picker type="date" placeholder="选择开始日期" :picker-options="pickerOptionsStart"
+					<van-field
+					  style="padding: 0; text-align: center"
+					  class="picker son leftpart bg"
+					  readonly
+					  label=""
+					  :value="startTime"
+					  placeholder="选择开始日期"
+					  @click="showPicker5 = true"
+					/>
+					<van-popup v-model="showPicker5" round position="bottom">
+					  <van-datetime-picker
+					    v-model="currentDate"
+					    type="date"
+					    title="选择开始日期"
+					    @confirm="startTimeChange"
+					    @cancel="showPicker5 = false"
+					  />
+					</van-popup>
+					<van-field
+					  style="padding: 0; text-align: center"
+					  class="picker son rightpart bg"
+					  readonly
+					  label=""
+					  :value="endTime"
+					  placeholder="选择结束日期"
+					  @click="showPicker6 = true"
+					/>
+					<van-popup v-model="showPicker6" round position="bottom">
+					  <van-datetime-picker
+					    v-model="currentDate"
+					    type="date"
+					    @confirm="endTimeChange"
+					    @cancel="showPicker6 = false"
+					  />
+					</van-popup>
+					<!-- <el-date-picker type="date" placeholder="选择开始日期" :picker-options="pickerOptionsStart"
 						v-model="startTime" @change="startTimeChang" class="picker"></el-date-picker>
 					<el-date-picker type="date" placeholder="选择结束日期" :picker-options="pickerOptionsOver"
-						v-model="endTime" @change="endTimeChang" class="picker"></el-date-picker>
+						v-model="endTime" @change="endTimeChang" class="picker"></el-date-picker> -->
 				</div>
 			</div>
 			<div class="rightBox">
@@ -80,6 +127,15 @@
 	export default {
 		data() {
 			return {
+				showPicker4:false,
+				
+				showPicker5:false,
+				showPicker6:false,
+				searchoptionsFour:[],
+				
+				currentDate:"",
+				search4:"",
+				
 				value: "",
 				startTime: "",
 				endTime: "",
@@ -121,6 +177,7 @@
 			    window.addEventListener('pagehide', function () {
 			      isPageHide = true;
 			    });
+				this.searchoptionsFour=this.options
 			
 		
 				
@@ -130,16 +187,33 @@
 			
 		},
 		methods: {
+			onSearch4(a)
+			{
+				if(a!=""){
+				   this.searchoptionsFour=this.options.filter((item) =>
+						item.label.includes(a));
+				}
+				else {
+					this.searchoptionsFour = this.options
+				}
+			},
+			handleBuysTypeFour(e, v) {
+			
+				this.gearStatus = e.label
+				this.showPicker4=false
+				},
 			back() {
 				this.until.back()
 			},
-			startTimeChang(val) {
+			startTimeChange(val) {
 				let startTime = moment(val).format("YYYY-MM-DD");
 				this.startTime = startTime;
+				this.showPicker5=false
 			},
-			endTimeChang(val) {
+			endTimeChange(val) {
 				let endTime = moment(val).format("YYYY-MM-DD");
 				this.endTime = endTime;
+				this.showPicker6=false
 			},
 			//新增接待
 			addNew(){
@@ -200,6 +274,20 @@
 	};
 </script>
 <style lang="less">
+	.van-field__control {
+	  text-align: center !important;
+	      width: 2.866rem;
+		  height: 0.8rem;
+		  border-radius: 0.1rem;
+	}
+	// .van-cell--clickable{
+	// 	 text-align: center !important;
+	// 	 font-size: 0.28rem;
+	// 	 width: 2.9rem;
+	// 	 height: 0.7rem;
+	// 	 padding: 0;
+	// 	 margin: 0;
+	// }
 	.el-input__inner {
 		height: 0.8rem;
 		font-size: 0.24rem;
@@ -248,11 +336,23 @@
 			box-sizing: border-box;
 
 			.leftBox {
+				.vantSelect{
+						 font-size: 0.24rem;
+						 width: 2.9rem;
+						 height: 0.7rem;
+						 border-radius: 0.1rem;
+						  margin-left: 0.09rem;
+						 text-align: center;
+						 display: flex;
+						 align-items: center;
+						 justify-content: center;
+						  padding: 0.4rem 0.4rem;
+				}
 				input {
 					width: 2.9rem;
 					height: 0.8rem;
 					background: #FFFFFF;
-					border: 0.02rem solid #DDDDDD;
+					// border: 0.02rem solid #DDDDDD;
 					border-radius: 0rem;
 					font-size: 0.24rem;
 					padding: 0 0.1rem;

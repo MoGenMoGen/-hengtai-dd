@@ -148,7 +148,7 @@
 					this.until.loSave('token', res.data.token)
 					this.until.loSave('userInfo',JSON.stringify(res.data.userInfo))
 					this.api.getWxlogin(this.code)
-					window.location.replace("/views/home/index.html")
+					window.location.replace("/ddPage/views/home/index.html")
 
 				})
 				//   let that = this

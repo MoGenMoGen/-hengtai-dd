@@ -400,8 +400,8 @@
       <div class="texttitle">求购</div>
     </div>
     <div class="buyneeds">
-      <!-- 无效则隐藏 -->
-      <div class="Invalidhide" v-if="!showInvalid">
+      <!-- 无效/J/S/P则隐藏 -->
+      <div class="Invalidhide" v-if="!showInvalid&&showBuyInfo">
         <div class="row" @click="showmorebuybrand = true">
           <!-- 占位符 -->
           <div style="display: flex">
@@ -763,7 +763,7 @@
       </div>
 
       <!-- 无效原因结束 -->
-      <div class="row" v-if="showBtype">
+      <div class="row" v-if="!showInvalid&&showBuyInfo">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder"></div>
@@ -787,7 +787,7 @@
         </div>
       </div>
 
-      <div class="row" style="align-items: center" v-if="showfollow">
+      <div class="row" style="align-items: center" v-if="showfollow&&showBuyInfo">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder">*</div>
@@ -1519,13 +1519,14 @@ export default {
     showmorebrand() {
       return this.showmorebuybrand == true || this.showmoresellbrand == true;
     },
-    // 是否显示购买类型(意向等级O成交、j、s、p、无效，不显示)
-    showBtype() {
+    // 是否显示求购信息(意向等级j、s、p不显示求购信息)
+    showBuyInfo() {
       let index = this.intentLevelList.findIndex(
         (item) => item.id == this.hssWxCustomerRo.intentionLevel
       );
 
-      if (index >= 0 && this.intentLevelList[index].outside >= 6) return false;
+      if (index >= 0 && (this.intentLevelList[index].outside >= 6 && this.intentLevelList[index].outside<=8  )) 
+      return false;
       return true;
     },
     // 是否显示跟进时间(O成交、战败、无效，不显示)
@@ -1547,7 +1548,8 @@ export default {
       let index = this.intentLevelList.findIndex(
         (item) => item.id == this.hssWxCustomerRo.intentionLevel
       );
-      if (index >= 0 && this.intentLevelList[index].outside == 10) return true;
+      if (index >= 0 && this.intentLevelList[index].outside == 10) 
+      return true;
       return false;
     },
     // 其他无效原因
@@ -1766,7 +1768,7 @@ export default {
 
         Toast("客户来源不能为空");
         return false;
-      } else if (this.hssWxBusinessBuyRo.brand == ""&&!this.showInvalid) {
+      } else if (this.hssWxBusinessBuyRo.brand == "" && !this.showInvalid) {
         console.log(77);
 
         Toast("买车品牌不能为空");
@@ -1786,7 +1788,8 @@ export default {
         return false;
       } else if (
         this.hssWxBusinessSellRo.brand == "" &&
-        this.hssWxCustomerRo.isSell && !this.showInvalid
+        this.hssWxCustomerRo.isSell &&
+        !this.showInvalid
       ) {
         console.log(1010);
 

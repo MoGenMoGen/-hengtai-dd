@@ -12,7 +12,7 @@ module.exports = {
     index: path.resolve(__dirname, '../wechat/index.html'),
     assetsRoot: path.resolve(__dirname, '../wechat'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/ddPage/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
@@ -31,7 +31,7 @@ module.exports = {
     port: 80,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/ddPage/',
       proxyTable: {
           '/api':{
               // target:'http://192.168.2.140',

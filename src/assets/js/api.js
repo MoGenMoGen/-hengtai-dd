@@ -1,7 +1,6 @@
 // const hostUrl = "http://hss.jiaxiangtech.com";
-const hostUrl = "http://hsstest.jinkworld.com"
-// const hostUrl = "http://u2768442w0.qicp.vip/";
-// const hostUrl = "http://5anpucq.nat.ipyingshe.com";
+// const hostUrl = "http://hsstest.jinkworld.com"
+const hostUrl = "http://hss.jinkworld.com"
 
 
 
@@ -26,7 +25,7 @@ function get(url, data, header, cache = false) {
             }
             else if (res.data.code == 401) {
 
-                window.location.replace("/views/profile/login.html")
+                window.location.replace("/ddPage/views/profile/login.html")
             }
             else {
 

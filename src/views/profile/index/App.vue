@@ -109,7 +109,7 @@ export default {
     quit() {
       this.api.logout().then(() => {
         localStorage.clear();
-        window.location.replace("/views/profile/login.html");
+        window.location.replace("/ddPage/views/profile/login.html");
       });
     },
   },

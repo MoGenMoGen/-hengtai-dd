@@ -1,6 +1,5 @@
 <!-- 互生升首页 -->
 <template>
-
   <div id="container">
     <div class="top">
       <div class="toptitle"></div>
@@ -13,9 +12,9 @@
             <div class="left">
               <img src="~@/assets/img/icon1.png" alt="" class="icon" />
               <div class="text">
-				  <div class="total" v-if="total!=0&&total!=''">
-				  	{{total}}
-				  </div>
+                <div class="total" v-if="total != 0 && total != ''">
+                  {{ total }}
+                </div>
                 <div class="title">接待</div>
                 <div class="en">Reception</div>
               </div>
@@ -49,9 +48,9 @@
             <div class="left">
               <img src="~@/assets/img/icon4.png" alt="" class="icon" />
               <div class="text">
-				  <div class="total" v-if="replay!=0&&replay!=''">
-				  	{{replay}}
-				  </div>
+                <div class="total" v-if="replay != 0 && replay != ''">
+                  {{ replay }}
+                </div>
                 <div class="title">产品需求</div>
                 <div class="en">Product demand</div>
               </div>
@@ -73,70 +72,62 @@ export default {
   data() {
     return {
       code: "",
-	  total:"",
-	  replay:"",
+      total: "",
+      replay: "",
     };
   },
   components: {
     tabbar,
   },
   async mounted() {
-	  
     console.log(this.until.loGet("token"), 55);
     if (!this.until.loGet("token")) {
       console.log(111);
       this.code = this.until.getQueryString("code");
       if (!this.code) {
-        this.until
-          .href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wwa9310f942b8696dc&redirect_uri=http%3A%2F%2Fhsstest.jinkworld.com%2Fviews%2Fhome%2Findex.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
+        window.location.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww267fae1d5c1d9ae3&redirect_uri=https%3A%2F%2Fhss.jinkworld.com%2FddPage%2Fviews%2Fhome%2Findex.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
 	  	  `);
       } else {
         this.api.getWxlogin({ code: this.code }).then((res) => {
           this.until.loSave("token", res.data.token);
           this.until.loSave("userInfo", res.data.userInfo);
-		  setTimeout(()=>{
-		  			  this.api.getIsRead({}).then(res=>{
-		  			  	console.log(1213,res);
-		  			  	this.replay=res.data
-		  			  })
-		  },100)
-		  setTimeout(()=>{
-			  this.api.getGetnotread({}).then(res=>{
-			  	console.log(1213,res);
-			  	this.total=res.data
-			  })
-		  },100)
-		
-		 
-      
+          setTimeout(() => {
+            this.api.getIsRead({}).then((res) => {
+              console.log(1213, res);
+              this.replay = res.data;
+            });
+          }, 100);
+          setTimeout(() => {
+            this.api.getGetnotread({}).then((res) => {
+              console.log(1213, res);
+              this.total = res.data;
+            });
+          }, 100);
         });
       }
+    } else {
+      setTimeout(() => {
+        this.api.getGetnotread({}).then((res) => {
+          console.log(1213, res);
+          this.total = res.data;
+        });
+      }, 100);
+      setTimeout(() => {
+        this.api.getIsRead({}).then((res) => {
+          console.log(1213, res);
+          this.replay = res.data;
+        });
+      }, 100);
     }
-	else{
-	setTimeout(()=>{
-				  this.api.getGetnotread({}).then(res=>{
-				  	console.log(1213,res);
-				  	this.total=res.data
-				  })
-	},100)
-	setTimeout(()=>{
-				  this.api.getIsRead({}).then(res=>{
-				  	console.log(1213,res);
-				  	this.replay=res.data
-				  })
-	},100)
-	}
-	var isPageHide = false;
-	  window.addEventListener('pageshow', function () {
-	    if (isPageHide) {
-	      window.location.reload();
-	    }
-	  });
-	  window.addEventListener('pagehide', function () {
-	    isPageHide = true;
-	  });
-				
-	
+    var isPageHide = false;
+    window.addEventListener("pageshow", function () {
+      if (isPageHide) {
+        window.location.reload();
+      }
+    });
+    window.addEventListener("pagehide", function () {
+      isPageHide = true;
+    });
   },
   methods: {
     toDetail(url) {
@@ -158,7 +149,7 @@ export default {
   display: flex;
   flex-direction: column;
   .top {
-    flex:1;
+    flex: 1;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch; /*这句是为了滑动更顺畅*/
 
@@ -223,20 +214,20 @@ export default {
 
           .text {
             display: inline-block;
-			position: relative;
-			.total{
-				width: 0.25rem;
-				height: 0.25rem;
-				font-size: 0.18rem;
-				position: absolute;
-				top: 0rem;
-				right: 0;
-				background-color: red;
-				color: #ffffff;
-				text-align: center;
-				line-height: 0.25rem;
-				border-radius: 0.125rem;
-			}
+            position: relative;
+            .total {
+              width: 0.25rem;
+              height: 0.25rem;
+              font-size: 0.18rem;
+              position: absolute;
+              top: 0rem;
+              right: 0;
+              background-color: red;
+              color: #ffffff;
+              text-align: center;
+              line-height: 0.25rem;
+              border-radius: 0.125rem;
+            }
             .title {
               font-size: 0.3rem;
               font-family: PingFang SC;

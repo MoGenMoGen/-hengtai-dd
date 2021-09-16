@@ -414,7 +414,7 @@ class until{
   }
   //跳转页面
   href(url){
-    window.location.href = url;
+    window.location.href = '/ddPage'+url;
   }
   //后退
   back(){

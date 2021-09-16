@@ -66,7 +66,7 @@ app.use(staticPath, express.static('./static'))
 
 
 // var uri = 'http://localhost:' + port+'/views/profile/login.html'
-var uri = 'http://localhost:' + port+'/views/home/index.html'
+var uri = 'http://localhost:' + port+'/ddPage/views/home/index.html'
 
 
       

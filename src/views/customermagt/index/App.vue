@@ -124,11 +124,29 @@
           <div class="row3">
             <van-field
               style="padding: 0; text-align: center"
+              class="input bg leftpart"
+              readonly
+              label=""
+              :value="datetype"
+              placeholder="日期类型"
+              @click="showPicker7 = true"
+            />
+            <van-popup v-model="showPicker7" round position="bottom">
+              <van-picker
+                value-key="content"
+                show-toolbar
+                :columns="dateList"
+                @cancel="showPicker7 = false"
+                @confirm="handledatetype"
+              />
+            </van-popup>
+            <van-field
+              style="padding: 0; text-align: center"
               class="picker son leftpart bg"
               readonly
               label=""
               :value="info.beginFollowUpTime"
-              placeholder="选择开始日期"
+              placeholder="开始日期"
               @click="showPicker5 = true"
             />
             <van-popup v-model="showPicker5" round position="bottom">
@@ -147,7 +165,7 @@
               readonly
               label=""
               :value="info.endFollowUpTime"
-              placeholder="选择结束日期"
+              placeholder="结束日期"
               @click="showPicker6 = true"
             />
             <van-popup v-model="showPicker6" round position="bottom">
@@ -178,6 +196,11 @@
           </div>
         </div>
         <div class="right" @click="handleQuery">查询</div>
+      </div>
+      <div
+        style="padding-left: 0.3rem; margin-top: -0.24rem"
+      >
+        共 {{ customerList.length }} 条记录
       </div>
 
       <van-list
@@ -229,7 +252,7 @@ export default {
       showHeight: 0, // 实时屏幕高度
       hideshow: true, // 显示或者隐藏保存按钮,
 
-        currentDate: new Date(),
+      currentDate: new Date(),
 
       // 购买类型、搜索列表、搜索值、是否显示picker
       searchbuytypes: [],
@@ -252,6 +275,14 @@ export default {
 
       // 结束日期
       showPicker6: false,
+      // 日期类型
+      showPicker7: false,
+      dateList: [
+        { content: "按创建日期排序", id: 1 },
+        { content: "按跟进日期排序", id: 2 },
+      ],
+      datetype: "按创建日期排序",
+
       // 上拉加载loading
       loading: false,
       finished: false,
@@ -260,6 +291,8 @@ export default {
       total: 0,
       // 提交给后台的数据
       info: {
+        // 日期类型：创建日期、跟进日期
+        orders: "创建",
         nameAndphone: "", //姓名手机
         business: "", //购买类型
         beginFollowUpTime: "", //跟进时间开始时间
@@ -343,8 +376,8 @@ export default {
     // },
   },
   async created() {
-    console.log('cereated');
-   
+    console.log("cereated");
+
     // 获取公共列表
     // 客流性质
     let query_flow_type = {
@@ -355,7 +388,7 @@ export default {
     this.flowtypes = await this.api.getFlowtypeList(
       this.query.toEncode(this.newqry(query_flow_type))
     );
-    this.flowtypes.unshift({content:'全部'})
+    this.flowtypes.unshift({ content: "全部" });
     this.searchflowtypes = this.flowtypes;
     // 购买类型
     let query_buys_type = {
@@ -366,7 +399,7 @@ export default {
     this.buytypes = await this.api.getBuysTypeList(
       this.query.toEncode(this.newqry(query_buys_type))
     );
-    this.buytypes.unshift({content:'全部'})
+    this.buytypes.unshift({ content: "全部" });
     this.searchbuytypes = this.buytypes;
     // 销售顾问
     // let query_sales = {
@@ -378,24 +411,22 @@ export default {
     //   p: [1, 1000],
     // };
     this.salers = await this.api.getsalersList();
-    this.salers.unshift({arg7:'全部'})
+    this.salers.unshift({ arg7: "全部" });
     this.searchsalers = this.salers;
 
     // 意向等级
     this.intentLevels = await this.api.getWxIntentionLevel({
       p: { n: 1, s: 20 },
     });
-    this.intentLevels.unshift({content:'全部'})
+    this.intentLevels.unshift({ content: "全部" });
     this.searchintentLevels = this.intentLevels;
-
-   
   },
   async mounted() {
     console.log("mounted");
-      // 返回刷新
-    window.onpageshow=()=>{
+    // 返回刷新
+    window.onpageshow = () => {
       this.onRefresh();
-    }
+    };
     this.defaultHeight = $(window).height();
     // window.onresize监听页面高度的变化
     window.onresize = () => {
@@ -410,22 +441,22 @@ export default {
   methods: {
     // 上拉加载
     handleLoad() {
-        if (this.isfirstload) {
-          // 页码不增加
+      if (this.isfirstload) {
+        // 页码不增加
+        this.getList(this.info);
+        this.isfirstload = false;
+        this.loading = false;
+      } else {
+        if (this.total > this.customerList.length) {
+          this.info.pageNo += 1;
           this.getList(this.info);
-          this.isfirstload = false;
           this.loading = false;
         } else {
-          if (this.total > this.customerList.length) {
-            this.info.pageNo += 1;
-            this.getList(this.info);
-            this.loading = false;
-          } else {
-            this.loading = false;
+          this.loading = false;
 
-            this.finished = true;
-          }
+          this.finished = true;
         }
+      }
     },
     // 处理公共字段参数生成qry(使用query.js)
     newqry(obj) {
@@ -500,6 +531,13 @@ export default {
     handleIntentionLevel(e) {
       this.info.intentionLevel = e.content;
       this.showPicker4 = false;
+    },
+    // 选择时间类型
+    handledatetype(e) {
+      this.datetype = e.content;
+      this.showPicker7 = false;
+      if (e.id == 1) this.info.orders = "创建";
+      else this.info.orders = "跟进";
     },
     // 新增客户
     newcustomer() {

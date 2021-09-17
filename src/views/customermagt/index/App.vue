@@ -197,9 +197,7 @@
         </div>
         <div class="right" @click="handleQuery">查询</div>
       </div>
-      <div
-        style="padding-left: 0.3rem; margin-top: -0.24rem"
-      >
+      <div style="padding-left: 0.3rem; margin-top: -0.24rem">
         共 {{ customerList.length }} 条记录
       </div>
 
@@ -425,6 +423,7 @@ export default {
     console.log("mounted");
     // 返回刷新
     window.onpageshow = () => {
+      this.customerList = [];
       this.onRefresh();
     };
     this.defaultHeight = $(window).height();
@@ -439,21 +438,36 @@ export default {
     this.searchintroducers = this.introducers;
   },
   methods: {
+    // 获取列表
+    // async getList(data) {
+    //   let res = await this.api.getcustomerList(data);
+    //   this.customerList = [...this.customerList, ...res.data.list];
+    //   this.total = res.page.total;
+    //   console.log(this.customerList);
+    // },
     // 上拉加载
     handleLoad() {
       if (this.isfirstload) {
+        this.customerList = [];
         // 页码不增加
-        this.getList(this.info);
-        this.isfirstload = false;
-        this.loading = false;
-      } else {
+        // this.getList(this.info);
+        this.api.getcustomerList(this.info).then((res) => {
+          this.customerList = res.data.list;
+          this.total = res.page.total;
+          this.isfirstload = false;
+          this.loading = false;
+        });
+      } 
+      else {
         if (this.total > this.customerList.length) {
           this.info.pageNo += 1;
-          this.getList(this.info);
-          this.loading = false;
+          this.api.getcustomerList(this.info).then((res) => {
+            this.customerList = [...this.customerList, ...res.data.list];
+            this.total = res.page.total;
+            this.loading = false;
+          });
         } else {
           this.loading = false;
-
           this.finished = true;
         }
       }
@@ -546,12 +560,7 @@ export default {
     toDetail(id) {
       this.until.href("/views/customermagt/detail.html?id=" + id);
     },
-    // 获取列表
-    async getList(data) {
-      let res = await this.api.getcustomerList(data);
-      this.customerList = [...this.customerList, ...res.data.list];
-      this.total = res.page.total;
-    },
+
     // 查询
     handleQuery() {
       // 每次点击请求第一页数据

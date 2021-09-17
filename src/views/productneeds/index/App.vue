@@ -297,7 +297,7 @@
 				show: true,
 				startTime: '',
 				endTime: '',
-				tabList: ["买车需求", "卖车需求"],
+				tabList: ["求购", "寄售"],
 				currentIndex: 0,
 				value: '',
 				value1: "",
@@ -322,6 +322,7 @@
 
 		},
 		async mounted() {
+			this.currentDate=new Date()
 			let p = {
 				n: 1,
 				s: 10

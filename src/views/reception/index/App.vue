@@ -178,8 +178,9 @@
 			      isPageHide = true;
 			    });
 				this.searchoptionsFour=this.options
-			
-		
+				this.currentDate=new Date()
+			    console.log(this.currentDate);
+				
 				
 		
 		 

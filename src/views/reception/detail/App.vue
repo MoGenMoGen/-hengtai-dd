@@ -88,8 +88,8 @@
 			</div>
 		</div>
 		<div class="btn">
-			<button type="button" @click="perfectTo" >信息完善</button>
-			<!-- <button type="button"  v-if="info.gearStatus==true&&info.customerId!=''" style="background-color:rgb(132,132,132);">已完善</button> -->
+			<button type="button" @click="perfectTo" v-if="info.gearStatus==false">信息完善</button>
+			<button type="button"  v-if="info.gearStatus==true" style="background-color:rgb(132,132,132);">已完善</button>
 		</div>
 	</div>
 
@@ -114,9 +114,20 @@
 		},
 
 		async mounted() {
+			
 			this.api.getWxCheckinDetail(this.id).then(res=>{
 				this.info=res
 			})
+			var isPageHide = false;
+					
+			window.addEventListener("pageshow", function () {
+			  if (isPageHide) {
+			    window.location.reload();
+			  }
+			});
+			window.addEventListener("pagehide", function () {
+			  isPageHide = true;
+			});
 		},
 		created() {
          this.id = this.until.getQueryString('id')

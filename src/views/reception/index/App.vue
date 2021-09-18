@@ -112,7 +112,7 @@
 				</div>
 				<div class="btn">
 					<button type="button" @click="toDetail(item.id)" v-if="item.gearStatus==false">完善信息</button>
-					<button type="button" v-if="item.gearStatus==true" style="background-color:rgb(132,132,132);color: #ffffff;">已完善</button>
+					<button type="button" v-if="item.gearStatus==true" style="background-color:rgb(132,132,132);color: #ffffff;border: 0;">已完善</button>
 				</div>
 		</div>
 		</div>

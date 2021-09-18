@@ -88,8 +88,8 @@
 			</div>
 		</div>
 		<div class="btn">
-			<button type="button" @click="perfectTo" v-if="info.gearStatus==false">信息完善</button>
-			<button type="button"  v-if="info.gearStatus==true" style="background-color:rgb(132,132,132);">已完善</button>
+			<button type="button" @click="perfectTo" >信息完善</button>
+			<!-- <button type="button"  v-if="info.gearStatus==true&&info.customerId!=''" style="background-color:rgb(132,132,132);">已完善</button> -->
 		</div>
 	</div>
 
@@ -127,12 +127,12 @@
 			},
 			//跳转至新增客户页面
 			perfectTo(){
-				if(this.info.gearStatus==false)
+				if(!this.info.customerId)
 				{
 					this.until.href(`/views/customermagt/new.html?cusid=${this.info.id}`)
 				}
 				else{
-					this.until.href(`/views/customermagt/newfollow.html?id=${this.info.id}`)
+					this.until.href(`/views/customermagt/newfollow.html?id=${this.info.customerId}`)
 					}
 				}
 			},

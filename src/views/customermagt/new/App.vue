@@ -812,6 +812,7 @@
             type="datetime"
             title="选择完整时间"
             :min-date="minDate"
+            :max-date="maxfollowdate"
             @cancel="showfollowtime = false"
             @confirm="handlefollowConfirm"
           />
@@ -1564,6 +1565,12 @@ export default {
       if (this.hssWxCustomerRo.supplement != "其他") return false;
       return true;
     },
+    // 最大跟进时间
+    maxfollowdate(){
+      if(!this.hssWxCustomerRo.nextFollowUpTime)
+      return new Date(moment().add(60,"d"))
+      return new Date(this.hssWxCustomerRo.nextFollowUpTime)
+    }
   },
   watch: {
     // 清空搜索框就重新请求列表

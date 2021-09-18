@@ -657,7 +657,7 @@
           readonly
           clickable
           label=""
-          :value="momentNextFollowUpTime"
+          v-model="momentNextFollowUpTime"
           placeholder="选择完整时间"
           @click="showfollowtime2 = true"
         />
@@ -668,6 +668,7 @@
             type="datetime"
             title="选择完整时间"
             :min-date="minDate"
+            :max-date="maxfollowdate"
             @cancel="showfollowtime2 = false"
             @confirm="handlefollowConfirm2"
           />
@@ -865,6 +866,12 @@ export default {
       if (index >= 0 && this.intentLevelList[index].outside >= 6) return false;
       return true;
     },
+    // 最大跟进时间
+    maxfollowdate(){
+      if(!this.info.hssWxFollowupRo.nextFollowUpTime)
+      return new Date(moment().add(60,"d"))
+      return new Date(this.info.hssWxFollowupRo.nextFollowUpTime)
+    }
   },
   watch: {
     // visitTime: function () {
@@ -902,6 +909,50 @@ export default {
       } else {
         // 键盘不弹出操作
         this.hideshow = true;
+      }
+    },
+        // 监听意向等级变化设置默认下次跟进时间
+    "info.hssWxFollowupRo.intentionLevel"() {
+      console.log('意向等级变化');
+      let index = this.intentLevelList.findIndex(
+        (item) => item.id == this.info.hssWxFollowupRo.intentionLevel
+      );
+      let outside = this.intentLevelList[index].outside;
+      // 意向等级outside,按顺序值1-10，对应O、K、A···
+      // 1：意向及跟进时间不用选择，2：24小时内跟进，3：每3天内跟进，4：每7天内跟进，5：每30天内跟进，6、7、8：购买类型固定，9战败，10无效
+      if (index >= 0) {
+        if (outside == 2) {
+          this.momentNextFollowUpTime = moment()
+            .add(1, "d")
+            .format("YYYY-MM-DD dddd HH:mm");
+          this.info.hssWxFollowupRo.nextFollowUpTime = moment()
+            .add(1, "d")
+            .format("YYYY-MM-DD HH:mm:ss");
+        } else if (outside == 3) {
+          this.momentNextFollowUpTime = moment()
+            .add(3, "d")
+            .format("YYYY-MM-DD dddd HH:mm");
+          this.info.hssWxFollowupRo.nextFollowUpTime = moment()
+            .add(3, "d")
+            .format("YYYY-MM-DD HH:mm:ss");
+        } else if (outside == 4) {
+          this.momentNextFollowUpTime = moment()
+            .add(7, "d")
+            .format("YYYY-MM-DD dddd HH:mm");
+          this.info.hssWxFollowupRo.nextFollowUpTime = moment()
+            .add(7, "d")
+            .format("YYYY-MM-DD HH:mm:ss");
+        } else if (outside == 5) {
+          this.momentNextFollowUpTime = moment()
+            .add(30, "d")
+            .format("YYYY-MM-DD dddd HH:mm");
+          this.info.hssWxFollowupRo.nextFollowUpTime = moment()
+            .add(30, "d")
+            .format("YYYY-MM-DD HH:mm:ss");
+        } else {
+          this.momentNextFollowUpTime = "";
+          this.info.hssWxFollowupRo.nextFollowUpTime = "";
+        }
       }
     },
   },
@@ -961,6 +1012,7 @@ export default {
       this.showfollowtime1 = false;
     },
     handlefollowConfirm2(e) {
+      console.log( this.showfollowtime2);
       this.info.hssWxFollowupRo.nextFollowUpTime = moment(e).format(
         "YYYY-MM-DD HH:mm:ss"
       );
@@ -1274,7 +1326,8 @@ export default {
     // this.$set(this.bseriseobj, "name", this.info.hssWxBusinessBuyRo.series);
     // this.$set(this.btypeobj, "id", this.info.hssWxBusinessBuyRo.modelId);
     // this.$set(this.btypeobj, "name", this.info.hssWxBusinessBuyRo.model);
-  },
+ console.log('info',this.info.hssWxFollowupRo);
+ },
   mounted() {
     this.defaultHeight = $(window).height();
     // window.onresize监听页面高度的变化

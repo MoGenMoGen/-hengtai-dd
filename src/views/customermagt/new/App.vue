@@ -13,7 +13,7 @@
           <div class="rowtitle">门店</div>
         </div>
         <van-field
-          @click="showPicker1 = true"
+          @click="openshop"
           class="van_field"
           readonly
           clickable
@@ -46,7 +46,7 @@
         </div>
 
         <van-field
-          @click="showPicker2 = true"
+          @click="openSale"
           class="van_field"
           readonly
           label=""
@@ -267,7 +267,7 @@
           <div class="rowtitle">客户性质</div>
         </div>
         <van-field
-          @click="showPicker4 = true"
+          @click="openNature"
           class="van_field"
           readonly
           clickable
@@ -1324,6 +1324,8 @@ import { compressImg, readImg } from "@/assets/js/imageUtil";
 export default {
   data() {
     return {
+      // 默认销售角色
+      departRole: 0,
       defaultHeight: "0", // 默认屏幕高度
       showHeight: 0, // 实时屏幕高度
       hideshow: true, // 显示或者隐藏保存按钮,
@@ -1566,11 +1568,11 @@ export default {
       return true;
     },
     // 最大跟进时间
-    maxfollowdate(){
-      if(!this.hssWxCustomerRo.nextFollowUpTime)
-      return new Date(moment().add(60,"d"))
-      return new Date(this.hssWxCustomerRo.nextFollowUpTime)
-    }
+    maxfollowdate() {
+      if (!this.hssWxCustomerRo.nextFollowUpTime)
+        return new Date(moment().add(60, "d"));
+      return new Date(this.hssWxCustomerRo.nextFollowUpTime);
+    },
   },
   watch: {
     // 清空搜索框就重新请求列表
@@ -1648,6 +1650,14 @@ export default {
       this.hssWxCustomerRo.store = e.content;
       this.showPicker1 = false;
     },
+    // 弹出门店列表
+    openshop() {
+      // 销售修改需求和完善信息时，门店不能修改
+      if ((this.id || this.cusid) && this.departRole == 0) {
+      } else {
+        this.showPicker1 = true;
+      }
+    },
     // 销售
     onSearch2(a) {
       if (a != "")
@@ -1657,6 +1667,14 @@ export default {
     handleSaler(e) {
       this.hssWxCustomerRo.saler = e.arg7;
       this.showPicker2 = false;
+    },
+    // 弹出销售列表
+    openSale() {
+      // 销售修改需求和完善信息时，销售不能修改
+      if ((this.id || this.cusid) && this.departRole == 0) {
+      } else {
+        this.showPicker2 = true;
+      }
     },
     // 无效原因
     handleInvalidRea(e) {
@@ -1675,6 +1693,14 @@ export default {
     handlecustypeList(e) {
       this.hssWxCustomerRo.nature = e.content;
       this.showPicker4 = false;
+    },
+     // 弹出客户性质列表
+    openNature() {
+      // 销售修改需求和完善信息时，客户性质不能修改
+      if ((this.id || this.cusid) && this.departRole == 0) {
+      } else {
+        this.showPicker4 = true;
+      }
     },
     // 客户来源
     onSearch5(a) {
@@ -2198,7 +2224,8 @@ export default {
     this.id = this.until.getQueryString("id");
     // 接待id
     this.cusid = this.until.getQueryString("cusid");
-
+    this.departRole = JSON.parse(this.until.loGet("userInfo"));
+    this.departRole = this.departRole.departRole;
     if (this.id) {
       this.Title = "修改需求";
     } else if (this.cusid) {
@@ -2222,8 +2249,8 @@ export default {
     this.searchsalers = this.salers;
     // 销售默认选中当前账号销售
     let arg7 = JSON.parse(this.until.loGet("userInfo")).arg7;
-  //  从销售列表中能找到缓存中的名字，则默认选中
-   let argIndex = this.searchsalers.findIndex((item) => item.arg7 == arg7);
+    //  从销售列表中能找到缓存中的名字，则默认选中
+    let argIndex = this.searchsalers.findIndex((item) => item.arg7 == arg7);
     if (argIndex >= -1) {
       this.hssWxCustomerRo.saler = arg7;
     }

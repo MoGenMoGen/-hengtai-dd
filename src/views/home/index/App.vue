@@ -22,7 +22,7 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/maintain/index.html')">
+          <div class="item" @click="toDetail('/views/maintain/index.html')"v-if="userinfo.departRole!=0||!identity.includes('接待')">
             <div class="left">
               <img src="~@/assets/img/icon2.png" alt="" class="icon" />
               <div class="text">
@@ -33,7 +33,7 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/customermagt/index.html')">
+          <div class="item" @click="toDetail('/views/customermagt/index.html')" v-if="userinfo.departRole!=0||!identity.includes('接待')">
             <div class="left">
               <img src="~@/assets/img/icon3.png" alt="" class="icon" />
               <div class="text">
@@ -44,7 +44,7 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/productneeds/index.html')">
+          <div class="item" @click="toDetail('/views/productneeds/index.html')"  v-if="userinfo.departRole!=0||!identity.includes('接待')">
             <div class="left">
               <img src="~@/assets/img/icon4.png" alt="" class="icon" />
               <div class="text">
@@ -74,6 +74,8 @@ export default {
       code: "",
       total: "",
       replay: "",
+	  userinfo:"",
+	  identity:[],
     };
   },
   components: {
@@ -82,7 +84,7 @@ export default {
   async mounted() {
     console.log(this.until.loGet("token"), 55);
     if (!this.until.loGet("token")) {
-      console.log(111);
+     
       this.code = this.until.getQueryString("code");
       if (!this.code) {
         window.location.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww267fae1d5c1d9ae3&redirect_uri=https%3A%2F%2Fhss.jinkworld.com%2FddPage%2Fviews%2Fhome%2Findex.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
@@ -91,15 +93,17 @@ export default {
         this.api.getWxlogin({ code: this.code }).then((res) => {
           this.until.loSave("token", res.data.token);
           this.until.loSave("userInfo", res.data.userInfo);
+		  
+		  console.log("kan",this.userinfo);
           setTimeout(() => {
             this.api.getIsRead({}).then((res) => {
-              console.log(1213, res);
+      
               this.replay = res.data;
             });
           }, 100);
           setTimeout(() => {
             this.api.getGetnotread({}).then((res) => {
-              console.log(1213, res);
+              
               this.total = res.data;
             });
           }, 100);
@@ -108,18 +112,24 @@ export default {
     } else {
       setTimeout(() => {
         this.api.getGetnotread({}).then((res) => {
-          console.log(1213, res);
+        
           this.total = res.data;
         });
       }, 100);
       setTimeout(() => {
         this.api.getIsRead({}).then((res) => {
-          console.log(1213, res);
+         
           this.replay = res.data;
         });
       }, 100);
     }
+	this.userinfo=JSON.parse(this.until.loGet('userInfo'))
+	this.identity=this.userinfo.arg6.split(",")
+	
+	console.log("k4132",this.identity);
+	console.log("看一看",this.userinfo);
     var isPageHide = false;
+			
     window.addEventListener("pageshow", function () {
       if (isPageHide) {
         window.location.reload();

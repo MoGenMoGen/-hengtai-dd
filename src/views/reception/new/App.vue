@@ -13,7 +13,7 @@
 					<div class="listHead">
 						客户姓名
 					</div>
-					<input class="listContent" placeholder="请输入姓名" v-model="name" />
+					<input class="listContent" placeholder="请输入姓名" v-model="name"   />
 
 
 				</div>
@@ -29,7 +29,7 @@
 					<div class="listHead">
 						微信号
 					</div>
-					<input class="listContent" placeholder="请输入微信号" v-model="wxId" />
+					<input class="listContent" placeholder="请输入微信号" v-model="wxId"  @blur="test"/>
 				</div>
 				<div class="list">
 					<div class="listHead">
@@ -341,16 +341,19 @@
 				// 	Toast("客户需求不能为空")
 				// 	return false
 				// }
-				//  if(this.nature==""){
-				// 	Toast("客流性质不能为空")
-				// 	return false
-				// }
+				 if(this.nature==""){
+					Toast("客流性质不能为空")
+					return false
+				}
 			if(this.nature!='售后服务'&&this.nature!='证牌服务'&&this.nature!='其他服务'&&this.nature!=''&&this.saler==""){
 					Toast("销售顾问不能为空")
 					return false
 				}
 				if(this.name==""){
 					this.name="(未留名)"
+				}
+				if(this.nature=='再次到店'&&this.phone==""){
+					Toast("电话不能为空")
 				}
 				
 				
@@ -433,7 +436,7 @@
 				this.showPicker3=false
 			},
 			test(){
-				this.api.getStoreagain({phone:this.phone}).then(res=>{
+				this.api.getStoreagain({phone:this.phone,wxId:this.wxId}).then(res=>{
 				
 					 this.isNewCustomer=res.data
 				

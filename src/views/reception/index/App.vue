@@ -10,12 +10,12 @@
 					
 		
 				<input type="" name="" id="" value="" placeholder="客户姓名、电话、销售" v-model="searchStr" />
-				<van-field class="vantSelect" readonly clickable label="" :value="gearStatus" placeholder="选择留档状态"
+				<van-field class="vantSelect" readonly clickable label="" :value="gearStatus" placeholder="选择客流性质"
 					@click="showPicker4 = true" />
 				<van-popup v-model="showPicker4" round position="bottom">
 					<van-search v-model="search4" shape="round" background="#09c076" @input="onSearch4"
 						placeholder="请输入搜索关键词" />
-					<van-picker value-key="label" show-toolbar :columns="searchoptionsFour"
+					<van-picker value-key="content" show-toolbar :columns="searchoptionsFour"
 						@cancel="showPicker4= false" @confirm="handleBuysTypeFour" />
 				</van-popup>
 						</div>
@@ -111,8 +111,8 @@
 					</div>
 				</div>
 				<div class="btn">
-					<button type="button" @click="toDetail(item.id)">完善信息</button>
-					
+					<button type="button" @click="toDetail(item.id)" v-if="item.gearStatus==false">完善信息</button>
+					<button type="button" v-if="item.gearStatus==true" style="background-color:rgb(132,132,132);color: #ffffff;">已完善</button>
 				</div>
 		</div>
 		</div>
@@ -177,7 +177,19 @@
 			    window.addEventListener('pagehide', function () {
 			      isPageHide = true;
 			    });
-				this.searchoptionsFour=this.options
+				let querys = {
+					w: [
+						["category", 2, "EQ"],
+					],
+					o: ["id", "esc"],
+					p: [1, 10],
+				}
+				this.api.getCustomerCommonfield(this.query.toEncode(this.newqry(querys))).then(res=>{
+					console.log(res);
+					this.options=res
+						this.searchoptionsFour=this.options
+				})
+				
 				this.currentDate=new Date()
 			    console.log(this.currentDate);
 				
@@ -188,11 +200,23 @@
 			
 		},
 		methods: {
+			newqry(obj) {
+				let qry = this.query.new();
+				// 条件
+				obj.w.forEach((item) => {
+					this.query.toW(qry, item[0], item[1], item[2]);
+				});
+				// 排序
+				this.query.toO(qry, obj.o[0], obj.o[1]);
+				// 分页
+				this.query.toP(qry, obj.p[0], obj.p[1]);
+				return qry;
+			},
 			onSearch4(a)
 			{
 				if(a!=""){
 				   this.searchoptionsFour=this.options.filter((item) =>
-						item.label.includes(a));
+						item.content.includes(a));
 				}
 				else {
 					this.searchoptionsFour = this.options
@@ -200,7 +224,7 @@
 			},
 			handleBuysTypeFour(e, v) {
 			
-				this.gearStatus = e.label
+				this.gearStatus = e.content
 				this.showPicker4=false
 				},
 			back() {

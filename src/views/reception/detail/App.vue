@@ -127,9 +127,16 @@
 			},
 			//跳转至新增客户页面
 			perfectTo(){
-				this.until.href(`/views/customermagt/new.html?cusid=${this.info.id}`)
-			}
-		},
+				if(this.info.gearStatus==false)
+				{
+					this.until.href(`/views/customermagt/new.html?cusid=${this.info.id}`)
+				}
+				else{
+					this.until.href(`/views/customermagt/newfollow.html?id=${this.info.id}`)
+					}
+				}
+			},
+		
 	};
 </script>
 

@@ -492,6 +492,7 @@ export default {
     // console.log("相对日期", this.relativeTime);
   },
   async created() {
+
     // setTimeout(async () => {
     // console.log("created");
     moment.locale("zh-cn");
@@ -536,9 +537,17 @@ export default {
     // }, 100);
     // 返回刷新
     window.onpageshow = () => {
-      console.log("返回刷新32423");
-      this.getList();
-    };
+      if (this.until.seGet("needRefresh")) {
+        console.log("返回刷新");
+        this.until.seRemove("needRefresh");
+        location.reload();
+      }
+    }
+    // 返回刷新
+    // window.onpageshow = () => {
+    //   console.log("返回刷新32423");
+    //   this.getList();
+    // };
   },
   methods: {
     async getList() {

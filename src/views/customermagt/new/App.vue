@@ -1694,7 +1694,7 @@ export default {
       this.hssWxCustomerRo.nature = e.content;
       this.showPicker4 = false;
     },
-     // 弹出客户性质列表
+    // 弹出客户性质列表
     openNature() {
       // 销售修改需求和完善信息时，客户性质不能修改
       if ((this.id || this.cusid) && this.departRole == 0) {
@@ -1891,6 +1891,8 @@ export default {
         });
         if (data.code == 0) {
           console.log(2020);
+          // 保存成功需要返回刷新
+          this.until.seSave("needRefresh", true);
 
           Toast("保存成功");
           this.until.back();
@@ -1908,6 +1910,7 @@ export default {
         });
         if (data.code == 0) {
           console.log(2020);
+          this.until.seSave("needRefresh", true);
 
           Toast("保存成功");
           this.until.back();

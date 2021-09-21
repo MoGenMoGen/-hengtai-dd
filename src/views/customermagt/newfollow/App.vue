@@ -867,11 +867,11 @@ export default {
       return true;
     },
     // 最大跟进时间
-    maxfollowdate(){
-      if(!this.info.hssWxFollowupRo.nextFollowUpTime)
-      return new Date(moment().add(60,"d"))
-      return new Date(this.info.hssWxFollowupRo.nextFollowUpTime)
-    }
+    maxfollowdate() {
+      if (!this.info.hssWxFollowupRo.nextFollowUpTime)
+        return new Date(moment().add(60, "d"));
+      return new Date(this.info.hssWxFollowupRo.nextFollowUpTime);
+    },
   },
   watch: {
     // visitTime: function () {
@@ -911,9 +911,9 @@ export default {
         this.hideshow = true;
       }
     },
-        // 监听意向等级变化设置默认下次跟进时间
+    // 监听意向等级变化设置默认下次跟进时间
     "info.hssWxFollowupRo.intentionLevel"() {
-      console.log('意向等级变化');
+      console.log("意向等级变化");
       let index = this.intentLevelList.findIndex(
         (item) => item.id == this.info.hssWxFollowupRo.intentionLevel
       );
@@ -1012,7 +1012,7 @@ export default {
       this.showfollowtime1 = false;
     },
     handlefollowConfirm2(e) {
-      console.log( this.showfollowtime2);
+      console.log(this.showfollowtime2);
       this.info.hssWxFollowupRo.nextFollowUpTime = moment(e).format(
         "YYYY-MM-DD HH:mm:ss"
       );
@@ -1216,6 +1216,7 @@ export default {
       // 数据校验结束
       let data = await this.api.commitNewfollow(this.info);
       if (data.code == 0) {
+        this.until.seSave("needRefresh", true);
         Toast("保存成功");
         this.until.back();
       } else Toast("保存失败");
@@ -1326,8 +1327,8 @@ export default {
     // this.$set(this.bseriseobj, "name", this.info.hssWxBusinessBuyRo.series);
     // this.$set(this.btypeobj, "id", this.info.hssWxBusinessBuyRo.modelId);
     // this.$set(this.btypeobj, "name", this.info.hssWxBusinessBuyRo.model);
- console.log('info',this.info.hssWxFollowupRo);
- },
+    console.log("info", this.info.hssWxFollowupRo);
+  },
   mounted() {
     this.defaultHeight = $(window).height();
     // window.onresize监听页面高度的变化

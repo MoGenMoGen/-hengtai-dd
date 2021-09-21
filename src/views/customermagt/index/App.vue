@@ -375,7 +375,16 @@ export default {
   },
   async created() {
     console.log("cereated");
-
+    // 返回刷新
+    window.onpageshow = () => {
+      if (this.until.seGet("needRefresh")) {
+        console.log("返回刷新");
+        this.until.seRemove("needRefresh");
+        location.reload();
+      }
+      // this.customerList = [];
+      // this.onRefresh();
+    };
     // 获取公共列表
     // 客流性质
     let query_flow_type = {
@@ -421,11 +430,7 @@ export default {
   },
   async mounted() {
     console.log("mounted");
-    // 返回刷新
-    window.onpageshow = () => {
-      this.customerList = [];
-      this.onRefresh();
-    };
+
     this.defaultHeight = $(window).height();
     // window.onresize监听页面高度的变化
     window.onresize = () => {
@@ -457,8 +462,7 @@ export default {
           this.isfirstload = false;
           this.loading = false;
         });
-      } 
-      else {
+      } else {
         if (this.total > this.customerList.length) {
           this.info.pageNo += 1;
           this.api.getcustomerList(this.info).then((res) => {
@@ -487,6 +491,7 @@ export default {
     },
     // 下拉刷新
     onRefresh() {
+      console.log("下拉刷新完成");
       this.customerList = [];
       this.finished = false;
       this.loading = true;
@@ -597,6 +602,7 @@ export default {
   },
 };
 </script>
+
 
 <style lang="less">
 .van-cell::after {

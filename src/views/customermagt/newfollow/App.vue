@@ -688,6 +688,8 @@ import { Toast } from "mint-ui";
 export default {
   data() {
     return {
+      // 默认角色销售人员
+      departRole:0,
       defaultHeight: "0", // 默认屏幕高度
       showHeight: 0, // 实时屏幕高度
       hideshow: true, // 显示或者隐藏保存按钮,
@@ -1225,7 +1227,8 @@ export default {
   async created() {
     // 设置moment.js(时间库)中文环境
     moment.locale("zh-cn");
-
+  this.departRole = JSON.parse(this.until.loGet("userInfo"));
+    this.departRole = this.departRole.departRole;
     // 沟通方式
     this.commtypeList = await this.api.getcommtypeList(
       encodeURIComponent(
@@ -1269,6 +1272,13 @@ export default {
     this.intentLevelList = await this.api.getWxIntentionLevel({
       p: { n: 1, s: 20 },
     });
+     // 销售组长及以上权限才有能点战败
+    if (this.departRole == 0) {
+      this.intentLevelList = this.intentLevelList.filter(
+        (item) => item.content != "战败"
+      );
+    }
+  
     // 获取八个常用车标
     let BbrandList = await this.api.getCommonCarIcon();
     this.BbrandList = JSON.parse(BbrandList);

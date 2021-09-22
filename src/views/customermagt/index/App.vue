@@ -198,7 +198,7 @@
         <div class="right" @click="handleQuery">查询</div>
       </div>
       <div style="padding-left: 0.3rem; margin-top: -0.24rem">
-        共 {{ customerList.length }} 条记录
+        共 {{ total}} 条记录
         <span style="margin-left: 0.3rem" v-if="datetype == '按跟进日期排序'"
           >已跟进{{followedNum}}条</span
         >

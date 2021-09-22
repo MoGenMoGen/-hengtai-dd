@@ -125,7 +125,7 @@
             label=""
             v-model="hssWxCustomerRo.wxId"
             placeholder="请输入微信号"
-            maxlength="20"
+            maxlength="30"
             @blur="handlerepeatcus"
           />
         </div>
@@ -1860,9 +1860,11 @@ export default {
 
         Toast("客户来源不能为空");
         return false;
-      } else if (this.hssWxBusinessBuyRo.brand == "" && !this.showInvalid) {
-        console.log(77);
-
+      } else if (
+        this.hssWxBusinessBuyRo.brand == "" &&
+        !this.showInvalid &&
+        this.showBuyInfo
+      ) {
         Toast("买车品牌不能为空");
         return false;
       } else if (this.hssWxCustomerRo.intentionLevel == "") {
@@ -1872,16 +1874,17 @@ export default {
         return false;
       } else if (
         this.hssWxCustomerRo.nextFollowUpTime == "" &&
-        this.showfollow
+        this.showfollow &&
+        this.showBuyInfo
       ) {
         console.log(99);
 
         Toast("下次跟进时间不能为空");
         return false;
-      } else if (
-        this.hssWxBusinessSellRo.brand == "" &&
-        this.hssWxCustomerRo.isSell &&
-        !this.showInvalid
+      } 
+      else if (
+        !this.hssWxBusinessSellRo.brand &&
+        (this.hssWxCustomerRo.isSell && !this.showInvalid)
       ) {
         console.log(1010);
 
@@ -1968,6 +1971,7 @@ export default {
           this.until.back();
         } else {
           console.log(2121);
+        
           Toast("保存失败");
         }
       }
@@ -2387,10 +2391,13 @@ export default {
     this.intentLevelList = await this.api.getWxIntentionLevel({
       p: { n: 1, s: 20 },
     });
-    // 新增中去掉无效
-    this.intentLevelList = this.intentLevelList.filter(
-      (item) => item.content != "战败"
-    );
+    // 新增中去掉战败,销售组长及以上权限才有能点战败
+    if (!this.id || (this.id && this.departRole == 0)) {
+      console.log("sdfdgd", this.id, this.departRole);
+      this.intentLevelList = this.intentLevelList.filter(
+        (item) => item.content != "战败"
+      );
+    }
     // 无效原因
     this.InvalidReasons = await this.api.getReasonForinvalid(
       encodeURIComponent(

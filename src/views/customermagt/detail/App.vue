@@ -453,8 +453,9 @@ export default {
   computed: {
     // 相对时间
     relativeTime() {
+      if(this.userinfo.data.nextFollowUpTime)
       return moment(this.userinfo.data.nextFollowUpTime).from(new Date());
-
+        else return '无需'
       // if (
       //   moment(this.userinfo.data.nextFollowUpTime).valueOf() <
       //   moment().valueOf()

@@ -107,7 +107,8 @@
             v-model="hssWxCustomerRo.phone"
             placeholder="请输入手机号"
             type="digit"
-            oninput="if(value.length>11)value=value.slice(0,11)"
+            oninput="if (value.length > 11)value= value.slice(0, 11)"
+            @blur="handlerepeatcus"
           />
           <!-- <span style="color: #09c076">通讯录匹配</span> -->
         </div>
@@ -124,7 +125,8 @@
             label=""
             v-model="hssWxCustomerRo.wxId"
             placeholder="请输入微信号"
-            maxlength="11"
+            maxlength="20"
+            @blur="handlerepeatcus"
           />
         </div>
       </div>
@@ -1333,6 +1335,8 @@ import { compressImg, readImg } from "@/assets/js/imageUtil";
 export default {
   data() {
     return {
+      // 客户是否已存在
+      hadcustomer: false,
       // 默认销售角色
       departRole: 0,
       defaultHeight: "0", // 默认屏幕高度
@@ -1661,8 +1665,10 @@ export default {
     },
     // 弹出门店列表
     openshop() {
-      // 销售修改需求和完善信息时，门店不能修改
-      if ((this.id || this.cusid) && this.departRole == 0) {
+      // 接待已经做了限制，所以这里不对接待限制
+
+      // 销售员工、组长修改需求时，门店不能修改
+      if (this.id && (this.departRole == 0 || this.departRole == 1)) {
       } else {
         this.showPicker1 = true;
       }
@@ -1679,8 +1685,8 @@ export default {
     },
     // 弹出销售列表
     openSale() {
-      // 销售修改需求和完善信息时，销售不能修改
-      if ((this.id || this.cusid) && this.departRole == 0) {
+      // 销售员工仅能选择自己
+      if (this.departRole == 0) {
       } else {
         this.showPicker2 = true;
       }
@@ -1705,9 +1711,23 @@ export default {
     },
     // 弹出客户性质列表
     openNature() {
-      // 销售修改需求和完善信息时，客户性质不能修改
-      if ((this.id || this.cusid) && this.departRole == 0) {
-      } else {
+      // 销售员工
+      if (this.departRole == 0) {
+        if (!this.cusid) {
+        }
+        // 销售员工完善信息
+        else {
+          this.showPicker4 = true;
+        }
+      }
+      // 销售组长
+      else if (this.departRole == 1) {
+        if (this.cusid || this.id) {
+          this.showPicker4 = true;
+        }
+      }
+      // 其他
+      else {
         this.showPicker4 = true;
       }
     },
@@ -1779,7 +1799,30 @@ export default {
       this.hssWxCustomerRo.birthday = moment(e).format("YYYY-MM-DD HH:mm:ss");
       this.showPicker13 = false;
     },
+    // 检测重复客户
+    handlerepeatcus() {
+      // 修改客户不判断
+      if (!this.id) {
+        // 判断手机号/微信号是否已存在
+        this.api
+          .getStoreagain({
+            phone: this.hssWxCustomerRo.phone,
+            wxId: this.hssWxCustomerRo.wxId,
+          })
+          .then((res) => {
+            if (res.data == 1) {
+              Toast("客户已存在");
+              this.hadcustomer = true;
+            }
+          });
+      }
+    },
     async save() {
+      if (this.hadcustomer) {
+        Toast("客户已存在");
+        return false;
+      }
+
       // 数据校验
       // 必填
       console.log(11);

@@ -72,10 +72,12 @@
 
 		</div>
 		<div  style="padding-bottom: 1.5rem;">
-			
+			<div class="" style="margin-left: 0.3rem;">
+				共{{total}}条记录
+			</div>
 		
 		<div class="bodyList" v-for="(item,index) in infoList" :key="index">
-				
+			
 				<div class="list">
 					<div class="listhead">
 					客户姓名:
@@ -102,6 +104,14 @@
 					{{item.crtTm}}
 					</div>
 				</div>
+				<div class="list">
+					<div class="listhead">
+					到店人数:
+					</div>
+					<div class="listCotent">
+					{{item.people}}
+					</div>
+				</div>
 				<div class="list" style="margin-bottom: 0;">
 					<div class="listhead">
 						销售顾问:
@@ -112,12 +122,13 @@
 				</div>
 				<div class="btn">
 					<button type="button" @click="toDetail(item.id)" v-if="item.gearStatus==false">完善信息</button>
+					<button type="button" v-if="item.nature=='售后服务'||item.nature=='牌证服务'||item.nature=='其他访客'" style="background-color:rgb(132,132,132);color: #ffffff;border: 0;">完善信息</button>
 					<button type="button" v-if="item.gearStatus==true" style="background-color:rgb(132,132,132);color: #ffffff;border: 0;">已完善</button>
 				</div>
 		</div>
 		</div>
 		<div class="btn1">
-			<button type="button" @click="addNew" v-if="userinfo.departRole==1||!identity.includes('销售中心')">新增接待</button>
+			<button type="button" @click="addNew" v-if="userinfo.departRole==1||identity.includes('接待')">新增接待</button>
 		</div>
 	</div>
 </template>
@@ -136,7 +147,9 @@
 				identity:[],	  
 				currentDate:"",
 				search4:"",
-				
+				obj:{
+					
+				},
 				value: "",
 				startTime: "",
 				endTime: "",
@@ -168,6 +181,15 @@
 		components: {},
 
 		async mounted() {
+			this.obj= JSON.parse(this.until.seGet('obj'))
+			console.log(11,this.obj);
+			if(this.obj){
+				this.searchStr=this.obj.searchStr
+				this.gearStatus=this.obj.gearStatus
+				this.startTime=this.obj.startTime
+				this.endTime=this.obj.endTime
+			}
+			
 			this.getList()
 			 this.userinfo=JSON.parse(this.until.loGet('userInfo'))
 			 this.identity=this.userinfo.arg6.split(",")
@@ -232,7 +254,10 @@
 				this.showPicker4=false
 				},
 			back() {
+				this.until.seRemove('obj')
+			
 				this.until.back()
+				
 			},
 			startTimeChange(val) {
 				let startTime = moment(val).format("YYYY-MM-DD");
@@ -271,6 +296,14 @@
 			search(){
 				this.infoList=[]
 				this.page.n=1
+				let obj={
+					searchStr:this.searchStr,
+					gearStatus:this.gearStatus,
+					startTime:this.startTime,
+					endTime:this.endTime,
+				}
+				this.until.seSave('obj',JSON.stringify(obj))
+				
 				this.getList()
 			},
 			//分页

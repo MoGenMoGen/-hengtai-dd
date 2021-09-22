@@ -145,7 +145,7 @@
 					searchStr:"",
 					beginTime:"",
 					endTime:"",
-					gearStatus:"",
+					nature:"",
 					n:1,
 					s:10
 				},
@@ -249,7 +249,7 @@
 			},
 			getList(){
 				this.page.searchStr=this.searchStr
-				this.page.gearStatus=this.gearStatus
+				this.page.nature=this.gearStatus
 				this.page.beginTime=this.startTime
 				this.page.endTime=this.endTime
 				this.api.getWxCheckin(this.page).then(res=>{

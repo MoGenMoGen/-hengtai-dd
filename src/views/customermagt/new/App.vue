@@ -360,13 +360,22 @@
     <!-- 更多品牌弹窗 开始 -->
     <van-popup v-model="showmorebrand" position="bottom" @open="handleshowmore">
       <div class="morebrand">
-        <van-search
-          v-model="searchvalue"
-          shape="round"
-          background="#fff"
-          placeholder="请输入搜索关键词"
-          @search="onSearch"
-        />
+        <div style="display: flex; align-items: center; background: #fff">
+          <van-search
+            style="flex: 1"
+            v-model="searchvalue"
+            shape="round"
+            background="#fff"
+            placeholder="请输入搜索关键词"
+            @search="onSearch"
+          />
+          <span
+            style="background: #fff; padding-right: 0.16rem"
+            @click="handleclose"
+            >关闭</span
+          >
+        </div>
+
         <div class="brand_list">
           <div
             class="brand_item"
@@ -2064,6 +2073,13 @@ export default {
       if (this.showmorebuybrand)
         this.currentID = this.hssWxBusinessBuyRo.brandId;
       else this.currentID = this.hssWxBusinessSellRo.brandId;
+    },
+    // 关闭品牌弹窗
+    handleclose() {
+      setTimeout(() => {
+        this.showmorebuybrand = false;
+        this.showmoresellbrand = false;
+      }, 200);
     },
     // 更多品牌中选择
     handlecheckbrand(brand) {

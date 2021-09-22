@@ -341,21 +341,28 @@
 				// 	Toast("客户需求不能为空")
 				// 	return false
 				// }
+		
 				 if(this.nature==""){
 					Toast("客流性质不能为空")
 					return false
 				}
-			if(this.nature!='售后服务'&&this.nature!='证牌服务'&&this.nature!='其他服务'&&this.nature!=''&&this.saler==""){
+				if(this.nature=='再次到店'&&this.phone==""){
+					Toast("电话不能为空")
+					return false
+				}
+				if(this.nature=='邀约首次'&&this.phone==""){
+					Toast("电话不能为空")
+					return false
+				}
+			if(this.nature!='售后服务'&&this.nature!='证牌服务'&&this.nature!=''&&this.saler==""){
 					Toast("销售顾问不能为空")
 					return false
 				}
+			
+				
 				if(this.name==""){
 					this.name="(未留名)"
 				}
-				if(this.nature=='再次到店'&&this.phone==""){
-					Toast("电话不能为空")
-				}
-				
 				
 				
 				this.info.name=this.name
@@ -371,6 +378,7 @@
 				
 				console.log(11111111111);
 				this.api.postWxCheckin(JSON.stringify(this.info)).then(res=>{
+					this.until.seSave("needRefresh", true);
 						this.until.back()
 
 				})

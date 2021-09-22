@@ -117,7 +117,7 @@
 		</div>
 		</div>
 		<div class="btn1">
-			<button type="button" @click="addNew">新增接待</button>
+			<button type="button" @click="addNew" v-if="userinfo.departRole==1||!identity.includes('销售中心')">新增接待</button>
 		</div>
 	</div>
 </template>
@@ -132,7 +132,8 @@
 				showPicker5:false,
 				showPicker6:false,
 				searchoptionsFour:[],
-				
+					 userinfo:"",
+				identity:[],	  
 				currentDate:"",
 				search4:"",
 				
@@ -168,15 +169,9 @@
 
 		async mounted() {
 			this.getList()
-			  var isPageHide = false;
-			    window.addEventListener('pageshow', function () {
-			      if (isPageHide) {
-			        window.location.reload();
-			      }
-			    });
-			    window.addEventListener('pagehide', function () {
-			      isPageHide = true;
-			    });
+			 this.userinfo=JSON.parse(this.until.loGet('userInfo'))
+			 this.identity=this.userinfo.arg6.split(",")
+		
 				let querys = {
 					w: [
 						["category", 2, "EQ"],
@@ -192,8 +187,17 @@
 				
 				this.currentDate=new Date()
 			    console.log(this.currentDate);
-				
-				
+				 var isPageHide = false;
+				window.addEventListener("pageshow",  () =>{
+				  //   if (isPageHide) {
+				  //     window.location.reload();
+				  //   }
+				  if (this.until.seGet("needRefresh")) {
+				    console.log("返回刷新");
+				    this.until.seRemove("needRefresh");
+				    location.reload();
+				  }
+				});
 		
 		 
 			window.addEventListener('scroll', this.menu)
@@ -243,6 +247,7 @@
 			//新增接待
 			addNew(){
 				this.until.href("/views/reception/new.html")
+				
 			},
 			toDetail(id){
 				this.until.href(`/views/reception/detail.html?id=${id}`)

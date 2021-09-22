@@ -349,6 +349,17 @@
 				this.searchoptions = this.options
 
 			})
+			window.addEventListener("pageshow",  () =>{
+			  //   if (isPageHide) {
+			  //     window.location.reload();
+			  //   }
+			   console.log("返回刷新");
+			  if (this.until.seGet("needRefresh")) {
+			   
+			    this.until.seRemove("needRefresh");
+			    location.reload();
+			  }
+			});
 
 			// this.api.searchbrandlist('').then(res => {
 

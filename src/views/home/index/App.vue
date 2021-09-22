@@ -22,7 +22,7 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/maintain/index.html')"v-if="userinfo.departRole!=0||!identity.includes('接待')">
+          <div class="item" @click="toDetail('/views/maintain/index.html')"v-if="userinfo.departRole==1||!identity.includes('接待')">
             <div class="left">
               <img src="~@/assets/img/icon2.png" alt="" class="icon" />
               <div class="text">
@@ -33,7 +33,7 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/customermagt/index.html')" v-if="userinfo.departRole!=0||!identity.includes('接待')">
+          <div class="item" @click="toDetail('/views/customermagt/index.html')" v-if="userinfo.departRole==1||!identity.includes('接待')">
             <div class="left">
               <img src="~@/assets/img/icon3.png" alt="" class="icon" />
               <div class="text">
@@ -44,7 +44,7 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/productneeds/index.html')"  v-if="userinfo.departRole!=0||!identity.includes('接待')">
+          <div class="item" @click="toDetail('/views/productneeds/index.html')"  v-if="userinfo.departRole==1||!identity.includes('接待')">
             <div class="left">
               <img src="~@/assets/img/icon4.png" alt="" class="icon" />
               <div class="text">

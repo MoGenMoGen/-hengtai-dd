@@ -254,6 +254,7 @@
 				})
 			}
 			window.addEventListener('scroll', this.menu)
+		
 		},
 		created() {
 			this.currentindex = this.until.getQueryString('index')
@@ -338,6 +339,7 @@
 				this.isPopShow = false
 			},
 			submit() {
+				this.until.seSave("needRefresh", true);
 				let p = {
 					businessId: "",
 					customerId: "",
@@ -392,6 +394,7 @@
 
 						})
 					}
+					
 					this.isPopShow = false
 				})
 

@@ -7,8 +7,6 @@
 		<div class="searchBox">
 			<div class="leftBox">
 				<div id="" style="display: flex;">
-					
-		
 				<input type="" name="" id="" value="" placeholder="客户姓名、电话、销售" v-model="searchStr" />
 				<van-field class="vantSelect" readonly clickable label="" :value="gearStatus" placeholder="选择客流性质"
 					@click="showPicker4 = true" />
@@ -205,6 +203,7 @@
 					console.log(res);
 					this.options=res
 						this.searchoptionsFour=this.options
+						this.searchoptionsFour.unshift({content:"全部"})
 				})
 				
 				this.currentDate=new Date()

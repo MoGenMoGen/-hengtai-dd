@@ -331,6 +331,7 @@
 
 				this.optionsFour = res
 				this.searchoptionsFour=this.optionsFour
+				this.searchoptionsFour.unshift({content:"全部"})
 			})
 			this.getList()
 			// this.api.getWxBusinessBuy(this.page).then(res => {
@@ -347,6 +348,7 @@
 					this.options = [...this.options, ...res[i].result]
 				}
 				this.searchoptions = this.options
+				this.searchoptions.unshift({brand_name:"全部"})
 
 			})
 			window.addEventListener("pageshow",  () =>{
@@ -540,16 +542,21 @@
 				}
 			},
 			handleBuysType(e, v) {
-			
+				this.seriesname=''
+				this.modelname=''
 				this.brand = e.id
 				this.brandname = e.brand_name
+				if(this.brandname=="全部"){
+					this.brandname=''
+				}
 				this.api.getCarSeries({
 					brandid: this.brand
 				}).then(res => {
-
 					this.optionsTwo = res
 					this.searchoptionsTwo = this.optionsTwo
+					this.searchoptionsTwo.unshift({name:"全部"})
 					this.showPicker1 = false
+					
 				})
 			},
 
@@ -565,14 +572,18 @@
 
 			},
 			handleBuysTypeTwo(e, v) { 
-			
+				this.modelname=''
 				this.series = e.id
 				this.seriesname = e.name
+				if(this.seriesname=="全部"){
+					this.seriesname=''
+				}
 			this.api.getCarModels({
 				seriesId: this.series
 			}).then(res => {
 				this.optionsThree = res.result
 				this.searchoptionsThree=this.optionsThree
+				this.searchoptionsThree.unshift({name:"全部"})
 				this.showPicker2=false
 			})
 			},
@@ -591,6 +602,9 @@
 				
 				this.model = e.id
 				this.modelname = e.name
+				if(this.modelname=="全部"){
+					this.modelname=''
+				}
 				this.showPicker3=false
 				},
 			onSearch4(a) {

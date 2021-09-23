@@ -1814,6 +1814,10 @@ export default {
               Toast("客户已存在");
               this.hadcustomer = true;
             }
+            else{
+              this.hadcustomer = false;
+
+            }
           });
       }
     },

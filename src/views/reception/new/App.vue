@@ -325,10 +325,7 @@
 				// 	return false
 				// }
 				
-				//  if(this.people==""){
-				// 	Toast("客户人数不能为空")
-				// 	return false
-				// }
+				
 				//  if(this.customerType==""){
 				// 	Toast("客户类型不能为空")
 				// 	return false
@@ -341,7 +338,10 @@
 				// 	Toast("客户需求不能为空")
 				// 	return false
 				// }
-		
+				 if(this.people==""){
+					Toast("客户人数不能为空")
+					return false
+				}
 				 if(this.nature==""){
 					Toast("客流性质不能为空")
 					return false

@@ -820,6 +820,7 @@
         <van-popup v-model="showfollowtime" round position="bottom">
           <van-datetime-picker
             class="followdatepicker"
+            v-model="datetime3"
             type="datetime"
             title="选择完整时间"
             :min-date="minDate"
@@ -1420,6 +1421,7 @@ export default {
       showdiyprice: 0,
       // 确定自定义价格
       confirmprice: false,
+      datetime3:'',
       // 显示的带星期的下次跟进时间(不传给后台)
       momentNextFollowUpTime: "",
       hssWxCustomerRo: {
@@ -1865,7 +1867,7 @@ export default {
         Toast("客户来源不能为空");
         return false;
       } else if (
-        this.hssWxBusinessBuyRo.brand == "" &&
+        !this.hssWxBusinessBuyRo.brand &&
         !this.showInvalid &&
         this.showBuyInfo
       ) {

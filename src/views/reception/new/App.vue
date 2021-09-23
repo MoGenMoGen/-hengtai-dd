@@ -143,7 +143,7 @@
 					</el-select> -->
 
 				</div>
-				<div class="list" v-if="nature!='售后服务'&&nature!='证牌服务'&&nature!='其他访客'&&nature!=''">
+				<div class="list" v-if="nature!='售后服务'&&nature!='牌证服务'&&nature!='其他访客'&&nature!=''">
 					<div class="listHead">
 						销售顾问
 					</div>
@@ -346,11 +346,11 @@
 					Toast("客流性质不能为空")
 					return false
 				}
-				if((this.nature=='售后服务'||this.nature=='证牌服务'||this.nature=="其他访客")&&this.people==''){
+				if((this.nature=='售后服务'||this.nature=='牌证服务'||this.nature=="其他访客")&&this.people==''){
 					Toast("客户人数不能为空")
 					return false
 				}
-				if((this.nature=='售后服务'||this.nature=='证牌服务'||this.nature=="其他访客")&&this.visitingTime==''){
+				if((this.nature=='售后服务'||this.nature=='牌证服务'||this.nature=="其他访客")&&this.visitingTime==''){
 					Toast("来访时间不能为空")
 					return false
 				}
@@ -362,7 +362,7 @@
 					Toast("联系方式不能为空")
 					return false
 				}
-			if(this.nature!='售后服务'&&this.nature!='证牌服务'&&this.nature!='其他访客'&&this.nature!=''&&this.saler==""){
+			if(this.nature!='售后服务'&&this.nature!='牌证服务'&&this.nature!='其他访客'&&this.nature!=''&&this.saler==""){
 					Toast("销售顾问不能为空")
 					return false
 				}

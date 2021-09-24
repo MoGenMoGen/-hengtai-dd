@@ -2,6 +2,7 @@
 node_modules/
 unpackage/
 dist/
+wechat/
 
 # local env files
 .env.local

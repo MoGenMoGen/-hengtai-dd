@@ -818,13 +818,14 @@
           @click="showfollowtime = true"
         />
         <van-popup v-model="showfollowtime" round position="bottom">
+          <!-- :min-date="minDate"
+            :max-date="maxfollowdate" -->
           <van-datetime-picker
             class="followdatepicker"
             v-model="datetime3"
             type="datetime"
             title="选择完整时间"
-            :min-date="minDate"
-            :max-date="maxfollowdate"
+            
             @cancel="showfollowtime = false"
             @confirm="handlefollowConfirm"
           />

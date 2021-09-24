@@ -44,7 +44,7 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/productneeds/index.html')"  v-if="userinfo.departRole==1||!identity.includes('销售中心')">
+          <div class="item" @click="toDetail('/views/productneeds/index.html')"  v-if="userinfo.departRole==1||identity.includes('销售中心')">
             <div class="left">
               <img src="~@/assets/img/icon4.png" alt="" class="icon" />
               <div class="text">

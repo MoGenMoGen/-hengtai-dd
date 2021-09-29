@@ -96,7 +96,7 @@
         <input v-model="keys" placeholder="手机号、车牌号、车架后六位、品牌、客户姓名精准查询"/>
         <div>
             <button @click="toSearch">查询</button>
-            <button @click="getAll" class="all" v-if="this.role===1">查看所有</button>
+            <!-- <button @click="getAll" class="all" v-if="this.role===1">查看所有</button> -->
           </div>
 
         <p>共 {{total}} 条客户信息</p>

@@ -13,9 +13,10 @@
         <div class="left">
           <div class="row1">
             <van-field
+              style="font-size: 12px"
               class="leftpart bg input"
               v-model="info.nameAndphone"
-              placeholder="姓名、手机号"
+              placeholder="姓名、手机号、微信"
             ></van-field>
             <van-field
               class="rightpart input bg"
@@ -48,8 +49,8 @@
               class="input bg leftpart"
               readonly
               label=""
-              :value="info.nature"
-              placeholder="客流性质"
+              :value="info.source"
+              placeholder="客户来源"
               @click="showPicker2 = true"
             />
             <van-popup v-model="showPicker2" round position="bottom">
@@ -63,9 +64,9 @@
               <van-picker
                 value-key="content"
                 show-toolbar
-                :columns="searchflowtypes"
+                :columns="searchcustomerofList"
                 @cancel="showPicker2 = false"
-                @confirm="handleFlowtype"
+                @confirm="handleCustomerSource"
               />
             </van-popup>
 
@@ -198,10 +199,10 @@
         <div class="right" @click="handleQuery">查询</div>
       </div>
       <div style="padding-left: 0.3rem; margin-top: -0.24rem">
-        共 {{ total}} 条记录
-        <span style="margin-left: 0.3rem" v-if="datetype == '按跟进日期排序'"
+        共 {{ total }} 条记录
+        <!-- <span style="margin-left: 0.3rem" v-if="datetype == '按待跟进'"
           >已跟进{{followedNum}}条</span
-        >
+        > -->
       </div>
 
       <van-list
@@ -217,6 +218,12 @@
           :key="index"
           @click="toDetail(item.id)"
         >
+          <div
+            style="color: red; position: absolute; right: 0.9rem"
+            v-if="showoverdue(item.nextFollowUpTime)"
+          >
+            已逾期{{ relativetime(item.nextFollowUpTime) }}
+          </div>
           <div class="level">{{ item.intentionLevel }}</div>
           <div class="row1">
             <div class="name">{{ item.name }}</div>
@@ -259,8 +266,8 @@ export default {
       searchbuytypes: [],
       search1: "",
       showPicker1: false,
-      // 客流性质
-      searchflowtypes: [],
+      // 客户来源
+      searchcustomerofList: [],
       search2: "",
       showPicker2: false,
       // 销售顾问
@@ -279,10 +286,10 @@ export default {
       // 日期类型
       showPicker7: false,
       dateList: [
-        { content: "按创建日期排序", id: 1 },
-        { content: "按跟进日期排序", id: 2 },
+        { content: "按创建日期", id: 1 },
+        { content: "按待跟进", id: 2 },
       ],
-      datetype: "按创建日期排序",
+      datetype: "按创建日期",
 
       // 上拉加载loading
       loading: false,
@@ -303,14 +310,15 @@ export default {
         intentionLevel: "", //意向等级（此处存储意向的id，而不会是值）
         pageNo: 1, //分页起始位置
         pageSize: 5, //分页结束位置
+        source: "", //客户来源
       },
 
       // 是否显示下拉loading
       isLoading: false,
       // 购买类型list
       buytypes: [],
-      // 客流性质list
-      flowtypes: [],
+      // 客户来源list
+      customerofList: [],
       // 销售顾问list
       salers: [],
       // 意向等级
@@ -383,9 +391,25 @@ export default {
       );
       return arr.length;
     },
+    // 逾期天数
+    relativetime() {
+      return function (val) {
+        return moment(val).from(new Date(), true);
+      };
+    },
+    // 是否显示逾期
+    showoverdue() {
+      return function (val) {
+        if (!val) return false;
+        else if (moment(val).valueOf() < moment().valueOf()) return true;
+        else return false;
+      };
+    },
   },
   async created() {
     console.log("cereated");
+    moment.locale("zh-cn");
+
     // 返回刷新
     window.onpageshow = () => {
       if (this.until.seGet("needRefresh")) {
@@ -397,17 +421,19 @@ export default {
       // this.onRefresh();
     };
     // 获取公共列表
-    // 客流性质
-    let query_flow_type = {
-      w: [["category", 2, "EQ"]],
-      o: ["id", "esc"],
-      p: [1, 10],
-    };
-    this.flowtypes = await this.api.getFlowtypeList(
-      this.query.toEncode(this.newqry(query_flow_type))
+    // 客户来源
+    this.customerofList = await this.api.getCustomerSource(
+      encodeURIComponent(
+        JSON.stringify({
+          w: [{ k: "category", v: 3, m: "EQ" }],
+          o: [{ k: "id", t: "esc" }],
+          p: { n: 1, s: 10 },
+        })
+      )
     );
-    this.flowtypes.unshift({ content: "全部" });
-    this.searchflowtypes = this.flowtypes;
+    this.customerofList.unshift({ content: "全部" });
+    this.searchcustomerofList = this.customerofList;
+    console.log(12412424, this.searchcustomerofList);
     // 购买类型
     let query_buys_type = {
       w: [["category", 4, "EQ"]],
@@ -528,16 +554,16 @@ export default {
       this.info.business = e.content;
       this.showPicker1 = false;
     },
-    // 客流性质
+    // 客户来源
     onSearch2(a) {
       if (a != "")
-        this.searchflowtypes = this.flowtypes.filter((item) =>
+        this.searchcustomerofList = this.customerofList.filter((item) =>
           item.content.includes(a)
         );
-      else this.searchflowtypes = this.flowtypes;
+      else this.searchcustomerofList = this.customerofList;
     },
-    handleFlowtype(e) {
-      this.info.nature = e.content;
+    handleCustomerSource(e) {
+      this.info.source = e.content;
       this.showPicker2 = false;
     },
     // 销售顾问

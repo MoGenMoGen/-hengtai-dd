@@ -817,15 +817,16 @@
           placeholder="选择下次跟进时间"
           @click="showfollowtime = true"
         />
+        
+
         <van-popup v-model="showfollowtime" round position="bottom">
-          <!-- :min-date="minDate"
-            :max-date="maxfollowdate" -->
           <van-datetime-picker
+            :min-date="minDate"
+            :max-date="maxfollowdate" 
             class="followdatepicker"
             v-model="datetime3"
             type="datetime"
             title="选择完整时间"
-            
             @cancel="showfollowtime = false"
             @confirm="handlefollowConfirm"
           />
@@ -836,13 +837,13 @@
     <!-- 卖车需求开始 -->
     <div class="sellwrapper" v-if="!showInvalid">
       <div class="textbox">
-        <div class="texttitle">寄卖</div>
+        <div class="texttitle">评估</div>
       </div>
       <div class="row">
         <!-- 占位符 -->
         <div style="display: flex">
           <div class="placeholder"></div>
-          <div class="rowtitle">寄卖</div>
+          <div class="rowtitle">评估</div>
         </div>
         <div class="row_radio">
           <div class="radiobox" @click="hssWxCustomerRo.isSell = 0">
@@ -1422,7 +1423,7 @@ export default {
       showdiyprice: 0,
       // 确定自定义价格
       confirmprice: false,
-      datetime3:'',
+      datetime3: "",
       // 显示的带星期的下次跟进时间(不传给后台)
       momentNextFollowUpTime: "",
       hssWxCustomerRo: {
@@ -1585,9 +1586,14 @@ export default {
     },
     // 最大跟进时间
     maxfollowdate() {
-      if (!this.hssWxCustomerRo.nextFollowUpTime)
-        return new Date(moment().add(60, "d"));
-      return new Date(this.hssWxCustomerRo.nextFollowUpTime);
+        return new Date(moment().add(30, "d"));
+
+      // if (
+      //   !this.hssWxCustomerRo.nextFollowUpTime ||
+      //   !this.hssWxCustomerRo.intentionLevel
+      // )
+      //   return new Date(moment().add(60, "d"));
+      // return new Date(this.hssWxCustomerRo.nextFollowUpTime);
     },
   },
   watch: {
@@ -1671,7 +1677,7 @@ export default {
       // 接待已经做了限制，所以这里不对接待限制
 
       // 销售员工、组长修改需求时，门店不能修改
-      if (this.id && (this.departRole == 0 || this.departRole == 1)) {
+      if (this.id && (this.departRole == 0 || this.departRole == 2)) {
       } else {
         this.showPicker1 = true;
       }
@@ -1716,15 +1722,15 @@ export default {
     openNature() {
       // 销售员工
       if (this.departRole == 0) {
-        if (!this.cusid) {
-        }
+        // if (!this.cusid) {
+        // }
         // 销售员工完善信息
-        else {
-          this.showPicker4 = true;
-        }
+        // else {
+        //   this.showPicker4 = true;
+        // }
       }
       // 销售组长
-      else if (this.departRole == 1) {
+      else if (this.departRole == 2) {
         if (this.cusid || this.id) {
           this.showPicker4 = true;
         }
@@ -1816,10 +1822,8 @@ export default {
             if (res.data == 1) {
               Toast("客户已存在");
               this.hadcustomer = true;
-            }
-            else{
+            } else {
               this.hadcustomer = false;
-
             }
           });
       }
@@ -1888,10 +1892,10 @@ export default {
 
         Toast("下次跟进时间不能为空");
         return false;
-      } 
-      else if (
+      } else if (
         !this.hssWxBusinessSellRo.brand &&
-        (this.hssWxCustomerRo.isSell && !this.showInvalid)
+        this.hssWxCustomerRo.isSell &&
+        !this.showInvalid
       ) {
         console.log(1010);
 
@@ -1978,7 +1982,7 @@ export default {
           this.until.back();
         } else {
           console.log(2121);
-        
+
           Toast("保存失败");
         }
       }
@@ -2293,9 +2297,9 @@ export default {
   },
   async created() {
     moment.locale("zh-cn");
-    // 用户id
+    // 用户(修改需求)id
     this.id = this.until.getQueryString("id");
-    // 接待id
+    // 接待(完善信息)id
     this.cusid = this.until.getQueryString("cusid");
     this.departRole = JSON.parse(this.until.loGet("userInfo"));
     this.departRole = this.departRole.departRole;
@@ -2513,7 +2517,7 @@ export default {
   },
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .van-cell::after {
   border-bottom: none;
 }

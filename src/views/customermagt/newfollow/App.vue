@@ -166,8 +166,6 @@
               class="followdatepicker"
               v-model="datepicker3"
               type="datetime"
-              :min-date="mindatevisit"
-              :max-date="maxdatevisit"
               title="请选择来访时间"
               @cancel="showvisitTime = false"
               @confirm="handlevisitTimeconfirm"
@@ -194,8 +192,6 @@
             <van-datetime-picker
               class="followdatepicker"
               v-model="datepicker4"
-              :min-date="mindateleft"
-              :max-date="maxdateleft"
               type="datetime"
               title="请选择离店时间"
               @cancel="showleftTime = false"
@@ -663,12 +659,12 @@
         />
         <van-popup v-model="showfollowtime2" round position="bottom">
           <van-datetime-picker
+            :max-date="maxfollowdate"
             class="followdatepicker"
             v-model="datepicker3"
             type="datetime"
             title="选择完整时间"
             :min-date="minDate"
-            :max-date="maxfollowdate"
             @cancel="showfollowtime2 = false"
             @confirm="handlefollowConfirm2"
           />
@@ -689,11 +685,12 @@ export default {
   data() {
     return {
       // 默认角色销售人员
-      departRole:0,
+      departRole: 0,
       defaultHeight: "0", // 默认屏幕高度
       showHeight: 0, // 实时屏幕高度
       hideshow: true, // 显示或者隐藏保存按钮,
       id: "",
+      jdid:'',
       albums: [],
 
       // 显示无效/战败
@@ -722,6 +719,7 @@ export default {
       info: {
         hssWxFollowupRo: {
           customerId: "", //用户id
+          chcekinId:"",
           content: "", //跟进内容
           pic: "", //图片
           mode: "", //沟通方式
@@ -762,8 +760,8 @@ export default {
       },
       datepicker1: "",
       datepicker2: "",
-      datepicker3: "",
-      datepicker4: "",
+      datepicker3: new Date(),
+      datepicker4: new Date(),
       showfollowtime1: false,
       showfollowtime2: false,
       minDate: new Date(),
@@ -870,9 +868,11 @@ export default {
     },
     // 最大跟进时间
     maxfollowdate() {
-      if (!this.info.hssWxFollowupRo.nextFollowUpTime)
-        return new Date(moment().add(60, "d"));
-      return new Date(this.info.hssWxFollowupRo.nextFollowUpTime);
+      return new Date(moment().add(30, "d"));
+
+      // if (!this.info.hssWxFollowupRo.nextFollowUpTime||!this.info.hssWxFollowupRo.intentionLevel)
+      //   return new Date(moment().add(60, "d"));
+      // return new Date(this.info.hssWxFollowupRo.nextFollowUpTime);
     },
   },
   watch: {
@@ -1022,16 +1022,41 @@ export default {
       this.showfollowtime2 = false;
     },
     handlevisitTimeconfirm(e) {
-      this.info.hssWxFollowupRo.visitingTime = moment(e).format(
-        "YYYY-MM-DD HH:mm"
-      );
       this.showvisitTime = false;
+
+      if (!this.info.hssWxFollowupRo.departureTime) {
+        this.info.hssWxFollowupRo.visitingTime =
+          moment(e).format("YYYY-MM-DD HH:mm");
+      } else {
+        if (
+          moment(this.info.hssWxFollowupRo.departureTime).valueOf() -
+            moment(e).valueOf() <
+          0
+        ) {
+          Toast("来访时间需小于离店时间");
+        } else {
+          this.info.hssWxFollowupRo.visitingTime =
+            moment(e).format("YYYY-MM-DD HH:mm");
+        }
+      }
     },
     handleleftTimeconfirm(e) {
-      this.info.hssWxFollowupRo.departureTime = moment(e).format(
-        "YYYY-MM-DD HH:mm"
-      );
       this.showleftTime = false;
+      if (!this.info.hssWxFollowupRo.visitingTime) {
+        this.info.hssWxFollowupRo.departureTime =
+          moment(e).format("YYYY-MM-DD HH:mm");
+      } else {
+        if (
+          moment(this.info.hssWxFollowupRo.visitingTime).valueOf() -
+            moment(e).valueOf() >
+          0
+        ) {
+          Toast("来访时间需小于离店时间");
+        } else {
+          this.info.hssWxFollowupRo.departureTime =
+            moment(e).format("YYYY-MM-DD HH:mm");
+        }
+      }
     },
     // 更多品牌中选择
     handlecheckbrand(brand) {
@@ -1227,7 +1252,7 @@ export default {
   async created() {
     // 设置moment.js(时间库)中文环境
     moment.locale("zh-cn");
-  this.departRole = JSON.parse(this.until.loGet("userInfo"));
+    this.departRole = JSON.parse(this.until.loGet("userInfo"));
     this.departRole = this.departRole.departRole;
     // 沟通方式
     this.commtypeList = await this.api.getcommtypeList(
@@ -1272,13 +1297,13 @@ export default {
     this.intentLevelList = await this.api.getWxIntentionLevel({
       p: { n: 1, s: 20 },
     });
-     // 销售组长及以上权限才有能点战败
+    // 销售组长及以上权限才有能点战败
     if (this.departRole == 0) {
       this.intentLevelList = this.intentLevelList.filter(
         (item) => item.content != "战败"
       );
     }
-  
+
     // 获取八个常用车标
     let BbrandList = await this.api.getCommonCarIcon();
     this.BbrandList = JSON.parse(BbrandList);
@@ -1298,6 +1323,8 @@ export default {
 
     // 用户id
     this.id = this.until.getQueryString("id");
+    // 接待id
+    this.chcekinId= this.until.getQueryString("jdid");
     // 详情数据复写
     let detailData = await this.api.getcustomerDetail(this.id);
     this.info.hssWxBusinessBuyRo = detailData.buy.data;
@@ -1350,7 +1377,7 @@ export default {
   },
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .van-cell::after {
   border-bottom: none;
 }

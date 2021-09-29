@@ -680,6 +680,7 @@ export default {
               }
             });
         } else {
+          console.log(12324);
           let img = await this.api.upImg2(blob[i]);
 
           if (type == "out") {

@@ -22,7 +22,11 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/maintain/index.html')"v-if="userinfo.departRole==1||identity.includes('销售中心')">
+          <div
+            class="item"
+            @click="toDetail('/views/maintain/index.html')"
+            v-if="userinfo.departRole == 1 || identity.includes('销售中心')"
+          >
             <div class="left">
               <img src="~@/assets/img/icon2.png" alt="" class="icon" />
               <div class="text">
@@ -33,10 +37,17 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/customermagt/index.html')" v-if="userinfo.departRole==1||identity.includes('销售中心')">
+          <div
+            class="item"
+            @click="toDetail('/views/customermagt/index.html')"
+            v-if="userinfo.departRole == 1 || identity.includes('销售中心')"
+          >
             <div class="left">
               <img src="~@/assets/img/icon3.png" alt="" class="icon" />
               <div class="text">
+                <div class="total" style="left:1.5rem;" v-if="custotal">
+                  {{ custotal }}
+                </div>
                 <div class="title">客户管理</div>
                 <div class="en">Customer management</div>
               </div>
@@ -44,7 +55,11 @@
 
             <img src="~@/assets/img/arrow.png" alt="" class="arrow" />
           </div>
-          <div class="item" @click="toDetail('/views/productneeds/index.html')"  v-if="userinfo.departRole==1||identity.includes('销售中心')">
+          <div
+            class="item"
+            @click="toDetail('/views/productneeds/index.html')"
+            v-if="userinfo.departRole == 1 || identity.includes('销售中心')"
+          >
             <div class="left">
               <img src="~@/assets/img/icon4.png" alt="" class="icon" />
               <div class="text">
@@ -73,9 +88,10 @@ export default {
     return {
       code: "",
       total: "",
+      custotal: "",
       replay: "",
-	  userinfo:"",
-	  identity:[],
+      userinfo: "",
+      identity: [],
     };
   },
   components: {
@@ -84,27 +100,28 @@ export default {
   async mounted() {
     console.log(this.until.loGet("token"), 55);
     if (!this.until.loGet("token")) {
-     
       this.code = this.until.getQueryString("code");
       if (!this.code) {
-        window.location.href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww267fae1d5c1d9ae3&redirect_uri=https%3A%2F%2Fhss.jinkworld.com%2FddPage%2Fviews%2Fhome%2Findex.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
+        window.location
+          .href(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=ww267fae1d5c1d9ae3&redirect_uri=https%3A%2F%2Fhss.jinkworld.com%2FddPage%2Fviews%2Fhome%2Findex.html&response_type=code&scope=snsapi_base&state=#wechat_redirect
 	  	  `);
       } else {
         this.api.getWxlogin({ code: this.code }).then((res) => {
           this.until.loSave("token", res.data.token);
           this.until.loSave("userInfo", res.data.userInfo);
-		  
-		  console.log("kan",this.userinfo);
+
+          console.log("kan", this.userinfo);
           setTimeout(() => {
             this.api.getIsRead({}).then((res) => {
-      
               this.replay = res.data;
             });
           }, 100);
           setTimeout(() => {
             this.api.getGetnotread({}).then((res) => {
-              
               this.total = res.data;
+            });
+            this.api.getCusMessagePrommpt({}).then((res) => {
+              this.custotal = res.msg;
             });
           }, 100);
         });
@@ -112,24 +129,25 @@ export default {
     } else {
       setTimeout(() => {
         this.api.getGetnotread({}).then((res) => {
-        
           this.total = res.data;
+        });
+        this.api.getCusMessagePrommpt({}).then((res) => {
+          this.custotal = res.msg;
         });
       }, 100);
       setTimeout(() => {
         this.api.getIsRead({}).then((res) => {
-         
           this.replay = res.data;
         });
       }, 100);
     }
-	this.userinfo=JSON.parse(this.until.loGet('userInfo'))
-	this.identity=this.userinfo.arg6.split(",")
-	
-	console.log("k4132",this.identity);
-	console.log("看一看",this.userinfo);
+    this.userinfo = JSON.parse(this.until.loGet("userInfo"));
+    this.identity = this.userinfo.arg6.split(",");
+
+    console.log("k4132", this.identity);
+    console.log("看一看", this.userinfo);
     var isPageHide = false;
-			
+
     window.addEventListener("pageshow", function () {
       if (isPageHide) {
         window.location.reload();

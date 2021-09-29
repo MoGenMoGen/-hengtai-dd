@@ -85,12 +85,12 @@ class api {
             // 'Content-Type': 'application/json',
             // 'yui3-token': localStorage.getItem('token')
         }
-		return new Promise(resolve => {
-		    get('/general/access/appLogin', data,header).then(res => {
-		        resolve(res)
-		    })
-		})
-		
+        return new Promise(resolve => {
+            get('/general/access/appLogin', data, header).then(res => {
+                resolve(res)
+            })
+        })
+
 
     }
     //绑定手机号 DD
@@ -288,7 +288,7 @@ class api {
             // 'yui3-token': localStorage.getItem('token')
         }
         return new Promise((resolve, reject) => {
-            get('/sys/user/listByDepart', { orgCode:10000.30 }, header).then(res => {
+            get('/sys/user/listByDepart', { orgCode: 10000.30 }, header).then(res => {
                 resolve(res.data.list)
             })
 
@@ -323,6 +323,8 @@ class api {
             post('/general/oss/upload', data, { "Content-Type": "multipart/form-data" }).then(res => {
                 resolve(res)
             })
+
+
                 .catch(err => {
                     reject(err)
 
@@ -347,7 +349,7 @@ class api {
                 let obj = blob[o];
                 param.append('files', obj);
             })
-            this.upLoad(param).then(res => {
+            this.upnewimg(param).then(res => {
                 resolve(res.data)
 
             })
@@ -357,11 +359,12 @@ class api {
     //上传
     upImg2(blob) {
         let $q = new Promise((resolve, reject) => {
-
+            console.log('jjjfj');
             let param = new FormData();
             let obj = blob;
             param.append('files', obj);
-            this.upLoad(param).then(res => {
+            // this.upLoad(param).then(res => {
+            this.upnewimg(param).then(res => {
                 resolve(res.data)
 
             })
@@ -376,7 +379,7 @@ class api {
             // let param = new FormData();
             // let obj = blob;
             // param.append('files',obj);
-            this.upLoad(formData).then(res => {
+            this.upnewimg(formData).then(res => {
                 console.log(res)
                 resolve(res.data)
 
@@ -454,7 +457,7 @@ class api {
     // 获取意愿战败原因
     getReasonFordefeat(data) {
         return new Promise((resolve, reject) => {
-            get(' /hss/wxCommonfield/page?query='+data).then(res => {
+            get(' /hss/wxCommonfield/page?query=' + data).then(res => {
                 resolve(res)
             })
 
@@ -463,7 +466,7 @@ class api {
     // 获取意愿无效原因
     getReasonForinvalid(data) {
         return new Promise((resolve, reject) => {
-            get('/hss/wxCommonfield/page?query='+data).then(res => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
                 resolve(res.data.list)
             })
 
@@ -546,8 +549,8 @@ class api {
 
         })
     }
-     // 订单
-     getorder(data) {
+    // 订单
+    getorder(data) {
         return new Promise((resolve, reject) => {
             get('/hss/wxOrder/page?query=' + data).then(res => {
                 resolve(res)
@@ -753,7 +756,7 @@ class api {
     //提交新增接待
     postWxCheckin(data) {
         return new Promise(resolve => {
-            post("/hss/wxCheckin/add", data, {'Content-Type':'application/json; charset=UTF-8'}).then(res => {
+            post("/hss/wxCheckin/add", data, { 'Content-Type': 'application/json; charset=UTF-8' }).then(res => {
                 resolve(res.data)
             })
         })
@@ -789,33 +792,33 @@ class api {
         })
     }
 
-	 
-		//使用token
-		getWxlogin(data) {
-		    let header = {
-		        // 'Content-Type': 'application/json',
-		        // 'yui3-token': localStorage.getItem('token')
-		    }
-		    return new Promise((resolve, reject) => {
-		        get('/general/access/wxlogin' , data, header).then(res => {
-					
-		            resolve(res)
-		        })
-			
-		    })
-		}
-		//退出登录
-		logout() {
-		    return new Promise(resolve => {
-		        post("/general/access/logout",{}, {}).then(res => {
-					
-		            resolve(res.data)
-				
-					
-		        })
-		    })
-		}
- 
+
+    //使用token
+    getWxlogin(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/general/access/wxlogin', data, header).then(res => {
+
+                resolve(res)
+            })
+
+        })
+    }
+    //退出登录
+    logout() {
+        return new Promise(resolve => {
+            post("/general/access/logout", {}, {}).then(res => {
+
+                resolve(res.data)
+
+
+            })
+        })
+    }
+
 
     //获取品牌列表
     // getWxCommonfield(data) {
@@ -907,93 +910,102 @@ class api {
 
         })
     }
-	//获取客户类型
-	getWxCommonfield(data) {
-	    return new Promise((resolve, reject) => {
-	        get('/hss/wxCommonfield/page?query=' + data).then(res => {
-	            resolve(res.data)
-	        })
-	
-	    })
-	}
-	
-	//获取接待未读
-	getGetnotread(data) {
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCheckin/getnotread', data, header).then(res => {
-		        resolve(res)
-		    })
-		
-		})
-	   
-	}
-	//获取客服电话
-	getTelNumber(data) {
-	    return new Promise((resolve, reject) => {
-	        get('/hss/wxCommonfield/page?query=' + data).then(res => {
-	            resolve(res.data)
-	        })
-	
-	    })
-	}
-	//获取访问时间段
-	getVisiteTime(data){
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommonfield/page?query=' + data).then(res => {
-		        resolve(res.data)
-		    })
-			
-		})
-	}
-	//获取留言未读
-	getIsRead(data){
-		let header = {
-		    // 'Content-Type': 'application/json',
-		    // 'yui3-token': localStorage.getItem('token')
-		}
-		return new Promise((resolve, reject) => {
-		    get('/hss/wxCommunicate/isRead', data, header).then(res => {
-		        resolve(res)
-		    })
-		
-		})
-	}
-	//获取客户是否为再次到店
-   getStoreagain(data){
-   	let header = {
-   	    // 'Content-Type': 'application/json',
-   	    // 'yui3-token': localStorage.getItem('token')
-   	}
-   	return new Promise((resolve, reject) => {
-   	    get('/hss/wxCustomer/storeagain', data, header).then(res => {
-   	        resolve(res)
-   	    })
-   	
-   	})
-   }
-   //根据是否再次到店再次获取客户性质
-    getCustomerCommonfieldAgain(data){
-   	return new Promise((resolve, reject) => {
-   	    get('/hss/wxCommonfield/page?query=' + data).then(res => {
-   	        resolve(res.data.list)
-   	    })
-   		
-   	})
-   }
-   //根据是否再次到店再次获取客户类型
- getWxCommonfieldAgain(data){
-	   return new Promise((resolve, reject) => {
-	       get('/hss/wxCommonfield/page?query=' + data).then(res => {
-	           resolve(res.data.list)
-	       })
-	   	
-	   })
-   }
-   
+    //获取客户类型
+    getWxCommonfield(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+
+    //获取接待未读
+    getGetnotread(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCheckin/getnotread', data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+
+    }
+    //获取客服电话
+    getTelNumber(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+    //获取访问时间段
+    getVisiteTime(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data)
+            })
+
+        })
+    }
+    //获取留言未读
+    getIsRead(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommunicate/isRead', data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    //获取客户是否为再次到店
+    getStoreagain(data) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCustomer/storeagain', data, header).then(res => {
+                resolve(res)
+            })
+
+        })
+    }
+    //根据是否再次到店再次获取客户性质
+    getCustomerCommonfieldAgain(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+    //根据是否再次到店再次获取客户类型
+    getWxCommonfieldAgain(data) {
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCommonfield/page?query=' + data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
+    // 客户管理消息提示条数
+    getCusMessagePrommpt(){
+        return new Promise((resolve, reject) => {
+            get('/hss/wxCustomer/sameDay').then(res => {
+                resolve(res)
+            })
+
+        }) 
+    }
+
 
 }
 

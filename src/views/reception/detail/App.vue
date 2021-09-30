@@ -123,10 +123,11 @@ export default {
     //跳转至新增客户页面
     perfectTo() {
       if (!this.info.customerId) {
+		 
         this.until.href(`/views/customermagt/new.html?cusid=${this.info.id}`);
       } else {
         this.until.href(
-          `/views/customermagt/newfollow.html?id=${this.info.customerId}`
+          `/views/customermagt/newfollow.html?id=${this.info.customerId}&jd=${this.info.id}`
         );
       }
     },

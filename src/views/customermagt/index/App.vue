@@ -288,6 +288,7 @@ export default {
       dateList: [
         { content: "按创建日期", id: 1 },
         { content: "按待跟进", id: 2 },
+        { content: "按已跟进", id: 3 },
       ],
       datetype: "按创建日期",
 
@@ -593,7 +594,8 @@ export default {
       this.datetype = e.content;
       this.showPicker7 = false;
       if (e.id == 1) this.info.orders = "创建";
-      else this.info.orders = "跟进";
+      else if (e.id == 2)  this.info.orders = "跟进";
+      else this.info.orders = "上次跟进时间";
     },
     // 新增客户
     newcustomer() {

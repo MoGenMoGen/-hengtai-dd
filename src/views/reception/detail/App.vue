@@ -127,7 +127,7 @@ export default {
         this.until.href(`/views/customermagt/new.html?cusid=${this.info.id}`);
       } else {
         this.until.href(
-          `/views/customermagt/newfollow.html?id=${this.info.customerId}&jd=${this.info.id}`
+          `/views/customermagt/newfollow.html?id=${this.info.customerId}&jdid=${this.info.id}`
         );
       }
     },

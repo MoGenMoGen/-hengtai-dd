@@ -79,7 +79,7 @@
         <div style="display: flex">
           <div class="placeholder"></div>
           <div class="rowtitle" v-if="showInvalid == 2">无效原因</div>
-          <div class="rowtitle" v-if="showInvalid == 1">战败原因</div>
+          <div class="rowtitle" v-if="showInvalid == 1">潜客原因</div>
         </div>
 
         <van-field
@@ -1324,7 +1324,7 @@ export default {
     // 用户id
     this.id = this.until.getQueryString("id");
     // 接待id
-    this.chcekinId= this.until.getQueryString("jdid");
+    this.info.hssWxFollowupRo.chcekinId= this.until.getQueryString("jdid");
     // 详情数据复写
     let detailData = await this.api.getcustomerDetail(this.id);
     this.info.hssWxBusinessBuyRo = detailData.buy.data;

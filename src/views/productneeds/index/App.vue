@@ -297,7 +297,7 @@
 				show: true,
 				startTime: '',
 				endTime: '',
-				tabList: ["求购", "寄售"],
+				tabList: ["求购", "评估"],
 				currentIndex: 0,
 				value: '',
 				value1: "",

@@ -449,7 +449,8 @@
         <div class="row">
           <!-- 占位符 -->
           <div style="display: flex">
-            <div class="placeholder"></div>
+            <div class="placeholder" v-if="showAllBuyInfo">*</div>
+            <div class="placeholder" v-else></div>
             <div class="rowtitle">车系</div>
           </div>
 
@@ -499,7 +500,8 @@
         <div class="row">
           <!-- 占位符 -->
           <div style="display: flex">
-            <div class="placeholder"></div>
+            <div class="placeholder" v-if="showAllBuyInfo">*</div>
+            <div class="placeholder" v-else></div>
             <div class="rowtitle">车型</div>
           </div>
           <van-field
@@ -547,7 +549,10 @@
         </div>
         <!-- 价格区间开始 -->
         <div class="pricebox">
-          <div class="prititle">价格区间 / 万元</div>
+          <div class="prititle">
+            <span style="font-weight: bold; color: #ff3000" v-if="showAllBuyInfo">* </span>价格区间 /
+            万元
+          </div>
           <div class="pricelist">
             <div
               class="priceitem"
@@ -635,7 +640,8 @@
         <div class="row">
           <!-- 占位符 -->
           <div style="display: flex">
-            <div class="placeholder"></div>
+             <div class="placeholder" v-if="showAllBuyInfo">*</div>
+            <div class="placeholder" v-else></div>
             <div class="rowtitle">里程数</div>
           </div>
           <div class="row_between">
@@ -665,7 +671,8 @@
         <div class="row">
           <!-- 占位符 -->
           <div style="display: flex">
-            <div class="placeholder"></div>
+             <div class="placeholder" v-if="showAllBuyInfo">*</div>
+            <div class="placeholder" v-else></div>
             <div class="rowtitle">是否按揭</div>
           </div>
           <div class="row_radio">
@@ -817,12 +824,11 @@
           placeholder="选择下次跟进时间"
           @click="showfollowtime = true"
         />
-        
 
         <van-popup v-model="showfollowtime" round position="bottom">
           <van-datetime-picker
             :min-date="minDate"
-            :max-date="maxfollowdate" 
+            :max-date="maxfollowdate"
             class="followdatepicker"
             v-model="datetime3"
             type="datetime"
@@ -1557,6 +1563,11 @@ export default {
         return false;
       return true;
     },
+    // 购买类型为求购时，所有求购信息必填
+    showAllBuyInfo() {
+      if (this.hssWxCustomerRo.business == "求购") return true;
+      return false;
+    },
     // 是否显示跟进时间(O成交、战败、无效，不显示)
     showfollow() {
       let index = this.intentLevelList.findIndex(
@@ -1586,7 +1597,7 @@ export default {
     },
     // 最大跟进时间
     maxfollowdate() {
-        return new Date(moment().add(30, "d"));
+      return new Date(moment().add(30, "d"));
 
       // if (
       //   !this.hssWxCustomerRo.nextFollowUpTime ||
@@ -1878,7 +1889,44 @@ export default {
       ) {
         Toast("买车品牌不能为空");
         return false;
-      } else if (this.hssWxCustomerRo.intentionLevel == "") {
+      }
+      else if (
+        !this.hssWxBusinessBuyRo.series &&
+        this.showAllBuyInfo
+      ) {
+        Toast("买车车系不能为空");
+        return false;
+      }
+         else if (
+        !this.hssWxBusinessBuyRo.model &&
+        this.showAllBuyInfo
+      ) {
+        Toast("买车车型不能为空");
+        return false;
+      }
+       else if (
+        !this.hssWxBusinessBuyRo.priceId &&
+        this.showAllBuyInfo
+      ) {
+        Toast("价格区间不能为空");
+        return false;
+      }
+      else if (
+        !this.hssWxBusinessBuyRo.mileage &&
+        this.showAllBuyInfo
+      ) {
+        Toast("里程数不能为空");
+        return false;
+      }
+       else if (
+        !this.hssWxBusinessBuyRo.isMortgage &&
+        this.showAllBuyInfo
+      ) {
+        Toast("是否按揭不能为空");
+        return false;
+      }
+
+       else if (this.hssWxCustomerRo.intentionLevel == "") {
         console.log(88);
 
         Toast("意向等级不能为空");
@@ -1909,7 +1957,6 @@ export default {
           Number(this.hssWxBusinessBuyRo.maxPrice)
       ) {
         console.log(1111);
-
         Toast("最低价格应小于最高价格");
         return false;
       }
@@ -2234,14 +2281,6 @@ export default {
           this.Scarseries = res;
           this.searchScarseries = res;
         });
-    },
-    // 买车车系
-    onSearch6(a) {
-      if (a != "")
-        this.searchBcarseries = this.Bcarseries.filter((item) =>
-          item.name.includes(a)
-        );
-      else this.searchBcarseries = this.Bcarseries;
     },
     // 处理买车车系选中值变化
     handlecheckBseries(brand) {

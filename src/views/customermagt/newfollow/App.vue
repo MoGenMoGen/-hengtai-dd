@@ -1325,6 +1325,9 @@ export default {
     this.id = this.until.getQueryString("id");
     // 接待id
     this.info.hssWxFollowupRo.chcekinId= this.until.getQueryString("jdid");
+    // 接待调过来的沟通方式默认选到店
+    if(this.info.hssWxFollowupRo.chcekinId)
+    this.info.hssWxFollowupRo.mode='到店'
     // 详情数据复写
     let detailData = await this.api.getcustomerDetail(this.id);
     this.info.hssWxBusinessBuyRo = detailData.buy.data;

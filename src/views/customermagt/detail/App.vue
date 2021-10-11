@@ -187,6 +187,12 @@
             {{ userinfo.data.intentionLevelInfo }}
           </div>
         </div>
+         <div class="list">
+          <div class="listHead">无效/潜客原因:</div>
+          <div class="listContent">
+            {{ userinfo.data.supplement }}
+          </div>
+        </div>
         <div class="list">
           <div class="listHead">购买类型:</div>
           <div class="listContent">{{ userinfo.data.business }}</div>

@@ -690,7 +690,7 @@ export default {
       showHeight: 0, // 实时屏幕高度
       hideshow: true, // 显示或者隐藏保存按钮,
       id: "",
-      jdid:'',
+      jdid: "",
       albums: [],
 
       // 显示无效/战败
@@ -719,7 +719,7 @@ export default {
       info: {
         hssWxFollowupRo: {
           customerId: "", //用户id
-          chcekinId:"",
+          chcekinId: "",
           content: "", //跟进内容
           pic: "", //图片
           mode: "", //沟通方式
@@ -1324,10 +1324,10 @@ export default {
     // 用户id
     this.id = this.until.getQueryString("id");
     // 接待id
-    this.info.hssWxFollowupRo.chcekinId= this.until.getQueryString("jdid");
+    this.info.hssWxFollowupRo.chcekinId = this.until.getQueryString("jdid");
     // 接待调过来的沟通方式默认选到店
-    if(this.info.hssWxFollowupRo.chcekinId)
-    this.info.hssWxFollowupRo.mode='到店'
+    if (this.info.hssWxFollowupRo.chcekinId)
+      this.info.hssWxFollowupRo.mode = "到店";
     // 详情数据复写
     let detailData = await this.api.getcustomerDetail(this.id);
     this.info.hssWxBusinessBuyRo = detailData.buy.data;
@@ -1342,6 +1342,13 @@ export default {
       detailData.customer.data.intentionLevel;
     // 用户id
     this.info.hssWxFollowupRo.customerId = detailData.customer.data.id;
+    //  接待过来的跟进，把客户需求值赋值给意向描述
+    if(this.info.hssWxFollowupRo.chcekinId)
+    {
+      let data = await this.api.getWxCheckinDetail(this.info.hssWxFollowupRo.chcekinId);
+      this.info.hssWxFollowupRo.content=data.demand;
+    }
+
     // 自定义价格是否显示
     if (this.info.hssWxBusinessBuyRo.priceId) {
       let priceindex = this.priceList.findIndex(

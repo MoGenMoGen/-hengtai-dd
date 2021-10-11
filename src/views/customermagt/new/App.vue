@@ -705,7 +705,7 @@
               margin-bottom: 0.16rem;
             "
           >
-            意向描述
+           <span style="font-weight: bold; color: #ff3000" v-if="showAllBuyInfo">* </span> 意向描述
           </div>
           <el-input
             type="textarea"
@@ -1925,6 +1925,13 @@ export default {
         Toast("是否按揭不能为空");
         return false;
       }
+      else if (
+        !this.hssWxBusinessBuyRo.describes &&
+        this.showAllBuyInfo
+      ) {
+        Toast("买车意向描述不能为空");
+        return false;
+      }
 
        else if (this.hssWxCustomerRo.intentionLevel == "") {
         console.log(88);
@@ -2540,6 +2547,7 @@ export default {
       let data = await this.api.getWxCheckinDetail(this.cusid);
       this.hssWxCustomerRo = { ...this.hssWxCustomerRo, ...data };
       this.hssWxCustomerRo.chcekinId = this.cusid;
+      this.hssWxBusinessBuyRo.describes=data.demand;
     }
   },
   async mounted() {
@@ -2854,7 +2862,7 @@ export default {
       }
     }
     .intent_desc {
-      padding: 0.3rem 0.48rem;
+      padding: 0.3rem 0.3rem;
       background: #fff;
       border-bottom: 1px solid #e7e7e7;
     }

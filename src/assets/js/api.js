@@ -604,6 +604,15 @@ class api {
 
         })
     }
+     // 获取销售组别列表
+     getSalersGroup(data) {
+        return new Promise((resolve, reject) => {
+            get('/sys/cat/listItmTreeNode',data).then(res => {
+                resolve(res.data.list)
+            })
+
+        })
+    }
     // 获取省市区列表
     getmapList(data) {
         return new Promise((resolve, reject) => {
@@ -622,6 +631,7 @@ class api {
 
         })
     }
+    
 
     //获取留言列表
     getWxCommunicate(data) {

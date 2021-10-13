@@ -75,7 +75,7 @@
               class="input bg centerpart"
               readonly
               label=""
-              :value="info.saler"
+              :value="info.saler||info.groupNm"
               placeholder="销售顾问"
               @click="showPicker3 = true"
             />
@@ -308,6 +308,8 @@ export default {
         endFollowUpTime: "", //跟进时间结束时间
         nature: "", //客流性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7牌证服务，8其他服务）
         saler: "", //销售顾问（存储为销售人员的id）
+        group:"",//销售组别id
+        groupNm:"",//销售组别名字
         intentionLevel: "", //意向等级（此处存储意向的id，而不会是值）
         pageNo: 1, //分页起始位置
         pageSize: 5, //分页结束位置
@@ -456,6 +458,15 @@ export default {
     //   p: [1, 1000],
     // };
     this.salers = await this.api.getsalersList();
+    // 获取销售组别
+    let salerGroup = await this.api.getSalersGroup({
+      pid: 5654408130434048,
+    });
+    salerGroup.forEach((item) => {
+      item.arg7 = item.nm;
+      this.salers.unshift(item);
+    });
+    // 销售组别和销售顾问列表合并
     this.salers.unshift({ arg7: "全部" });
     this.searchsalers = this.salers;
 
@@ -574,7 +585,15 @@ export default {
       else this.searchsalers = this.salers;
     },
     handleSaler(e) {
-      this.info.saler = e.arg7;
+      // 有pid则选择了组别
+      if (e.pid) {
+        this.info.group = e.id;
+        this.info.groupNm = e.arg7;
+
+      } else {
+        this.info.saler = e.arg7;
+      }
+      console.log('销售11111',e);
       this.showPicker3 = false;
     },
     // 意向等级
@@ -594,7 +613,7 @@ export default {
       this.datetype = e.content;
       this.showPicker7 = false;
       if (e.id == 1) this.info.orders = "创建";
-      else if (e.id == 2)  this.info.orders = "跟进";
+      else if (e.id == 2) this.info.orders = "跟进";
       else this.info.orders = "上次跟进时间";
     },
     // 新增客户

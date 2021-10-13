@@ -69,9 +69,18 @@
 			</div>
 
 		</div>
-		<div  style="padding-bottom: 1.5rem;">
+		<div  class="header" style="padding-bottom: 1.5rem;">
+			<div  style="display: flex;justify-content: space-between;">
+				
+			
 			<div class="" style="margin-left: 0.3rem;">
 				共{{total}}条记录
+			</div>
+			<div class="navChange">
+				<div class="navList" v-for="(item,index) in navList" :key="index" @click="changeNav(index)" :class="currentIndex==index?'active':''">
+					{{item}}
+				</div>
+			</div>
 			</div>
 		
 		<div class="bodyList" v-for="(item,index) in infoList" :key="index">
@@ -137,16 +146,14 @@
 		data() {
 			return {
 				showPicker4:false,
-				
 				showPicker5:false,
 				showPicker6:false,
 				searchoptionsFour:[],
-					 userinfo:"",
+				userinfo:"",
 				identity:[],	  
 				currentDate:"",
 				search4:"",
 				obj:{
-					
 				},
 				value: "",
 				startTime: "",
@@ -173,7 +180,9 @@
 					
 				],
 				total:"",
-			
+				navList:['全部','已完善','未完善'],
+				currentIndex:0,
+				perfect:""
 			};
 		},
 		components: {},
@@ -281,6 +290,7 @@
 				this.page.nature=this.gearStatus
 				this.page.beginTime=this.startTime
 				this.page.endTime=this.endTime
+				this.page.perfect=this.perfect
 				this.api.getWxCheckin(this.page).then(res=>{
 					this.total=res.page.total
 					this.infoList=[...this.infoList,...res.data.list]
@@ -300,6 +310,7 @@
 					gearStatus:this.gearStatus,
 					startTime:this.startTime,
 					endTime:this.endTime,
+					perfect:this.perfect
 				}
 				this.until.seSave('obj',JSON.stringify(obj))
 				
@@ -319,6 +330,17 @@
 						}
 					}
 			},
+			changeNav(index){
+				this.currentIndex=index
+				if(index!=0){
+					this.perfect=this.navList[index]
+				}
+				else{
+					this.perfect=''
+				}
+				this.search()
+				
+			}
 		
 		},
 		computed: {
@@ -396,7 +418,6 @@
 			display: flex;
 			padding: 0.3rem;
 			box-sizing: border-box;
-
 			.leftBox {
 				.vantSelect{
 						 font-size: 0.24rem;
@@ -420,22 +441,18 @@
 					padding: 0 0.1rem;
 					// border: 0.02rem solid rgb(192,196,204);
 					border-radius: 0.1rem;
-
 				}
-
 				input::placeholder {
 					font-size: 0.24rem;
 					color: rgb(192,196,204);
 
 
 				}
-
 				.select {
 					width: 2.9rem;
 					height: 0.7rem;
 
 				}
-
 				.pick {
 					display: flex;
 
@@ -445,14 +462,12 @@
 						margin-top: 0.1rem;
 						padding-right: 0;
 						margin-right: 0.1rem;
-
 						/deep/ .el-input--prefix .el-input__inner {
 							padding-right: 0;
 						}
 					}
 				}
 			}
-
 			.rightBox {
 				button {
 					width: 1rem;
@@ -466,8 +481,23 @@
 				}
 			}
 		}
+		.header{
+			
+		
+		.navChange{
+			display: flex;
+			
+			.navList{
+				margin-right: 0.2rem;
+				box-sizing: border-box;
+				padding: 0.1rem 0.2rem;
+			}
+			.active{
+				border-bottom: 0.02rem solid #09C076;
+				transition: all 0.3s;
+			}
+		}
 		.bodyList{
-
 			padding: 0.3rem;
 			width: 100%;
 			background: #FFFFFF;
@@ -517,6 +547,7 @@
 					color:#09C076 ;
 				}
 			}
+		}
 		}
 		.btn1{
 		

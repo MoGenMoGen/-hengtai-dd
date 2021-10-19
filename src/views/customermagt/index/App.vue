@@ -75,7 +75,7 @@
               class="input bg centerpart"
               readonly
               label=""
-              :value="info.saler||info.groupNm"
+              :value="info.saler || info.groupNm"
               placeholder="销售顾问"
               @click="showPicker3 = true"
             />
@@ -240,6 +240,10 @@
             <div class="value">{{ item.wxId }}</div>
           </div>
           <div class="item_row">
+            <div class="key left">销售:</div>
+            <div class="value">{{ item.saler }}</div>
+          </div>
+          <div class="item_row">
             <div class="key left">下次跟进时间:</div>
             <div class="value">{{ item.nextFollowUpTime }}</div>
           </div>
@@ -308,8 +312,8 @@ export default {
         endFollowUpTime: "", //跟进时间结束时间
         nature: "", //客流性质（1首次自行，2邀约首次，3转介绍首次，4重构首次，5再次邀约，6售后服务，7牌证服务，8其他服务）
         saler: "", //销售顾问（存储为销售人员的id）
-        group:"",//销售组别id
-        groupNm:"",//销售组别名字
+        group: "", //销售组别id
+        groupNm: "", //销售组别名字
         intentionLevel: "", //意向等级（此处存储意向的id，而不会是值）
         pageNo: 1, //分页起始位置
         pageSize: 5, //分页结束位置
@@ -458,14 +462,20 @@ export default {
     //   p: [1, 1000],
     // };
     this.salers = await this.api.getsalersList();
+    // 角色 0员工 1主管 2组长
+    let departRole = JSON.parse(this.until.loGet("userInfo"));
+
     // 获取销售组别
-    let salerGroup = await this.api.getSalersGroup({
-      pid: 5654408130434048,
-    });
-    salerGroup.forEach((item) => {
-      item.arg7 = item.nm;
-      this.salers.unshift(item);
-    });
+    if (departRole == 1) {
+      let salerGroup = await this.api.getSalersGroup({
+        pid: 5654408130434048,
+      });
+      salerGroup.forEach((item) => {
+        item.arg7 = item.nm;
+        this.salers.unshift(item);
+      });
+    }
+
     // 销售组别和销售顾问列表合并
     this.salers.unshift({ arg7: "全部" });
     this.searchsalers = this.salers;
@@ -476,6 +486,7 @@ export default {
     });
     this.intentLevels.unshift({ content: "全部" });
     this.searchintentLevels = this.intentLevels;
+    console.log("意向等级", this.searchintentLevels);
   },
   async mounted() {
     console.log("mounted");
@@ -488,8 +499,10 @@ export default {
       })();
     };
     //  获取老客户介绍人
-    this.introducers = await this.api.getOldCustomer("");
-    this.searchintroducers = this.introducers;
+    // this.introducers = await this.api.getOldCustomer("");
+    // this.searchintroducers = this.introducers;
+    if (JSON.parse(this.until.seGet("info")))
+      this.info = JSON.parse(this.until.seGet("info"));
   },
   methods: {
     // 获取列表
@@ -552,6 +565,8 @@ export default {
       }, 1000);
     },
     back() {
+      this.until.seRemove("info");
+
       this.until.back();
     },
     // 购买类型
@@ -589,11 +604,13 @@ export default {
       if (e.pid) {
         this.info.group = e.id;
         this.info.groupNm = e.arg7;
-
+        this.info.saler = "";
       } else {
         this.info.saler = e.arg7;
+        this.info.group = "";
+        this.info.groupNm = "";
       }
-      console.log('销售11111',e);
+      console.log("销售11111", e);
       this.showPicker3 = false;
     },
     // 意向等级
@@ -633,6 +650,7 @@ export default {
       this.info.pageNo = 1;
       this.isfirstload = true;
       this.handleLoad();
+      this.until.seSave("info", JSON.stringify(this.info));
     },
     startTimeChange(val) {
       if (

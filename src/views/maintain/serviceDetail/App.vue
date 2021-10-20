@@ -437,14 +437,15 @@ i {
                 >
                 <img :src="item" @click="bigImg(item)" />
               </p>
-              <p>
-                <input
-                  ref="upload"
-                  type="file"
-                  name="file"
-                  multiple="multiple"
-                  @change="upImg($event, 'in')"
-                />+
+              <p @click="toUpload">
+                <!--<input-->
+                  <!--ref="upload"-->
+                  <!--type="file"-->
+                  <!--name="file"-->
+                  <!--multiple="multiple"-->
+                  <!--@change="upImg($event, 'in')"-->
+                <!--/>-->
+                +1
               </p>
             </div>
           </div>
@@ -497,6 +498,7 @@ i {
 </template>
 
 <script>
+  // import wx from 'weixin-js-sdk'
 import classifyIndex from "@/components/classifyIndex";
 import { Toast } from "mint-ui";
 export default {
@@ -541,7 +543,41 @@ export default {
   components: {
     classifyIndex,
   },
-  created() {},
+  created() {
+      console.log(window.location)
+      this.api.getSign(window.location.origin).then(res=>{
+          console.log(res)
+          wx.config({
+              beta: true,
+              debug: true,// 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+              appId: res.appId,
+              timestamp: res.timestamp,
+              nonceStr: res.nonceStr,
+              signature: res.signature,
+              jsApiList: [
+                  'chooseImage',
+                  'uploadFile',
+                  'showLoading',
+                  'hideLoading'
+              ]
+          });
+          console.log('-------')
+          wx.ready(function(){
+              console.log('验证通过')
+
+
+// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+          });
+
+          wx.error(function(res){
+              console.log('验证失败')
+              console.log(res)
+//config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+          });
+      })
+
+
+  },
   mounted() {
     this.id = this.until.getQueryString("id");
     this.userInfo = JSON.parse(this.until.loGet("userInfo"));
@@ -635,6 +671,66 @@ export default {
     //
     //
     // },
+      toUpload(){
+          let that = this
+          console.log(wx)
+          wx.chooseImage({
+              count: 9,
+              sizeType: ['original', 'compressed'],
+              sourceType: ['album', 'camera'],
+              success (res) {
+                  // tempFilePath可以作为img标签的src属性显示图片
+
+                  const tempFilePaths = res.tempFilePaths
+                  wx.showLoading({
+                      title: '上传中',
+                  })
+                  that.uploadimg({path:tempFilePaths})
+              }
+          })
+      },
+      //多张图片上传
+      uploadimg(data) {
+
+          var that = this,
+              i = data.i ? data.i : 0,
+              success = data.success ? data.success : 0,
+              fail = data.fail ? data.fail : 0;
+          console.log(data.path[i])
+          wx.uploadFile({
+              url: 'http://hss.jinkworld.com/general/oss/upload', //仅为示例，非真实的接口地址
+              filePath: data.path[i],
+              name: 'file',
+              header:{'Blade-Auth':'bearer '},
+              formData: {
+                  'user': 'test'
+              },
+              success: (res) => {
+                  console.log(res)
+
+                  success++;
+                  that.formImgList.push(JSON.parse(res.data).data.link)
+              },
+              fail: (res) => {
+                  fail++;
+                  console.log('fail:' + i + "fail:" + fail);
+              },
+              complete: () => {
+                  i++;
+                  if (i == data.path.length) { //当图片传完时，停止调用
+                      wx.hideLoading();
+                      console.log('执行完毕');
+                      console.log('成功：' + success + " 失败：" + fail);
+
+                  } else { //若图片还没有传完，则继续调用函数
+                      data.i = i;
+                      data.success = success;
+                      data.fail = fail;
+                      that.uploadimg(data);//递归，回调自己
+                  }
+              }
+          });
+      },
     async upImg(e, type) {
       console.log(e);
       let blob = e.target.files;

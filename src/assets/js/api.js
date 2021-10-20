@@ -74,7 +74,20 @@ function get2(url, data, header, cache = false) {
     return promise;
 }
 class api {
+//获取微信签名
+    getSign(url) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        // return get(hostUrl + '/general/access/ddBindPhone', data, header)
 
+        return new Promise(resolve => {
+            get('/wxMp/access/getJsTicket', {url:url}, header).then(res => {
+                resolve(res.data)
+            })
+        })
+    }
     //code登录 DD
     login(data) {
         // let header={
@@ -1019,4 +1032,4 @@ class api {
 
 }
 
-export { api, hostUrl };
+export { api,post,hostUrl };

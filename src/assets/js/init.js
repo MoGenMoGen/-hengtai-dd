@@ -29,10 +29,12 @@ import lrz from 'lrz'
 // import Vconsole from 'vconsole'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
-import { api } from './api';
+import { api,post } from './api';
 export default {
   install(Vue) {
     Vue.prototype.api = new api();
+      Vue.prototype.$post = post;
+      // Vue.prototype.hostUrl=hostUrl
     // Vue.prototype.Vconsole = new Vconsole()
     // Vue.prototype.EXIF  = EXIF;
     // Vue.prototype.mint  = mint;

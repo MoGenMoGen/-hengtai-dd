@@ -550,8 +550,11 @@
         <!-- 价格区间开始 -->
         <div class="pricebox">
           <div class="prititle">
-            <span style="font-weight: bold; color: #ff3000" v-if="showAllBuyInfo">* </span>价格区间 /
-            万元
+            <span
+              style="font-weight: bold; color: #ff3000"
+              v-if="showAllBuyInfo"
+              >* </span
+            >价格区间 / 万元
           </div>
           <div class="pricelist">
             <div
@@ -640,7 +643,7 @@
         <div class="row">
           <!-- 占位符 -->
           <div style="display: flex">
-             <div class="placeholder" v-if="showAllBuyInfo">*</div>
+            <div class="placeholder" v-if="showAllBuyInfo">*</div>
             <div class="placeholder" v-else></div>
             <div class="rowtitle">里程数</div>
           </div>
@@ -671,7 +674,7 @@
         <div class="row">
           <!-- 占位符 -->
           <div style="display: flex">
-             <div class="placeholder" v-if="showAllBuyInfo">*</div>
+            <div class="placeholder" v-if="showAllBuyInfo">*</div>
             <div class="placeholder" v-else></div>
             <div class="rowtitle">是否按揭</div>
           </div>
@@ -705,7 +708,12 @@
               margin-bottom: 0.16rem;
             "
           >
-           <span style="font-weight: bold; color: #ff3000" v-if="showAllBuyInfo">* </span> 意向描述
+            <span
+              style="font-weight: bold; color: #ff3000"
+              v-if="showAllBuyInfo"
+              >*
+            </span>
+            意向描述
           </div>
           <el-input
             type="textarea"
@@ -742,7 +750,7 @@
       <div class="row" v-if="showInvalid">
         <!-- 占位符 -->
         <div style="display: flex">
-          <div class="placeholder"></div>
+          <div class="placeholder">*</div>
           <div class="rowtitle">无效原因</div>
         </div>
 
@@ -768,7 +776,7 @@
       <div class="row" v-if="showInvalidDetail">
         <!-- 占位符 -->
         <div style="display: flex">
-          <div class="placeholder"></div>
+          <div class="placeholder">*</div>
           <div class="rowtitle">其他原因</div>
         </div>
 
@@ -1889,55 +1897,38 @@ export default {
       ) {
         Toast("买车品牌不能为空");
         return false;
-      }
-      else if (
-        !this.hssWxBusinessBuyRo.series &&
-        this.showAllBuyInfo
-      ) {
+      } else if (!this.hssWxBusinessBuyRo.series && this.showAllBuyInfo) {
         Toast("买车车系不能为空");
         return false;
-      }
-         else if (
-        !this.hssWxBusinessBuyRo.model &&
-        this.showAllBuyInfo
-      ) {
+      } else if (!this.hssWxBusinessBuyRo.model && this.showAllBuyInfo) {
         Toast("买车车型不能为空");
         return false;
-      }
-       else if (
-        !this.hssWxBusinessBuyRo.priceId &&
-        this.showAllBuyInfo
-      ) {
+      } else if (!this.hssWxBusinessBuyRo.priceId && this.showAllBuyInfo) {
         Toast("价格区间不能为空");
         return false;
-      }
-      else if (
-        !this.hssWxBusinessBuyRo.mileage &&
-        this.showAllBuyInfo
-      ) {
+      } else if (!this.hssWxBusinessBuyRo.mileage && this.showAllBuyInfo) {
         Toast("里程数不能为空");
         return false;
-      }
-       else if (
-        !this.hssWxBusinessBuyRo.isMortgage &&
-        this.showAllBuyInfo
-      ) {
+      } else if (!this.hssWxBusinessBuyRo.isMortgage && this.showAllBuyInfo) {
         Toast("是否按揭不能为空");
         return false;
-      }
-      else if (
-        !this.hssWxBusinessBuyRo.describes &&
-        this.showAllBuyInfo
-      ) {
+      } else if (!this.hssWxBusinessBuyRo.describes && this.showAllBuyInfo) {
         Toast("买车意向描述不能为空");
         return false;
-      }
-
-       else if (this.hssWxCustomerRo.intentionLevel == "") {
+      } else if (this.hssWxCustomerRo.intentionLevel == "") {
         console.log(88);
 
         Toast("意向等级不能为空");
         return false;
+      } else if (this.showInvalid) {
+        if (!this.hssWxCustomerRo.supplement) {
+          Toast("无效原因不能为空");
+          return false;
+        }
+        if (this.showInvalidDetail && !this.hssWxCustomerRo.supplementInfo) {
+          Toast("无效原因不能为空");
+          return false;
+        }
       } else if (
         this.hssWxCustomerRo.nextFollowUpTime == "" &&
         this.showfollow &&
@@ -2015,7 +2006,7 @@ export default {
           this.until.seSave("needRefresh", true);
 
           Toast("保存成功");
-          this.until.back();
+          // this.until.back();
         } else {
           console.log(2121);
           Toast("保存失败");
@@ -2547,7 +2538,7 @@ export default {
       let data = await this.api.getWxCheckinDetail(this.cusid);
       this.hssWxCustomerRo = { ...this.hssWxCustomerRo, ...data };
       this.hssWxCustomerRo.chcekinId = this.cusid;
-      this.hssWxBusinessBuyRo.describes=data.demand;
+      this.hssWxBusinessBuyRo.describes = data.demand;
     }
   },
   async mounted() {

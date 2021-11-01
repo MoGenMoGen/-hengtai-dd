@@ -77,7 +77,7 @@
       <div class="row" v-if="showInvalid == 1 || showInvalid == 2">
         <!-- 占位符 -->
         <div style="display: flex">
-          <div class="placeholder"></div>
+          <div class="placeholder">*</div>
           <div class="rowtitle" v-if="showInvalid == 2">无效原因</div>
           <div class="rowtitle" v-if="showInvalid == 1">潜客原因</div>
         </div>
@@ -109,7 +109,7 @@
       <div class="row" v-if="showInvalidDetail">
         <!-- 占位符 -->
         <div style="display: flex">
-          <div class="placeholder"></div>
+          <div class="placeholder">*</div>
           <div class="rowtitle">其他无效原因</div>
         </div>
 
@@ -1231,6 +1231,23 @@ export default {
         Toast("请选择意向等级");
         return false;
       }
+      if (this.showInvalid == 1 && !this.info.hssWxFollowupRo.supplement) {
+        Toast("请选择潜客原因");
+        return false;
+      }
+      if (this.showInvalid == 2) {
+        if (!this.info.hssWxFollowupRo.supplement) {
+          Toast("无效原因不能为空");
+          return false;
+        }
+        if (
+          this.showInvalidDetail &&
+          !this.info.hssWxFollowupRo.supplementInfo
+        ) {
+          Toast("无效原因不能为空");
+          return false;
+        }
+      }
 
       if (
         this.showdiyprice &&
@@ -1343,10 +1360,11 @@ export default {
     // 用户id
     this.info.hssWxFollowupRo.customerId = detailData.customer.data.id;
     //  接待过来的跟进，把客户需求值赋值给意向描述
-    if(this.info.hssWxFollowupRo.chcekinId)
-    {
-      let data = await this.api.getWxCheckinDetail(this.info.hssWxFollowupRo.chcekinId);
-      this.info.hssWxFollowupRo.content=data.demand;
+    if (this.info.hssWxFollowupRo.chcekinId) {
+      let data = await this.api.getWxCheckinDetail(
+        this.info.hssWxFollowupRo.chcekinId
+      );
+      this.info.hssWxFollowupRo.content = data.demand;
     }
 
     // 自定义价格是否显示

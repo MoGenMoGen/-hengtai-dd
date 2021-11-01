@@ -48,7 +48,7 @@
 				</el-select> -->
 					<div id="" style="display: flex;">
 						
-				<input type="" name="" id="" value="" placeholder="手机号" v-if="currentIndex==0" v-model="phone" />
+				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==0" v-model="salesmanone" />
 				<input type="" name="" id="" value="" placeholder="销售人员" v-if="currentIndex==1" v-model="salesman"
 					class="putin" />
 				<!-- <input type="" name="" id="" value="" placeholder="品牌、车型" /> -->
@@ -121,6 +121,9 @@
 			<div class="rightBox">
 				<button type="button" @click="search">查询</button>
 			</div>
+		</div>
+		<div class="" style="margin-left: 0.3rem;">
+			共{{total}}条记录
 		</div>
 		<div class="bodycontent">
 			<div class="bodyCurrent">
@@ -287,12 +290,11 @@
 				model: "", //车型id
 				modelname:"", //车型
 				currentDate:"",
-				
+				salesmanone:'',
 				phone: "",
 				pickerVisible: true,
 				levelId: '',
 				levelname:"",
-				
 				result: '',
 				show: true,
 				startTime: '',
@@ -442,12 +444,10 @@
 			},
 
 			getList() {
-
-
-
 				if (this.currentIndex == 0) {
 					this.page.intentionLevel = this.levelId
 					this.page.phone = this.phone
+					this.page.saler = this.salesmanone
 					this.page.brand = this.brand
 					this.page.series = this.series
 					this.page.model = this.model

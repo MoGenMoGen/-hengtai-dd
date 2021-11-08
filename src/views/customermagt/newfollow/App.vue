@@ -671,7 +671,7 @@
         </van-popup>
       </div>
     </div>
-    <div class="btn_save" @click="save" v-show="hideshow">保存</div>
+    <div class="btn_save" @click="save" :style="{ background: isSave ? '#09c076' : '#ddd' }" v-show="hideshow">保存</div>
   </div>
 </template>
 
@@ -684,6 +684,8 @@ import { Toast } from "mint-ui";
 export default {
   data() {
     return {
+      //是否可以保存
+      isSave: true,
       // 默认角色销售人员
       departRole: 0,
       defaultHeight: "0", // 默认屏幕高度
@@ -1201,6 +1203,11 @@ export default {
       this.showPicker3 = false;
     },
     async save() {
+           if (!this.isSave) {
+        Toast("请不要重复点击");
+        return;
+      }
+      this.isSave = false;
       // 数据校验开始
       // 必填项
       if (this.info.hssWxFollowupRo.content == "") {
@@ -1264,6 +1271,8 @@ export default {
         Toast("保存成功");
         this.until.back();
       } else Toast("保存失败");
+        this.isSave = true;
+
     },
   },
   async created() {

@@ -1340,7 +1340,14 @@
     </div>
 
     <!-- 更多信息结束-->
-    <div class="btn_save" @click="save" v-show="hideshow">保存</div>
+    <div
+      class="btn_save"
+      :style="{ background: isSave ? '#09c076' : '#ddd' }"
+      @click="save"
+      v-show="hideshow"
+    >
+      保存
+    </div>
   </div>
 </template>
 
@@ -1352,6 +1359,8 @@ import { compressImg, readImg } from "@/assets/js/imageUtil";
 export default {
   data() {
     return {
+      //是否可以保存
+      isSave: true,
       // 客户是否已存在
       hadcustomer: false,
       // 默认销售角色
@@ -1848,6 +1857,11 @@ export default {
       }
     },
     async save() {
+      if (!this.isSave) {
+        Toast("请不要重复点击");
+        return;
+      }
+      this.isSave = false;
       if (this.hadcustomer) {
         Toast("客户已存在");
         return false;
@@ -2004,32 +2018,33 @@ export default {
           console.log(2020);
           // 保存成功需要返回刷新
           this.until.seSave("needRefresh", true);
-
-          Toast("保存成功");
-          // this.until.back();
-        } else {
-          console.log(2121);
-          Toast("保存失败");
-        }
-      }
-      // 新增客户
-      else {
-        let data = await this.api.commitNewCustomer({
-          hssWxCustomerRo: this.hssWxCustomerRo,
-          hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
-          hssWxBusinessSellRo: this.hssWxBusinessSellRo,
-        });
-        if (data.code == 0) {
-          console.log(2020);
-          this.until.seSave("needRefresh", true);
-
           Toast("保存成功");
           this.until.back();
         } else {
           console.log(2121);
-
           Toast("保存失败");
         }
+        this.isSave = true;
+      }
+      // 新增客户
+      else {
+          let data = await this.api.commitNewCustomer({
+            hssWxCustomerRo: this.hssWxCustomerRo,
+            hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
+            hssWxBusinessSellRo: this.hssWxBusinessSellRo,
+          });
+          if (data.code == 0) {
+            console.log(2020);
+            this.until.seSave("needRefresh", true);
+
+            Toast("保存成功");
+            this.until.back();
+          } else {
+            console.log(2121);
+
+            Toast("保存失败");
+          }
+          this.isSave = true;
       }
     },
     back() {

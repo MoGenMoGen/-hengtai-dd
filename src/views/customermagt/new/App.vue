@@ -1121,21 +1121,62 @@
             v-model="hssWxCustomerRo.introducer"
             placeholder="请选择介绍人"
           />
-          <van-popup v-model="showPicker12" round position="bottom">
-            <van-search
-              v-model="search12"
-              shape="round"
-              background="#09c076"
-              @input="onSearch12"
-              placeholder="请输入搜索关键词"
-            />
-            <van-picker
+          <van-popup
+            v-model="showPicker12"
+            round
+            position="bottom"
+            style="height: 50vh; overflow: scroll"
+          >
+              <van-search
+                v-model="search12"
+                shape="round"
+                background="#09c076"
+                @input="onSearch12"
+                placeholder="请输入搜索关键词"
+                style="
+                  position: fixed;
+                  top: 50vh;
+                  left: 0;
+                  width: 100%;
+                "
+              />
+              <van-list
+                class="list"
+                v-model="oldloading"
+                :finished="oldfinished"
+                finished-text="没有更多了"
+                @load="getOldCustomer"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  margin-top:1.6rem;
+                "
+              >
+                <div
+                  v-for="(item1, index1) in searchintroducers"
+                  :key="index1"
+                  style="
+                    padding: .1rem 0;
+                    font-weight: bold;
+                    border-bottom: 1px solid #ddd;
+                    width: 100%;
+                    text-align: center;
+                    box-sizing: border-box;
+                  "
+                  :style="{background:(hssWxCustomerRo.introducer==`${item1.name} ${item1.phone}`?'rgb(9, 192, 118)':'')}"
+                  @click="checkOldCustomer(item1)"
+                >
+                  {{ item1.name }} {{ item1.phone }}
+                </div>
+              </van-list>
+              <!-- <van-picker
               value-key="name"
               show-toolbar
               :columns="searchintroducers"
               @cancel="showPicker12 = false"
               @confirm="handleintroducers"
-            />
+            /> -->
           </van-popup>
           <!-- <el-select
             filterable
@@ -1408,6 +1449,12 @@ export default {
       showPicker11: false,
       // 老客户介绍人搜索列表、搜索值、是否显示picker
       searchintroducers: [],
+      oldName: "",
+      oldNo: 1,
+      oldSize: 10,
+      oldfinished: false,
+      oldloading: false,
+
       search12: "",
       showPicker12: false,
       // 生日是否显示picker
@@ -1821,11 +1868,15 @@ export default {
     },
     // 老客户介绍人
     onSearch12(a) {
-      if (a != "")
-        this.searchintroducers = this.introducers.filter((item) =>
-          item.name.includes(a)
-        );
-      else this.searchintroducers = this.introducers;
+      // if (a != "")
+      //   this.searchintroducers = this.introducers.filter((item) =>
+      //     item.name.includes(a)
+      //   );
+      // else this.searchintroducers = this.introducers;
+      this.oldName = a;
+      this.oldNo = 1;
+      this.searchintroducers = [];
+      this.getOldCustomer();
     },
     handleintroducers(e) {
       this.hssWxCustomerRo.introducer = e.name;
@@ -2028,23 +2079,23 @@ export default {
       }
       // 新增客户
       else {
-          let data = await this.api.commitNewCustomer({
-            hssWxCustomerRo: this.hssWxCustomerRo,
-            hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
-            hssWxBusinessSellRo: this.hssWxBusinessSellRo,
-          });
-          if (data.code == 0) {
-            console.log(2020);
-            this.until.seSave("needRefresh", true);
+        let data = await this.api.commitNewCustomer({
+          hssWxCustomerRo: this.hssWxCustomerRo,
+          hssWxBusinessBuyRo: this.hssWxBusinessBuyRo,
+          hssWxBusinessSellRo: this.hssWxBusinessSellRo,
+        });
+        if (data.code == 0) {
+          console.log(2020);
+          this.until.seSave("needRefresh", true);
 
-            Toast("保存成功");
-            this.until.back();
-          } else {
-            console.log(2121);
+          Toast("保存成功");
+          this.until.back();
+        } else {
+          console.log(2121);
 
-            Toast("保存失败");
-          }
-          this.isSave = true;
+          Toast("保存失败");
+        }
+        this.isSave = true;
       }
     },
     back() {
@@ -2346,6 +2397,25 @@ export default {
       this.hssWxBusinessSellRo.model = brand.name;
       this.showPicker10 = false;
     },
+    // 获取老客户介绍人
+    getOldCustomer() {
+      this.api
+        .getOldCustomer({ name: this.oldName, n: this.oldNo, s: this.oldSize })
+        .then((res) => {
+          this.searchintroducers = [
+            ...this.searchintroducers,
+            ...res.data.records,
+          ];
+          this.oldfinished = this.searchintroducers.length >= res.data.total;
+          this.oldloading = false;
+          this.oldNo++;
+        });
+    },
+    // 选择老客户介绍人
+    checkOldCustomer(info){
+      this.hssWxCustomerRo.introducer=`${info.name} ${info.phone}`;
+      this.showPicker12=false;
+    }
   },
   async created() {
     moment.locale("zh-cn");
@@ -2565,8 +2635,6 @@ export default {
       })();
     };
     //  获取老客户介绍人
-    this.introducers = await this.api.getOldCustomer("");
-    this.searchintroducers = this.introducers;
   },
 };
 </script>

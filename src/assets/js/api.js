@@ -74,7 +74,7 @@ function get2(url, data, header, cache = false) {
     return promise;
 }
 class api {
-//获取微信签名
+    //获取微信签名
     getSign(url) {
         let header = {
             // 'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ class api {
         // return get(hostUrl + '/general/access/ddBindPhone', data, header)
 
         return new Promise(resolve => {
-            get('/wxMp/access/getJsTicket', {url:url}, header).then(res => {
+            get('/wxMp/access/getJsTicket', { url: url }, header).then(res => {
                 resolve(res.data)
             })
         })
@@ -617,10 +617,10 @@ class api {
 
         })
     }
-     // 获取销售组别列表
-     getSalersGroup(data) {
+    // 获取销售组别列表
+    getSalersGroup(data) {
         return new Promise((resolve, reject) => {
-            get('/sys/cat/listItmTreeNode',data).then(res => {
+            get('/sys/cat/listItmTreeNode', data).then(res => {
                 resolve(res.data.list)
             })
 
@@ -644,7 +644,7 @@ class api {
 
         })
     }
-    
+
 
     //获取留言列表
     getWxCommunicate(data) {
@@ -724,8 +724,8 @@ class api {
     // 获取老客户介绍人
     getOldCustomer(data) {
         return new Promise((resolve, reject) => {
-            get('/hss/wxCheckin/listOldUser?name=' + data).then(res => {
-                resolve(res.data)
+            get('/hss/wxCheckin/listOldUser2', data).then(res => {
+                resolve(res)
             })
 
         })
@@ -1020,16 +1020,16 @@ class api {
         })
     }
     // 客户管理消息提示条数
-    getCusMessagePrommpt(){
+    getCusMessagePrommpt() {
         return new Promise((resolve, reject) => {
             get('/hss/wxCustomer/sameDay').then(res => {
                 resolve(res)
             })
 
-        }) 
+        })
     }
 
 
 }
 
-export { api,post,hostUrl };
+export { api, post, hostUrl };

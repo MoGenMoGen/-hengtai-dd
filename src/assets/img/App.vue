@@ -8,7 +8,7 @@
 
 		</div>
 		<div class="bodyList">
-			<div class="listItem" @click="topage('/views/home/gongshitianbao.html')">
+			<div class="listItem" @click="topage()">
 				<img class="img1" :src="bulu" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -20,7 +20,7 @@
 				</div>
 				<img class="img2":src="arrowRight" mode=""></img>
 			</div>
-			<div class="listItem" @click="topage('/views/home/gongshibulu.html')">
+			<div class="listItem">
 				<img class="img1" :src="wode" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -32,7 +32,7 @@
 				</div>
 				<img  class="img2":src="arrowRight" mode=""></img>
 			</div>
-			<div class="listItem" @click="topage('/views/home/wodegongshi.html')">
+			<div class="listItem">
 				<img class="img1" :src="baobiao" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -44,7 +44,7 @@
 				</div>
 				<img  class="img2":src="arrowRight" mode=""></img>
 			</div>
-			<div class="listItem" @click="topage('/views/baobiao/xiangmu.html')">
+			<div class="listItem">
 				<img class="img1" :src="tianbao" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -89,12 +89,12 @@
 				duration: 500
 			}
 		},
-		mounted() {
+		onLoad() {
 
 		},
 		methods: {
 				topage(url){
-					this.until.href(url)
+					
 				}
 		}
 	}

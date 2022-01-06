@@ -88,6 +88,11 @@
 	.content {
 		background-color: #F1F3F2;
 		.tab{
+			background-color: #F1F3F2;
+			position: fixed;
+			z-index: 50;
+			top: 0;
+			left:0 ;
 			width: 100%;
 			height: 1rem;
 			display: flex;
@@ -111,6 +116,7 @@
 			
 		}
 		.bodycontent{
+			margin-top: 1rem;
 			padding:0.2rem ;
 			background-color:#F1F3F2;
 			box-sizing: border-box;

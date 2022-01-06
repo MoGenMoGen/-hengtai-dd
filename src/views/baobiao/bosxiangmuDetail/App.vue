@@ -154,7 +154,7 @@
 				<div class="listName5 listName" style="color:#CA093A; text-decoration: underline;"  @click="pepDetial" >
 					查看
 				</div>
-				<div class="listName5 listName" style="color:#CA093A; text-decoration: underline;" @click="pepDetialTwo" >
+				<div class="listName5 listName" style="color:#CA093A; text-decoration: underline;" @click="pepDetialTwo">
 					查看
 				</div>
 			</div>
@@ -212,9 +212,8 @@
 				this.until.href("/views/baobiao/reyuandetail.html")
 			},
 			pepDetialTwo(){
-				this.until.href("/views/baobiao/bosxiangmuDetail.html")
+				this.until.href("/views/baobiao/bosrenyuanDetail.html")
 			}
-			
 			
 		
 		

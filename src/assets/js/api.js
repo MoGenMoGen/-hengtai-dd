@@ -148,24 +148,31 @@ class api {
 	        })
 	    })
 	}
-    // 提交新增跟进数据
-    commitNewfollow(data) {
-        return new Promise((resolve, reject) => {
-            post('/hss/wxFollowup/add', data).then(res => {
-                resolve(res)
-            })
+	//工作内容-列表
+	getProjjobcontListAll() {
+	    return new Promise((resolve, reject) => {
+	        get('/api/blade-proj/apis/projjobcont/listAll').then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//获取项目分类列表
+	getprojcatListAll(data) {
+	    return new Promise((resolve, reject) => {
+	        get('/api/blade-proj/apis/projcat/listAll?parentId='+data).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//获取项目列表
+	getprojListAll(data) {
+	    return new Promise((resolve, reject) => {
+	        get('/api/blade-proj/apis/proj/listAll',data).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
 
-        })
-    }
-    //获取客户类型
-    getWxCommonfield(data) {
-        return new Promise((resolve, reject) => {
-            get('/hss/wxCommonfield/page?query=' + data).then(res => {
-                resolve(res.data)
-            })
-
-        })
-    }
 
 
 

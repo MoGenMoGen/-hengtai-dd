@@ -9,11 +9,11 @@
 				:max-hour="17" :max-minute="30" @cancel="showPicker2 = false" @confirm="onConfirm2" />
 		</van-popup>
 		<van-popup v-model="showPicker3" round position="bottom">
-			<van-picker title="选择总部" show-toolbar :columns="columns" @confirm="onConfirm3"
+			<van-picker title="选择总部" show-toolbar :columns="pickService[pickIndex2].columns1" @confirm="onConfirm3" value-key="name"
 				@cancel="showPicker3 = false" />
 		</van-popup>
 		<van-popup v-model="showPicker4" round position="bottom">
-			<van-picker title="选择运营店" show-toolbar :columns="columns2" @confirm="onConfirm4"
+			<van-picker title="选择运营店" show-toolbar :columns="pickService[pickIndex2].columns2" @confirm="onConfirm4" value-key="name"
 				@cancel="showPicker4 = false" />
 		</van-popup>
 		<div class="bodyList">
@@ -48,7 +48,7 @@
 			<div class="listItem">
 				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
 				<p>工作时长：</p>
-				<p class="itemRight">7.00小时/1.00天</p>
+				<p class="itemRight">{{workHours}}小时/{{workdays}}天</p>
 			</div>
 			<div class="listItem" style="border-bottom:1px solid #E6E6E6;">
 				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
@@ -94,7 +94,7 @@
 					<p>工作内容：</p>
 				</div>
 				<div class="checkBox">
-					<div class="boxList" v-for="(item,index) in checkList" :key=index>
+					<div class="boxList" v-for="(item,index) in checkList" :key='index'>
 						<div class="leftBox" @click="checkSelcet(index)">
 							<img :src="xuanzhong" v-if="item.flag">
 						</div>
@@ -109,10 +109,10 @@
 					<p style="color: #FF2015; font-size: 0.24rem;opacity: 0;">*</p>
 					<p>备注：</p>
 				</div>
-				<textarea rows="" cols="" placeholder="请输入内容"></textarea>
+				<textarea rows="" cols="" placeholder="请输入内容" v-model="rmks"></textarea>
 			</div>
 		</div>
-		<div class="submit">
+		<div class="submit" @click="submit">
 			 提交
 		</div>
 	</div>
@@ -144,8 +144,11 @@
 				value3: '',
 				value4: '',
 				selectFlag: false,
-				columns: ['杭州', '宁波', '温州', '绍兴', '湖州', '嘉兴', '金华', '衢州'],
-				columns2: ['杭州121', '宁波', '温州', '绍兴', '湖州', '嘉兴', '金华', '衢州'],
+				workHours:"",
+				workdays:"",
+				rmks:'',
+				columns: [],
+				columns2: [],
 				checkList: [{
 						name: '业主对接',
 						flag: false
@@ -176,34 +179,63 @@
 					},
 
 				],
+				pickIndex0:0,
 				pickIndex:0,
 				pickIndex2:0,
 				pickService:[
 					{
 						
 					}
-				]
+				],
+				userInfo:{},
 			}
 		},
 		mounted() {
-			let id =this.until.getQueryString('id')
-			this.api.getProjwhreportDetail(id).then(res=>{
-				console.log(res);
-				let a=JSON.parse(res.params)
-				console.log(77,a);
+			this.userInfo=this.until.loGet('userInfo')
+			this.api.getProjjobcontListAll().then(res=>{
+				this.checkList=res
+				this.checkList.forEach(item=>{
+					this.$set(item,'flag',false)
+				})
+				console.log(this.checkList);
+			})
+			this.api.getprojcatListAll('0').then(res=>{
+				console.log(111111,res);
+				this.pickService[this.pickIndex].columns1=res
 			})
 			this.nowDate = this.getNowDate()
+			let id =this.until.getQueryString('id')
+			if(id){
+				this.api.getProjwhreportDetail(id).then(res=>{
+					this.nowDate=res.workDate
+					this.value1=res.workTimeStart
+					this.value2=res.workTimeEnd
+					this.workHours=res.workHours
+					this.workdays=res.workDays
+					this.rmks=res.rmks
+					let a=JSON.parse(res.params)
+					console.log(res,a);
+				})
+			}
+			
+			
 		},
 		methods: {
 			add(){
-				this.pickService.push({})
+				this.api.getprojcatListAll('0').then(res=>{
+					this.pickService.push({
+						columns1:res,
+						columns2:[],
+					})
+				})
+				
 			},
 			checkSelcet(index) {
 				this.checkList[index].flag = !this.checkList[index].flag
 			},
 			checkSelcetTwo(index,index1){
 				console.log(index,index1);
-				this.$set( this.pickService[index].checkList[index1], 'flag', true )
+				this.$set( this.pickService[index].checkList[index1], 'flag', !this.pickService[index].checkList[index1].flag)
 				console.log(this.pickService);
 				
 			},
@@ -239,20 +271,42 @@
 				this.showPicker2 = false
 			},
 			onConfirm3(val) {
-				this.pickService[this.pickIndex].value= val
-				// this.pickService[this.pickIndex].checkList=[{
-				// 	flag:false,
-				// 	name:'1231'
-				// }]
-			    this.$set(this.pickService[this.pickIndex],'checkList',[{
-					flag:false,
-					name:'1231'
-				}])
+				this.pickService[this.pickIndex].value= val.name
+				this.pickService[this.pickIndex].value2= ''
+				this.$set(this.pickService[this.pickIndex],'id',
+					val.id
+				)
+				this.api.getprojcatListAll(val.id).then(res=>{
+					this.pickService[this.pickIndex].columns2=res
+				})
+				let obj={
+					cid1:val.id,
+					cid2:''
+				}
+				this.api.getprojListAll(obj).then(res=>{
+					this.$set(this.pickService[this.pickIndex],'checkList',res)
+					this.pickService[this.pickIndex].checkList.forEach(item=>{
+						this.$set(item,'flag',false)
+					})
+				})
 				console.log(this.pickService);
 				this.showPicker3 = false
 			},
 			onConfirm4(val) {
-				this.pickService[this.pickIndex2].value2= val
+				this.$set(this.pickService[this.pickIndex2],'id2',
+					val.id
+				)
+				this.pickService[this.pickIndex2].value2= val.name
+				let obj={
+					cid1:this.pickService[this.pickIndex0].id,
+					cid2:val.id
+				}
+				this.api.getprojListAll(obj).then(res=>{
+					this.pickService[this.pickIndex2].checkList=res
+					this.pickService[this.pickIndex2].checkList.forEach(item=>{
+						this.$set(item,'flag',false)
+					})
+				})
 				this.showPicker4 = false
 			},
 			getNowDate() {
@@ -265,13 +319,57 @@
 			pickshow3(index){
 				this.showPicker3=true
 				this.pickIndex=index
+				this.pickIndex0=index
 			},
 			pickshow4(index){
 				this.showPicker4=true
 				this.pickIndex2=index
+				this.pickIndex0=index
 			},
 			toDelete(index){
 				this.pickService.splice(index,1)
+			},
+			submit(){
+				let jobId=[]
+				let projsList=[]
+				let projId=[]
+				this.checkList.forEach(item=>{
+					if(item.flag==true){
+						jobId.push(item.id)
+					}
+				})
+				this.pickService.forEach(item=>{
+					item.checkList.forEach(item1=>{
+						if(item1.flag==true){
+							projId.push(item1.id)
+						}
+					})
+					let obj={
+						projIds:projId,
+						projList:item.checkList,
+						cid1:item.id,
+						cid2:item.id2,
+						cat2List:item.columns2
+					}
+					projId=[]
+					projsList.push(obj)
+				})
+				let from={
+					workDate:this.nowDate,
+					workStart:'',
+					workEnd:'',
+					workTimeStart:this.value1,
+					workTimeEnd:this.value2,
+					workDays:this.workdays,
+					workHours:this.workHours,
+					userId:this.userInfo.id,//还未确认
+					jobIds:jobId,
+					projs:projsList,
+					rmks:this.rmks,
+					types:1,
+					audit:"",
+				}
+				console.log(from);
 			}
 			
 		}

@@ -18,6 +18,7 @@ const until1 = new until();
 // const token = until1.loGet("token")
 // const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
+import qs from 'qs'
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
     let headers = { ...header, ...{ "Blade-Auth": 'bearer '+token}}
@@ -109,7 +110,7 @@ class api {
 			'Content-Type':'application/x-www-form-urlencoded',
 	    }
 	    return new Promise(resolve => {
-	        post('/blade-dingding/access/bindAndLogin', data, header).then(res => {
+	        post('/blade-dingding/access/bindAndLogin', qs.stringify(data), header).then(res => {
 	            resolve(res)
 	        })
 	    })

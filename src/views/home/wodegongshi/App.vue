@@ -7,7 +7,7 @@
 			</div>
 		</div>
 		<div class="bodycontent">
-			<div class="contentList" v-for="(item,index) in infoList" :key="index">
+			<div class="contentList" v-for="(item,index) in infoList" :key="index" @click="toDetail(item.id)">
 				<div class="title">
 					<div class="name">
 						{{item.realName}}提交的工时填报
@@ -123,7 +123,10 @@
 			},
 			modify(id){
 				this.until.href(`/views/home/gongshitianbao.html?id=${id}`)
-			}
+			},
+			toDetail(id){
+				this.until.href(`/views/home/gongshidetail.html?id=${id}`)
+			},
 		
 		
 		}

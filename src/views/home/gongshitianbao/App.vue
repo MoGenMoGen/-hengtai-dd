@@ -55,20 +55,36 @@
 				<p>服务项目：</p>
 				<div class="addNew">
 					<img :src="xinzeng">
-					<p>新增</p>
+					<p @click="add">新增</p>
 				</div>
 			</div>
 			<div class="addBox">
-				<div class="addList">
-					<div class="listBox" @click="showPicker3=true">
-						<p v-if="!value3">总部</p>
-						<p v-if="value3" style="color: #000;">{{value3}}</p>
-						<img :src="xiala">
+				<div class="addList" v-for="(item,index) in pickService" :key='index'>
+					<div class="topBox" style="display: flex;">
+						<div class="listBox" @click="pickshow3(index)">
+							<p v-if="!item.value">总部</p>
+							<p v-if="item.value" style="color: #000;">{{item.value}}</p>
+							<img :src="xiala">
+						</div>
+						<div class="listBox" @click="pickshow4(index)">
+							<p v-if="!item.value2">运营商</p>
+							<p v-if="item.value2" style="color: #000;">{{item.value2}}</p>
+							<img :src="xiala">
+						</div>
+						<div class="delete" @click="toDelete(index)">
+							删除
+						</div>
 					</div>
-					<div class="listBox" @click="showPicker4=true">
-						<p v-if="!value4">运营商</p>
-						<p v-if="value4" style="color: #000;">{{value4}}</p>
-						<img :src="xiala">
+					
+					<div class="checkBox" v-if="item.checkList">
+						<div class="boxList" v-for="(item1,index1) in item.checkList" :key='index1'>
+							<div class="leftBox" @click="checkSelcetTwo(index,index1)">
+								<img :src="xuanzhong" v-if="item1.flag">
+							</div>
+							<div class="rightBox">
+								<p>{{item1.name}}</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -159,16 +175,37 @@
 						flag: false
 					},
 
+				],
+				pickIndex:0,
+				pickIndex2:0,
+				pickService:[
+					{
+						
+					}
 				]
 			}
 		},
 		mounted() {
+			let id =this.until.getQueryString('id')
+			this.api.getProjwhreportDetail(id).then(res=>{
+				console.log(res);
+				let a=JSON.parse(res.params)
+				console.log(77,a);
+			})
 			this.nowDate = this.getNowDate()
-			console.log(11);
 		},
 		methods: {
+			add(){
+				this.pickService.push({})
+			},
 			checkSelcet(index) {
 				this.checkList[index].flag = !this.checkList[index].flag
+			},
+			checkSelcetTwo(index,index1){
+				console.log(index,index1);
+				this.$set( this.pickService[index].checkList[index1], 'flag', true )
+				console.log(this.pickService);
+				
 			},
 			allSelect() {
 				this.selectFlag = !this.selectFlag
@@ -202,11 +239,20 @@
 				this.showPicker2 = false
 			},
 			onConfirm3(val) {
-				this.value3 = val
+				this.pickService[this.pickIndex].value= val
+				// this.pickService[this.pickIndex].checkList=[{
+				// 	flag:false,
+				// 	name:'1231'
+				// }]
+			    this.$set(this.pickService[this.pickIndex],'checkList',[{
+					flag:false,
+					name:'1231'
+				}])
+				console.log(this.pickService);
 				this.showPicker3 = false
 			},
 			onConfirm4(val) {
-				this.value4 = val
+				this.pickService[this.pickIndex2].value2= val
 				this.showPicker4 = false
 			},
 			getNowDate() {
@@ -215,7 +261,19 @@
 				let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
 				let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
 				return year + "-" + month + "-" + day;
+			},
+			pickshow3(index){
+				this.showPicker3=true
+				this.pickIndex=index
+			},
+			pickshow4(index){
+				this.showPicker4=true
+				this.pickIndex2=index
+			},
+			toDelete(index){
+				this.pickService.splice(index,1)
 			}
+			
 		}
 	}
 </script>
@@ -288,6 +346,7 @@
 
 						.rightBox {
 							p {
+								
 								font-size: 0.24rem;
 								font-weight: 500;
 								color: #333333;
@@ -404,10 +463,43 @@
 				border-radius: 0.1rem;
 
 				.addList {
-					display: flex;
 					justify-content: center;
 					align-items: center;
-
+					margin-bottom: 0.5rem;
+					.checkBox {
+						margin-top: 0.35rem;
+						margin-left: 0.1rem;
+						display: flex;
+					
+						flex-wrap: wrap;
+					
+						.boxList {
+							display: flex;
+							margin-right: 0.4rem;
+							margin-top: 0.2rem;
+					
+							.leftBox {
+								width: 0.35rem;
+								height: 0.35rem;
+								border: 1px solid #DDDDDD;
+								border-radius: 0.1rem;
+					
+								img {
+									width: 0.3rem;
+									height: 0.3rem;
+								}
+							}
+					
+							.rightBox {
+								p {
+									margin-left: 0.14rem;
+									font-size: 0.24rem;
+									font-weight: 500;
+									color: #333333;
+								}
+							}
+						}
+					}
 					.listBox {
 						width: 2.39rem;
 						height: 0.6rem;
@@ -431,6 +523,9 @@
 							width: 0.19rem;
 							height: 0.1rem;
 						}
+					}
+					.delete{
+						color: red;
 					}
 				}
 			}

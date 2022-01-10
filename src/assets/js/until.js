@@ -416,6 +416,9 @@ class until{
   href(url){
     window.location.href = '/ddPage'+url;
   }
+  replace(url){
+    window.location.replace ('/ddPage'+url) ;
+  }
   //后退
   back(){
     window.history.back();

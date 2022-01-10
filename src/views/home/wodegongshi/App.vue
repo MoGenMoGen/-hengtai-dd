@@ -7,13 +7,13 @@
 			</div>
 		</div>
 		<div class="bodycontent">
-			<div class="contentList" v-for="item in 4">
+			<div class="contentList" v-for="(item,index) in infoList" :key="index">
 				<div class="title">
 					<div class="name">
-						王冰冰提交的工时填报
+						{{item.realName}}提交的工时填报
 					</div>
 					<div class="time">
-						2021-12-28
+						{{item.workDate}}
 					</div>
 				</div>
 				<div class="infolist">
@@ -22,7 +22,7 @@
 							工作时间：
 						</div>
 						<div class="listRight">
-							9:00-17:30
+							{{item.workTimeStart}}-{{item.workTimeEnd}}
 						</div>
 					</div>
 					<div class="list">
@@ -30,7 +30,7 @@
 							工作时长：
 						</div>
 						<div class="listRight">
-							7.00小时/1.00天
+							{{item.workHours}}小时/{{item.workDays}}天
 						</div>
 					</div>
 					<div class="list">
@@ -38,16 +38,18 @@
 							服务项目：
 						</div>
 						<div class="listRight">
-							总部-营运店
+							{{item.jobNames}}
 						</div>
 					</div>
 				</div>
-				<img :src="daishenpi" >
+				<img :src="daishenpi"  v-if="item.audit==1">
+				<img :src="tongguo"  v-if="item.audit==2">
+				<img :src="butongguo"  v-if="item.audit==3">
 				<div class="btn">
-					<div class="btnLeft">
+					<div class="btnLeft" @click="modify(item.id)">
 						修改
 					</div>
-					<div class="btnRight">
+					<div class="btnRight" @click="remove(item)">
 						删除
 					</div>
 				</div>
@@ -59,6 +61,7 @@
 	import {
 		Notify
 	} from 'vant';
+	import { Dialog } from 'vant';
 	import daishenpi from "../../../assets/img/待审批.png"
 	import tongguo from "../../../assets/img/审批通过.png"
 	import butongguo from "../../../assets/img/审批不通过.png"
@@ -69,15 +72,57 @@
 				tongguo,
 				butongguo,
 				currentIndex:0,
-				tabList:['全部','待审批','已审批']
+				tabList:['全部','待审批','已审批'],
+				current:1,
+				size:5,
+				infoList:[],
 			}
 		},
 		mounted() {
-			
+			this.getInfo()
+			console.log(1112);
 		},
 		methods: {
 			changeTab(index){
 				this.currentIndex=index
+			},
+			getInfo(){
+				console.log(2378);
+				let obj={
+					current:this.current,
+					size:this.size
+				}
+				this.api.getProjwhreportList(obj).then(res=>{
+					console.log(23123,res);
+					this.infoList=res.records
+				})
+			},
+			remove(item){
+				console.log(item);
+				Dialog.confirm({
+				  title: '提示',
+				  message: '是否确认删除',
+				})
+				
+				  .then(() => {
+					  console.log(777);
+				    this.api.removeProjwhreport(item.id).then(res=>{
+						Notify({ type: 'success', message: '删除成功' });
+						this.getInfo()
+					})
+
+				  })
+				  .catch(() => {
+				    Notify({
+				      message: '取消删除',
+				      color: '#ffffff',
+				      background: '#cccccc',
+				    });
+
+				  });
+			},
+			modify(id){
+				this.until.href(`/views/home/gongshitianbao.html?id=${id}`)
 			}
 		
 		

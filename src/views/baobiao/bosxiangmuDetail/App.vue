@@ -5,21 +5,19 @@
 				 @cancel="showPicker = false" @confirm="onConfirm" />
 		</van-popup>
 		<div class="top">
-			<div class="tab">
+			<!-- <div class="tab">
 				<div class="tabList" v-for="(item,index) in tabList" :key="index" @click="changeTab(index)"
 				:class="currentIndex==index?'active':''">
 					{{item}}
 				</div>
-			</div>
+			</div> -->
 			<div class="bodyContent">
 				<div class="workHours">
 					总计工时：125200.00H
 				</div>
 				<div class="searchBox">
 					 <div class="boxOne">
-					 	<input placeholder="项目名称" v-model="proname"  v-if="currentIndex==0"/>
-						<input placeholder="姓名" v-model="name"  v-if="currentIndex==1&&currentRole==1"/>
-						<input placeholder="部门名称" v-model="name"  v-if="currentIndex==1&&currentRole==2"/>
+						<input placeholder="姓名" v-model="name" />
 					 </div>
 					 <div class="boxTwo" @click="showPicker=true">
 					 	<p v-if="!dateTime">月份选择</p>
@@ -32,45 +30,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="list1" style="padding:0rem 0.2rem ;">
-			<div class="header" v-if="currentIndex==0">
-				<div class="headName1 headname">
-					项目
-				</div>
-				<div class="headName2 headname">
-					月份
-				</div>
-				<div class="headName2 headname">
-					工作时长(H)
-				</div>
-				<div class="headName3 headname" v-if="currentRole==1">
-					人员详情
-				</div>
-				<div class="headName3 headname"  v-if="currentRole==2">
-					部门详情
-				</div>
-			</div>
-			<div class="bottom">
-				<div class="list" v-for="item in 30" v-if="currentIndex==0">
-					<div class="listName1 listName">
-						博白项目
-					</div>
-					<div class="listName2 listName">
-						2021-12
-					</div>
-					<div class="listName2 listName">
-						504.00
-					</div>
-					<div class="listName3 listName" @click="toDetail">
-						查看
-					</div>
-				</div>
-				
-			</div>
-		</div>
+		
 		
 		<div class="list2" style="width: 100%; overflow: hidden;overflow-x: auto; padding: 0rem 0.2rem;">
-			<div class="header2" v-if="currentIndex==1&&currentRole==1">
+			<div class="header2" >
 				<div class="headName4 headname">
 					姓名
 				</div>
@@ -90,7 +53,7 @@
 					项目详情
 				</div>
 			</div>
-			<div class="list" v-for="item in 30" v-if="currentIndex==1&&currentRole==1">
+			<div class="list" v-for="item in 30" >
 				<div class="listName4 listName">
 					王冰冰
 				</div>
@@ -111,54 +74,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="list3" style="width: 100%; overflow: hidden;overflow-x: auto; padding: 0rem 0.2rem;">
-			<div class="header2" v-if="currentIndex==1&&currentRole==2">
-				<div class="headName4 headname">
-					部门
-				</div>
-				<div class="headName4 headname">
-					月份
-				</div>
-				<div class="headName5 headname">
-					月应出勤时长(H)
-				</div>
-				<div class="headName5 headname">
-					月实际出勤时长(H)
-				</div>
-				<div class="headName5 headname">
-					达成率(%)
-				</div>
-				<div class="headName5 headname">
-					项目详情
-				</div>
-				<div class="headName5 headname">
-					人员详情
-				</div>
-			</div>
-			<div class="list" v-for="item in 30" v-if="currentIndex==1&&currentRole==2">
-				<div class="listName4 listName">
-					王冰冰
-				</div>
-				<div class="listName4 listName">
-					2021-12
-				</div>
-				<div class="listName5 listName">
-					24.00
-				</div>
-				<div class="listName5 listName" >
-					24.00
-				</div>
-				<div class="listName5 listName" >
-					100.00
-				</div>
-				<div class="listName5 listName" style="color:#CA093A; text-decoration: underline;"  @click="pepDetial" >
-					查看
-				</div>
-				<div class="listName5 listName" style="color:#CA093A; text-decoration: underline;" @click="pepDetialTwo">
-					查看
-				</div>
-			</div>
-		</div>
+		
 	
 
 		
@@ -176,8 +92,6 @@
 	export default {
 		data() {
 			return {
-				currentRole:2,
-				currentIndex:0,
 				bg,
 				time,
 				name:'',
@@ -209,11 +123,9 @@
 			   this.until.href("/views/baobiao/xiangmudetail.html")
 			},
 			pepDetial(){
-				this.until.href("/views/baobiao/reyuandetail.html")
-			},
-			pepDetialTwo(){
 				this.until.href("/views/baobiao/bosrenyuanDetail.html")
-			}
+			},
+			
 			
 		
 		

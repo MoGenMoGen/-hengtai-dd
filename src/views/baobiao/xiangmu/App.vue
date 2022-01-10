@@ -7,7 +7,11 @@
 		<div class="top">
 			<div class="tab">
 				<div class="tabList" v-for="(item,index) in tabList" :key="index" @click="changeTab(index)"
-				:class="currentIndex==index?'active':''">
+				:class="currentIndex==index?'active':''" v-if="currentRole==1">
+					{{item}}
+				</div>
+				<div class="tabList" v-for="(item,index) in tabListTwo" :key="index" @click="changeTab(index)"
+				:class="currentIndex==index?'active':''" v-if="currentRole==2">
 					{{item}}
 				</div>
 			</div>
@@ -176,12 +180,13 @@
 	export default {
 		data() {
 			return {
-				currentRole:2,
+				currentRole:1,
 				currentIndex:0,
 				bg,
 				time,
 				name:'',
 				tabList:['项目','人员'],
+				tabListTwo:['项目','部门'],
 				showPicker:false,
 				currentTime:new Date(),
 				dateTime:"",

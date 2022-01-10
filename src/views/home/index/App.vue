@@ -64,6 +64,7 @@
 </template>
 
 <script>
+	import * as dd from 'dingtalk-jsapi';
 	import logo from "../../../assets/img/轮播图.png"
 	import tianbao from "../../../assets/img/工时填报.png"
 	import bulu from "../../../assets/img/工时补录.png"
@@ -90,11 +91,41 @@
 			}
 		},
 		mounted() {
-
+				this.dd()
 		},
 		methods: {
 				topage(url){
 					this.until.href(url)
+				},
+				dd() {
+					let that = this
+					console.log('是钉钉')
+					window.localStorage.setItem('codeInfoDDD', '是钉钉')
+					dd.ready(function() {
+						window.localStorage.setItem('codeInfoDDD', '已进入')
+						dd.runtime.permission.requestAuthCode({ //获取code
+							corpId: 'dingc35f50400f19d66d', // 企业id
+							onSuccess: (info) => {
+								console.log('获取钉钉code')
+								console.log(info)
+								window.localStorage.setItem('codeInfoDDD', info)
+								that.code = info.code
+								let obj={
+									code:that.code,
+									tenantId:'000000'
+								}
+								that.api.login(obj).then(res=>{
+									this.until.loSave('token',res.access_token)
+									this.until.loSave('userInfo',res)
+								})
+							},
+							onFail: (err) => {
+								console.log('获取钉钉code失败')
+								window.localStorage.setItem('codeInfoDDD', err)
+								console.log(err)
+							}
+						});
+					});
 				}
 		}
 	}

@@ -28,20 +28,30 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 88,
+    port: 8080,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/ddPage/',
-      proxyTable: {
-          '/api':{
-              // target:'http://192.168.2.140',
-              target:'http://5anpucq.nat.ipyingshe.com',
-              changeOrigin:true,
-              pathRewrite:{
-                  '^/api':''
-              }
-          }
-      },
+      // proxyTable: {
+      //     '/blade-proj':{
+      //         // target:'http://192.168.2.140',
+      //         target:'http://htweb.jinkworld.com',
+      //         changeOrigin:true,
+      //         pathRewrite:{
+      //             '^/blade-proj':'/blade-proj'
+      //         }
+      //     }
+      // },
+	  proxyTable: {
+	      '/api':{
+	          // target:'http://192.168.2.140',
+	          target:'http://htweb.jinkworld.com/api',
+	          changeOrigin:true,
+	          pathRewrite:{
+	              '^/api':'/'
+	          }
+	      }
+	  },
     // proxyTable: {
     //     '/Api/!*': {target: 'http://192.168.1.112'},
     //     changeOrigin: true,

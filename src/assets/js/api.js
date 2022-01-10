@@ -47,15 +47,17 @@ function post(url, data, header) {
     let promise = new Promise((resolve, reject) => {
         axios.post(url, data, { headers })
             .then(function (response) {
-
-                if (response.data.code == 0 || response.status == 200) {
+                console.log(response)
+                if ((response.status==200 && !response.data.code) || response.data.code == 0 || response.data.error_code == 0) {
                     resolve(response.data);
                 } else {
-                    Toast(response.data.msg)
+                    console.log(response.data.error_description)
+                    Toast(response.data.error_description)
                 }
             })
             .catch(function (error) {
-                Toast(JSON.stringify(error))
+
+                Toast(JSON.stringify(error.response.data.msg))
 				if(url=='/blade-dingding/access/login2'){
 					 window.location.replace ('/ddPage/views/home/login.html')
 				}

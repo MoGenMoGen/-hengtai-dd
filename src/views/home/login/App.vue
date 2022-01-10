@@ -8,7 +8,7 @@
 			</div>
 			<div class="loginItem">
 				<img :src="mima">
-				<input placeholder="请输入密码" v-model="password" />
+				<input placeholder="请输入密码" v-model="password" type="password"/>
 			</div>
 			<div class="btn" @click="login">
 				确认
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+    import md from 'assets/js/md5';
 	import * as dd from 'dingtalk-jsapi';
 	import logo from "../../../assets/img/登录-logo.png"
 	import zhanghao from "../../../assets/img/账号.png"
@@ -44,48 +45,48 @@
 				this.until.replace(url)
 			},
 			login(){
+
 				let obj={
-					code:'b726c2ab06a7305a970b343ac1e019e2',
+					code:'f9fe2974e3ee3fdfa1eea5408a5892ae',
 					tenantId:"000000",
 					account:this.account,
-					password:this.password,
+					password:md.hex_md5(this.password),
 				}
 				this.api.login2(obj).then(res=>{
+				    console.log(res)
 					this.until.loSave('token',res.access_token)
 					this.until.loSave('userInfo',res)
 				})
 			},
 			loginTo(){
-				let that = this
-				console.log('是钉钉')
-				window.localStorage.setItem('codeInfoDDD', '是钉钉')
-				dd.ready(function() {
-					window.localStorage.setItem('codeInfoDDD', '已进入')
-					dd.runtime.permission.requestAuthCode({ //获取code
-						corpId: 'dingc35f50400f19d66d', // 企业id
-						onSuccess: (info) => {
-							console.log('获取钉钉code')
-							console.log(info)
-							window.localStorage.setItem('codeInfoDDD', info)
-							that.code = info.code
-							let obj={
-								code:that.code,
-								tenantId:"000000",
-								account:this.account,
-								password:this.password,
-							}
-							this.api.login2(obj).then(res=>{
-								this.until.loSave('token',res.access_token)
-								this.until.loSave('userInfo',res)
-							})
-						},
-						onFail: (err) => {
-							console.log('获取钉钉code失败')
-							window.localStorage.setItem('codeInfoDDD', err)
-							console.log(err)
-						}
-					});
-				});
+                let that = this
+                dd.ready(function() {
+                    window.localStorage.setItem('codeInfoDDD', '已进入')
+                    dd.runtime.permission.requestAuthCode({ //获取code
+                        corpId: 'dingc35f50400f19d66d', // 企业id
+                        onSuccess: (info) => {
+                            console.log('获取钉钉code')
+                            console.log(info)
+                            window.localStorage.setItem('codeInfoDDD', info)
+                            that.code = info.code
+                            let obj={
+                                code:that.code,
+                                tenantId:"000000",
+                                account:that.account,
+                                password:md.hex_md5(that.password),
+                            }
+                            this.api.login2(obj).then(res=>{
+                                this.until.loSave('token',res.access_token)
+                                this.until.loSave('userInfo',res)
+                            })
+                        },
+                        onFail: (err) => {
+                            console.log('获取钉钉code失败')
+                            window.localStorage.setItem('codeInfoDDD', err)
+                            console.log(err)
+                        }
+                    });
+                });
 			
 			}
 		

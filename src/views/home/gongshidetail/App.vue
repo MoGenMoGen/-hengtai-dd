@@ -1,8 +1,13 @@
 <template>
   <div class="container">
     <div class="top">
-      {{info.realName}}提交的工时
-      <img v-show="statusUrl(detailData.audit)" :src="statusUrl(detailData.audit)" alt="" class="status" />
+      {{ info.realName }}提交的工时
+      <img
+        v-show="statusUrl(info.audit)"
+        :src="statusUrl(info.audit)"
+        alt=""
+        class="status"
+      />
     </div>
     <div class="bottom">
       <div class="box">
@@ -21,14 +26,18 @@
           {{ info.workHours }}小时/{{ info.workDays }}天
         </div>
       </div>
-      <div class="box" v-for="(item, index) in list" :key="index">
+      <div class="box" v-for="(item, index) in info.projs" :key="index">
         <div class="title" v-show="index == 0">服务项目：</div>
-        <div class="content">{{ item.con1 }}</div>
-        <div class="content">{{ item.con2 }}</div>
+        <div class="content">
+          {{ item.projCatNames.match(/(\S*),/)[1] }}({{
+            item.projCatNames.match(/,(\S*)/)[1]
+          }})
+        </div>
+        <div class="content">{{ item.projNames }}</div>
       </div>
       <div class="box">
         <div class="title">工作内容：</div>
-        <div class="content">{{ detailData.jobNames }}</div>
+        <div class="content">{{ info.jobNames }}</div>
       </div>
       <div class="box">
         <div class="title">备注：</div>
@@ -49,18 +58,7 @@ export default {
       pending,
       on,
       fail,
-      detailData:"",//详情数据
-      info: "",//提交的数据
-      list: [
-        {
-          con1: "总部(运营点)",
-          con2: "博白项目、龙南项目、博白项目、龙南项目",
-        },
-        {
-          con1: "总部(运营点)",
-          con2: "博白项目、龙南项目、博白项目、龙南项目",
-        },
-      ],
+      info: "",
     };
   },
   computed: {
@@ -77,10 +75,11 @@ export default {
     let id = this.until.getQueryString("id");
     this.api.getProjwhreportDetail2(id).then((res) => {
       console.log(res);
-      this.detailData=res;
-      this.info = JSON.parse(res.params);
-      if (this.detailData.types == 2) document.title = "补录详情";
-      console.log(77, this.info);
+      // this.info = JSON.parse(res.params);
+      this.info = res;
+    this.info.jobNames=this.info.jobNames.join(',')
+      if (this.info.types == 2) document.title = "补录详情";
+      // console.log(77, this.info);
     });
   },
   methods: {},

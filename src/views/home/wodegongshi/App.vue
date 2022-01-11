@@ -71,8 +71,8 @@
 				daishenpi,
 				tongguo,
 				butongguo,
-				currentIndex:0,
-				tabList:['全部','待审批','已审批',],
+				currentIndex:0,//0全部,1待审批,2已审批
+				tabList:['全部','待审批','已审批'],
 				current:1,
 				size:5,
 				infoList:[],
@@ -84,7 +84,10 @@
 		},
 		methods: {
 			changeTab(index){
-				this.currentIndex=index
+				this.currentIndex=index;
+				this.current=1;
+				this.getInfo();
+
 			},
 			getInfo(){
 				console.log(2378);
@@ -92,6 +95,10 @@
 					current:this.current,
 					size:this.size
 				}
+				if(this.currentIndex==1)
+				obj.audit_equal=1;
+				else if(this.currentIndex==2)
+				obj.audit_notequal=1;
 				this.api.getProjwhreportList(obj).then(res=>{
 					console.log(23123,res);
 					this.infoList=res.records

@@ -156,6 +156,14 @@ class api {
 	        })
 	    })
 	}
+    // 数据处理后的详情
+    getProjwhreportDetail2(data) {
+	    return new Promise((resolve, reject) => {
+	        get('/api/blade-proj/apis/projwhreport/info?id='+data).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
 	//工作内容-列表
 	getProjjobcontListAll() {
 	    return new Promise((resolve, reject) => {

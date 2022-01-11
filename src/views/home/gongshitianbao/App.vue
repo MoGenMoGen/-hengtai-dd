@@ -16,11 +16,24 @@
 			<van-picker title="选择运营店" show-toolbar :columns="pickService[pickIndex2].columns2" @confirm="onConfirm4" value-key="name"
 				@cancel="showPicker4 = false" />
 		</van-popup>
+		<van-popup v-model="showPicker5" round position="bottom">
+			<van-datetime-picker v-model="currentTime3" type="date" title="选择日期" 
+				 @cancel="showPicker5 = false" @confirm="onConfirm5" />
+		</van-popup>
 		<div class="bodyList">
-			<div class="listItem">
+			<div class="listItem" v-if="type!=2">
 				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
 				<p>工作日期：</p>
 				<p class="itemRight">{{nowDate}}</p>
+			</div>
+			<div class="listItem"  v-if="type==2">
+				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
+				<p>工作日期：</p>
+				<div class="timeBox" @click="showPicker5=true">
+					<p v-if="!nowDate">请选择日期</p>
+					<p v-if="nowDate" style="color: #000;">{{nowDate}}</p>
+					<img :src="shijian" >
+				</div>
 			</div>
 			<div class="listItem">
 				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
@@ -124,10 +137,12 @@
 	import xuanzhong from "../../../assets/img/选中.png"
 	import xinzeng from "../../../assets/img/新增.png"
 	import xiala from "../../../assets/img/下拉.png"
+	import shijian from "../../../assets/img/时间控件.png"
 	// import 'vant/lib/index.css'
 	export default {
 		data() {
 			return {
+				shijian,
 				xuanzhong,
 				xinzeng,
 				xiala,
@@ -139,6 +154,7 @@
 				showPicker2: false,
 				showPicker3: false,
 				showPicker4: false,
+				showPicker5:false,
 				value1: '',
 				value2: '',
 				value3: '',
@@ -149,35 +165,7 @@
 				rmks:'',
 				columns: [],
 				columns2: [],
-				checkList: [{
-						name: '业主对接',
-						flag: false
-					},
-					{
-						name: '预算概算',
-						flag: false
-					},
-					{
-						name: '财务知识培训',
-						flag: false
-					},
-					{
-						name: '开业协助',
-						flag: false
-					},
-					{
-						name: '报表审核',
-						flag: false
-					},
-					{
-						name: '费用管控',
-						flag: false
-					},
-					{
-						name: '招商管控',
-						flag: false
-					},
-
+				checkList: [
 				],
 				pickIndex0:0,
 				pickIndex:0,
@@ -188,23 +176,32 @@
 					}
 				],
 				userInfo:{},
+				currentTime3:new Date(),
+				type:'',
 			}
 		},
 		mounted() {
-			this.userInfo=this.until.loGet('userInfo')
-			this.api.getProjjobcontListAll().then(res=>{
-				this.checkList=res
-				this.checkList.forEach(item=>{
-					this.$set(item,'flag',false)
-				})
-				console.log(this.checkList);
-			})
-			this.api.getprojcatListAll('0').then(res=>{
-				console.log(111111,res);
-				this.pickService[this.pickIndex].columns1=res
-			})
-			this.nowDate = this.getNowDate()
+			
+			this.type=this.until.getQueryString('type')
 			let id =this.until.getQueryString('id')
+			this.userInfo=this.until.loGet('userInfo')
+			if(!id){
+				this.api.getProjjobcontListAll().then(res=>{
+					this.checkList=res
+					this.checkList.forEach(item=>{
+						this.$set(item,'flag',false)
+					})
+					console.log(this.checkList);
+				})
+				this.api.getprojcatListAll('0').then(res=>{
+					console.log(111111,res);
+					this.$set(this.pickService[this.pickIndex],'columns1',res)
+				})
+			}
+		
+			if(this.type!=2){
+				this.nowDate = this.getNowDate()
+			}
 			if(id){
 				this.api.getProjwhreportDetail(id).then(res=>{
 					this.nowDate=res.workDate
@@ -214,7 +211,65 @@
 					this.workdays=res.workDays
 					this.rmks=res.rmks
 					let a=JSON.parse(res.params)
-					console.log(res,a);
+					this.api.getProjjobcontListAll().then(res1=>{
+						this.checkList=res1
+						for(let i=0;i<res1.length;i++){
+							this.$set(this.checkList[i],'flag',false)
+							for(let y=0;y<a.jobIds.length;y++){
+								if(this.checkList[i].id==a.jobIds[y]){
+									this.checkList[i].flag=true
+								}
+							}
+						}
+					})
+					this.api.getprojcatListAll('0').then(res=>{
+					for(let i=0;i<a.projs.length;i++){
+						if(i==0){
+							this.pickService[0].columns1=res
+							this.pickService[0].columns2=a.projs[i].cat2List
+							this.pickService[0].checkList=a.projs[i].projList
+						
+							this.pickService[0].id=a.projs[i].cid1
+							this.pickService[0].id2=a.projs[i].cid2
+							for(let j=0;j<a.projs[i].cat2List.length;j++){
+								if(this.pickService[0].id2==a.projs[i].cat2List[j].id){
+									this.pickService[0].value2=a.projs[i].cat2List[j].name
+								} 
+							}
+							for(let p=0;p<res.length;p++){
+								if(this.pickService[0].id==res[p].id){
+									this.pickService[0].value=res[p].name
+								} 
+							}
+						}
+						else{
+							let value=''
+							let value2=''
+							for(let j=0;j<a.projs[i].cat2List.length;j++){
+								if(a.projs[i].cid2==a.projs[i].cat2List[j].id){
+									value2=a.projs[i].cat2List[j].name
+								} 
+							}
+							for(let p=0;p<a.projs[i].cat2List.length;p++){
+								if(a.projs[i].cid1==res[p].id){
+									value=res[p].name
+								} 
+							}
+							console.log(777,value2);
+							this.pickService.push({
+								columns1:res,
+								columns2:a.projs[i].cat2List,
+								checkList:a.projs[i].projList,
+								id:a.projs[i].cid1,
+								id2:a.projs[i].cid2,
+								value:value,
+								value2:value2,
+							})}
+							
+					}
+					console.log(111111,this.pickService);
+					})
+				console.log(222222,res,a);
 				})
 			}
 			
@@ -309,6 +364,10 @@
 				})
 				this.showPicker4 = false
 			},
+			onConfirm5(val){
+				this.nowDate=this.getNowDate(val)
+				this.showPicker5=false
+			},
 			getNowDate() {
 				let nowDate = new Date();
 				let year = nowDate.getFullYear();
@@ -362,14 +421,21 @@
 					workTimeEnd:this.value2,
 					workDays:this.workdays,
 					workHours:this.workHours,
-					userId:this.userInfo.id,//还未确认
+					userId:'',
 					jobIds:jobId,
 					projs:projsList,
 					rmks:this.rmks,
-					types:1,
+					types:this.type==2?'2':'1',
 					audit:"",
 				}
+				let id=this.until.getQueryString('id')
+				if(id){
+					from.id=id
+				}
 				console.log(from);
+				this.api.ProjwhreportSubmit(from).then(res=>{
+					console.log(111);
+				})
 			}
 			
 		}
@@ -401,6 +467,7 @@
 				box-sizing: border-box;
 				border-radius: 0.1rem;
 				margin-top: 0.1rem;
+				
 				textarea{
 					width: 6rem;
 					height: 2.19rem;
@@ -462,7 +529,24 @@
 				box-sizing: border-box;
 				border-radius: 0.1rem;
 				margin-top: 0.1rem;
-
+				.timeBox{
+					width: 4.6rem;
+					height: 0.6rem;
+					border: 1px solid #DDDDDD;
+					border-radius: 0.1rem;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 0 0.2rem;
+					p{
+						font-size: 0.24rem;
+						color: #909090;
+					}
+					img{
+						width: 0.28rem;
+						height: 0.26rem;
+					}
+				}
 				.addNew {
 					width: 1.3rem;
 					height: 0.5rem;

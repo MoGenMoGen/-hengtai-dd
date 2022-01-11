@@ -6,8 +6,8 @@ const hostUrl = "http://htweb.jinkworld.com"
 
 
 // const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMTEyMzU5ODgxMzczODY3NTIwMSIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxNjEzNzk5LCJuYmYiOjE2NDE2MTAxOTl9.C6rC-FxG4_VQxJl-NFYGL34yNvi5EjCyQcX594Oc0L72fJmoItNQD_na2Ut2dwtkxtV0L_-FPgcz5jDYYg_tHA'
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAxIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMTEyMzU5ODgxMzczODY3NTIwMSIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyMjE4MDU5LCJuYmYiOjE2NDE2MTMyNTl9.6gTr5e0NGZRE06mMM93HIE6h-Yt0rVLHEKS8BrycLp8nKAvEO2odGlbH1dzxT4pfE2I8Gslkwg_X4d7mqja_Pg"
-
+// const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAxIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMTEyMzU5ODgxMzczODY3NTIwMSIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyMjE4MDU5LCJuYmYiOjE2NDE2MTMyNTl9.6gTr5e0NGZRE06mMM93HIE6h-Yt0rVLHEKS8BrycLp8nKAvEO2odGlbH1dzxT4pfE2I8Gslkwg_X4d7mqja_Pg"
+const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxODgwODUyLCJuYmYiOjE2NDE4NzcyNTJ9.mkl0swvKTs1v8fvE57oQQiRfvzV-d8XLmW8TSGmpDdZHbZHVn82B4ZJ3X1-w0dxmw1MN0yz4cwJPD7X74aCAcA'
 import Vue from 'vue'
 
 import axios from 'axios'
@@ -18,7 +18,6 @@ const until1 = new until();
 // const token = until1.loGet("token")
 // const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
-import qs from 'qs'
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
     let headers = { ...header, ...{ "Blade-Auth": 'bearer '+token}}
@@ -47,17 +46,15 @@ function post(url, data, header) {
     let promise = new Promise((resolve, reject) => {
         axios.post(url, data, { headers })
             .then(function (response) {
-                console.log(response)
-                if ((response.status==200 && !response.data.code) || response.data.code == 0 || response.data.error_code == 0) {
+
+                if (response.data.code == 0 || response.status == 200) {
                     resolve(response.data);
                 } else {
-                    console.log(response.data.error_description)
-                    Toast(response.data.error_description)
+                    Toast(response.data.msg)
                 }
             })
             .catch(function (error) {
-
-                Toast(JSON.stringify(error.response.data.msg))
+                Toast(JSON.stringify(error))
 				if(url=='/blade-dingding/access/login2'){
 					 window.location.replace ('/ddPage/views/home/login.html')
 				}
@@ -112,7 +109,7 @@ class api {
 			'Content-Type':'application/x-www-form-urlencoded',
 	    }
 	    return new Promise(resolve => {
-	        post('/blade-dingding/access/bindAndLogin', qs.stringify(data), header).then(res => {
+	        post('/blade-dingding/access/bindAndLogin',qs.stringify(data), header).then(res => {
 	            resolve(res)
 	        })
 	    })
@@ -136,6 +133,17 @@ class api {
 	 }
 	    return new Promise(resolve => {
 	        post('/api/blade-proj/apis/projwhreport/remove?ids='+data,'',header).then(res => {
+	            resolve(res)
+	        })
+	    })
+	}
+	//工时填报提交
+	ProjwhreportSubmit(data) {
+	 let header={
+	 	'Content-Type':'application/json',
+	 }
+	    return new Promise(resolve => {
+	        post('/api/blade-proj/apis/projwhreport/submit',data,header).then(res => {
 	            resolve(res)
 	        })
 	    })

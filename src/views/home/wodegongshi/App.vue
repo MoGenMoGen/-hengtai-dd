@@ -46,10 +46,10 @@
 				<img :src="tongguo"  v-if="item.audit==2">
 				<img :src="butongguo"  v-if="item.audit==3">
 				<div class="btn">
-					<div class="btnLeft" @click="modify(item.id)">
+					<div class="btnLeft" @click.stop="modify(item.id)">
 						修改
 					</div>
-					<div class="btnRight" @click="remove(item)">
+					<div class="btnRight" @click.stop="remove(item)">
 						删除
 					</div>
 				</div>
@@ -72,7 +72,7 @@
 				tongguo,
 				butongguo,
 				currentIndex:0,
-				tabList:['全部','待审批','已审批'],
+				tabList:['全部','待审批','已审批',],
 				current:1,
 				size:5,
 				infoList:[],

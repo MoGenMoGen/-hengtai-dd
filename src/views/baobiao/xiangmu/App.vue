@@ -180,7 +180,7 @@
 	export default {
 		data() {
 			return {
-				currentRole:1,
+				currentRole:2,
 				currentIndex:0,
 				bg,
 				time,

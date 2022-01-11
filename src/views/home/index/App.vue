@@ -20,7 +20,7 @@
 				</div>
 				<img class="img2":src="arrowRight" mode=""></img>
 			</div>
-			<div class="listItem" @click="topage('/views/home/gongshibulu.html')">
+			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?type=2')">
 				<img class="img1" :src="wode" mode=""></img>
 				<div class="contentBox">
 					<div class="top">

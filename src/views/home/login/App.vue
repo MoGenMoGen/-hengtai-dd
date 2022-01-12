@@ -46,7 +46,7 @@
 			},
 			login(){
 				let obj={
-					code:'c8c3189f60773564b8a3e7fccc2d28c6',
+					code:'c1eb1508249132b6a9a4d87cce062f84',
 					tenantId:"000000",
 					account:this.account,
 					password:md.hex_md5(this.password),
@@ -55,6 +55,7 @@
 				    console.log(res)
 					this.until.loSave('token',res.access_token)
 					this.until.loSave('userInfo',res)
+					this.until.href("/views/home/index.html");
 				})
 			},
 			loginTo(){

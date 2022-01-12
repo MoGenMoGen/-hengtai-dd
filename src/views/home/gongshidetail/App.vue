@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="top">
-      {{ info.realName }}提交的工时
+      {{ info.realName }}提交的{{typeName}}工时
       <img
         v-show="statusUrl(info.audit)"
         :src="statusUrl(info.audit)"
@@ -59,6 +59,7 @@ export default {
       on,
       fail,
       info: "",
+      typeName:""
     };
   },
   computed: {
@@ -78,7 +79,11 @@ export default {
       // this.info = JSON.parse(res.params);
       this.info = res;
     this.info.jobNames=this.info.jobNames.join(',')
-      if (this.info.types == 2) document.title = "补录详情";
+      if (this.info.types == 2) 
+      {
+      document.title = "补录详情";
+      this.typeName='补录'
+      }
       // console.log(77, this.info);
     });
   },

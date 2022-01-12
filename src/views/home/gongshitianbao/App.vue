@@ -183,6 +183,9 @@
 		mounted() {
 			
 			this.type=this.until.getQueryString('type')
+			if(this.type==2){
+				document.title='工时补录'
+			}
 			let id =this.until.getQueryString('id')
 			this.userInfo=this.until.loGet('userInfo')
 			if(!id){

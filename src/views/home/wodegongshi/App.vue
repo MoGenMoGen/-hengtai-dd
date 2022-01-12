@@ -45,7 +45,7 @@
           </div>
           <div class="list">
             <div class="listLeft">服务项目：</div>
-            <div class="listRight">{{ item.shop1 }}-{{ item.shop2 }}</div>
+            <div class="listRight">{{ item.projNames }}</div>
           </div>
         </div>
         <img :src="daishenpi" v-if="item.audit == 1" />
@@ -102,6 +102,7 @@ export default {
       let obj = {
         current: this.current,
         size: this.size,
+        userId_equal:"1123598821738675201"
       };
       if (this.currentIndex == 1) obj.audit_equal = 1;
       else if (this.currentIndex == 2) obj.audit_notequal = 1;
@@ -113,14 +114,6 @@ export default {
         this.finished = this.infoList.length >= res.total;
         this.loading = false;
         this.current++;
-
-        this.infoList.forEach((item1, index1) => {
-          let info = JSON.parse(item1.params);
-          if (index1 == 0) console.log("info", info);
-          info.projs.forEach(async (item2, index2) => {
-            // await this.api.getprojcatListAll(item2.cid1);
-          });
-        });
         console.log("list", this.infoList);
       });
     },

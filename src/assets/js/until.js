@@ -414,10 +414,10 @@ class until{
   }
   //跳转页面
   href(url){
-    window.location.href = '/ddPage'+url;
+    window.location.href = url;
   }
   replace(url){
-    window.location.replace ('/ddPage'+url) ;
+    window.location.replace (url) ;
   }
   //后退
   back(){

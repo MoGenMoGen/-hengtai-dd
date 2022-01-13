@@ -84,7 +84,6 @@ export default {
     };
   },
   async mounted() {
-    this.shoplist1 = await this.api.getprojcatListAll("0");
     // this.shoplist = await this.api.getprojcatListAll("1476099168979910658");
     // this.shoplist = await this.api.getprojcatListAll("1476099222931243010");
     console.log(1111, this.shoplist1);
@@ -102,7 +101,7 @@ export default {
       let obj = {
         current: this.current,
         size: this.size,
-        userId_equal:"1123598821738675201"
+        // userId_equal:"1123598821738675201"
       };
       if (this.currentIndex == 1) obj.audit_equal = 1;
       else if (this.currentIndex == 2) obj.audit_notequal = 1;

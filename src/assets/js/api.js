@@ -22,14 +22,14 @@ const until1 = new until();
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
-	let headers = { ...header, ...{ "Blade-Auth": 'bearer ' + localStorage.getItem('token') } }
+	let headers = { ...header, ...{ "Blade-Auth": 'bearer '+localStorage.getItem('token') } }
 	let promise = new Promise((resolve, reject) => {
 		axios.get(url, { params: data, headers }).then(res => {
 			if (res.data.code == 0 || res.data.error_code == 0 || res.data.code == 200) {
 				resolve(res.data)
 			}
 			else if (res.data.code == 401) {
-				window.location.replace("/ddPage/views/home/login.html")
+				// window.location.replace("/views/home/login.html")
 			}
 			else {
 
@@ -58,7 +58,8 @@ function post(url, data, header) {
 			.catch(function (error) {
 				Toast(JSON.stringify(error))
 				if (url == '/blade-dingding/access/login2') {
-					window.location.replace('/ddPage/views/home/login.html')
+					console.log('401');
+					// window.location.replace('/views/home/login.html')
 				}
 			});
 	});
@@ -123,7 +124,7 @@ class api {
 			'Content-Type': 'application/x-www-form-urlencoded',
 		}
 		return new Promise((resolve, reject) => {
-			get('/api/blade-proj/apis/projwhreport/list', data).then(res => {
+			get('/api/blade-proj/apis/projwhreport/list', data, header).then(res => {
 				resolve(res.data)
 			})
 		})

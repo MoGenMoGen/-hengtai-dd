@@ -85,14 +85,14 @@ export default {
       autoplay: true,
       interval: 2000,
       duration: 500,
-    //   userInfo: {
-    //     detail: { isCharge: 1 },
-
-    //   },
-        userInfo: "",
+      userInfo: {
+        detail: { isCharge: 1 },
+      },
+        // userInfo: "",
     };
   },
   mounted() {
+    if(!this.until.loGet("token"))
     this.dd();
   },
   methods: {
@@ -118,15 +118,16 @@ export default {
               tenantId: "000000",
             };
             that.api.login(obj).then((res) => {
-              this.until.loSave("token", res.access_token);
-              this.until.loSave("userInfo", res);
-              this.userInfo = res;
+              that.until.loSave("token", res.access_token);
+              that.until.loSave("userInfo", res);
+              that.userInfo = res;
             });
           },
           onFail: (err) => {
             console.log("获取钉钉code失败");
             window.localStorage.setItem("codeInfoDDD", err);
             console.log(err);
+              that.until.replace("/views/home/index.html");
           },
         });
       });

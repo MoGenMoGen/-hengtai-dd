@@ -26,7 +26,7 @@ import pinyin from './pinyin'
 
 // import EXIF  from 'exif-js';  //获取图片信息，如果上传的图片有旋转则调整过来
 import lrz from 'lrz'
-// import Vconsole from 'vconsole'
+import Vconsole from 'vconsole'
 import MintUI from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import { api,post } from './api';
@@ -35,7 +35,7 @@ export default {
     Vue.prototype.api = new api();
       Vue.prototype.$post = post;
       // Vue.prototype.hostUrl=hostUrl
-    // Vue.prototype.Vconsole = new Vconsole()
+    Vue.prototype.Vconsole = new Vconsole()
     // Vue.prototype.EXIF  = EXIF;
     // Vue.prototype.mint  = mint;
     // Vue.prototype.axios = axios;

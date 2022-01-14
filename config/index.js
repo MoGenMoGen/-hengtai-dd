@@ -12,7 +12,7 @@ module.exports = {
     index: path.resolve(__dirname, '../wechat/index.html'),
     assetsRoot: path.resolve(__dirname, '../wechat'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/ddPage/',
+    assetsPublicPath: '/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
@@ -31,7 +31,7 @@ module.exports = {
     port: 8080,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/ddPage/',
+    assetsPublicPath: '/',
       // proxyTable: {
       //     '/blade-proj':{
       //         // target:'http://192.168.2.140',
@@ -45,7 +45,8 @@ module.exports = {
 	  proxyTable: {
 	      '/api':{
 	          // target:'http://192.168.2.140',
-	          target:'http://htweb.jinkworld.com/api',
+	          // target:'http://htweb.jinkworld.com/api',
+	          target:'http://lwkacgr.nat.ipyingshe.com',
 	          changeOrigin:true,
 	          pathRewrite:{
 	              '^/api':'/'

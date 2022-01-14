@@ -44,7 +44,7 @@
 				</div>
 				<img  class="img2":src="arrowRight" mode=""></img>
 			</div>
-			<div class="listItem" @click="topage('/views/baobiao/xiangmu.html')">
+			<div class="listItem" @click="topage('/views/baobiao/xiangmu.html')" v-show="userInfo&&userInfo.detail.isCharge!=0">
 				<img class="img1" :src="tianbao" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -64,149 +64,153 @@
 </template>
 
 <script>
-	import * as dd from 'dingtalk-jsapi';
-	import logo from "../../../assets/img/轮播图.png"
-	import tianbao from "../../../assets/img/工时填报.png"
-	import bulu from "../../../assets/img/工时补录.png"
-	import wode from "../../../assets/img/我的工时.png"
-	import baobiao from "../../../assets/img/工时报表.png"
-	import arrowRight from "../../../assets/img/点击.png"
-	export default {
-		data() {
-			return {
-				logo,
-				tianbao,
-				bulu,
-				wode,
-				baobiao,
-				arrowRight,
-				imgList:[
-					logo,
-					logo
-				],
-				indicatorDots: true,
-				autoplay: true,
-				interval: 2000,
-				duration: 500
-			}
-		},
-		mounted() {
-				this.dd()
-		},
-		methods: {
-				topage(url){
-					this.until.href(url)
-				},
-				dd() {
-					let that = this
-					console.log('是钉钉')
-					window.localStorage.setItem('codeInfoDDD', '是钉钉')
-					dd.ready(function() {
-						window.localStorage.setItem('codeInfoDDD', '已进入')
-						dd.runtime.permission.requestAuthCode({ //获取code
-							corpId: 'dingc35f50400f19d66d', // 企业id
-							onSuccess: (info) => {
-								console.log('获取钉钉code')
-								console.log(info)
-								window.localStorage.setItem('codeInfoDDD', info)
-								that.code = info.code
-								let obj={
-									code:that.code,
-									tenantId:'000000'
-								}
-								that.api.login(obj).then(res=>{
-									this.until.loSave('token',res.access_token)
-									this.until.loSave('userInfo',res)
-								})
-							},
-							onFail: (err) => {
-								console.log('获取钉钉code失败')
-								window.localStorage.setItem('codeInfoDDD', err)
-								console.log(err)
-							}
-						});
-					});
-				}
-		}
-	}
+import * as dd from "dingtalk-jsapi";
+import logo from "../../../assets/img/轮播图.png";
+import tianbao from "../../../assets/img/工时填报.png";
+import bulu from "../../../assets/img/工时补录.png";
+import wode from "../../../assets/img/我的工时.png";
+import baobiao from "../../../assets/img/工时报表.png";
+import arrowRight from "../../../assets/img/点击.png";
+export default {
+  data() {
+    return {
+      logo,
+      tianbao,
+      bulu,
+      wode,
+      baobiao,
+      arrowRight,
+      imgList: [logo, logo],
+      indicatorDots: true,
+      autoplay: true,
+      interval: 2000,
+      duration: 500,
+      userInfo: {
+        detail: { isCharge: 1 },
+      },
+        // userInfo: "",
+    };
+  },
+  mounted() {
+    if(!this.until.loGet("token"))
+    this.dd();
+  },
+  methods: {
+    topage(url) {
+      this.until.href(url);
+    },
+    dd() {
+      let that = this;
+      console.log("是钉钉");
+      window.localStorage.setItem("codeInfoDDD", "是钉钉");
+      dd.ready(function () {
+        window.localStorage.setItem("codeInfoDDD", "已进入");
+        dd.runtime.permission.requestAuthCode({
+          //获取code
+          corpId: "dingc35f50400f19d66d", // 企业id
+          onSuccess: (info) => {
+            console.log("获取钉钉code");
+            console.log(info);
+            window.localStorage.setItem("codeInfoDDD", info);
+            that.code = info.code;
+            let obj = {
+              code: that.code,
+              tenantId: "000000",
+            };
+            that.api.login(obj).then((res) => {
+              that.until.loSave("token", res.access_token);
+              that.until.loSave("userInfo", res);
+              that.userInfo = res;
+            });
+          },
+          onFail: (err) => {
+            console.log("获取钉钉code失败");
+            window.localStorage.setItem("codeInfoDDD", err);
+            console.log(err);
+              that.until.replace("/views/home/index.html");
+          },
+        });
+      });
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
-	.content {
-		display: flex;
-		flex-direction: column;
-		background-color: #F1F3F2;
-		padding: 0.3rem;
-		box-sizing: border-box;
-		width:100vw;
-		height: 100vh;
-		.topSwiper{
-			width: 6.9rem;
-			height: 3.5rem;
-			border-radius: 0.12rem;
-			.swiper{
-				width: 100%;
-				height: 100%;
-				text-align: center;
-				.swiper-item{
-					width: 100%;
-					height: 100%;
-					img{
-						width: 100%;
-						height: 100%;
-					}
-				}
-			}
-		}
-		.bodyList{
-			width:6.9rem;
-			.listItem{
-				position: relative;
-				width: 100%;
-				height: 1.13rem;
-				background: #FFFFFF;
-				border: 1px solid #ECECEC;
-				border-radius: 0.56rem;
-				margin-top: 0.6rem;
-				display: flex;
-				align-items: center;
-				padding: 0 0.23rem;
-				box-sizing: border-box;
-				.img1{
-					width: 0.72rem;
-					height: 0.72rem;
-				}
-				.img2{
-					width: 0.13rem;
-					height: 0.25rem;
-					position: absolute;
-					right: 0.3rem;
-					
-				}
-				.contentBox{
-					margin-left: 0.2rem;
-					.top{
-						font-size: 0.28rem;
-						font-weight: bold;
-						color: #303030;
-					}
-					.bottom{
-						font-size: 0.16rem;
-						font-weight: 500;
-						color: #303030;
-						opacity: 0.5;
-						margin-top: 0.08rem;
-					}
-				}
-			}
-		}
-		.bottomText{
-			width: 100%;
-			text-align: center;
-			font-size: 0.2rem;
-			color: #666666;
-			opacity: 0.8;
-			margin-top: 1.52rem;
-		}
-	}
+.content {
+  display: flex;
+  flex-direction: column;
+  background-color: #f1f3f2;
+  padding: 0.3rem;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  .topSwiper {
+    width: 6.9rem;
+    height: 3.5rem;
+    border-radius: 0.12rem;
+    .swiper {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      .swiper-item {
+        width: 100%;
+        height: 100%;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+  .bodyList {
+    width: 6.9rem;
+    .listItem {
+      position: relative;
+      width: 100%;
+      height: 1.13rem;
+      background: #ffffff;
+      border: 1px solid #ececec;
+      border-radius: 0.56rem;
+      margin-top: 0.6rem;
+      display: flex;
+      align-items: center;
+      padding: 0 0.23rem;
+      box-sizing: border-box;
+      .img1 {
+        width: 0.72rem;
+        height: 0.72rem;
+      }
+      .img2 {
+        width: 0.13rem;
+        height: 0.25rem;
+        position: absolute;
+        right: 0.3rem;
+      }
+      .contentBox {
+        margin-left: 0.2rem;
+        .top {
+          font-size: 0.28rem;
+          font-weight: bold;
+          color: #303030;
+        }
+        .bottom {
+          font-size: 0.16rem;
+          font-weight: 500;
+          color: #303030;
+          opacity: 0.5;
+          margin-top: 0.08rem;
+        }
+      }
+    }
+  }
+  .bottomText {
+    width: 100%;
+    text-align: center;
+    font-size: 0.2rem;
+    color: #666666;
+    opacity: 0.8;
+    margin-top: 1.52rem;
+  }
+}
 </style>

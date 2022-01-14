@@ -104,7 +104,7 @@ export default {
   },
   created() {
     // if(!this.until.loGet("token"))
-    this.dd();
+    // this.dd();
   },
   mounted() {},
   methods: {

@@ -13,7 +13,7 @@ const hostUrl = "http://htweb.jinkworld.com"
 
 
 // const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxODk0MTExLCJuYmYiOjE2NDE4OTA1MTF9.IYG-Hy4_zc8zRCQzUCYHwnzqUSsgme-JbD3rCP2OCKE0KqPBVTU6ldIpI7_FetsDwRcpbCYyCqhPq22ku6xdIA'
-
+const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTQ4MTA3MDI3ODQ4OTUzMDM2OSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjA1IiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY4MCIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyNzUxNTc0LCJuYmYiOjE2NDIxNDY3NzR9.8fF8GxZNgyL8OrcSDONQnFlSFpnmkKcdP4a1hUZurV6D6rkdrbs-1y3uttmz2OfwlYPYNtpYF8OilI6hfIVvHg'
 
 import Vue from 'vue'
 
@@ -29,10 +29,10 @@ Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
 
-	let headers = { ...header, ...{ "Blade-Auth": until1.loGet("token") } }
+	// let headers = { ...header, ...{ "Blade-Auth": until1.loGet("token") } }
 
 	// let headers = { ...header, ...{ "Blade-Auth": 'bearer '+localStorage.getItem('token') } }
-	// let headers = { ...header, ...{ "Blade-Auth": 'bearer '+token } }
+	let headers = { ...header, ...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.get(url, { params: data, headers }).then(res => {
 			if (res.data.code == 0 || res.data.error_code == 0 || res.data.code == 200) {
@@ -61,9 +61,9 @@ function get(url, data, header, cache = false) {
 
 function post(url, data, header) {
 	// let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
-	let headers = { ...header, ...{ "Blade-Auth": until1.loGet("token") } }
+	// let headers = { ...header, ...{ "Blade-Auth": until1.loGet("token") } }
 	// let headers = { ...header, ...{ "Blade-Auth": 'bearer ' + localStorage.getItem('token') } }
-	// let headers = { ...header, ...{ "Blade-Auth": 'bearer '+token } }
+	let headers = { ...header, ...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.post(url, data, { headers })
 			.then(function (response) {

@@ -1,12 +1,12 @@
 <template>
 	<div class="content">
-		<van-popup v-model="showPicker1" round position="bottom">
-			<van-datetime-picker :filter="filter" v-model="currentTime1" type="time" title="选择开始时间" :min-hour="startTm"
-				:max-hour="endTm"  @cancel="showPicker1 = false" @confirm="onConfirm1" />
+		<van-popup v-model="showPicker1" round position="bottom"  >
+			<van-datetime-picker :filter="filter" ref="tmBox"  v-model="currentTime1" type="time" title="选择开始时间" :min-hour="startTm"
+				:max-hour="endTm" :min-minute="startMi"  :max-minute="endMi" @cancel="showPicker1 = false" @confirm="onConfirm1"  @change='changeTm'/>
 		</van-popup>
 		<van-popup v-model="showPicker2" round position="bottom">
 			<van-datetime-picker :filter="filter" v-model="currentTime2" type="time" title="选择结束时间" :min-hour="startTm"
-				:max-hour="endTm"  @cancel="showPicker2 = false" @confirm="onConfirm2" />
+				:max-hour="endTm" :min-minute="startMi"  :max-minute="endMi" @cancel="showPicker2 = false" @confirm="onConfirm2"@change='changeTm' />
 		</van-popup>
 		<van-popup v-model="showPicker3" round position="bottom">
 			<van-picker title="选择总部" show-toolbar :columns="pickService[pickIndex].columns1" @confirm="onConfirm3" value-key="name"
@@ -147,8 +147,10 @@
 				xinzeng,
 				xiala,
 				nowDate: "", //当前日期
-				startTm:'9:00',//最小时间
-				endTm:'17:30',//最大时间
+				startTm:9,//最小时间
+				endTm:17,//最大时间
+				startMi:0,
+				endMi:30,
 				maxDate:new Date(),//最大日期
 				currentTime1: '',
 				currentTime2: '',
@@ -181,6 +183,8 @@
 				userInfo:{},
 				currentTime3:new Date(),
 				type:'',
+				minminute:'',
+				maxminute:'',
 			}
 		},
 		mounted() {
@@ -206,10 +210,15 @@
 			if(this.type!=2){
 				this.nowDate = this.getNowDate()
 				this.api.getPaiban(this.nowDate).then(res=>{
-					this.startTm=res.start?res.start:'9'
-					this.endTm=res.end?res.end:'17'
+					this.startTm=res.start?Number(res.start.split(":")[0]):'9'
+					this.minminute=res.start?Number(res.start.split(":")[1]):'0'
+					this.startMi=this.minminute
+					this.maxminute=res.end?Number(res.end.split(":")[1]):'0'
+					this.endMi=this.maxminute
+					this.endTm=res.end?Number(res.end.split(":")[0]):'17'
 				})
 			}
+		
 			if(id){
 				this.api.getProjwhreportDetail(id).then(res=>{
 					this.nowDate=res.workDate
@@ -305,27 +314,37 @@
 			allSelect() {
 				this.selectFlag = !this.selectFlag
 				if(this.selectFlag==true){
-					this.value1=this.startTm
-					this.value2=this.endTm
-					let obj={
-						date:this.nowDate,
-						start:this.value1,
-						end:this.value2
-					}
-					this.api.getDuration(obj).then(res=>{
-						this.workHours=res.workHours
-						this.workdays=res.workDays
+					this.api.getPaiban(this.nowDate).then(res=>{
+						this.value1=res.start?res.start:'9'
+						this.value2=res.end?res.end:'5.30'
+						let obj={
+							date:this.nowDate,
+							start:this.value1,
+							end:this.value2
+						}
+						this.api.getDuration(obj).then(res=>{
+							this.workHours=res.workHours
+							this.workdays=res.workDays
+						})
 					})
 				}
 				else
 				{
+					this.workHours=''
+					this.workdays=''
 					this.value1=''
 					this.value2=''
 				}
 			},
 			filter(type, options) {
-				if (type === 'minute') {
+				
+				if(type=='hour'){
+					console.log(11,type,options);
+				}
+				 else if (type == 'minute') {
+					 console.log(11,type,options);
 					return options.filter((option) => option % 30 === 0);
+					
 				}
 				return options;
 			},
@@ -339,6 +358,23 @@
 				}
 				this.value1 = val
 				this.showPicker1 = false
+			},
+			changeTm(val1){
+				console.log(11,val1.getValues());
+				if(val1.getValues()[0]==this.startTm)
+				{
+					this.startMi=this.minminute
+				}
+				else{
+					this.startMi=0
+				}
+				if(val1.getValues()[0]==this.endTm)
+				{
+					this.endMi=this.maxminute
+				}
+				else{
+					this.endMi=30
+				}
 			},
 			onConfirm2(val) {
 				if (this.value1) {
@@ -418,7 +454,16 @@
 			},
 			onConfirm5(val){
 				this.nowDate=this.getNowDateTwo(val)
-				this.showPicker5=false
+				this.api.getPaiban(this.nowDate).then(res=>{
+					this.startTm=res.start?Number(res.start.split(":")[0]):'9'
+					this.minminute=res.start?Number(res.start.split(":")[1]):'0'
+					this.startMi=this.minminute
+					this.maxminute=res.end?Number(res.end.split(":")[1]):'0'
+					this.endMi=this.maxminute
+					this.endTm=res.end?Number(res.end.split(":")[0]):'17'
+					this.showPicker5=false
+				})
+				
 			},
 			getNowDate() {
 				let nowDate = new Date();

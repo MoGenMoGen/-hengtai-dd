@@ -77,8 +77,10 @@ export default {
             console.log("params", obj);
             that.api.login2(obj).then((res) => {
               Toast("登录成功");
-			  console.log('111 '+res.access_token);
-              that.until.loSave("token", res.access_token);
+			  // console.log('111 '+res.access_token);
+         let token=res.token_type + " " + res.access_token;
+              token = token.replace(/\"/g, "");
+              that.until.loSave("token",token);
               that.until.loSave("userInfo", res);
               that.until.replace("/views/home/index.html");
             });
@@ -104,7 +106,7 @@ export default {
   padding: 0.3rem;
   box-sizing: border-box;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 
   .logo {
     width: 2.75rem;

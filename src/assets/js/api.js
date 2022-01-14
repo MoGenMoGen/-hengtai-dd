@@ -27,14 +27,14 @@ const until1 = new until();
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
-	let headers = { ...header, ...{ "Blade-Auth": 'bearer '+localStorage.getItem('token') } }
+	let headers = { ...header, ...{ "Blade-Auth": until1.loGet("token") } }
 	let promise = new Promise((resolve, reject) => {
 		axios.get(url, { params: data, headers }).then(res => {
 			if (res.data.code == 0 || res.data.error_code == 0 || res.data.code == 200) {
 				resolve(res.data)
 			}
 			else if (res.data.code == 401) {
-				// window.location.replace("/views/home/login.html")
+				window.location.replace("/views/home/login.html")
 			}
 			else {
 
@@ -49,7 +49,7 @@ function get(url, data, header, cache = false) {
 
 function post(url, data, header) {
 	// let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
-	let headers = { ...header, ...{ "Blade-Auth": 'bearer ' + localStorage.getItem('token') } }
+	let headers = { ...header, ...{ "Blade-Auth": until1.loGet("token") } }
 	let promise = new Promise((resolve, reject) => {
 		axios.post(url, data, { headers })
 			.then(function (response) {
@@ -64,8 +64,7 @@ function post(url, data, header) {
 				Toast(JSON.stringify(error))
 				if (url == '/blade-dingding/access/login2') {
 					console.log('401');
-					// window.location.replace('/views/home/login.html')
-    // let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
+		window.location.replace('/views/home/login.html')
 				}
 			});
 	});
@@ -85,32 +84,32 @@ function get2(url, data, header, cache = false) {
 	return promise;
 }
 class api {
-    //获取微信签名
-    getSign(url) {
-        let header = {
-            // 'Content-Type': 'application/json',
-            // 'yui3-token': localStorage.getItem('token')
-        }
-        // return get(hostUrl + '/general/access/ddBindPhone', data, header)
+	//获取微信签名
+	getSign(url) {
+		let header = {
+			// 'Content-Type': 'application/json',
+			// 'yui3-token': localStorage.getItem('token')
+		}
+		// return get(hostUrl + '/general/access/ddBindPhone', data, header)
 
-        return new Promise(resolve => {
-            get('/wxMp/access/getJsTicket', { url: url }, header).then(res => {
-                resolve(res.data)
-            })
-        })
-    }
-    //code登录 DD(后台已有账号)
-    login(data) {
-        let header={
-            'Authorization': 'Basic c3dvcmQ6c3dvcmRfc2VjcmV0',
-			'Content-Type':'application/x-www-form-urlencoded',
-        }
-        return new Promise(resolve => {
-            post('/blade-dingding/access/login2',qs.stringify(data), header).then(res => {
-                resolve(res)
-            })
-        })
-    }
+		return new Promise(resolve => {
+			get('/wxMp/access/getJsTicket', { url: url }, header).then(res => {
+				resolve(res.data)
+			})
+		})
+	}
+	//code登录 DD(后台已有账号)
+	login(data) {
+		let header = {
+			'Authorization': 'Basic c3dvcmQ6c3dvcmRfc2VjcmV0',
+			'Content-Type': 'application/x-www-form-urlencoded',
+		}
+		return new Promise(resolve => {
+			post('/blade-dingding/access/login2', qs.stringify(data), header).then(res => {
+				resolve(res)
+			})
+		})
+	}
 	//code 登录
 	login2(data) {
 		let header = {

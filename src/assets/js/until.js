@@ -417,7 +417,7 @@ class until{
     window.location.href = url;
   }
   replace(url){
-    window.location.replace (url) ;
+    window.location.replace(url) ;
   }
   //后退
   back(){

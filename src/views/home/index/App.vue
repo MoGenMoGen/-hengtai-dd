@@ -44,7 +44,7 @@
 				</div>
 				<img  class="img2":src="arrowRight" mode=""></img>
 			</div>
-			<div class="listItem" @click="topage('/views/baobiao/xiangmu.html')" v-show="userInfo&&userInfo.detail.isCharge!=0">
+			<div class="listItem" @click="topage('/views/baobiao/xiangmu.html')" v-show="showReport">
 				<img class="img1" :src="tianbao" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -85,16 +85,25 @@ export default {
       autoplay: true,
       interval: 2000,
       duration: 500,
-      userInfo: {
-        detail: { isCharge: 1 },
-      },
-        // userInfo: "",
+      code: "",
+      userInfo: "",
     };
+  }, 
+  computed: {
+    showReport() {
+      this.userInfo= this.until.loGet("userInfo");
+      if(this.userInfo&&this.userInfo.detail.isCharge==1)
+      return true;
+      else if(this.userInfo&&this.userInfo.role_name=="boss")
+      return true;
+      else return false;
+    },
   },
-  mounted() {
-    if(!this.until.loGet("token"))
+  created() {
+    // if(!this.until.loGet("token"))
     this.dd();
   },
+  mounted() {},
   methods: {
     topage(url) {
       this.until.href(url);
@@ -118,16 +127,19 @@ export default {
               tenantId: "000000",
             };
             that.api.login(obj).then((res) => {
-              that.until.loSave("token", res.access_token);
+              let token=res.token_type + " " + res.access_token;
+              token = token.replace(/\"/g, "");
+              console.log('tokensdjldsg');
+              console.log(token);
+              that.until.loSave("token",token);
               that.until.loSave("userInfo", res);
-              that.userInfo = res;
             });
           },
           onFail: (err) => {
             console.log("获取钉钉code失败");
             window.localStorage.setItem("codeInfoDDD", err);
             console.log(err);
-              that.until.replace("/views/home/index.html");
+            that.until.replace("/views/home/index.html");
           },
         });
       });
@@ -144,7 +156,7 @@ export default {
   padding: 0.3rem;
   box-sizing: border-box;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   .topSwiper {
     width: 6.9rem;
     height: 3.5rem;

@@ -8,7 +8,7 @@
 
 		</div>
 		<div class="bodyList">
-			<div class="listItem" @click="topage('/views/home/gongshitianbao.html')">
+			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?type=1')">
 				<img class="img1" :src="bulu" mode=""></img>
 				<div class="contentBox">
 					<div class="top">

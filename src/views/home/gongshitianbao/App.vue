@@ -1,12 +1,12 @@
 <template>
 	<div class="content">
 		<van-popup v-model="showPicker1" round position="bottom">
-			<van-datetime-picker :filter="filter" v-model="currentTime1" type="time" title="选择开始时间" :min-hour="9"
-				:max-hour="17" :max-minute="30" @cancel="showPicker1 = false" @confirm="onConfirm1" />
+			<van-datetime-picker :filter="filter" v-model="currentTime1" type="time" title="选择开始时间" :min-hour="startTm"
+				:max-hour="endTm"  @cancel="showPicker1 = false" @confirm="onConfirm1" />
 		</van-popup>
 		<van-popup v-model="showPicker2" round position="bottom">
-			<van-datetime-picker :filter="filter" v-model="currentTime2" type="time" title="选择结束时间" :min-hour="9"
-				:max-hour="17" :max-minute="30" @cancel="showPicker2 = false" @confirm="onConfirm2" />
+			<van-datetime-picker :filter="filter" v-model="currentTime2" type="time" title="选择结束时间" :min-hour="startTm"
+				:max-hour="endTm"  @cancel="showPicker2 = false" @confirm="onConfirm2" />
 		</van-popup>
 		<van-popup v-model="showPicker3" round position="bottom">
 			<van-picker title="选择总部" show-toolbar :columns="pickService[pickIndex].columns1" @confirm="onConfirm3" value-key="name"
@@ -18,7 +18,7 @@
 		</van-popup>
 		<van-popup v-model="showPicker5" round position="bottom">
 			<van-datetime-picker v-model="currentTime3" type="date" title="选择日期" 
-				 @cancel="showPicker5 = false" @confirm="onConfirm5" />
+				 @cancel="showPicker5 = false" @confirm="onConfirm5" :max-date="maxDate"/>
 		</van-popup>
 		<div class="bodyList">
 			<div class="listItem" v-if="type!=2">
@@ -147,6 +147,9 @@
 				xinzeng,
 				xiala,
 				nowDate: "", //当前日期
+				startTm:'9:00',//最小时间
+				endTm:'17:30',//最大时间
+				maxDate:new Date(),//最大日期
 				currentTime1: '',
 				currentTime2: '',
 				time: '',
@@ -194,10 +197,8 @@
 					this.checkList.forEach(item=>{
 						this.$set(item,'flag',false)
 					})
-					console.log(this.checkList);
 				})
 				this.api.getprojcatListAll('0').then(res=>{
-					console.log(111111,res);
 					this.$set(this.pickService[this.pickIndex],'columns1',res)
 				})
 			}
@@ -205,7 +206,8 @@
 			if(this.type!=2){
 				this.nowDate = this.getNowDate()
 				this.api.getPaiban(this.nowDate).then(res=>{
-					
+					this.startTm=res.start?res.start:'9'
+					this.endTm=res.end?res.end:'17'
 				})
 			}
 			if(id){
@@ -302,6 +304,24 @@
 			},
 			allSelect() {
 				this.selectFlag = !this.selectFlag
+				if(this.selectFlag==true){
+					this.value1=this.startTm
+					this.value2=this.endTm
+					let obj={
+						date:this.nowDate,
+						start:this.value1,
+						end:this.value2
+					}
+					this.api.getDuration(obj).then(res=>{
+						this.workHours=res.workHours
+						this.workdays=res.workDays
+					})
+				}
+				else
+				{
+					this.value1=''
+					this.value2=''
+				}
 			},
 			filter(type, options) {
 				if (type === 'minute') {
@@ -327,7 +347,19 @@
 						this.showPicker2 = false
 						return
 					}
+					let obj={
+						date:this.nowDate,
+						start:this.value1,
+						end:val
+					}
+					this.api.getDuration(obj).then(res=>{
+						this.workHours=res.workHours
+						this.workdays=res.workDays
+					})
+						
+					
 				}
+				
 				this.value2 = val
 				this.showPicker2 = false
 			},
@@ -385,11 +417,18 @@
 				this.showPicker4 = false
 			},
 			onConfirm5(val){
-				this.nowDate=this.getNowDate(val)
+				this.nowDate=this.getNowDateTwo(val)
 				this.showPicker5=false
 			},
 			getNowDate() {
 				let nowDate = new Date();
+				let year = nowDate.getFullYear();
+				let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+				let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+				return year + "-" + month + "-" + day;
+			},
+			getNowDateTwo(val){
+				let nowDate = new Date(val);
 				let year = nowDate.getFullYear();
 				let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
 				let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();

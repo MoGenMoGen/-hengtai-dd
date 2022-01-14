@@ -38,7 +38,7 @@
 			}
 		},
 		mounted() {
-			
+
 		},
 		methods: {
 			topage(url) {
@@ -46,15 +46,15 @@
 			},
 			login(){
 				let obj={
-					code:'c8c3189f60773564b8a3e7fccc2d28c6',
+					code:'1ac745caad1237c2a83922d004f4c5a1',
 					tenantId:"000000",
 					account:this.account,
 					password:md.hex_md5(this.password),
 				}
 				this.api.login2(obj).then(res=>{
-				    console.log(res)
 					this.until.loSave('token',res.access_token)
 					this.until.loSave('userInfo',res)
+                    window.location.replace('./index.html')
 				})
 			},
 			loginTo(){
@@ -77,6 +77,7 @@
                             this.api.login2(obj).then(res=>{
                                 this.until.loSave('token',res.access_token)
                                 this.until.loSave('userInfo',res)
+                                window.location.replace('./index.html')
                             })
                         },
                         onFail: (err) => {

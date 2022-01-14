@@ -12,7 +12,8 @@ const hostUrl = "http://htweb.jinkworld.com"
 // localStorage.setItem('token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAxIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyNTYwMTQ1LCJuYmYiOjE2NDE5NTUzNDV9.karewy2bqo18ynD6Avj_P9hymKd2w2HW-6v-hZdAPYubajN7j-8WwMuu8bvNpl_oDZFxRvnN1tz-jqqk-l1Myg')
 
 
-const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIiwiaXNDaGFyZ2UiOi0xLCJuZWVkUHJvaiI6MH0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyMTI3NjMwLCJuYmYiOjE2NDIxMjQwMzB9.NQP-u14_idE0zxunN3PqZ-uOw07XRPMw6AHCJSu0YL-0cxWVx2zHkp6tsyStYBKCVNjZtMpdIFx4eg-Q1fh47Q'
+// const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxODk0MTExLCJuYmYiOjE2NDE4OTA1MTF9.IYG-Hy4_zc8zRCQzUCYHwnzqUSsgme-JbD3rCP2OCKE0KqPBVTU6ldIpI7_FetsDwRcpbCYyCqhPq22ku6xdIA'
+
 
 import Vue from 'vue'
 
@@ -45,7 +46,14 @@ function get(url, data, header, cache = false) {
 				Toast(res.data.msg)
 			}
 		}).catch(err => {
-			Toast(JSON.stringify(err))
+			if (err.response.data.code == 401) {
+				Toast('请重新登录');
+				setTimeout(() => {
+					window.location.replace("/views/home/login.html")
+				}, 2000);
+			}
+			else
+				Toast(JSON.stringify(err))
 		})
 	});
 	return promise;
@@ -59,19 +67,32 @@ function post(url, data, header) {
 	let promise = new Promise((resolve, reject) => {
 		axios.post(url, data, { headers })
 			.then(function (response) {
-
+				console.log('then', response);
 				if (response.data.code == 0 || response.status == 200) {
-					resolve(response.data);
-				} else {
+					if (response.data.error_description == '请绑定账号.') {
+						Toast('请绑定账号.');
+						setTimeout(() => {
+							window.location.replace("/views/home/login.html")
+						}, 2000);
+					}
+						resolve(response.data);
+				}
+				 else {
 					Toast(response.data.msg)
 				}
 			})
 			.catch(function (error) {
-				Toast(JSON.stringify(error))
-				if (url == '/blade-dingding/access/login2') {
-					console.log('401');
-		window.location.replace('/views/home/login.html')
+				console.log('catch', error);
+
+				if (err.response.data.code == 401) {
+					Toast('请重新登录');
+					setTimeout(() => {
+						window.location.replace("/views/home/login.html")
+					}, 2000);
 				}
+				else
+					Toast(JSON.stringify(err))
+
 			});
 	});
 	return promise;
@@ -204,11 +225,11 @@ class api {
 	}
 	//获取指定日期某人的排班时间
 	getPaiban(data) {
-	    return new Promise((resolve, reject) => {
-	        get('/api/blade-proj/apis/projwhreport/getPaiban?dateStr='+data).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+		return new Promise((resolve, reject) => {
+			get('/api/blade-proj/apis/projwhreport/getPaiban?dateStr=' + data).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//计算工作时长
 	getDuration(data) {

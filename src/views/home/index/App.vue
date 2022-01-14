@@ -88,15 +88,18 @@ export default {
       code: "",
       userInfo: "",
     };
-  }, 
+  },
   computed: {
     showReport() {
-      this.userInfo= this.until.loGet("userInfo");
-      if(this.userInfo&&this.userInfo.detail.isCharge==1)
-      return true;
-      else if(this.userInfo&&this.userInfo.role_name=="boss")
-      return true;
-      else return false;
+      this.userInfo = this.until.loGet("userInfo");
+      if (this.userInfo) {
+        if (
+          this.userInfo.detail.isCharge == 1 ||
+          this.userInfo.role_name == "boss"
+        )
+          return true;
+        else return false;
+      } else return false;
     },
   },
   created() {
@@ -119,6 +122,7 @@ export default {
           corpId: "dingc35f50400f19d66d", // 企业id
           onSuccess: (info) => {
             console.log("获取钉钉code");
+
             console.log(info);
             window.localStorage.setItem("codeInfoDDD", info);
             that.code = info.code;
@@ -127,12 +131,13 @@ export default {
               tenantId: "000000",
             };
             that.api.login(obj).then((res) => {
-              let token=res.token_type + " " + res.access_token;
-              token = token.replace(/\"/g, "");
-              console.log('tokensdjldsg');
-              console.log(token);
-              that.until.loSave("token",token);
-              that.until.loSave("userInfo", res);
+              if (res.error_description != "请绑定账号.") {
+                let token = res.token_type + " " + res.access_token;
+                console.log("tokensdjldsg");
+                console.log(token);
+                that.until.loSave("token", token);
+                that.until.loSave("userInfo", res);
+              }
             });
           },
           onFail: (err) => {

@@ -7,8 +7,12 @@ const hostUrl = "http://htweb.jinkworld.com"
 
 // const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMTEyMzU5ODgxMzczODY3NTIwMSIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxNjEzNzk5LCJuYmYiOjE2NDE2MTAxOTl9.C6rC-FxG4_VQxJl-NFYGL34yNvi5EjCyQcX594Oc0L72fJmoItNQD_na2Ut2dwtkxtV0L_-FPgcz5jDYYg_tHA'
 // const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAxIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMTEyMzU5ODgxMzczODY3NTIwMSIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyMjE4MDU5LCJuYmYiOjE2NDE2MTMyNTl9.6gTr5e0NGZRE06mMM93HIE6h-Yt0rVLHEKS8BrycLp8nKAvEO2odGlbH1dzxT4pfE2I8Gslkwg_X4d7mqja_Pg"
+
 // const token = localStorage.getItem('token')
 // localStorage.setItem('token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTEyMzU5ODgyMTczODY3NTIwMSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAxIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyNTYwMTQ1LCJuYmYiOjE2NDE5NTUzNDV9.karewy2bqo18ynD6Avj_P9hymKd2w2HW-6v-hZdAPYubajN7j-8WwMuu8bvNpl_oDZFxRvnN1tz-jqqk-l1Myg')
+
+
+const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxODk0MTExLCJuYmYiOjE2NDE4OTA1MTF9.IYG-Hy4_zc8zRCQzUCYHwnzqUSsgme-JbD3rCP2OCKE0KqPBVTU6ldIpI7_FetsDwRcpbCYyCqhPq22ku6xdIA'
 
 import Vue from 'vue'
 
@@ -16,6 +20,7 @@ import axios from 'axios'
 import { Toast } from 'mint-ui';
 import qs from 'qs';
 import { until } from '@/assets/js/until'
+
 const until1 = new until();
 // const token = until1.loGet("token")
 // const token=localStorage.getItem('token')
@@ -60,6 +65,7 @@ function post(url, data, header) {
 				if (url == '/blade-dingding/access/login2') {
 					console.log('401');
 					// window.location.replace('/views/home/login.html')
+    // let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
 				}
 			});
 	});
@@ -79,32 +85,32 @@ function get2(url, data, header, cache = false) {
 	return promise;
 }
 class api {
-	//获取微信签名
-	getSign(url) {
-		let header = {
-			// 'Content-Type': 'application/json',
-			// 'yui3-token': localStorage.getItem('token')
-		}
-		// return get(hostUrl + '/general/access/ddBindPhone', data, header)
+    //获取微信签名
+    getSign(url) {
+        let header = {
+            // 'Content-Type': 'application/json',
+            // 'yui3-token': localStorage.getItem('token')
+        }
+        // return get(hostUrl + '/general/access/ddBindPhone', data, header)
 
-		return new Promise(resolve => {
-			get('/wxMp/access/getJsTicket', { url: url }, header).then(res => {
-				resolve(res.data)
-			})
-		})
-	}
-	//code登录 DD(后台已有账号)
-	login(data) {
-		let header = {
-			'Authorization': 'Basic c3dvcmQ6c3dvcmRfc2VjcmV0',
-			'Content-Type': 'application/x-www-form-urlencoded',
-		}
-		return new Promise(resolve => {
-			post('/blade-dingding/access/login2', data, header).then(res => {
-				resolve(res)
-			})
-		})
-	}
+        return new Promise(resolve => {
+            get('/wxMp/access/getJsTicket', { url: url }, header).then(res => {
+                resolve(res.data)
+            })
+        })
+    }
+    //code登录 DD(后台已有账号)
+    login(data) {
+        let header={
+            'Authorization': 'Basic c3dvcmQ6c3dvcmRfc2VjcmV0',
+			'Content-Type':'application/x-www-form-urlencoded',
+        }
+        return new Promise(resolve => {
+            post('/blade-dingding/access/login2',qs.stringify(data), header).then(res => {
+                resolve(res)
+            })
+        })
+    }
 	//code 登录
 	login2(data) {
 		let header = {
@@ -190,6 +196,14 @@ class api {
 				resolve(res.data)
 			})
 		})
+	}
+	//获取指定日期某人的排班时间
+	getPaiban(data) {
+	    return new Promise((resolve, reject) => {
+	        get('/api/blade-proj/apis/projwhreport/getPaiban?dateStr='+data).then(res => {
+	            resolve(res.data)
+	        })
+	    })
 	}
 
 

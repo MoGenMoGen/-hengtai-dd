@@ -1,20 +1,20 @@
 <template>
 	<div class="content">
 		<van-popup v-model="showPicker1" round position="bottom">
-			<van-datetime-picker :filter="filter" v-model="currentTime1" type="time" title="选择时间" :min-hour="9"
+			<van-datetime-picker :filter="filter" v-model="currentTime1" type="time" title="选择开始时间" :min-hour="9"
 				:max-hour="17" :max-minute="30" @cancel="showPicker1 = false" @confirm="onConfirm1" />
 		</van-popup>
 		<van-popup v-model="showPicker2" round position="bottom">
-			<van-datetime-picker :filter="filter" v-model="currentTime2" type="time" title="选择时间" :min-hour="9"
+			<van-datetime-picker :filter="filter" v-model="currentTime2" type="time" title="选择结束时间" :min-hour="9"
 				:max-hour="17" :max-minute="30" @cancel="showPicker2 = false" @confirm="onConfirm2" />
 		</van-popup>
 		<van-popup v-model="showPicker3" round position="bottom">
-			<van-picker title="选择总部" show-toolbar :columns="pickService[pickIndex2].columns1" @confirm="onConfirm3" value-key="name"
-				@cancel="showPicker3 = false" />
+			<van-picker title="选择总部" show-toolbar :columns="pickService[pickIndex].columns1" @confirm="onConfirm3" value-key="name"
+				@cancel="showPicker3 = false"  :default-index="pickService[pickIndex].index"/>
 		</van-popup>
 		<van-popup v-model="showPicker4" round position="bottom">
 			<van-picker title="选择运营店" show-toolbar :columns="pickService[pickIndex2].columns2" @confirm="onConfirm4" value-key="name"
-				@cancel="showPicker4 = false" />
+				@cancel="showPicker4 = false"  :default-index="pickService[pickIndex2].index2"/>
 		</van-popup>
 		<van-popup v-model="showPicker5" round position="bottom">
 			<van-datetime-picker v-model="currentTime3" type="date" title="选择日期" 
@@ -204,6 +204,9 @@
 		
 			if(this.type!=2){
 				this.nowDate = this.getNowDate()
+				this.api.getPaiban(this.nowDate).then(res=>{
+					
+				})
 			}
 			if(id){
 				this.api.getProjwhreportDetail(id).then(res=>{
@@ -329,11 +332,19 @@
 				this.showPicker2 = false
 			},
 			onConfirm3(val) {
+				
 				this.pickService[this.pickIndex].value= val.name
 				this.pickService[this.pickIndex].value2= ''
 				this.$set(this.pickService[this.pickIndex],'id',
 					val.id
 				)
+				for(let i=0;i<this.pickService[this.pickIndex].columns1.length;i++){
+					if(this.pickService[this.pickIndex].columns1[i].id==val.id){
+						console.log(1,i);
+						this.$set(this.pickService[this.pickIndex],'index',i
+						)
+					}
+				}
 				this.api.getprojcatListAll(val.id).then(res=>{
 					this.pickService[this.pickIndex].columns2=res
 				})
@@ -359,6 +370,12 @@
 					cid1:this.pickService[this.pickIndex0].id,
 					cid2:val.id
 				}
+				for(let i=0;i<this.pickService[this.pickIndex2].columns2.length;i++){
+					if(this.pickService[this.pickIndex2].columns2[i].id==val.id){
+						this.$set(this.pickService[this.pickIndex2],'index2',i
+						)
+					}
+				}
 				this.api.getprojListAll(obj).then(res=>{
 					this.pickService[this.pickIndex2].checkList=res
 					this.pickService[this.pickIndex2].checkList.forEach(item=>{
@@ -382,6 +399,7 @@
 				this.showPicker3=true
 				this.pickIndex=index
 				this.pickIndex0=index
+				console.log(777,this.pickIndex);
 			},
 			pickshow4(index){
 				this.showPicker4=true
@@ -437,7 +455,7 @@
 				}
 				console.log(from);
 				this.api.ProjwhreportSubmit(from).then(res=>{
-					console.log(111);
+					this.until.back()
 				})
 			}
 			

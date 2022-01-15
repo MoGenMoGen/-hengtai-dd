@@ -162,7 +162,7 @@ export default {
     font-size: 0.2rem;
     color: #666666;
     opacity: 0.8;
-    margin-top: 3rem;
+    margin-top: 3.3rem;
   }
 }
 </style>

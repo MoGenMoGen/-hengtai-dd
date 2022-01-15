@@ -60,6 +60,9 @@
 		<div class="bottomText">
 			技术支持：宁波聚联科技有限公司
 		</div>
+		<div class="guize">
+			<img :src="guize" >
+		</div>
 	</div>
 </template>
 
@@ -71,9 +74,11 @@ import bulu from "../../../assets/img/工时补录.png";
 import wode from "../../../assets/img/我的工时.png";
 import baobiao from "../../../assets/img/工时报表.png";
 import arrowRight from "../../../assets/img/点击.png";
+import guize from "../../../assets/img/工时规则.png";
 export default {
   data() {
     return {
+	  guize,
       logo,
       tianbao,
       bulu,
@@ -101,6 +106,9 @@ export default {
         else return false;
       } else return false;
     },
+	// showReport(){
+	// 	return true
+	// }
   },
   created() {
     // if(!this.until.loGet("token"))
@@ -170,12 +178,15 @@ export default {
       width: 100%;
       height: 100%;
       text-align: center;
+	  border-radius: 0.12rem;
       .swiper-item {
         width: 100%;
         height: 100%;
+		border-radius: 0.12rem;
         img {
           width: 100%;
           height: 100%;
+		  border-radius: 0.12rem;
         }
       }
     }
@@ -227,7 +238,19 @@ export default {
     font-size: 0.2rem;
     color: #666666;
     opacity: 0.8;
-    margin-top: 1.52rem;
+    margin-top:1.8rem;
+  }
+  .guize{
+	  position: absolute;
+	  right: 0.54rem;
+	  bottom: 10%;
+	  img{
+		  width: 0.84rem;
+		  height: 0.84rem;
+		  background: #FFFFFF;
+		  border: 0.02rem solid #D21041;
+		  border-radius: 50%;
+	  }
   }
 }
 </style>

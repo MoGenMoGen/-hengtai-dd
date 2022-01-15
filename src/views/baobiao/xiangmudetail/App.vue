@@ -67,7 +67,7 @@ import { Notify } from "vant";
 export default {
   data() {
     return {
-      currentRole: 2, //1:领导;2:老板
+      currentRole: 1, //1:领导;2:老板
       currentIndex: 0,
       bg,
       time,

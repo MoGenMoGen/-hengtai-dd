@@ -188,8 +188,22 @@ export default {
     // else if (this.userInfo && userInfo.detail.role_name == "boss")
     //   this.currentRole = 2;
     if (this.currentRole == 2) document.title = "工时报表";
+	this.getInfo()
   },
   methods: {
+	  getInfo(){
+		  let obj={
+			  projNm:this.proname,
+			  workDate:this.dateTime,
+			  isCharge:1,
+			  chargeDepts:2487692,
+			  current:1,
+			  size:10,
+		  }
+		this.api.getDeptProjReport(this.proname,this.dateTime,'1','2487692','1',10).then(res=>{
+			console.log(11,res);
+		})
+	  },
     changeTab(index) {
       this.currentIndex = index;
     },

@@ -13,7 +13,7 @@ const hostUrl = "http://htweb.jinkworld.com"
 
 
 // const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxODk0MTExLCJuYmYiOjE2NDE4OTA1MTF9.IYG-Hy4_zc8zRCQzUCYHwnzqUSsgme-JbD3rCP2OCKE0KqPBVTU6ldIpI7_FetsDwRcpbCYyCqhPq22ku6xdIA'
-const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTQ4MTA3MDI3ODQ4OTUzMDM2OSIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjA1IiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY4MCIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyNzUxNTc0LCJuYmYiOjE2NDIxNDY3NzR9.8fF8GxZNgyL8OrcSDONQnFlSFpnmkKcdP4a1hUZurV6D6rkdrbs-1y3uttmz2OfwlYPYNtpYF8OilI6hfIVvHg'
+const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTQ3OTI4Nzc1NDczMDYxMDY5MCIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAzIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyNzQyNTUwLCJuYmYiOjE2NDIxMzc3NTB9.pFdHYNi1-ze49dE1x2gyPJPKINUTKF8w1_QYHuMV2hhXhyKNiAPmJC3TkDGP-R380WvIZeOXZHmH4rG5AjUH6w'
 
 import Vue from 'vue'
 
@@ -149,14 +149,14 @@ class api {
 			})
 		})
 	}
-	//获取工时填报分页（所有）
+	//获取工时填报分页（我的）
 	getProjwhreportList(data) {
 		let header = {
 			'Authorization': 'Basic c3dvcmQ6c3dvcmRfc2VjcmV0',
 			'Content-Type': 'application/x-www-form-urlencoded',
 		}
 		return new Promise((resolve, reject) => {
-			get('/api/blade-proj/apis/projwhreport/list', data, header).then(res => {
+			get('/api/blade-proj/apis/projwhreport/mylist', data, header).then(res => {
 				resolve(res.data)
 			})
 		})
@@ -235,6 +235,22 @@ class api {
 	getDuration(data) {
 	    return new Promise((resolve, reject) => {
 	        get('/api/blade-proj/apis/projwhreport/getDuration',data).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//部门看项目
+	getDeptProjReport(projNm,workDate,isCharge,chargeDepts,current,size) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/deptProjReport?projNm='+projNm+'&workDate='+workDate+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts+'&current='+current+'&size='+size).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//boss看项目/部门
+	getProjBossReport(deptNm,projNm,workDate,current,size) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/projBossReport?deptNm='+deptNm+'&projNm='+projNm+'&workDate='+workDate+'&current='+current+'&size='+size).then(res => {
 	            resolve(res.data)
 	        })
 	    })

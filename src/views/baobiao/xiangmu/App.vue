@@ -70,11 +70,11 @@
         <div class="headName3 headname" v-if="currentRole == 2">部门详情</div>
       </div>
       <div class="bottom">
-        <div class="list" v-for="item in 30" v-if="currentIndex == 0">
-          <div class="listName1 listName">博白项目</div>
-          <div class="listName2 listName">2021-12</div>
-          <div class="listName2 listName">504.00</div>
-          <div class="listName3 listName" @click="toDetail">查看</div>
+        <div class="list" v-for="(item,index) in list" v-if="currentIndex == 0">
+          <div class="listName1 listName">{{item.projName}}</div>
+          <div class="listName2 listName">{{item.workDate}}</div>
+          <div class="listName2 listName">{{item.workHours}}</div>
+          <div class="listName3 listName" @click="toDetail(item)">查看</div>
         </div>
       </div>
     </div>
@@ -180,6 +180,7 @@ export default {
       dateTime: "",
       proname: "",
       userInfo: "",
+	  list:[],
     };
   },
   mounted() {
@@ -192,17 +193,26 @@ export default {
   },
   methods: {
 	  getInfo(){
-		  let obj={
-			  projNm:this.proname,
-			  workDate:this.dateTime,
-			  isCharge:1,
-			  chargeDepts:2487692,
-			  current:1,
-			  size:10,
+		  if(this.currentRole==1){
+			  let obj={
+			  	  projNm:this.proname,
+			  	  workDate:this.dateTime,
+			  	  isCharge:1,
+			  	  chargeDepts:2487692,
+			  	  current:1,
+			  	  size:10,
+			    }
+			  this.api.getDeptProjReport(this.proname,this.dateTime,'1','2487692','1',10).then(res=>{
+			  	this.list=res.records
+			  })
 		  }
-		this.api.getDeptProjReport(this.proname,this.dateTime,'1','2487692','1',10).then(res=>{
-			console.log(11,res);
-		})
+		  else if(this.currentRole==2){
+			  this.api.getProjBossReport(this.name,this.proname,this.dateTime,'1','10').then(res=>{
+				  console.log(res);
+			  	this.list=res.records
+			  })
+		  }
+	
 	  },
     changeTab(index) {
       this.currentIndex = index;

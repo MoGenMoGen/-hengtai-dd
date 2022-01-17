@@ -255,6 +255,16 @@ class api {
 	        })
 	    })
 	}
+	//(Boss/领导)部门-->项目看人员
+	
+	//工时填报-流程详情
+	getProcess(data) {
+	    return new Promise((resolve, reject) => {
+	        get('/api/blade-proj/apis/projwhreport/getProcess?processInstanceId='+data).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
 
 
 

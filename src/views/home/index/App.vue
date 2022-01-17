@@ -1,11 +1,17 @@
 <template>
 	<div class="content">
+		<div class="mask" v-if="showMask">
+			<div class="maskContainer">
+				<div class="title">
+					工时规则
+				</div>
+				<img :src="shanchu" @click="showMask=false">
+			</div>
+		</div>
 		<div class="topSwiper">
-			
 			<van-swipe class="swiper" :autoplay="3000" indicator-color="white" >
 			  <van-swipe-item class="swiper-item" v-for="(item,index) in imgList" :key="index"><img :src="item" ></van-swipe-item>
 			</van-swipe>
-
 		</div>
 		<div class="bodyList">
 			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?type=1')">
@@ -60,7 +66,7 @@
 		<div class="bottomText">
 			技术支持：宁波聚联科技有限公司
 		</div>
-		<div class="guize">
+		<div class="guize" @click="showMask=true">
 			<img :src="guize" >
 		</div>
 	</div>
@@ -75,6 +81,7 @@ import wode from "../../../assets/img/我的工时.png";
 import baobiao from "../../../assets/img/工时报表.png";
 import arrowRight from "../../../assets/img/点击.png";
 import guize from "../../../assets/img/工时规则.png";
+import shanchu from "../../../assets/img/删除.png";
 export default {
   data() {
     return {
@@ -84,9 +91,11 @@ export default {
       bulu,
       wode,
       baobiao,
+	  shanchu,
       arrowRight,
       imgList: [logo, logo],
       indicatorDots: true,
+	  showMask:false,//弹出层显示隐藏
       autoplay: true,
       interval: 2000,
       duration: 500,
@@ -169,7 +178,43 @@ export default {
   padding: 0.3rem;
   box-sizing: border-box;
   width: 100vw;
-  min-height: 100vh;
+ height: 100vh;
+  .mask{
+	  width: 100vw;
+	  height: 100vh;
+	  background-color: rgba(0,0,0,0.5);
+	  z-index: 10;
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  .maskContainer{
+		  position: relative;
+		  width: 90%;
+		 max-height: 60%;
+		  background-color: #ffffff;
+		  border-radius: 0.12rem;
+		  z-index: 50;
+		  padding: 0.4rem 0.3rem;
+		  box-sizing: border-box;
+		  overflow-y: scroll;
+		  .title{
+			  text-align: center;
+			  font-size: 0.28rem;
+			  font-weight: 500;
+			  color: #333333;
+		  }
+		  img{
+			  width: 0.36rem;
+			  height: 0.37rem;
+			  position: absolute;
+			  top: 0.4rem;
+			  right:0.3rem;
+		  }
+	  }
+  }
   .topSwiper {
     width: 6.9rem;
     height: 3.5rem;
@@ -233,12 +278,15 @@ export default {
     }
   }
   .bottomText {
-    width: 100%;
+	  
     text-align: center;
     font-size: 0.2rem;
     color: #666666;
     opacity: 0.8;
-    margin-top:1.8rem;
+	position: absolute;
+	bottom: 0.1rem;
+	left: 50%;
+	transform: translateX(-50%);
   }
   .guize{
 	  position: absolute;

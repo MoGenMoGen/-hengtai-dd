@@ -163,6 +163,10 @@ export default {
     color: #666666;
     opacity: 0.8;
     margin-top: 3.3rem;
+	position: absolute;
+	bottom: 0.1rem;
+	left: 50%;
+	transform: translateX(-50%);
   }
 }
 </style>

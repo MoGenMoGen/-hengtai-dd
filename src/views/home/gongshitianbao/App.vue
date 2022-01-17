@@ -1,5 +1,16 @@
 <template>
 	<div class="content">
+		<div class="mask" v-if="showMask">
+			<div class="maskContainer">
+				<div class="title">
+					工时规则
+				</div>
+				<img :src="shanchu" @click="showMask=false">
+			</div>
+		</div>
+		<div class="guize" @click="showMask=true">
+			<img :src="guize" >
+		</div>
 		<van-popup v-model="showPicker1" round position="bottom"  >
 			<van-datetime-picker :filter="filter" ref="tmBox"  v-model="currentTime1" type="time" title="选择开始时间" :min-hour="startTm"
 				:max-hour="endTm" :min-minute="startMi"  :max-minute="endMi" @cancel="showPicker1 = false" @confirm="onConfirm1"  @change='changeTm'/>
@@ -147,6 +158,7 @@
 	import xiala from "../../../assets/img/下拉.png"
 	import shijian from "../../../assets/img/时间控件.png"
 	import shanchu from "../../../assets/img/删除.png"
+	import guize from "../../../assets/img/工时规则.png";
 	// import 'vant/lib/index.css'
 	export default {
 		data() {
@@ -156,6 +168,7 @@
 				xinzeng,
 				xiala,
 				shanchu,
+				guize,
 				nowDate: "", //当前日期
 				startTm:9,//最小时间
 				endTm:17,//最大时间
@@ -166,6 +179,7 @@
 				currentTime1: '',
 				currentTime2: '',
 				time: '',
+				showMask:false,
 				showPicker1: false,
 				showPicker2: false,
 				showPicker3: false,
@@ -338,9 +352,12 @@
 				this.checkList[index].flag = !this.checkList[index].flag
 			},
 			checkSelcetTwo(index,index1){
-				console.log(index,index1);
 				this.$set(this.pickService[index].checkList[index1], 'flag', !this.pickService[index].checkList[index1].flag)
-				console.log(this.pickService);
+				this.pickService[index].checkList.forEach(item=>{
+					if(item.flag==false){
+						this.pickService[index].selectFlag=false
+					}
+				})
 			},
 			allSelect() {
 				this.selectFlag = !this.selectFlag
@@ -409,6 +426,9 @@
 						this.workdays=res.workDays
 					})
 				}
+				if(val!=this.value1){
+					this.selectFlag=false
+				}
 				this.value1 = val
 				this.showPicker1 = false
 			},
@@ -448,7 +468,9 @@
 						
 					
 				}
-				
+				if(val!=this.value2){
+					this.selectFlag=false
+				}
 				this.value2 = val
 				this.showPicker2 = false
 			},
@@ -611,6 +633,56 @@
 		padding: 0.2rem;
 		padding-bottom: 2rem;
 		box-sizing: border-box;
+		position: relative;
+		.mask{
+			  width: 100vw;
+			  height: 100vh;
+			  background-color: rgba(0,0,0,0.5);
+			  z-index: 10;
+			  position: fixed;
+			  top: 0;
+			  left: 0;
+			  display: flex;
+			  justify-content: center;
+			  align-items: center;
+			  .maskContainer{
+				  position: relative;
+				  width: 90%;
+				 max-height: 60%;
+				  background-color: #ffffff;
+				  border-radius: 0.12rem;
+				  z-index: 50;
+				  padding: 0.4rem 0.3rem;
+				  box-sizing: border-box;
+				  overflow-y: scroll;
+				  .title{
+					  text-align: center;
+					  font-size: 0.28rem;
+					  font-weight: 500;
+					  color: #333333;
+				  }
+				  img{
+					  width: 0.36rem;
+					  height: 0.37rem;
+					  position: absolute;
+					  top: 0.4rem;
+					  right:0.3rem;
+				  }
+			  }
+		}
+		.guize{
+			position: fixed;
+			z-index: 50;
+			right: 0.54rem;
+			bottom: 20%;
+			img{
+				width: 0.84rem;
+				height: 0.84rem;
+				background: #FFFFFF;
+				border: 0.02rem solid #D21041;
+				border-radius: 50%;
+			}
+		}
 		.submit{
 			width: 100%;
 			height: 1rem;

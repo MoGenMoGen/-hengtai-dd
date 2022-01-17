@@ -53,7 +53,7 @@
       <div class="title">流程</div>
       <div class="item">
         <div class="left">
-          <img src="~@/assets/img/avatar.jpg" alt="" class="avatar" />
+          <div class="circle_box" style="margin-right: 0.1rem">{{info2.create.name.length>2?info2.create.name.substring(1,2):info2.create.name}}</div>
           <div class="content">
             <div class="role">我</div>
             <div class="detail">发起申请</div>
@@ -61,52 +61,54 @@
         </div>
         <div class="right">12-28 22:08</div>
       </div>
-
+		<div class="" v-for="(item,index) in info2.tasks" :key='index'>
       <div class="line"></div>
       <div class="item" style="position: relative">
         <div class="left">
-          <div class="circle_box" style="margin-right: 0.1rem">国华</div>
+          <div class="circle_box" style="margin-right: 0.1rem">{{item.name.length>2?item.name.substring(1,2):item.name}}</div>
           <div class="content">
-            <div class="role">徐国华（已同意）</div>
+            <div class="role">{{item.name}}<span v-if="item.taskResult=='AGREE'">(已同意)</span><span v-if="item.taskResult!='AGREE'">(不同意)</span></div>
             <div class="detail">审批人</div>
           </div>
         </div>
         <div class="right">12-28 22:30</div>
-        <input type="text" disabled value="同意" class="annotation" />
+        <!-- <input type="text" disabled value="同意" class="annotation" /> -->
       </div>
+	  </div>
+	  <div class=""  v-if="info2.ccUsers">
+	  	
+	  
       <div class="line"></div>
       <div class="item">
         <div class="left">
-          <img src="~@/assets/img/已抄送.png" class="avatar" alt="" />
+          <img src="~@/assets/img/未抄送.png" class="avatar" alt="" />
           <div class="content">
-            <div class="role">已抄送2人</div>
+            <div class="role">已抄送{{info2.ccUsers.length}}人</div>
             <div class="detail">抄送人</div>
           </div>
         </div>
         <div class="right">
-          <div
+          <div 
             style="display: flex; flex-direction: column; align-items: center"
-          >
-            <div class="circle_box" style="margin-bottom: 0.1rem">张伟</div>
-            <div class="detail">张伟</div>
+           v-for="(item,index) in info2.ccUsers">
+            <div class="circle_box" style="margin-bottom: 0.1rem">{{item.name}}</div>
+            <div class="detail">{{item.name}}</div>
+			<div
+			  class="detail"
+			  style="
+			    font-weight: 800;
+			    margin: 0rem 0.2rem;
+			    height: 0.65rem;
+			    line-height: 0.65rem;
+			  "
+			 v-if="index==info.ccUsers.length-1">
+			  +
+			</div>
           </div>
-          <div
-            class="detail"
-            style="
-              font-weight: 800;
-              margin: 0rem 0.2rem;
-              height: 0.65rem;
-              line-height: 0.65rem;
-            "
-          >
-            +
-          </div>
-          <div>
-            <div class="circle_box" style="margin-bottom: 0.1rem">阿门</div>
-            <div class="detail">张阿门</div>
-          </div>
+          
         </div>
       </div>
+	  </div>
     </div>
   </div>
 </template>
@@ -124,6 +126,7 @@ export default {
       fail,
       info: "",
       typeName: "",
+	  info2:'',
     };
   },
   computed: {
@@ -139,14 +142,18 @@ export default {
   mounted() {
     let id = this.until.getQueryString("id");
     this.api.getProjwhreportDetail2(id).then((res) => {
+		this.api.getProcess(res.processInstanceId).then(res1=>{
+				 this.info2=res1
+				 console.log(11,this.info2);
+		})
       console.log(res);
-      // this.info = JSON.parse(res.params);
       this.info = res;
       this.info.jobNames = this.info.jobNames.join(",");
       if (this.info.types == 2) {
         document.title = "补录详情";
         this.typeName = "补录";
       }
+	
       // console.log(77, this.info);
     });
   },
@@ -272,7 +279,7 @@ export default {
     .circle_box {
       width: 0.65rem;
       height: 0.65rem;
-      background: #02a0ea;
+      background: #989898;;
       border-radius: 50%;
       font-size: 0.24rem;
       color: #ffffff;

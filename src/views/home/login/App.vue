@@ -35,9 +35,7 @@ export default {
       code: "",
     };
   },
-  mounted() {
-	
-  },
+  mounted() {},
   methods: {
     topage(url) {
       this.until.replace(url);
@@ -51,7 +49,7 @@ export default {
       };
       this.api.login2(obj).then((res) => {
         console.log(res);
-        this.until.loSave("token", res.access_token);
+        this.until.loSave("token", res.token_type + " " + res.access_token);
         this.until.loSave("userInfo", res);
         this.until.href("/views/home/index.html");
       });
@@ -77,14 +75,15 @@ export default {
             console.log("params", obj);
             that.api.login2(obj).then((res) => {
               Toast("登录成功");
-			  console.log('111 '+res.access_token);
-              that.until.loSave("token", res.access_token);
+              // console.log('111 '+res.access_token);
+              let token = res.token_type + " " + res.access_token;
+              that.until.loSave("token", token);
               that.until.loSave("userInfo", res);
               that.until.replace("/views/home/index.html");
             });
           },
           onFail: (err) => {
-              Toast(err);
+            Toast(err);
             console.log("获取钉钉code失败");
             window.localStorage.setItem("codeInfoDDD", err);
             console.log(err);
@@ -104,7 +103,7 @@ export default {
   padding: 0.3rem;
   box-sizing: border-box;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 
   .logo {
     width: 2.75rem;
@@ -163,7 +162,7 @@ export default {
     font-size: 0.2rem;
     color: #666666;
     opacity: 0.8;
-    margin-top: 3rem;
+    margin-top: 3.3rem;
   }
 }
 </style>

@@ -8,7 +8,7 @@
 
 		</div>
 		<div class="bodyList">
-			<div class="listItem" @click="topage('/views/home/gongshitianbao.html')">
+			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?type=1')">
 				<img class="img1" :src="bulu" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -44,7 +44,7 @@
 				</div>
 				<img  class="img2":src="arrowRight" mode=""></img>
 			</div>
-			<div class="listItem" @click="topage('/views/baobiao/xiangmu.html')" v-show="userInfo&&userInfo.detail.isCharge!=0">
+			<div class="listItem" @click="topage('/views/baobiao/xiangmu.html')" v-show="showReport">
 				<img class="img1" :src="tianbao" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -60,6 +60,9 @@
 		<div class="bottomText">
 			技术支持：宁波聚联科技有限公司
 		</div>
+		<div class="guize">
+			<img :src="guize" >
+		</div>
 	</div>
 </template>
 
@@ -71,9 +74,11 @@ import bulu from "../../../assets/img/工时补录.png";
 import wode from "../../../assets/img/我的工时.png";
 import baobiao from "../../../assets/img/工时报表.png";
 import arrowRight from "../../../assets/img/点击.png";
+import guize from "../../../assets/img/工时规则.png";
 export default {
   data() {
     return {
+	  guize,
       logo,
       tianbao,
       bulu,
@@ -85,16 +90,31 @@ export default {
       autoplay: true,
       interval: 2000,
       duration: 500,
-      userInfo: {
-        detail: { isCharge: 1 },
-      },
-        // userInfo: "",
+      code: "",
+      userInfo: "",
     };
   },
-  mounted() {
-    if(!this.until.loGet("token"))
-    this.dd();
+  computed: {
+    showReport() {
+      this.userInfo = this.until.loGet("userInfo");
+      if (this.userInfo) {
+        if (
+          this.userInfo.detail.isCharge == 1 ||
+          this.userInfo.role_name == "boss"
+        )
+          return true;
+        else return false;
+      } else return false;
+    },
+	// showReport(){
+	// 	return true
+	// }
   },
+  created() {
+    // if(!this.until.loGet("token"))
+    // this.dd();
+  },
+  mounted() {},
   methods: {
     topage(url) {
       this.until.href(url);
@@ -110,6 +130,7 @@ export default {
           corpId: "dingc35f50400f19d66d", // 企业id
           onSuccess: (info) => {
             console.log("获取钉钉code");
+
             console.log(info);
             window.localStorage.setItem("codeInfoDDD", info);
             that.code = info.code;
@@ -118,16 +139,20 @@ export default {
               tenantId: "000000",
             };
             that.api.login(obj).then((res) => {
-              that.until.loSave("token", res.access_token);
-              that.until.loSave("userInfo", res);
-              that.userInfo = res;
+              if (res.error_description != "请绑定账号.") {
+                let token = res.token_type + " " + res.access_token;
+                console.log("tokensdjldsg");
+                console.log(token);
+                that.until.loSave("token", token);
+                that.until.loSave("userInfo", res);
+              }
             });
           },
           onFail: (err) => {
             console.log("获取钉钉code失败");
             window.localStorage.setItem("codeInfoDDD", err);
             console.log(err);
-              that.until.replace("/views/home/index.html");
+            that.until.replace("/views/home/index.html");
           },
         });
       });
@@ -144,7 +169,7 @@ export default {
   padding: 0.3rem;
   box-sizing: border-box;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   .topSwiper {
     width: 6.9rem;
     height: 3.5rem;
@@ -153,12 +178,15 @@ export default {
       width: 100%;
       height: 100%;
       text-align: center;
+	  border-radius: 0.12rem;
       .swiper-item {
         width: 100%;
         height: 100%;
+		border-radius: 0.12rem;
         img {
           width: 100%;
           height: 100%;
+		  border-radius: 0.12rem;
         }
       }
     }
@@ -210,7 +238,19 @@ export default {
     font-size: 0.2rem;
     color: #666666;
     opacity: 0.8;
-    margin-top: 1.52rem;
+    margin-top:1.8rem;
+  }
+  .guize{
+	  position: absolute;
+	  right: 0.54rem;
+	  bottom: 10%;
+	  img{
+		  width: 0.84rem;
+		  height: 0.84rem;
+		  background: #FFFFFF;
+		  border: 0.02rem solid #D21041;
+		  border-radius: 50%;
+	  }
   }
 }
 </style>

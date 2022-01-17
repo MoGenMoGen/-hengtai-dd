@@ -417,7 +417,7 @@ class until{
     window.location.href = url;
   }
   replace(url){
-    window.location.replace (url) ;
+    window.location.replace(url) ;
   }
   //后退
   back(){
@@ -438,7 +438,10 @@ class until{
     localStorage.setItem(name,JSON.stringify(obj));
   }
   loGet(name){
+    console.log('token',localStorage.getItem(name));
+    if(localStorage.getItem(name))
     return JSON.parse(localStorage.getItem(name));
+    else return '';
   }
   loRemove(name){
     localStorage.removeItem(name);

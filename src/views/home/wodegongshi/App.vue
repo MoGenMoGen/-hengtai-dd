@@ -51,9 +51,9 @@
         <img :src="daishenpi" v-if="item.audit == 1" />
         <img :src="tongguo" v-if="item.audit == 2" />
         <img :src="butongguo" v-if="item.audit == 3" />
-        <div class="btn">
+        <div class="btn" v-if="item.audit==1" >
           <div class="btnLeft" @click.stop="modify(item.id)">修改</div>
-          <div class="btnRight" @click.stop="remove(item)">删除</div>
+          <div class="btnRight" @click.stop="remove(item,index)">删除</div>
         </div>
       </div>
     </van-list>
@@ -116,8 +116,8 @@ export default {
         console.log("list", this.infoList);
       });
     },
-    remove(item) {
-      console.log(item);
+    remove(item,index) {
+      console.log(item,index);
       Dialog.confirm({
         title: "提示",
         message: "是否确认删除",
@@ -125,9 +125,10 @@ export default {
 
         .then(() => {
           console.log(777);
+		  
           this.api.removeProjwhreport(item.id).then((res) => {
             Notify({ type: "success", message: "删除成功" });
-            this.getInfo();
+            this.infoList.splice(index,1)
           });
         })
         .catch(() => {
@@ -186,6 +187,7 @@ export default {
       position: relative;
       background-color: #ffffff;
       padding: 0.4rem;
+	  padding-bottom: 0.1rem;
       box-sizing: border-box;
       border-radius: 0.1rem;
       margin-bottom: 0.2rem;

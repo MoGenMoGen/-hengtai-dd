@@ -1,12 +1,12 @@
 <template>
 	<div class="content">
-		<van-popup v-model="showPicker1" round position="bottom">
-			<van-datetime-picker :filter="filter" v-model="currentTime1" type="time" title="选择开始时间" :min-hour="9"
-				:max-hour="17" :max-minute="30" @cancel="showPicker1 = false" @confirm="onConfirm1" />
+		<van-popup v-model="showPicker1" round position="bottom"  >
+			<van-datetime-picker :filter="filter" ref="tmBox"  v-model="currentTime1" type="time" title="选择开始时间" :min-hour="startTm"
+				:max-hour="endTm" :min-minute="startMi"  :max-minute="endMi" @cancel="showPicker1 = false" @confirm="onConfirm1"  @change='changeTm'/>
 		</van-popup>
 		<van-popup v-model="showPicker2" round position="bottom">
-			<van-datetime-picker :filter="filter" v-model="currentTime2" type="time" title="选择结束时间" :min-hour="9"
-				:max-hour="17" :max-minute="30" @cancel="showPicker2 = false" @confirm="onConfirm2" />
+			<van-datetime-picker :filter="filter" v-model="currentTime2" type="time" title="选择结束时间" :min-hour="startTm"
+				:max-hour="endTm" :min-minute="startMi"  :max-minute="endMi" @cancel="showPicker2 = false" @confirm="onConfirm2"@change='changeTm' />
 		</van-popup>
 		<van-popup v-model="showPicker3" round position="bottom">
 			<van-picker title="选择总部" show-toolbar :columns="pickService[pickIndex].columns1" @confirm="onConfirm3" value-key="name"
@@ -18,7 +18,7 @@
 		</van-popup>
 		<van-popup v-model="showPicker5" round position="bottom">
 			<van-datetime-picker v-model="currentTime3" type="date" title="选择日期" 
-				 @cancel="showPicker5 = false" @confirm="onConfirm5" />
+				 @cancel="showPicker5 = false" @confirm="onConfirm5" :max-date="maxDate" :min-date="minDate"/>
 		</van-popup>
 		<div class="bodyList">
 			<div class="listItem" v-if="type!=2">
@@ -50,9 +50,10 @@
 					</div>
 				</div>
 				<div class="allSelectBox">
-					<div class="leftBox" @click="allSelect">
-						<img :src="xuanzhong" v-if="selectFlag">
+					<div class="leftBox" @click="allSelect" v-if="!selectFlag">
+					
 					</div>
+					<img :src="xuanzhong" v-if="selectFlag" @click="allSelect">
 					<div class="rightBox">
 						<p>全天</p>
 					</div>
@@ -73,7 +74,7 @@
 			</div>
 			<div class="addBox">
 				<div class="addList" v-for="(item,index) in pickService" :key='index'>
-					<div class="topBox" style="display: flex;">
+					<div class="topBox" style="display: flex; align-items: center;">
 						<div class="listBox" @click="pickshow3(index)">
 							<p v-if="!item.value">总部</p>
 							<p v-if="item.value" style="color: #000;">{{item.value}}</p>
@@ -84,16 +85,23 @@
 							<p v-if="item.value2" style="color: #000;">{{item.value2}}</p>
 							<img :src="xiala">
 						</div>
-						<div class="delete" @click="toDelete(index)">
-							删除
+						<div class="delete" @click="toDelete(index)" v-if="index!=0">
+							<img :src="shanchu" >
 						</div>
 					</div>
-					
+					 <div class="allSelectBox" v-if="item.checkList">
+					 	<div class="leftBox" @click="allSelectTwo(index)" v-if="!item.selectFlag">
+					 	</div>
+						<img :src="xuanzhong" v-if="item.selectFlag"  @click="allSelectTwo(index)">
+					 	<div class="rightBox">
+					 		<p>全选</p>
+					 	</div>
+					 </div>
 					<div class="checkBox" v-if="item.checkList">
 						<div class="boxList" v-for="(item1,index1) in item.checkList" :key='index1'>
-							<div class="leftBox" @click="checkSelcetTwo(index,index1)">
-								<img :src="xuanzhong" v-if="item1.flag">
+							<div class="leftBox" @click="checkSelcetTwo(index,index1)" v-if="!item1.flag">
 							</div>
+							<img :src="xuanzhong" v-if="item1.flag" @click="checkSelcetTwo(index,index1)">
 							<div class="rightBox">
 								<p>{{item1.name}}</p>
 							</div>
@@ -108,9 +116,9 @@
 				</div>
 				<div class="checkBox">
 					<div class="boxList" v-for="(item,index) in checkList" :key='index'>
-						<div class="leftBox" @click="checkSelcet(index)">
-							<img :src="xuanzhong" v-if="item.flag">
+						<div class="leftBox" @click="checkSelcet(index)" v-if="!item.flag">
 						</div>
+						<img :src="xuanzhong" v-if="item.flag" @click="checkSelcet(index)"> 
 						<div class="rightBox">
 							<p>{{item.name}}</p>
 						</div>
@@ -138,6 +146,7 @@
 	import xinzeng from "../../../assets/img/新增.png"
 	import xiala from "../../../assets/img/下拉.png"
 	import shijian from "../../../assets/img/时间控件.png"
+	import shanchu from "../../../assets/img/删除.png"
 	// import 'vant/lib/index.css'
 	export default {
 		data() {
@@ -146,7 +155,14 @@
 				xuanzhong,
 				xinzeng,
 				xiala,
+				shanchu,
 				nowDate: "", //当前日期
+				startTm:9,//最小时间
+				endTm:17,//最大时间
+				startMi:0,
+				endMi:30,
+				minDate:"",
+				maxDate:new Date(),//最大日期
 				currentTime1: '',
 				currentTime2: '',
 				time: '',
@@ -178,11 +194,14 @@
 				userInfo:{},
 				currentTime3:new Date(),
 				type:'',
+				minminute:'',
+				maxminute:'',
 			}
 		},
 		mounted() {
 			
 			this.type=this.until.getQueryString('type')
+			this.minDate=new Date(this.getMinDate()) 
 			if(this.type==2){
 				document.title='工时补录'
 			}
@@ -194,10 +213,8 @@
 					this.checkList.forEach(item=>{
 						this.$set(item,'flag',false)
 					})
-					console.log(this.checkList);
 				})
 				this.api.getprojcatListAll('0').then(res=>{
-					console.log(111111,res);
 					this.$set(this.pickService[this.pickIndex],'columns1',res)
 				})
 			}
@@ -205,9 +222,15 @@
 			if(this.type!=2){
 				this.nowDate = this.getNowDate()
 				this.api.getPaiban(this.nowDate).then(res=>{
-					
+					this.startTm=res.start?Number(res.start.split(":")[0]):'9'
+					this.minminute=res.start?Number(res.start.split(":")[1]):'0'
+					this.startMi=this.minminute
+					this.maxminute=res.end?Number(res.end.split(":")[1]):'0'
+					this.endMi=this.maxminute
+					this.endTm=res.end?Number(res.end.split(":")[0]):'17'
 				})
 			}
+		
 			if(id){
 				this.api.getProjwhreportDetail(id).then(res=>{
 					this.nowDate=res.workDate
@@ -229,28 +252,46 @@
 						}
 					})
 					this.api.getprojcatListAll('0').then(res=>{
+						this.pickService.splice(0,1)
 					for(let i=0;i<a.projs.length;i++){
-						if(i==0){
-							this.pickService[0].columns1=res
-							this.pickService[0].columns2=a.projs[i].cat2List
-							this.pickService[0].checkList=a.projs[i].projList
-						
-							this.pickService[0].id=a.projs[i].cid1
-							this.pickService[0].id2=a.projs[i].cid2
-							for(let j=0;j<a.projs[i].cat2List.length;j++){
-								if(this.pickService[0].id2==a.projs[i].cat2List[j].id){
-									this.pickService[0].value2=a.projs[i].cat2List[j].name
-								} 
-							}
-							for(let p=0;p<res.length;p++){
-								if(this.pickService[0].id==res[p].id){
-									this.pickService[0].value=res[p].name
-								} 
-							}
-						}
-						else{
+						// if(i==0){
+						// 	this.pickService[0].columns1=res
+						// 	this.pickService[0].columns2=a.projs[i].cat2List
+						// 	this.pickService[0].checkList=a.projs[i].projList
+						// 	this.pickService[0].checkList.forEach(item=>{
+						// 		this.$set(item,'flag',false)
+						// 	})
+						// 	a.projs[i].projIds.forEach(item=>{
+						// 		 this.pickService[0].checkList.forEach(item1=>{
+						// 			 if(item==item1.id){
+						// 				 item1.flag=true
+						// 			 }
+						// 		 })
+						// 	})
+						// 	this.pickService[0].id=a.projs[i].cid1
+						// 	this.pickService[0].id2=a.projs[i].cid2
+						// 	for(let j=0;j<a.projs[i].cat2List.length;j++){
+						// 		if(this.pickService[0].id2==a.projs[i].cat2List[j].id){
+						// 			this.pickService[0].value2=a.projs[i].cat2List[j].name
+						// 		} 
+						// 	}
+						// 	for(let p=0;p<res.length;p++){
+						// 		if(this.pickService[0].id==res[p].id){
+						// 			this.pickService[0].value=res[p].name
+						// 		} 
+						// 	}
+						// }
+						// else{
 							let value=''
 							let value2=''
+							for(let j=0;j<a.projs[i].projList.length;j++){
+								this.$set(a.projs[i].projList[j],'flag',false)
+								for(let m=0;m<a.projs[i].projIds.length;m++){
+									if(a.projs[i].projList[j].id==a.projs[i].projIds[m]){
+										a.projs[i].projList[j].flag=true
+									}
+								}
+							}
 							for(let j=0;j<a.projs[i].cat2List.length;j++){
 								if(a.projs[i].cid2==a.projs[i].cat2List[j].id){
 									value2=a.projs[i].cat2List[j].name
@@ -270,7 +311,8 @@
 								id2:a.projs[i].cid2,
 								value:value,
 								value2:value2,
-							})}
+							})
+							// }
 							
 					}
 					console.log(111111,this.pickService);
@@ -287,6 +329,7 @@
 					this.pickService.push({
 						columns1:res,
 						columns2:[],
+						
 					})
 				})
 				
@@ -296,16 +339,56 @@
 			},
 			checkSelcetTwo(index,index1){
 				console.log(index,index1);
-				this.$set( this.pickService[index].checkList[index1], 'flag', !this.pickService[index].checkList[index1].flag)
+				this.$set(this.pickService[index].checkList[index1], 'flag', !this.pickService[index].checkList[index1].flag)
 				console.log(this.pickService);
-				
 			},
 			allSelect() {
 				this.selectFlag = !this.selectFlag
+				if(this.selectFlag==true){
+					this.api.getPaiban(this.nowDate).then(res=>{
+						this.value1=res.start?res.start:'9'
+						this.value2=res.end?res.end:'5.30'
+						let obj={
+							date:this.nowDate,
+							start:this.value1,
+							end:this.value2
+						}
+						this.api.getDuration(obj).then(res=>{
+							this.workHours=res.workHours
+							this.workdays=res.workDays
+						})
+					})
+				}
+				else
+				{
+					this.workHours=''
+					this.workdays=''
+					this.value1=''
+					this.value2=''
+				}
+			},
+			allSelectTwo(index){
+				if(this.pickService[index].selectFlag){
+					this.$set(this.pickService[index],'selectFlag',false)
+					this.pickService[index].checkList.forEach(item=>{
+						item.flag=false
+					})
+					return 
+				}
+				this.$set(this.pickService[index],'selectFlag',true)
+				this.pickService[index].checkList.forEach(item=>{
+					item.flag=true
+				})
 			},
 			filter(type, options) {
-				if (type === 'minute') {
+				
+				if(type=='hour'){
+					console.log(11,type,options);
+				}
+				 else if (type == 'minute') {
+					 console.log(11,type,options);
 					return options.filter((option) => option % 30 === 0);
+					
 				}
 				return options;
 			},
@@ -316,9 +399,35 @@
 						this.showPicker1 = false
 						return
 					}
+					let obj={
+						date:this.nowDate,
+						start:val,
+						end:this.value2
+					}
+					this.api.getDuration(obj).then(res=>{
+						this.workHours=res.workHours
+						this.workdays=res.workDays
+					})
 				}
 				this.value1 = val
 				this.showPicker1 = false
+			},
+			changeTm(val1){
+				console.log(11,val1.getValues());
+				if(val1.getValues()[0]==this.startTm)
+				{
+					this.startMi=this.minminute
+				}
+				else{
+					this.startMi=0
+				}
+				if(val1.getValues()[0]==this.endTm)
+				{
+					this.endMi=this.maxminute
+				}
+				else{
+					this.endMi=30
+				}
 			},
 			onConfirm2(val) {
 				if (this.value1) {
@@ -327,7 +436,19 @@
 						this.showPicker2 = false
 						return
 					}
+					let obj={
+						date:this.nowDate,
+						start:this.value1,
+						end:val
+					}
+					this.api.getDuration(obj).then(res=>{
+						this.workHours=res.workHours
+						this.workdays=res.workDays
+					})
+						
+					
 				}
+				
 				this.value2 = val
 				this.showPicker2 = false
 			},
@@ -385,11 +506,33 @@
 				this.showPicker4 = false
 			},
 			onConfirm5(val){
-				this.nowDate=this.getNowDate(val)
-				this.showPicker5=false
+				this.nowDate=this.getNowDateTwo(val)
+				this.api.getPaiban(this.nowDate).then(res=>{
+					this.startTm=res.start?Number(res.start.split(":")[0]):'9'
+					this.minminute=res.start?Number(res.start.split(":")[1]):'0'
+					this.startMi=this.minminute
+					this.maxminute=res.end?Number(res.end.split(":")[1]):'0'
+					this.endMi=this.maxminute
+					this.endTm=res.end?Number(res.end.split(":")[0]):'17'
+					this.showPicker5=false
+				})
+				
+			},
+			getMinDate(){
+				let nowDate = new Date();
+				let year = nowDate.getFullYear();
+				let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+				return year + "-" + month + "-" + 1;
 			},
 			getNowDate() {
 				let nowDate = new Date();
+				let year = nowDate.getFullYear();
+				let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
+				let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+				return year + "-" + month + "-" + day;
+			},
+			getNowDateTwo(val){
+				let nowDate = new Date(val);
 				let year = nowDate.getFullYear();
 				let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
 				let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
@@ -522,14 +665,12 @@
 							width: 0.35rem;
 							height: 0.35rem;
 							border: 1px solid #DDDDDD;
-							border-radius: 0.1rem;
-
-							img {
-								width: 0.3rem;
-								height: 0.3rem;
-							}
+							border-radius: 0.05rem;
 						}
-
+						img {
+							width: 0.35rem;
+							height: 0.35rem;
+						}
 						.rightBox {
 							p {
 								
@@ -642,11 +783,13 @@
 						border: 1px solid #DDDDDD;
 						text-align: center;
 						line-height: 0.35rem;
-
-						img {
-							width: 0.3rem;
-							height: 0.3rem;
-						}
+						border-radius: 0.05rem;
+						
+					}
+					img {
+						// border-radius: 0.1rem;
+						width: 0.35rem;
+						height: 0.35rem;
 					}
 
 					.rightBox {
@@ -666,11 +809,39 @@
 				border-radius: 0.1rem;
 
 				.addList {
-					justify-content: center;
+					// justify-content: center;
 					align-items: center;
 					margin-bottom: 0.5rem;
+					.allSelectBox {
+						margin-left: 0.1rem;
+						margin-top: 0.2rem;
+						display: flex;
+						align-items: center;
+						.leftBox {
+							width: 0.35rem;
+							height: 0.35rem;
+							border: 1px solid #DDDDDD;
+							text-align: center;
+							line-height: 0.35rem;
+							border-radius: 0.05rem;
+							
+						}
+						img {
+							width: 0.35rem;
+							height: 0.35rem;
+						}
+					
+						.rightBox {
+							margin-left: 0.14rem;
+							p {
+								font-size: 0.24rem;
+								font-weight: 500;
+								color: #333333;
+							}
+						}
+					}
 					.checkBox {
-						margin-top: 0.35rem;
+						margin-bottom: 0.35rem;
 						margin-left: 0.1rem;
 						display: flex;
 					
@@ -685,14 +856,12 @@
 								width: 0.35rem;
 								height: 0.35rem;
 								border: 1px solid #DDDDDD;
-								border-radius: 0.1rem;
-					
-								img {
-									width: 0.3rem;
-									height: 0.3rem;
-								}
+								border-radius: 0.05rem;
 							}
-					
+							img {
+								width: 0.35rem;
+								height: 0.35rem;
+							}
 							.rightBox {
 								p {
 									margin-left: 0.14rem;
@@ -729,6 +898,12 @@
 					}
 					.delete{
 						color: red;
+						width: 0.31rem;
+						height: 0.31rem;
+						img{
+							width: 100%;
+							height: 100%;
+						}
 					}
 				}
 			}

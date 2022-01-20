@@ -43,15 +43,15 @@
 			
 		</div>
 		<div class="bottom">
-			<div class="list" v-for="item in 30">
+			<div class="list" v-for="(item,index) in list" :key='index'>
 				<div class="listName">
-				博白项目
+				{{item.projName}}
 				</div>
 				<div class="listName">
-					2021-12
+					{{item.workDate}}
 				</div>
 				<div class="listName">
-					504.00
+					{{item.workHours}}
 				</div>
 			</div>
 		</div>
@@ -80,14 +80,23 @@
 				showPicker:false,
 				currentTime:new Date(),
 				dateTime:"",
+				userNm:'',
+				deptNm:'',
+				list:[],
+				current:1,
+				size:10
 			}
 		},
 		mounted() {
-			
+			this.userNm=this.until.getQueryString('userNm')
+			this.deptNm=this.until.getQueryString('deptNm')
+			this.getInfo()
 		},
 		methods: {
-			toDetail(){
-				this.until.href("/views/baobiao/xiangmuDetailTwo.html")
+			getInfo(){
+				this.api.getPersonProjBossReport(this.name,this.dateTime,this.userNm,this.deptNm,this.current,this.size).then(res=>{
+					this.list=res.records
+				})
 			},
 			changeTab(index){
 				this.currentIndex=index
@@ -229,6 +238,7 @@
 		}
 		.bottom{
 			padding:0rem 0.2rem ;
+			padding-bottom: 0.2rem;
 			box-sizing: border-box;
 			background-color: #F1F3F2;
 			.list{

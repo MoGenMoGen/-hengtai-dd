@@ -13,7 +13,7 @@ const hostUrl = "http://htweb.jinkworld.com"
 
 
 // const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxODk0MTExLCJuYmYiOjE2NDE4OTA1MTF9.IYG-Hy4_zc8zRCQzUCYHwnzqUSsgme-JbD3rCP2OCKE0KqPBVTU6ldIpI7_FetsDwRcpbCYyCqhPq22ku6xdIA'
-const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTQ3OTI4Nzc1NDczMDYxMDY5MCIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjAzIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQyNzQyNTUwLCJuYmYiOjE2NDIxMzc3NTB9.pFdHYNi1-ze49dE1x2gyPJPKINUTKF8w1_QYHuMV2hhXhyKNiAPmJC3TkDGP-R380WvIZeOXZHmH4rG5AjUH6w'
+const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTQ4Mjk1MDg0MTQyMDc4NzcxMyIsInJvbGVfaWQiOiIxNDc5NDAwOTQ1MjcxNzk5ODEwIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY4MiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQzMTAwMzQ1LCJuYmYiOjE2NDI0OTU1NDV9.ZWL2HRB-jdUZgbqf3q_FvmK6nlxWwgg85gzADrQW1nqTaBAjT8ya_z1HKoRJZ-9jZM_QUuLOfq4ExEApmjIGZQ'
 
 import Vue from 'vue'
 
@@ -29,10 +29,10 @@ Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
 
-	// let headers = { ...header, ...{ "Blade-Auth": until1.loGet("token") } }
+	// let headers = { ...header,...{'Cache-Control': 'no-cache'},...{ "Blade-Auth": until1.loGet("token") } }
 
-	// let headers = { ...header, ...{ "Blade-Auth": 'bearer '+localStorage.getItem('token') } }
-	let headers = { ...header, ...{ "Blade-Auth": 'bearer '+token } }
+	// let headers = { ...header, ...{ "Blade-Auth": 'bearer '+localStorage.getItem('token')}}
+	let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.get(url, { params: data, headers }).then(res => {
 			if (res.data.code == 0 || res.data.error_code == 0 || res.data.code == 200) {
@@ -53,17 +53,19 @@ function get(url, data, header, cache = false) {
 				}, 2000);
 			}
 			else
-				Toast(JSON.stringify(err))
+			{
+				Toast(err.response.data.msg)
+			}
 		})
 	});
 	return promise;
 }
 
 function post(url, data, header) {
-	// let headers = { ...header, ...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
-	// let headers = { ...header, ...{ "Blade-Auth": until1.loGet("token") } }
+	// let headers = { ...header,...{'Cache-Control': 'no-cache'},...{ "yui3-token": "yui3-sid-c70ea28b-485c-4a5f-bacd-a5b3ca7a45d4", 'Content-Type': 'application/json' } }
+	// let headers = { ...header,...{'Cache-Control': 'no-cache'}, ...{ "Blade-Auth": until1.loGet("token") } }
 	// let headers = { ...header, ...{ "Blade-Auth": 'bearer ' + localStorage.getItem('token') } }
-	let headers = { ...header, ...{ "Blade-Auth": 'bearer '+token } }
+	let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.post(url, data, { headers })
 			.then(function (response) {
@@ -74,6 +76,11 @@ function post(url, data, header) {
 						setTimeout(() => {
 							window.location.replace("/views/home/login.html")
 						}, 2000);
+					
+					}
+					else if(response.data.error_code==400){
+						Toast(response.data.error_description);
+						return
 					}
 						resolve(response.data);
 				}
@@ -83,15 +90,21 @@ function post(url, data, header) {
 			})
 			.catch(function (error) {
 				console.log('catch', error);
-
-				if (err.response.data.code == 401) {
+				Toast(error.response.data.msg)
+				if (error.response.data.code == 401) {
 					Toast('请重新登录');
 					setTimeout(() => {
 						window.location.replace("/views/home/login.html")
 					}, 2000);
 				}
-				else
-					Toast(JSON.stringify(err))
+				else if(error.response.data.msg=='不存在的临时授权码')
+				{
+					setTimeout(() => {
+						window.location.replace("/views/home/login.html")
+					}, 2000);
+				}
+				
+				
 
 			});
 	});
@@ -247,16 +260,70 @@ class api {
 	        })
 	    })
 	}
-	//boss看项目/部门
-	getProjBossReport(deptNm,projNm,workDate,current,size) {
+	//部门看人员
+	getDeptPersonReport(userNm,workDate,isCharge,chargeDepts,current,size,deptNm) {
 	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/projBossReport?deptNm='+deptNm+'&projNm='+projNm+'&workDate='+workDate+'&current='+current+'&size='+size).then(res => {
+	        post('/api/blade-proj/apis/projwhreport/deptPersonReport?userNm='+userNm+'&workDate='+workDate+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts+'&current='+current+'&size='+size+'&deptNm='+deptNm).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//部门 人员看项目
+	getPersonProjReport(projNm,workDate,userNm,deptNm,current,size) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/personProjReport?projNm='+projNm+'&workDate='+workDate+'&userNm='+userNm+'&deptNm='+deptNm+'&current='+current+'&size='+size).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//boss看项目
+	getProjBossReport(projNm,workDate,current,size) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/projBossReport?projNm='+projNm+'&workDate='+workDate+'&current='+current+'&size='+size).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//boss 领导 看部门
+	getDeptBossReport(deptNm,workDate,current,size,isCharge,chargeDepts) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/deptBossReport?deptNm='+deptNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//boss部门看项目
+	getDeptProjBossReport(projNm,workDate,deptNm,current,size) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/deptProjBossReport?projNm='+projNm+'&workDate='+workDate+'&deptNm='+deptNm+'&current='+current+'&size='+size).then(res => {
+	            resolve(res.data)
+	        })
+	    })
+	}
+	//项目看部门
+	getProjDeptReport(projNm,deptNm,workDate,current,size) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/projDeptReport?projNm='+projNm+'&deptNm='+deptNm+'&workDate='+workDate+'&current='+current+'&size='+size).then(res => {
 	            resolve(res.data)
 	        })
 	    })
 	}
 	//(Boss/领导)部门-->项目看人员
-	
+	getProjPersonReport(userNm,workDate,deptNm,projNm,current,size) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/projPersonReport?userNm='+userNm+'&workDate='+workDate+'&deptNm='+deptNm+'&projNm='+projNm+'&current='+current+'&size='+size).then(res => {
+	            resolve(res.data)
+	         })  
+	    })
+	}
+	//Boss 部门人员看项目
+	getPersonProjBossReport(projNm,workDate,userNm,deptNm,current,size) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/personProjBossReport?projNm='+projNm+'&workDate='+workDate+'&userNm='+userNm+'&deptNm='+deptNm+'&current='+current+'&size='+size).then(res => {
+	            resolve(res.data)
+	         })  
+	    })
+	}
 	//工时填报-流程详情
 	getProcess(data) {
 	    return new Promise((resolve, reject) => {

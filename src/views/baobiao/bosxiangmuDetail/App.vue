@@ -53,23 +53,23 @@
 					项目详情
 				</div>
 			</div>
-			<div class="list" v-for="item in 30" >
+			<div class="list" v-for="(item,index) in list" :key='index' >
 				<div class="listName4 listName">
-					王冰冰
+					{{item.userName}}
 				</div>
 				<div class="listName4 listName">
-					2021-12
+					{{item.workDate}}
 				</div>
 				<div class="listName5 listName">
-					24.00
+					{{item.monthHours}}
 				</div>
 				<div class="listName5 listName" >
-					24.00
+					{{item.workHours}}
 				</div>
 				<div class="listName5 listName" >
-					100.00
+					{{item.workLv}}
 				</div>
-				<div class="listName5 listName" style="color:#CA093A; text-decoration: underline;"  @click="pepDetial" >
+				<div class="listName5 listName" style="color:#CA093A; text-decoration: underline;"  @click="pepDetial(item)" >
 					查看
 				</div>
 			</div>
@@ -100,12 +100,22 @@
 				currentTime:new Date(),
 				dateTime:"",
 				proname:'',
+				list:[],
+				deptNm:'',
+				current:1,
+				size:10
 			}
 		},
 		mounted() {
-			
+			this.deptNm=this.until.getQueryString('deptNm')
+			this.getInfo()
 		},
 		methods: {
+			getInfo(){
+				this.api.getDeptPersonReport(this.name,this.dateTime,'','',this.current,this.size,this.deptNm).then(res=>{
+					this.list=res.records
+				})
+			},
 			changeTab(index){
 				this.currentIndex=index
 			},
@@ -119,11 +129,8 @@
 				let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
 				return year + "-" + month;
 			},
-			toDetail(){
-			   this.until.href("/views/baobiao/xiangmudetail.html")
-			},
-			pepDetial(){
-				this.until.href("/views/baobiao/bosrenyuanDetail.html")
+			pepDetial(item){
+				this.until.href(`/views/baobiao/bosrenyuanDetail.html?userNm=${item.userName}&deptNm=${item.deptName}`)
 			},
 			
 			

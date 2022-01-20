@@ -17,6 +17,7 @@
       :finished="finished"
       finished-text="没有更多了"
       @load="getInfo"
+	  :immediate-check="immediate"
     >
       <div
         class="contentList"
@@ -81,13 +82,14 @@ export default {
       shoplist2: [], //店铺数组二
       finished: false,
       loading: false,
+	  immediate:false,
     };
   },
   async mounted() {
     // this.shoplist = await this.api.getprojcatListAll("1476099168979910658");
     // this.shoplist = await this.api.getprojcatListAll("1476099222931243010");
     console.log(1111, this.shoplist1);
-    // this.getInfo();
+	this.getInfo()
   },
   methods: {
     changeTab(index) {
@@ -149,6 +151,10 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+	body{
+		 height: 100vh;
+		 background-color:#f1f3f2; ;
+	}
 .content {
   background-color: #f1f3f2;
   .tab {
@@ -215,8 +221,10 @@ export default {
           color: #606060;
           margin-bottom: 0.3rem;
           .listLeft {
+			  width:1.2rem ;
           }
           .listRight {
+			flex: 1;
             margin-left: 0.2rem;
           }
         }
@@ -226,8 +234,7 @@ export default {
         height: 0.75rem;
         position: absolute;
         right: 0.3rem;
-        top: 50%;
-        transform: translateY(-50%);
+        top: 1rem;
       }
       .btn {
         border-top: 1px solid #d9d9d9;

@@ -27,26 +27,25 @@
             <p v-if="dateTime" style="color: #000">{{ dateTime }}</p>
             <img :src="time" />
           </div>
-          <div class="btnSearch">查询</div>
+          <div class="btnSearch" @click="search">查询</div>
         </div>
         <div class="header">
           <div class="headname">项目名称</div>
           <div class="headname">月份</div>
           <div class="headname">工作时长(H)</div>
-          <div class="headname" v-if="currentRole == 2">人员详情</div>
+          <div class="headname">人员详情</div>
         </div>
       </div>
     </div>
     <div class="bottom">
-      <div class="list" v-for="item in 30">
-        <div class="listName">博白项目</div>
-        <div class="listName">2021-12</div>
-        <div class="listName">504.00</div>
+      <div class="list" v-for="(item,index) in list" :key='index'>
+        <div class="listName">{{item.projName}}</div>
+        <div class="listName">{{item.workDate}}</div>
+        <div class="listName">{{item.workHours}}</div>
         <div
           class="listName"
-          v-if="currentRole == 2"
           style="color: #ca093a; text-decoration: underline"
-          @click="toDetail"
+          @click="toDetail(item)"
         >
           查看
         </div>
@@ -61,8 +60,7 @@ import { Notify } from "vant";
 export default {
   data() {
     return {
-      currentRole: 2, //1:领导;2:老板
-      currentIndex: 0,
+      currentRole: 1, //1:领导;2:老板
       bg,
       time,
       name: "",
@@ -70,21 +68,50 @@ export default {
       showPicker: false,
       currentTime: new Date(),
       dateTime: "",
+	  deptNm:'',
+	  current:1,
+	  size:10,
+	  list:[],
+	  deptIds:'',
+	  isCharge:'',
+	  
     };
   },
   mounted() {
-    // this.userInfo = this.until.loGet("userInfo");
-    // if (this.userInfo && userInfo.detail.isCharge == 1) this.currentRole = 1;
-    // else if (this.userInfo && userInfo.detail.role_name == "boss")
-    //   this.currentRole = 2;
+	 this.deptNm=this.until.getQueryString('deptNm')
+	 this.userInfo = this.until.loGet("userInfo");
+	 if(this.userInfo){
+	 	this.deptIds=this.userInfo.dept_id
+	 	this.isCharge=this.userInfo.detail.isCharge
+	 	if(this.userInfo.detail.chargeDepts){
+	 		this.deptIds=this.deptIds+this.userInfo.detail.chargeDepts.join(",")
+	 	}
+	 }
+    if (this.userInfo &&this. userInfo.detail.isCharge == 1) this.currentRole = 1;
+    else if (this.userInfo &&this. userInfo.role_name == "boss")
+      this.currentRole = 2;
     if (this.currentRole == 2) document.title = "前筹一部";
+	this.getInfo()
   },
   methods: {
-    toDetail() {
-      this.until.href("/views/baobiao/xiangmuDetailTwo.html");
-    },
-    changeTab(index) {
-      this.currentIndex = index;
+	  search(){
+		this.getInfo()
+		this.current=1
+	  },
+	  getInfo(){
+			if(this.currentRole==2){
+				this.api.getDeptProjBossReport(this.name,this.dateTime,this.deptNm,this.current,this.size).then(res=>{
+					this.list=res.records
+				})
+			}
+			else if(this.currentRole==1){
+				this.api.getDeptProjReport(this.name,this.dateTime,this.isCharge,this.deptIds,this.current,this.size).then(res=>{
+					this.list=res.records
+				})
+			}
+	  },
+    toDetail(item) {
+      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}`);
     },
     onConfirm(val) {
       this.dateTime = this.getNowDate(val);
@@ -222,6 +249,7 @@ export default {
   }
   .bottom {
     padding: 0rem 0.2rem;
+	padding-bottom: 0.2rem;
     box-sizing: border-box;
     background-color: #f1f3f2;
     .list {

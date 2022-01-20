@@ -111,6 +111,7 @@ export default {
           this.userInfo.detail.isCharge == 1 ||
           this.userInfo.role_name == "boss"
         )
+		
           return true;
         else return false;
       } else return false;
@@ -120,8 +121,8 @@ export default {
 	// }
   },
   created() {
-    // if(!this.until.loGet("token"))
-    // this.dd();
+    if(!this.until.loGet("token"))
+    this.dd();
   },
   mounted() {},
   methods: {
@@ -136,7 +137,7 @@ export default {
         window.localStorage.setItem("codeInfoDDD", "已进入");
         dd.runtime.permission.requestAuthCode({
           //获取code
-          corpId: "dingc35f50400f19d66d", // 企业id
+          corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
           onSuccess: (info) => {
             console.log("获取钉钉code");
 
@@ -178,7 +179,7 @@ export default {
   padding: 0.3rem;
   box-sizing: border-box;
   width: 100vw;
- height: 100vh;
+   height: 100vh;
   .mask{
 	  width: 100vw;
 	  height: 100vh;
@@ -284,7 +285,7 @@ export default {
     color: #666666;
     opacity: 0.8;
 	position: absolute;
-	bottom: 0.1rem;
+	bottom: 0.4rem;
 	left: 50%;
 	transform: translateX(-50%);
   }
@@ -296,7 +297,6 @@ export default {
 		  width: 0.84rem;
 		  height: 0.84rem;
 		  background: #FFFFFF;
-		  border: 0.02rem solid #D21041;
 		  border-radius: 50%;
 	  }
   }

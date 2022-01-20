@@ -46,14 +46,14 @@
       </div>
       <div class="box">
         <div class="title">备注：</div>
-        <div class="content" style="white-space: pre">{{ info.rmks }}</div>
+        <div class="content" style="white-space: pre-wrap">{{ info.rmks }}</div>
       </div>
     </div>
     <div class="bottom">
       <div class="title">流程</div>
       <div class="item">
         <div class="left">
-          <div class="circle_box" style="margin-right: 0.1rem">{{info2.create.name.length>2?info2.create.name.substring(1,2):info2.create.name}}</div>
+          <div class="circle_box" v-if="info2.create" style="margin-right: 0.1rem">{{info2.create.name.length>2?info2.create.name.substring(1,3):info2.create.name}}</div>
           <div class="content">
             <div class="role">我</div>
             <div class="detail">发起申请</div>
@@ -61,13 +61,13 @@
         </div>
         <div class="right">12-28 22:08</div>
       </div>
-		<div class="" v-for="(item,index) in info2.tasks" :key='index'>
+		<div class="" v-for="(item,index) in info2.tasks" :key='index' v-if="item.name">
       <div class="line"></div>
       <div class="item" style="position: relative">
         <div class="left">
-          <div class="circle_box" style="margin-right: 0.1rem">{{item.name.length>2?item.name.substring(1,2):item.name}}</div>
+          <div class="circle_box"  style="margin-right: 0.1rem" :class="item.taskStatus!='COMPLETED'?'active':''">{{item.name&&item.name.length>2?item.name.substring(item.name.length-2,item.name.length):item.name}}</div>
           <div class="content">
-            <div class="role">{{item.name}}<span v-if="item.taskResult=='AGREE'">(已同意)</span><span v-if="item.taskResult!='AGREE'">(不同意)</span></div>
+            <div class="role">{{item.name}}<span v-if="item.taskResult=='AGREE'&&item.taskStatus=='COMPLETED'">(已同意)</span><span v-if="item.taskResult!='AGREE'&&item.taskStatus=='COMPLETED'">(已拒绝)</span><span v-if="item.taskStatus!='COMPLETED'">(审核中)</span></div>
             <div class="detail">审批人</div>
           </div>
         </div>
@@ -81,18 +81,19 @@
       <div class="line"></div>
       <div class="item">
         <div class="left">
-          <img src="~@/assets/img/未抄送.png" class="avatar" alt="" />
+          <img src="~@/assets/img/已抄送.png" class="avatar" alt="" />
           <div class="content">
             <div class="role">已抄送{{info2.ccUsers.length}}人</div>
             <div class="detail">抄送人</div>
           </div>
         </div>
-        <div class="right">
+        <div class="right" >
           <div 
-            style="display: flex; flex-direction: column; align-items: center"
-           v-for="(item,index) in info2.ccUsers">
+           v-for="(item,index) in info2.ccUsers" style="display: flex;flex-wrap: wrap;">
+		   <div class="" style="display: flex;flex-direction: column; justify-content: center;text-align: center;" >
             <div class="circle_box" style="margin-bottom: 0.1rem">{{item.name}}</div>
             <div class="detail">{{item.name}}</div>
+			 </div>
 			<div
 			  class="detail"
 			  style="
@@ -101,7 +102,7 @@
 			    height: 0.65rem;
 			    line-height: 0.65rem;
 			  "
-			 v-if="index==info.ccUsers.length-1">
+			 v-if="index!=info2.ccUsers.length-1">
 			  +
 			</div>
           </div>
@@ -220,7 +221,7 @@ export default {
     }
     .item {
       display: flex;
-      align-items: center;
+      // align-items: center;
       justify-content: space-between;
       .detail {
         font-size: 0.24rem;
@@ -279,13 +280,16 @@ export default {
     .circle_box {
       width: 0.65rem;
       height: 0.65rem;
-      background: #989898;;
+      background: #02A0EA;
       border-radius: 50%;
       font-size: 0.24rem;
       color: #ffffff;
       line-height: 0.65rem;
       text-align: center;
     }
+	.active{
+		background: #909090;
+	}
   }
 }
 </style>

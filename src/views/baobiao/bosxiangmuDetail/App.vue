@@ -12,26 +12,23 @@
 				</div>
 			</div> -->
 			<div class="bodyContent">
-				<div class="workHours">
-					总计工时：125200.00H
-				</div>
+				<div class="workHours" v-if="list.length>0">总计工时：{{list[0].count}}H</div>
 				<div class="searchBox">
 					 <div class="boxOne">
 						<input placeholder="姓名" v-model="name" />
 					 </div>
-					 <div class="boxTwo" @click="showPicker=true">
-					 	<p v-if="!dateTime">月份选择</p>
-						 <p  v-if="dateTime" style="color: #000;"> {{dateTime}}</p>
-						<img :src="time" >
+					 <div class="boxTwo" @click="showPicker = true" style="position: relative;">
+					 	<img :src="time" />
+					 	<p v-if="!dateTime" style="margin-left:0.14rem ;">月份选择</p>
+					 	<p v-if="dateTime" style="color: #000;margin-left:0.14rem ;">{{ dateTime }}</p>
+					 	<img :src="close" style="position: absolute; right:0.15rem" @click.stop="deleteDate" />
 					 </div>
-					 <div class="btnSearch">
+					 <div class="btnSearch" @click="search">
 					 	查询
 					 </div>
 				</div>
 			</div>
 		</div>
-		
-		
 		<div class="list2" style="width: 100%; overflow: hidden;overflow-x: auto; padding: 0rem 0.2rem;">
 			<div class="header2" >
 				<div class="headName4 headname">
@@ -53,6 +50,7 @@
 					项目详情
 				</div>
 			</div>
+			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()">
 			<div class="list" v-for="(item,index) in list" :key='index' >
 				<div class="listName4 listName">
 					{{item.userName}}
@@ -73,6 +71,7 @@
 					查看
 				</div>
 			</div>
+			</van-list>
 		</div>
 		
 	
@@ -86,14 +85,18 @@
 <script>
 	import bg from "../../../assets/img/总分背景.png"
 	import time from "../../../assets/img/时间控件.png"
+	import close from "../../../assets/img/关闭.png"
 	import {
 		Notify
 	} from 'vant';
 	export default {
 		data() {
 			return {
+				loading:false,
+				finished:false,
 				bg,
 				time,
+				close,
 				name:'',
 				tabList:['项目','人员'],
 				showPicker:false,
@@ -103,21 +106,57 @@
 				list:[],
 				deptNm:'',
 				current:1,
-				size:10
+				size:10,
+				userInfo:"",
+				currentRole:2,
+				isCharge:'',
+				deptIds:'',
+				total:'',
 			}
 		},
 		mounted() {
+			this.userInfo = this.until.loGet("userInfo");
+			if (this.userInfo) {
+				this.deptIds = this.userInfo.dept_id
+				this.isCharge = this.userInfo.detail.isCharge
+				if (this.userInfo.detail.chargeDepts) {
+					this.deptIds = this.deptIds +','+this.userInfo.detail.chargeDepts.join(",")
+				}
+			}
+			if (this.userInfo && this.userInfo.detail.isCharge == 1) this.currentRole = 1;
+			else if (this.userInfo && this.userInfo.role_name == "boss")
+			this.currentRole = 2;
 			this.deptNm=this.until.getQueryString('deptNm')
-			this.getInfo()
 		},
 		methods: {
-			getInfo(){
-				this.api.getDeptPersonReport(this.name,this.dateTime,'','',this.current,this.size,this.deptNm).then(res=>{
-					this.list=res.records
-				})
+			deleteDate(){
+				this.dateTime=''
 			},
-			changeTab(index){
-				this.currentIndex=index
+			search(){
+			this.current=1
+			this.list=[]
+			this.getInfo()
+			},
+			getInfo(){
+				if(this.currentRole==2){
+					this.api.getDeptPersonReport(this.name,this.dateTime,'','',this.current,this.size,this.deptNm).then(res=>{
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+					})
+				}
+				if(this.currentRole==1){
+					this.api.getDeptPersonReport(this.name,this.dateTime,this.isCharge,this.deptIds,this.current,this.size,'').then(res=>{
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+					})
+				}
+				
 			},
 			onConfirm(val){
 				this.dateTime=this.getNowDate(val)
@@ -216,7 +255,6 @@
 					border: 1px solid #D9D9D9;
 					display: flex;
 					background-color: #ffffff;
-					justify-content: space-between;
 					padding: 0.2rem;
 					box-sizing: border-box;
 					align-items: center;

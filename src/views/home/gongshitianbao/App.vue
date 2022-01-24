@@ -5,7 +5,9 @@
 				<div class="title">
 					工时规则
 				</div>
-				<img :src="shanchu" @click="showMask=false">
+				<img :src="close" @click="showMask=false">
+				<div class="" style="margin-top: 0.2rem;" v-html="info.cont">
+				</div>
 			</div>
 		</div>
 		<div class="guize" @click="showMask=true">
@@ -77,7 +79,7 @@
 				<p>工作时长：</p>
 				<p class="itemRight">{{workHours}}小时/{{workdays}}天</p>
 			</div>
-			<div class="listItem" style="border-bottom:1px solid #E6E6E6;" v-if="userInfo.detail.needProj==1">
+			<div class="listItem" style="border-bottom:1px solid #E6E6E6;"v-if="userInfo&&userInfo.detail.needProj==1" >
 				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
 				<p>服务项目：</p>
 				<div class="addNew">
@@ -94,7 +96,7 @@
 				</div>
 			</div> -->
 			
-			<div class="addBox" v-if="userInfo.detail.needProj==1">
+			<div class="addBox"  v-if="userInfo&&userInfo.detail.needProj==1" >
 				<div class="addList" v-for="(item,index) in pickService" :key='index'
 					:class="index===index1||index===index2?'active':''">
 					<div class="topBox" style="display: flex; align-items: center;">
@@ -173,12 +175,14 @@
 	import xiala from "../../../assets/img/下拉.png"
 	import shijian from "../../../assets/img/时间控件.png"
 	import shanchu from "../../../assets/img/删除.png"
-	import guize from "../../../assets/img/工时规则.png";
+	import guize from "../../../assets/img/工时规则.png"
+	import close from "../../../assets/img/close.png"
 	// import 'vant/lib/index.css'
 	export default {
 		data() {
 			return {
 				shijian,
+				close,
 				xuanzhong,
 				xinzeng,
 				xiala,
@@ -224,6 +228,7 @@
 				maxminute: '',
 				index1: "",
 				index2: "",
+				info:'',
 			}
 		},
 		watch: {
@@ -319,6 +324,10 @@
 			this.type = this.until.getQueryString('type')
 			this.minDate = new Date(this.getMinDate())
 			this.maxDate = new Date(this.getMaxDate())
+			this.api.getContarticle().then(res=>{
+				console.log(777,res);
+				this.info=res
+			})
 			if (this.type == 2) {
 				document.title = '工时补录'
 			}
@@ -372,6 +381,7 @@
 						}
 					})
 					this.api.getprojcatListAll('0').then(res => {
+						console.log(77777,res);
 						this.pickService.splice(0, 1)
 						for (let i = 0; i < a.projs.length; i++) {
 							// if(i==0){
@@ -417,7 +427,13 @@
 									value2 = a.projs[i].cat2List[j].name
 								}
 							}
-							for (let p = 0; p < a.projs[i].cat2List.length; p++) {
+							
+							// for (let p = 0; p < a.projs[i].cat2List.length; p++) {
+							// 	if (a.projs[i].cid1 == a.projs[i].cat2List[p].id) {
+							// 		value = a.projs[i].cat2List[p].name
+							// 	}
+							// }
+							for (let p = 0; p < res.length; p++) {
 								if (a.projs[i].cid1 == res[p].id) {
 									value = res[p].name
 								}
@@ -473,7 +489,7 @@
 				this.selectFlag = !this.selectFlag
 				if (this.selectFlag == true) {
 					this.api.getPaiban(this.nowDate).then(res => {
-						this.value1 = res.start ? res.start : '9:00'
+						this.value1 = res.start ? res.start : '09:00'
 						this.value2 = res.end ? res.end : '17:30'
 						let obj = {
 							date: this.nowDate,
@@ -517,8 +533,12 @@
 				return options;
 			},
 			onConfirm1(val) {
+				if (!this.nowDate) {
+					Toast('请先选择日期')
+					return
+				}
 				if (this.value2) {
-					if (val > this.value2) {
+					if (val >= this.value2) {
 						Notify('开始时间不能大于结束时间');
 						this.showPicker1 = false
 						return
@@ -553,8 +573,12 @@
 				}
 			},
 			onConfirm2(val) {
+				if (!this.nowDate) {
+					Toast('请先选择日期')
+					return
+				}
 				if (this.value1) {
-					if (val < this.value1) {
+					if (val <= this.value1) {
 						Notify('结束时间不能小于开始时间');
 						this.showPicker2 = false
 						return
@@ -568,8 +592,6 @@
 						this.workHours = res.workHours
 						this.workdays = res.workDays
 					})
-
-
 				}
 				if (val != this.value2) {
 					this.selectFlag = false
@@ -696,35 +718,39 @@
 			},
 			submit() {
 				if (!this.value1) {
-					Toast('开始时间不能为空')
+					Toast('请选择开始时间')
 					return
 				}
 				if (!this.value2) {
-					Toast('结束时间不能为空')
+					Toast('请选择结束时间')
 					return
 				}
 				if (this.index2 > 0) {
-					Toast('	服务项目有重复，请重新选择')
+					Toast('服务项目有重复，请重新选择')
 					return
 				}
-				this.pickService.forEach(item => {
-					this.$set(item, 'checkFlag', false)
-					if(item.checkList){
-						item.checkList.forEach(item1 => {
-							if (item1.flag == true) {
-								item.checkFlag = true
-							}
+				console.log(666,this.pickService);
+				if(this.userInfo.detail.needProj==1){
+					this.pickService.forEach(item => {
+						this.$set(item, 'checkFlag', false)
+						if(item.checkList){
+							item.checkList.forEach(item1 => {
+								if (item1.flag == true) {
+									item.checkFlag = true
+								}
+							
+							})
+						}
 						
-						})
-					}
-					
-				})
-				for (let i = 0; i < this.pickService.length; i++) {
-					if(this.pickService[i].checkFlag==false){
-						Toast('存在服务项目未选')
-						return
+					})
+					for (let i = 0; i < this.pickService.length; i++) {
+						if(this.pickService[i].checkFlag==false&&this.userInfo.detail.needProj==1){
+							Toast('请选择服务项目')
+							return
+						}
 					}
 				}
+				
 				let modelFlag=false
 				this.checkList.forEach(item => {
 					if (item.flag == true) {
@@ -732,7 +758,7 @@
 					}
 				})
 				if(!modelFlag){
-					Toast('存在工作内容未选')
+					Toast('请选择工作内容')
 					return
 				}
 				let jobId = []
@@ -745,32 +771,36 @@
 						jobId.push(item.id)
 					}
 				})
-				this.pickService.forEach(item => {
-					item.checkList.forEach(item1 => {
-						if (item1.flag == true) {
-							projId.push(item1.id)
+				if(this.userInfo.detail.needProj==1)
+				{
+					this.pickService.forEach(item => {
+						item.checkList.forEach(item1 => {
+							if (item1.flag == true) {
+								projId.push(item1.id)
+							}
+					
+						})
+						if (projId.length == item.checkList.length) {
+							checkAll = true
+							isIndeterminate = false
+						} else {
+							checkAll = false
+							isIndeterminate = true
 						}
-
+						let obj = {
+							isIndeterminate: isIndeterminate,
+							checkAll: checkAll,
+							projIds: projId,
+							projList: item.checkList,
+							cid1: item.id,
+							cid2: item.id2,
+							cat2List: item.columns2
+						}
+						projId = []
+						projsList.push(obj)
 					})
-					if (projId.length == item.checkList.length) {
-						checkAll = true
-						isIndeterminate = false
-					} else {
-						checkAll = false
-						isIndeterminate = true
-					}
-					let obj = {
-						isIndeterminate: isIndeterminate,
-						checkAll: checkAll,
-						projIds: projId,
-						projList: item.checkList,
-						cid1: item.id,
-						cid2: item.id2,
-						cat2List: item.columns2
-					}
-					projId = []
-					projsList.push(obj)
-				})
+				}
+			
 				let from = {
 					workDate: this.nowDate,
 					workStart: '',
@@ -829,7 +859,7 @@
 				padding: 0.4rem 0.3rem;
 				box-sizing: border-box;
 				overflow-y: scroll;
-
+				text-align: center;
 				.title {
 					text-align: center;
 					font-size: 0.28rem;

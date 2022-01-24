@@ -12,7 +12,7 @@
 				</div>
 			</div> -->
 			<div class="bodyContent">
-				<div class="workHours">总计工时：125200.00H</div>
+				<div class="workHours" v-if="list.length>0">总计工时：{{list[0].count}}H</div>
 				<div class="searchBox">
 					<div class="boxOne">
 						<input placeholder="姓名" v-model="name" />
@@ -97,7 +97,7 @@
 				this.dateTime=''
 			},
 			getInfo() {
-				if (this.currentRole == 2) {
+				if (this.currentRole == 2&&!this.projNm) {
 					this.api.getDeptPersonReport(this.name, this.dateTime, '', '', this.current, this.size, this.deptNm)
 						.then(res => {
 							this.total = res.total
@@ -106,9 +106,18 @@
 							this.loading = false
 							this.current++
 						})
-				} else if (this.currentRole == 1) {
+				} else if (this.currentRole == 1&&!this.projNm) {
 					this.api.getDeptPersonReport(this.name, this.dateTime, this.isCharge, this.deptIds, this.current, this
 						.size, '').then(res => {
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+					})
+				}
+				if(this.deptNm&&this.projNm){
+					this.api.getProjPersonReport(this.name,this.dateTime,this.deptNm,this.projNm,this.current,this.size).then(res=>{
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
 						this.finished = this.list.length >= res.total;

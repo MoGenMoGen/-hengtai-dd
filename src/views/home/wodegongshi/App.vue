@@ -16,7 +16,7 @@
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
-      @load="getInfo"
+      @load="getInfo()"
 	  :immediate-check="immediate"
     >
       <div
@@ -26,7 +26,7 @@
         @click="toDetail(item.id)"
       >
         <div class="title">
-          <div class="name">{{ item.realName }}提交的工时填报</div>
+          <div class="name">{{ item.realName }}提交的{{item.types==1?'工时填报':'工时补录'}}</div>
           <div class="time">
             {{ item.workDate }}
           </div>
@@ -83,6 +83,7 @@ export default {
       finished: false,
       loading: false,
 	  immediate:false,
+	  total:'',
     };
   },
   async mounted() {
@@ -99,7 +100,7 @@ export default {
       this.getInfo();
     },
     getInfo() {
-      console.log(2378);
+     
       let obj = {
         current: this.current,
         size: this.size,
@@ -110,11 +111,15 @@ export default {
 
       this.api.getProjwhreportList(obj).then((res) => {
         this.total = res.total;
-        // this.infoList = res.records;
-        this.infoList = [...this.infoList, ...res.records];
-        this.finished = this.infoList.length >= res.total;
-        this.loading = false;
-        this.current++;
+		
+		this.current++;
+        this.infoList = [...this.infoList,...res.records];
+		 if( this.infoList.length >= res.total){
+			 this.finished =true
+		 }
+		 this.loading = false;
+        
+     
         console.log("list", this.infoList);
       });
     },

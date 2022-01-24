@@ -1,11 +1,17 @@
 <template>
 	<div class="content">
+		<van-overlay :show="userInfo.role_name == 'boss'||!userInfo" >
+		    <van-loading />
+		</van-overlay>
 		<div class="mask" v-if="showMask">
-			<div class="maskContainer">
+			<div class="maskContainer" >
 				<div class="title">
 					工时规则
 				</div>
-				<img :src="shanchu" @click="showMask=false">
+				<img :src="close" @click="showMask=false">
+				<div class="" style="margin-top: 0.2rem;" v-html="info.cont">
+					
+				</div>
 			</div>
 		</div>
 		<div class="topSwiper">
@@ -82,18 +88,20 @@ import baobiao from "../../../assets/img/工时报表.png";
 import arrowRight from "../../../assets/img/点击.png";
 import guize from "../../../assets/img/工时规则.png";
 import shanchu from "../../../assets/img/删除.png";
+import close from "../../../assets/img/close.png";
 export default {
   data() {
     return {
 	  guize,
       logo,
       tianbao,
+	  close,
       bulu,
       wode,
       baobiao,
 	  shanchu,
       arrowRight,
-      imgList: [logo, logo],
+      imgList: [],
       indicatorDots: true,
 	  showMask:false,//弹出层显示隐藏
       autoplay: true,
@@ -101,6 +109,7 @@ export default {
       duration: 500,
       code: "",
       userInfo: "",
+	  info:{},
     };
   },
   computed: {
@@ -121,7 +130,10 @@ export default {
 	// }
   },
   created() {
-    if(!this.until.loGet("token"))
+	  this.userInfo = this.until.loGet("userInfo");
+	 
+	this.currentRole = 2;
+
     this.dd();
   },
   mounted() {},
@@ -156,6 +168,18 @@ export default {
                 that.until.loSave("token", token);
                 that.until.loSave("userInfo", res);
               }
+			  if (that.userInfo && that.userInfo.role_name == "boss"){
+			  		 that.until.href('/views/baobiao/xiangmu.html')
+			  }
+			  that.api.getContarticle().then(res=>{
+			  	that.info=res
+			  })
+			  that.api.getListAdsByPos().then(res=>{
+			  	console.log(777,res);
+			  	res.forEach(item=>{
+			  		that.imgList.push(item.imgUrl)
+			  	})
+			  })
             });
           },
           onFail: (err) => {
@@ -180,6 +204,12 @@ export default {
   box-sizing: border-box;
   width: 100vw;
    height: 100vh;
+   .van-overlay{
+	   display: flex;
+	       justify-content: center;
+	       align-items: center;
+		   background-color: #ffffff;
+   }
   .mask{
 	  width: 100vw;
 	  height: 100vh;
@@ -201,6 +231,7 @@ export default {
 		  padding: 0.4rem 0.3rem;
 		  box-sizing: border-box;
 		  overflow-y: scroll;
+		  text-align: center;
 		  .title{
 			  text-align: center;
 			  font-size: 0.28rem;

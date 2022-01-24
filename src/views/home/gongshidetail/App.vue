@@ -59,7 +59,7 @@
             <div class="detail">发起申请</div>
           </div>
         </div>
-        <div class="right">12-28 22:08</div>
+        <div class="right">{{info2.create.createTime}}</div>
       </div>
 		<div class="" v-for="(item,index) in info2.tasks" :key='index' v-if="item.name">
       <div class="line"></div>
@@ -71,7 +71,7 @@
             <div class="detail">审批人</div>
           </div>
         </div>
-        <div class="right">12-28 22:30</div>
+        <div class="right">{{item.finishTime}}</div>
         <!-- <input type="text" disabled value="同意" class="annotation" /> -->
       </div>
 	  </div>

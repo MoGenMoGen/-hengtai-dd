@@ -17,7 +17,7 @@
 				</div>
 			</div> -->
       <div class="bodyContent">
-        <div class="workHours">总计工时：125200.00H</div>
+        <div class="workHours" v-if="info.length>0">总计工时：{{info[0].count}}H</div>
         <div class="searchBox">
           <div class="boxOne">
             <!-- <input placeholder="姓名" v-model="name" v-if="currentRole == 1" /> -->
@@ -91,6 +91,8 @@ export default {
 	  size:10,
 	  total:"",
 	  info:{},
+	  deptIds:'',
+	  isCharge:'',
     };
   },
   mounted() {
@@ -114,13 +116,25 @@ export default {
 			this.dateTime=''  
 	},
 	 getInfo(){
-			 this.api.getProjDeptReport(this.projNm,this.name,this.dateTime,this.current,this.size).then(res=>{
+		 if(this.currentRole==2){
+			 this.api.getProjDeptReport(this.projNm,this.name,this.dateTime,this.current,this.size,'','').then(res=>{
 			 	this.total=res.total
 			 	this.info=[...this.info,...res.records]
 			 	 this.finished = this.info.length >= res.total;
 			 	 this.loading = false
 			 	this.current++
 			 }) 
+		 }
+		 if(this.currentRole==1){
+			 this.api.getProjDeptReport(this.projNm,this.name,this.dateTime,this.current,this.size,this.isCharge,this.deptIds).then(res=>{
+			 	this.total=res.total
+			 	this.info=[...this.info,...res.records]
+			 	 this.finished = this.info.length >= res.total;
+			 	 this.loading = false
+			 	this.current++
+			 }) 
+		 }
+			
 	
 	 },
 	 search(){

@@ -6,23 +6,23 @@
 		</van-popup>
 		<div class="top">
 			<div class="tab">
-				<!--  <div
+				 <div
           class="tabList"
           v-for="(item, index) in tabList"
           :key="index"
           @click="changeTab(index)"
           :class="currentIndex == index ? 'active' : ''"
-          v-if="currentRole == 1"
+          v-if="currentRole == 3"
         >
           {{ item }}
-        </div> -->
+        </div>
 				<div class="tabList" v-for="(item, index) in tabListTwo" :key="index" @click="changeTab(index)"
-					:class="currentIndex == index ? 'active' : ''">
+					:class="currentIndex == index ? 'active' : ''"  v-if="currentRole!= 3">
 					{{ item }}
 				</div>
 			</div>
 			<div class="bodyContent">
-				<div class="workHours">总计工时：125200.00H</div>
+				<div class="workHours" v-if="list.length>0">总计工时：{{list[0].count}}H</div>
 				<div class="searchBox">
 					<div class="boxOne">
 						<input placeholder="项目名称" v-model="proname" v-if="currentIndex == 0" />
@@ -47,21 +47,19 @@
 				<div class="headName2 headname">工作时长(H)</div>
 				<div class="headName3 headname">部门详情</div>
 			</div>
-			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()">
+			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"v-if="currentIndex == 0">
 				<div class="bottom">
-
-					<div class="list" v-for="(item,index) in list" v-if="currentIndex == 0">
+					<div class="list" v-for="(item,index) in list" >
 						<div class="listName1 listName">{{item.projName}}</div>
 						<div class="listName2 listName">{{item.workDate}}</div>
 						<div class="listName2 listName">{{item.workHours}}</div>
 						<div class="listName3 listName" @click="toDetail(item)">查看</div>
 					</div>
-
 				</div>
 			</van-list>
 		</div>
 
-		<!-- <div
+		<div
       class="list2"
       style="
         width: 100%;
@@ -71,20 +69,22 @@
 		padding-bottom: 0.2rem;
       "
     >
-      <div class="header2" v-if="currentIndex == 1 && currentRole == 1">
-        <div class="headName4 headname">部门</div>
+      <div class="header2" v-if="currentIndex == 1&&currentRole==3">
+        <div class="headName4 headname">姓名</div>
         <div class="headName4 headname">月份</div>
         <div class="headName5 headname">月应出勤时长(H)</div>
         <div class="headName5 headname">月实际出勤时长(H)</div>
         <div class="headName5 headname">达成率(%)</div>
         <div class="headName5 headname">项目详情</div>
       </div>
+	  <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"
+	  	 v-if="currentIndex == 1&&currentRole==3">
       <div
         class="list"
         v-for="(item,index) in list " :key="index"
-        v-if="currentIndex == 1 && currentRole == 1"
+      
       >
-        <div class="listName4 listName">{{item.deptName}}</div>
+        <div class="listName4 listName">{{item.userName}}</div>
         <div class="listName4 listName">{{item.workDate}}</div>
         <div class="listName5 listName">{{item.monthHours}}</div>
         <div class="listName5 listName">{{item.workHours}}</div>
@@ -97,7 +97,8 @@
           查看
         </div>
       </div>
-    </div> -->
+	  </van-list>
+    </div>
 		<div class="list3" style="
         width: 100%;
         overflow: hidden;
@@ -105,7 +106,7 @@
         padding: 0rem 0.2rem;
 		padding-bottom: 0.2rem;
       ">
-			<div class="header2" v-if="currentIndex == 1">
+			<div class="header2" v-if="currentIndex == 1&&currentRole!=3">
 				<div class="headName4 headname">部门</div>
 				<div class="headName4 headname">月份</div>
 				<div class="headName5 headname">月应出勤时长(H)</div>
@@ -115,7 +116,7 @@
 				<div class="headName5 headname">人员详情</div>
 			</div>
 			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"
-				v-if="currentIndex == 1">
+				v-if="currentIndex == 1&&currentRole!=3">
 				<div class="list" v-for="(item,index) in list" :key='index'>
 					<div class="listName4 listName">{{item.deptName}}</div>
 					<div class="listName4 listName">{{item.workDate}}</div>
@@ -147,13 +148,13 @@
 			return {
 				loading: false,
 				finished: false,
-				currentRole: 1, //1:领导;2:老板
+				currentRole: 1, //1:领导;2:老板;3:部门负责人
 				currentIndex: 0,
 				bg,
 				time,
 				close,
 				name: "",
-				// tabList: ["项目", "人员"],
+				tabList: ["项目", "人员"],
 				tabListTwo: ["项目", "部门"],
 				showPicker: false,
 				currentTime: new Date(),
@@ -165,7 +166,8 @@
 				isCharge: '',
 				size: 15,
 				current: 1,
-				total: ''
+				total: '',
+				deptName:'',
 			};
 		},
 		mounted() {
@@ -174,14 +176,15 @@
 				this.deptIds = this.userInfo.dept_id
 				this.isCharge = this.userInfo.detail.isCharge
 				if (this.userInfo.detail.chargeDepts) {
-					this.deptIds = this.deptIds + this.userInfo.detail.chargeDepts.join(",")
+					this.deptIds = this.deptIds +','+this.userInfo.detail.chargeDepts.join(",")
+				}
+				if(!this.userInfo.detail.chargeDepts&&this.userInfo.detail.isCharge == 1&&this.userInfo.role_name != "boss"){
+					this.currentRole=3
 				}
 			}
-
-
 			if (this.userInfo && this.userInfo.detail.isCharge == 1) this.currentRole = 1;
 			else if (this.userInfo && this.userInfo.role_name == "boss")
-				this.currentRole = 2;
+			this.currentRole = 2;
 			if (this.currentRole == 2) document.title = "工时报表";
 			// this.getInfo()
 		},
@@ -191,8 +194,25 @@
 			},
 			getInfo() {
 				if (this.currentRole == 1 && this.currentIndex == 0) {
-					this.api.getDeptProjReport(this.proname, this.dateTime, this.isCharge, this.deptIds, this.current, this
-						.size).then(res => {
+				this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size,this.isCharge,this.deptIds).then(res => {
+					this.total = res.total
+					this.list = [...this.list, ...res.records]
+					this.finished = this.list.length >= res.total;
+					this.loading = false
+					this.current++
+				})
+				}
+				 else if(this.currentRole == 3 && this.currentIndex == 0){
+					 this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size,this.isCharge,this.deptIds).then(res => {
+					 	this.total = res.total
+					 	this.list = [...this.list, ...res.records]
+					 	this.finished = this.list.length >= res.total;
+					 	this.loading = false
+					 	this.current++
+						})
+				 }
+				 else if (this.currentRole == 2 && this.currentIndex == 0) {
+					this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size,'','').then(res => {
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
 						this.finished = this.list.length >= res.total;
@@ -200,16 +220,23 @@
 						this.current++
 
 					})
-				} else if (this.currentRole == 2 && this.currentIndex == 0) {
-					this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size).then(res => {
-						this.total = res.total
-						this.list = [...this.list, ...res.records]
-						this.finished = this.list.length >= res.total;
-						this.loading = false
-						this.current++
-
+				} 
+				else if(this.currentRole == 3 && this.currentIndex == 1){
+					// this.api.getDeptDetail(this.userInfo.dept_id).then(res=>{
+						this.api.getDeptDetail('2487682').then(res=>{
+						this.deptName=res.deptName
+						document.title = this.deptName
+						this.api.getDeptPersonReport(this.name,this.dateTime,this.current,this.size,this.deptName).then(res=>{
+							this.total = res.total
+							this.list = [...this.list, ...res.records]
+							this.finished = this.list.length >= res.total;
+							this.loading = false
+							this.current++
+						})
 					})
-				} else if (this.currentRole == 2 && this.currentIndex == 1) {
+					
+				}
+				else if (this.currentRole == 2 && this.currentIndex == 1) {
 					this.api.getDeptBossReport(this.name, this.dateTime, this.current, this.size, '', '').then(res => {
 						this.total = res.total
 						this.list = [...this.list, ...res.records]

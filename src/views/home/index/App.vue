@@ -1,6 +1,6 @@
 <template>
 	<div class="content">
-		<van-overlay :show="userInfo.role_name == 'boss'||!userInfo" >
+		<van-overlay :show="userInfo.role_name.indexOf('boss')!=-1||!userInfo" >
 		    <van-loading />
 		</van-overlay>
 		<div class="mask" v-if="showMask">
@@ -9,7 +9,7 @@
 					工时规则
 				</div>
 				<img :src="close" @click="showMask=false">
-				<div class="" style="margin-top: 0.2rem;" v-html="info.cont">
+				<div class="" style="margin-top: 0.2rem;font-size: 0.24rem !important;" v-html="info.cont">
 					
 				</div>
 			</div>
@@ -118,7 +118,7 @@ export default {
       if (this.userInfo) {
         if (
           this.userInfo.detail.isCharge == 1 ||
-          this.userInfo.role_name == "boss"
+          this.userInfo.role_name.indexOf('boss')!=-1
         )
 		
           return true;
@@ -131,9 +131,7 @@ export default {
   },
   created() {
 	  this.userInfo = this.until.loGet("userInfo");
-	 
 	this.currentRole = 2;
-
     this.dd();
   },
   mounted() {},
@@ -150,6 +148,7 @@ export default {
         dd.runtime.permission.requestAuthCode({
           //获取code
           corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
+		  // corpId: "dingc35f50400f19d66d",
           onSuccess: (info) => {
             console.log("获取钉钉code");
 
@@ -163,20 +162,20 @@ export default {
             that.api.login(obj).then((res) => {
               if (res.error_description != "请绑定账号.") {
                 let token = res.token_type + " " + res.access_token;
-                console.log("tokensdjldsg");
-                console.log(token);
+				
                 that.until.loSave("token", token);
                 that.until.loSave("userInfo", res);
+			
+				if (that.userInfo && that.userInfo.role_name.indexOf('boss')!=-1){
+					 that.until.href('/views/baobiao/xiangmu.html')
+					
+				}			
               }
-			  if (that.userInfo && that.userInfo.role_name == "boss"){
-			  		 that.until.href('/views/baobiao/xiangmu.html')
-			  }
-			  that.api.getContarticle().then(res=>{
-			  	that.info=res
+			  that.api.getContarticle().then(res2=>{
+			  	that.info=res2
 			  })
-			  that.api.getListAdsByPos().then(res=>{
-			  	console.log(777,res);
-			  	res.forEach(item=>{
+			  that.api.getListAdsByPos().then(res3=>{
+			  	res3.forEach(item=>{
 			  		that.imgList.push(item.imgUrl)
 			  	})
 			  })
@@ -231,11 +230,10 @@ export default {
 		  padding: 0.4rem 0.3rem;
 		  box-sizing: border-box;
 		  overflow-y: scroll;
-		  text-align: center;
 		  .title{
 			  text-align: center;
-			  font-size: 0.28rem;
-			  font-weight: 500;
+			  font-size: 0.3rem;
+			  font-weight:bold;
 			  color: #333333;
 		  }
 		  img{

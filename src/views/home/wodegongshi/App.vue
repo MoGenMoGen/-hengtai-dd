@@ -44,7 +44,7 @@
               {{ item.workHours }}小时/{{ item.workDays }}天
             </div>
           </div>
-          <div class="list">
+          <div class="list" v-if="item.projNames!='null'">
             <div class="listLeft">服务项目：</div>
             <div class="listRight">{{ item.projNames }}</div>
           </div>
@@ -53,7 +53,7 @@
         <img :src="tongguo" v-if="item.audit == 2" />
         <img :src="butongguo" v-if="item.audit == 3" />
         <div class="btn" v-if="item.audit==1" >
-          <div class="btnLeft" @click.stop="modify(item.id)">修改</div>
+          <div class="btnLeft" @click.stop="modify(item.id,item.types)">修改</div>
           <div class="btnRight" @click.stop="remove(item,index)">删除</div>
         </div>
       </div>
@@ -93,14 +93,32 @@ export default {
 	this.getInfo()
   },
   methods: {
+	  loadMore(){
+		  console.log('loadMore')
+		  this.current++;
+		  this.getInfo()
+	  },
     changeTab(index) {
-      this.currentIndex = index;
-      this.current = 1;
-      this.infoList = [];
-      this.getInfo();
+		console.log(this.current);
+		// if(this.current==2){
+		// 	this.current = 1;
+		// 	this.currentIndex = index;
+		// 	this.infoList = [];
+		// 	this.finished=false
+		// 	this.getInfo();
+		// }
+		if(this.currentIndex!=index){
+			this.currentIndex = index;
+			this.current = 1;
+			this.infoList = [];
+			this.finished=false
+			this.immediate=false
+			this.getInfo();
+		}
+			
     },
     getInfo() {
-     
+		this.loading = true
       let obj = {
         current: this.current,
         size: this.size,
@@ -108,19 +126,14 @@ export default {
       };
       if (this.currentIndex == 1) obj.audit_equal = 1;
       else if (this.currentIndex == 2) obj.audit_notequal = 1;
-
       this.api.getProjwhreportList(obj).then((res) => {
         this.total = res.total;
-		
 		this.current++;
         this.infoList = [...this.infoList,...res.records];
 		 if( this.infoList.length >= res.total){
 			 this.finished =true
 		 }
 		 this.loading = false;
-        
-     
-        console.log("list", this.infoList);
       });
     },
     remove(item,index) {
@@ -146,8 +159,8 @@ export default {
           });
         });
     },
-    modify(id) {
-      this.until.href(`/views/home/gongshitianbao.html?id=${id}`);
+    modify(id,types) {
+      this.until.href(`/views/home/gongshitianbao.html?id=${id}&types=${types}`);
     },
     toDetail(id) {
       this.until.href(`/views/home/gongshidetail.html?id=${id}`);

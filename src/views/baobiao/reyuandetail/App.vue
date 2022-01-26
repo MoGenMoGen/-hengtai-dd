@@ -43,7 +43,7 @@
       <div class="list" v-for="(item,index) in list" :key='index'>
         <div class="listName">{{item.projName}}</div>
         <div class="listName">{{item.workDate}}</div>
-        <div class="listName">{{item.workHours}}</div>
+        <div class="listName">{{item.AllHours}}</div>
         <div
           class="listName"
           style="color: #ca093a; text-decoration: underline"
@@ -81,11 +81,14 @@ export default {
 	  list:[],
 	  deptIds:'',
 	  isCharge:'',
-	  total:''
+	  total:'',
+	  deptId:'',
     };
   },
   mounted() {
+	  this.until.loSave("currentIndex",1);
 	 this.deptNm=this.until.getQueryString('deptNm')
+	 this.deptId=this.until.getQueryString('deptId')
 	 this.userInfo = this.until.loGet("userInfo");
 	 if(this.userInfo){
 	 	this.deptIds=this.userInfo.dept_id
@@ -93,13 +96,12 @@ export default {
 	 	if(this.userInfo.detail.chargeDepts){
 	 		this.deptIds=this.deptIds+this.userInfo.detail.chargeDepts.join(",")
 	 	}
-		if(!this.userInfo.detail.chargeDepts&&this.userInfo.detail.isCharge == 1&&this.userInfo.role_name != "boss"){
+		if(!this.userInfo.detail.chargeDepts&&this.userInfo.detail.isCharge == 1&&this.userInfo.role_name.indexOf('boss')==(-1)){
 			this.currentRole=3
 		}
 	 }
-    if (this.userInfo &&this. userInfo.detail.isCharge == 1) this.currentRole = 1;
-    else if (this.userInfo &&this. userInfo.role_name == "boss")
-      this.currentRole = 2;
+    if (this.userInfo &&this. userInfo.detail.isCharge == 1&&this.userInfo.detail.chargeDepts) this.currentRole = 1;
+     if (this.userInfo &&this. userInfo.role_name.indexOf('boss')!=-1)  this.currentRole = 2;
     if (this.currentRole == 2) document.title = "前筹一部";
   },
   methods: {
@@ -115,7 +117,8 @@ export default {
 	  getInfo(){
 		  if(this.currentRole!=3)
 		  {
-			this.api.getDeptProjBossReport(this.name,this.dateTime,this.deptNm,this.current,this.size).then(res=>{
+			  document.title=this.deptNm
+			this.api.getDeptProjBossReport(this.name,this.dateTime,this.deptId,this.current,this.size).then(res=>{
 				this.total = res.total
 				this.list = [...this.list, ...res.records]
 				this.finished = this.list.length >= res.total;
@@ -138,7 +141,7 @@ export default {
 				
 	  },
     toDetail(item) {
-      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}`);
+      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&deptId=${item.deptId}`);
     },
     onConfirm(val) {
       this.dateTime = this.getNowDate(val);

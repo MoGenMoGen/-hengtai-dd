@@ -76,7 +76,7 @@
 			return {
 				loading:false,
 				finished:false,
-				currentRole:2,
+				currentRole:1,
 				currentIndex:0,
 				bg,
 				time,
@@ -95,11 +95,16 @@
 				deptIds:'',
 				isCharge:'',
 				total:'',
+				deptId:'',
+				userId:''
 			}
 		},
 		mounted() {
+			this.until.loSave("currentIndex",1);
 			this.userNm=this.until.getQueryString('userNm')
 			this.deptNm=this.until.getQueryString('deptNm')
+			this.deptId=this.until.getQueryString('deptId')
+			this.userId=this.until.getQueryString('userId')
 			this.userInfo = this.until.loGet("userInfo");
 			if (this.userInfo) {
 				this.deptIds = this.userInfo.dept_id
@@ -107,11 +112,13 @@
 				if (this.userInfo.detail.chargeDepts) {
 					this.deptIds = this.deptIds +','+this.userInfo.detail.chargeDepts.join(",")
 				}
+				if(!this.userInfo.detail.chargeDepts&&this.userInfo.detail.isCharge == 1&&this.userInfo.role_name.indexOf('boss')==(-1)){
+					this.currentRole=3
+				}
 			}
-			if (this.userInfo && this.userInfo.detail.isCharge == 1) this.currentRole = 1;
-			else if (this.userInfo && this.userInfo.role_name == "boss")
-			this.currentRole = 2;
-			if (this.currentRole == 2) document.title = "工时报表";
+			console.log(798,this.currentRole);
+			if (this.userInfo && this.userInfo.detail.isCharge == 1&&this.userInfo.detail.chargeDepts) this.currentRole = 1;
+			 if (this.userInfo && this.userInfo.role_name.indexOf('boss')!=-1) this.currentRole = 2;
 		},
 		methods: {
 			search(){
@@ -124,7 +131,8 @@
 			},
 			getInfo(){
 				if(this.currentRole==2){
-					this.api.getPersonProjBossReport(this.name,this.dateTime,this.userNm,this.current,this.size,'','').then(res=>{
+					document.title=this.deptNm+"-"+this.userNm
+					this.api.getPersonProjBossReport1(this.name,this.dateTime,this.userId,this.current,this.size,this.deptId).then(res=>{
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
 						this.finished = this.list.length >= res.total;
@@ -133,7 +141,18 @@
 					})
 				}
 				if(this.currentRole==1){
-					this.api.getPersonProjBossReport(this.name,this.dateTime,'',this.current,this.size,'','').then(res=>{
+					document.title=this.deptNm+"-"+this.userNm
+					this.api.getPersonProjBossReport1(this.name,this.dateTime,this.userNm,this.current,this.size,this.deptId).then(res=>{
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+					})
+				}
+				if(this.currentRole==3){
+					document.title=this.userNm
+					this.api.getPersonProjBossReport(this.name,this.dateTime,this.userId,this.current,this.size,this.isCharge,this.deptIds).then(res=>{
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
 						this.finished = this.list.length >= res.total;

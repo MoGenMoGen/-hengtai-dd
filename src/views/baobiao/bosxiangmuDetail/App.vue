@@ -50,7 +50,7 @@
 					项目详情
 				</div>
 			</div>
-			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()">
+			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo">
 			<div class="list" v-for="(item,index) in list" :key='index' >
 				<div class="listName4 listName">
 					{{item.userName}}
@@ -59,7 +59,7 @@
 					{{item.workDate}}
 				</div>
 				<div class="listName5 listName">
-					{{item.monthHours}}
+					{{item.planHours}}
 				</div>
 				<div class="listName5 listName" >
 					{{item.workHours}}
@@ -112,9 +112,12 @@
 				isCharge:'',
 				deptIds:'',
 				total:'',
+				projNm:'',
+				deptId:'',
 			}
 		},
 		mounted() {
+			this.until.loSave("currentIndex",1);
 			this.userInfo = this.until.loGet("userInfo");
 			if (this.userInfo) {
 				this.deptIds = this.userInfo.dept_id
@@ -123,10 +126,13 @@
 					this.deptIds = this.deptIds +','+this.userInfo.detail.chargeDepts.join(",")
 				}
 			}
-			if (this.userInfo && this.userInfo.detail.isCharge == 1) this.currentRole = 1;
-			else if (this.userInfo && this.userInfo.role_name == "boss")
-			this.currentRole = 2;
+			if (this.userInfo && this.userInfo.detail.isCharge == 1&&this.userInfo.detail.chargeDepts) this.currentRole = 1;
+			 if (this.userInfo && this.userInfo.role_name.indexOf('boss')!=1) this.currentRole = 2;
 			this.deptNm=this.until.getQueryString('deptNm')
+			this.projNm=this.until.getQueryString('projNm')
+			this.deptId=this.until.getQueryString('deptId')
+		
+			document.title=this.deptNm
 		},
 		methods: {
 			deleteDate(){
@@ -139,7 +145,7 @@
 			},
 			getInfo(){
 				if(this.currentRole==2){
-					this.api.getDeptPersonReport(this.name,this.dateTime,'','',this.current,this.size,this.deptNm).then(res=>{
+					this.api.getDeptPersonReport(this.name,this.dateTime,this.current,this.size,this.deptId,'').then(res=>{
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
 						this.finished = this.list.length >= res.total;
@@ -148,7 +154,7 @@
 					})
 				}
 				if(this.currentRole==1){
-					this.api.getDeptPersonReport(this.name,this.dateTime,this.isCharge,this.deptIds,this.current,this.size,'').then(res=>{
+					this.api.getDeptPersonReport(this.name,this.dateTime,this.current,this.size,this.deptNm,this.projNm).then(res=>{
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
 						this.finished = this.list.length >= res.total;
@@ -169,7 +175,7 @@
 				return year + "-" + month;
 			},
 			pepDetial(item){
-				this.until.href(`/views/baobiao/bosrenyuanDetail.html?userNm=${item.userName}&deptNm=${item.deptName}`)
+				this.until.href(`/views/baobiao/bosrenyuanDetail.html?userNm=${item.userName}&deptNm=${item.deptName}&deptId=${item.deptId}&userId=${item.userId}`)
 			},
 			
 			

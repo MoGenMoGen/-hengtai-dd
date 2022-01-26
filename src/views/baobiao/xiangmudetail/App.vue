@@ -52,7 +52,7 @@
       <div class="list" v-for="(item,index) in info" :key='index'>
         <div class="listName">{{item.deptName}}</div>
         <div class="listName">{{item.workDate}}</div>
-        <div class="listName">{{item.workHours}}</div>
+        <div class="listName">{{item.AllHours}}</div>
         <div
           class="listName"
           style="color: #ca093a; text-decoration: underline"
@@ -75,7 +75,7 @@ export default {
     return {
 		loading:false,
 		finished:false,
-      currentRole: 1, //1:领导;2:老板
+      currentRole: 2, //1:领导;2:老板
       currentIndex: 0,
       bg,
 	  close,
@@ -93,22 +93,27 @@ export default {
 	  info:{},
 	  deptIds:'',
 	  isCharge:'',
+	  projId:'',
     };
   },
   mounted() {
+	  this.until.loSave("currentIndex",0);
     this.userInfo = this.until.loGet("userInfo");
 	if(this.userInfo){
 		this.deptIds=this.userInfo.dept_id
 		this.isCharge=this.userInfo.detail.isCharge
 		if(this.userInfo.detail.chargeDepts){
-			this.deptIds=this.deptIds+this.userInfo.detail.chargeDepts.join(",")
+		this.deptIds = this.deptIds +','+this.userInfo.detail.chargeDepts.join(",")
+		}
+		if(!this.userInfo.detail.chargeDepts&&this.userInfo.detail.isCharge == 1&&this.userInfo.role_name.indexOf('boss')==(-1)){
+			this.currentRole=3
 		}
 	}
-    if (this.userInfo && this.userInfo.detail.isCharge == 1) this.currentRole = 1;
-    else if (this.userInfo && this.userInfo.role_name == "boss")
-      this.currentRole = 2;
+    if (this.userInfo && this.userInfo.detail.isCharge == 1&&this.userInfo.detail.chargeDepts) this.currentRole = 1;
+    if (this.userInfo && this.userInfo.role_name.indexOf('boss')!=-1) this.currentRole = 2;
 	this.deptNm=this.until.getQueryString('deptNm')
 	this.projNm=this.until.getQueryString('projNm')
+	this.projId=this.until.getQueryString('projId')
 	// this.getInfo()
   },
   methods: {
@@ -117,7 +122,8 @@ export default {
 	},
 	 getInfo(){
 		 if(this.currentRole==2){
-			 this.api.getProjDeptReport(this.projNm,this.name,this.dateTime,this.current,this.size,'','').then(res=>{
+			 document.title=this.projNm
+			 this.api.getProjDeptReport(this.projId,this.name,this.dateTime,this.current,this.size,'','').then(res=>{
 			 	this.total=res.total
 			 	this.info=[...this.info,...res.records]
 			 	 this.finished = this.info.length >= res.total;
@@ -126,12 +132,14 @@ export default {
 			 }) 
 		 }
 		 if(this.currentRole==1){
-			 this.api.getProjDeptReport(this.projNm,this.name,this.dateTime,this.current,this.size,this.isCharge,this.deptIds).then(res=>{
+			 document.title=this.projNm
+			 this.api.getProjDeptReport(this.projId,this.name,this.dateTime,this.current,this.size,this.isCharge,this.deptIds).then(res=>{
 			 	this.total=res.total
 			 	this.info=[...this.info,...res.records]
 			 	 this.finished = this.info.length >= res.total;
 			 	 this.loading = false
 			 	this.current++
+				
 			 }) 
 		 }
 			
@@ -143,7 +151,7 @@ export default {
 		this.getInfo() 
 	 },
     toDetail(item) {
-      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}`);
+      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&deptId=${item.deptId}`);
     },
     changeTab(index) {
       this.currentIndex = index;

@@ -175,6 +175,7 @@ export default {
 	}
 .content {
   background-color: #f1f3f2;
+  min-height: 100vh;
   .tab {
     background-color: #f1f3f2;
     position: fixed;

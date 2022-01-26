@@ -43,7 +43,7 @@ function get(url, data, header, cache = false) {
 			}
 			else {
 
-				Toast(res.data.msg)
+				Toast(res.data.error_description)
 			}
 		}).catch(err => {
 			if (err.response.data.code == 401) {
@@ -141,7 +141,7 @@ class api {
 			'Content-Type': 'application/x-www-form-urlencoded',
 		}
 		return new Promise(resolve => {
-			post('/blade-dingding/access/login2', qs.stringify(data), header).then(res => {
+			post('/blade-dingding/access/login', qs.stringify(data), header).then(res => {
 				resolve(res)
 			})
 		})

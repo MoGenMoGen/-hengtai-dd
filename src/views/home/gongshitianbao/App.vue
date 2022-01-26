@@ -845,7 +845,7 @@
 		padding-bottom: 2rem;
 		box-sizing: border-box;
 		position: relative;
-
+		min-height: 100vh;
 		.mask {
 			width: 100vw;
 			height: 100vh;

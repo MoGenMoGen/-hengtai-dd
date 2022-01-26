@@ -35,6 +35,7 @@
 				</div>
 			</div>
 		</div>
+        <!--项目-->
 		<div class="list1" style="padding: 0rem 0.2rem;padding-bottom: 0.2rem;" v-if="currentIndex == 0">
 			<div class="header">
 				<div class="headName1 headname">项目</div>
@@ -55,70 +56,87 @@
 				</div>
 			</van-list>
 		</div>
+        <!--负责人看员工currentIndex == 1&&currentRole==3-->
+		<div class="list2"  v-if="currentIndex == 1&&currentRole==3">
 
-		<div class="list2" style="
-        width: 100%;
-        overflow: hidden;
-        overflow-x: auto;
-        padding: 0rem 0.2rem;
-		padding-bottom: 0.2rem;
-      " v-if="currentIndex == 1&&currentRole==3">
-			<div class="header2">
-				<div class="headName4 headname">姓名</div>
-				<div class="headName4 headname">月份</div>
-				<div class="headName5 headname">月应出勤时长(H)</div>
-				<div class="headName5 headname">月实际出勤时长(H)</div>
-				<div class="headName5 headname">达成率(%)</div>
-				<div class="headName5 headname">项目详情</div>
-			</div>
-			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"  :immediate-check="immediate"
-				v-if="currentIndex == 1&&currentRole==3">
-				<div class="list" v-for="(item,index) in list " :key="index">
-					<div class="listName4 listName">{{item.userName}}</div>
-					<div class="listName4 listName">{{item.workDate}}</div>
-					<div class="listName5 listName">{{item.planHours}}</div>
-					<div class="listName5 listName">{{item.workHours}}</div>
-					<div class="listName5 listName">{{item.workLv}}</div>
-					<div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
-						@click="pepDetial(item)">
-						查看
-					</div>
-				</div>
+			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"  :immediate-check="immediate">
+                <div class="list22">
+                    <div class="listLeft">
+                        <div class="header2">
+                            <div class="headName4 headname">姓名</div>
+                        </div>
+                        <div class="list" v-for="(item,index) in list " :key="index">
+                            <!--<div class="listName4 listName">{{item.userName}}</div>-->
+                            <div class="listName4 listName">{{item.userName}}</div>
+                        </div>
+                    </div>
+                    <div class="listRight">
+                        <div class="header2">
+                            <!--<div class="headName4 headname">姓名</div>-->
+                            <div class="headName4 headname">月份</div>
+                            <div class="headName5 headname">月应出勤时长(H)</div>
+                            <div class="headName5 headname">月实际出勤时长(H)</div>
+                            <div class="headName5 headname">达成率(%)</div>
+                            <div class="headName5 headname">项目详情</div>
+                        </div>
+                        <div class="list" v-for="(item,index) in list " :key="index">
+                            <!--<div class="listName4 listName">{{item.userName}}</div>-->
+                            <div class="listName4 listName">{{item.workDate}}1</div>
+                            <div class="listName5 listName">{{item.planHours}}2</div>
+                            <div class="listName5 listName">{{item.workHours}}3</div>
+                            <div class="listName5 listName">{{item.workLv}}4</div>
+                            <div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
+                                 @click="pepDetial(item)">
+                                查看
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
 			</van-list>
 		</div>
-		<div class="list3" style="
-        width: 100%;
-        overflow: hidden;
-        overflow-x: auto;
-        padding: 0rem 0.2rem;
-		padding-bottom: 0.2rem;
-      " v-if="currentIndex == 1&&currentRole!=3">
-			<div class="header2">
-				<div class="headName4 headname">部门</div>
-				<div class="headName4 headname">月份</div>
-				<div class="headName5 headname">月应出勤时长(H)</div>
-				<div class="headName5 headname">月实际出勤时长(H)</div>
-				<div class="headName5 headname">达成率(%)</div>
-				<div class="headName5 headname">项目详情</div>
-				<div class="headName5 headname">人员详情</div>
-			</div>
-			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"  :immediate-check="immediate"
-				v-if="currentIndex == 1&&currentRole!=3">
-				<div class="list" v-for="(item,index) in list" :key='index'>
-					<div class="listName4 listName">{{item.deptName}}</div>
-					<div class="listName4 listName">{{item.workDate}}</div>
-					<div class="listName5 listName">{{item.planHours}}</div>
-					<div class="listName5 listName">{{item.workHours}}</div>
-					<div class="listName5 listName">{{item.workLv}}</div>
-					<div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
-						@click="pepDetial(item)">
-						查看
-					</div>
-					<div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
-						@click="pepDetialTwo(item)">
-						查看
-					</div>
-				</div>
+        <!--非负责人看部门currentIndex == 1&&currentRole!=3-->
+		<div class="list3" v-if="currentIndex == 1&&currentRole!=3">
+
+			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"  :immediate-check="immediate">
+                <div class="list33">
+                    <div class="listLeft">
+                        <div class="header2">
+                            <div class="headName4 headname">部门</div>
+                        </div>
+                        <div class="list" v-for="(item,index) in list" :key='index'>
+                            <div class="listName4 listName">{{item.deptName}}</div>
+                        </div>
+                    </div>
+                    <div class="listRight">
+                        <div class="header2">
+                            <!--<div class="headName4 headname">部门</div>-->
+                            <div class="headName4 headname">月份</div>
+                            <div class="headName5 headname">月应出勤时长(H)</div>
+                            <div class="headName5 headname">月实际出勤时长(H)</div>
+                            <div class="headName5 headname">达成率(%)</div>
+                            <div class="headName5 headname">项目详情</div>
+                            <div class="headName5 headname">人员详情</div>
+                        </div>
+                        <div class="list" v-for="(item,index) in list" :key='index'>
+                            <!--<div class="listName4 listName">{{item.deptName}}</div>-->
+                            <div class="listName4 listName">{{item.workDate}}1</div>
+                            <div class="listName5 listName">{{item.planHours}}2</div>
+                            <div class="listName5 listName">{{item.workHours}}3</div>
+                            <div class="listName5 listName">{{item.workLv}}4</div>
+                            <div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
+                                 @click="pepDetial(item)">
+                                查看
+                            </div>
+                            <div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
+                                 @click="pepDetialTwo(item)">
+                                查看
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 			</van-list>
 		</div>
 	</div>
@@ -151,6 +169,7 @@
 				proname: "",
 				userInfo: "",
 				list: [],
+                list2:['','','',''],
 				deptIds: "",
 				isCharge: '',
 				size: 15,
@@ -330,7 +349,7 @@
 <style lang="less" scoped>
 	.content {
 		background-color: #f1f3f2;
-
+        min-height: 100vh;
 		.top {
 			position: sticky;
 			top: 0;
@@ -639,5 +658,61 @@
 				}
 			}
 		}
+        .list22{
+            display: flex;
+            width: 96vw;
+            margin: 0 auto 0.2rem;
+            .listLeft{
+                flex-shrink: 0;
+                width: 1.5rem;
+                .header2,.list{
+                    width: 100%;
+                    border-radius: 0.1rem 0 0 0.1rem;
+                }
+            }
+            .listRight{
+                flex: 1;
+                overflow-x: auto;
+                .header2,.list{
+                    overflow-x: hidden;
+                    border-radius: 0 0.1rem 0.1rem 0;
+                    width: 11.5rem;
+                    >div{
+                        display: inline-block;
+                        &:last-of-type{
+                            border-right:0;
+                        }
+                    }
+                }
+            }
+        }
+        .list33{
+            display: flex;
+            width: 96vw;
+            margin: 0 auto 0.2rem;
+            .listLeft{
+                flex-shrink: 0;
+                width: 1.5rem;
+                .header2,.list{
+                    width: 100%;
+                    border-radius: 0.1rem 0 0 0.1rem;
+                }
+            }
+            .listRight{
+                flex: 1;
+                overflow-x: auto;
+                .header2,.list{
+                    overflow-x: hidden;
+                    border-radius: 0 0.1rem 0.1rem 0;
+                    width: 14rem;
+                    >div{
+                        display: inline-block;
+                        &:last-of-type{
+                            border-right:0;
+                        }
+                    }
+                }
+            }
+        }
 	}
 </style>

@@ -35,6 +35,7 @@ function get(url, data, header, cache = false) {
 	// let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.get(url, { params: data, headers }).then(res => {
+			console.log(res.data)
 			if (res.data.code == 0 || res.data.error_code == 0 || res.data.code == 200) {
 				resolve(res.data)
 			}

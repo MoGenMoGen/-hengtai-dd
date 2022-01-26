@@ -187,6 +187,7 @@
 <style lang="less" scoped>
 	.content {
 		background-color: #F1F3F2;
+		min-height: 100vh;
 		.top{
 			position: sticky;
 			top: 0;

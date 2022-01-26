@@ -179,11 +179,13 @@
 			};
 		},
 		mounted() {
+		    // let info = {"tenant_id":"000000","user_id":"136117678","dept_id":"2487682","post_id":"540497","role_id":"1479400945271799810","oauth_id":"","account":"13968355558","user_name":"13968355558","nick_name":"陈中梁","role_name":"nomal","avatar":"","access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJub21hbCIsInBvc3RfaWQiOiI1NDA0OTciLCJ1c2VyX2lkIjoiMTM2MTE3Njc4Iiwicm9sZV9pZCI6IjE0Nzk0MDA5NDUyNzE3OTk4MTAiLCJ1c2VyX25hbWUiOiIxMzk2ODM1NTU1OCIsIm5pY2tfbmFtZSI6IumZiOS4reaigSIsImRldGFpbCI6eyJ0eXBlIjoid2ViIiwiaXNDaGFyZ2UiOjEsIm5lZWRQcm9qIjoxfSwidG9rZW5fdHlwZSI6ImFjY2Vzc190b2tlbiIsImRlcHRfaWQiOiIyNDg3NjgyIiwiYWNjb3VudCI6IjEzOTY4MzU1NTU4IiwiY2xpZW50X2lkIjoic3dvcmQiLCJleHAiOjE2NDMxODA4MTAsIm5iZiI6MTY0MzE3NzIxMH0.myiaSG5YG3pIuIsNRCTY4_CGqIUUyHKTNK7KcJSZ0y3_PwYhAfnfvPEV4r-ki4nr5b5WOTQkSDG_JMaIuUuKVw","refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTM2MTE3Njc4Iiwicm9sZV9pZCI6IjE0Nzk0MDA5NDUyNzE3OTk4MTAiLCJ0b2tlbl90eXBlIjoicmVmcmVzaF90b2tlbiIsImRlcHRfaWQiOiIyNDg3NjgyIiwiY2xpZW50X2lkIjoic3dvcmQiLCJleHAiOjE2NDM3ODIwMTAsIm5iZiI6MTY0MzE3NzIxMH0.UOPRw3sppIiqB53CAQFqsT-ZWZ-lxT-VJVmMcLvPKOcdADsFBJiwam0HsAXgdk6a71nCRY9MgOqCbPeeMWTu9g","token_type":"bearer","expires_in":3600,"detail":{"type":"web","isCharge":1,"needProj":1},"license":"powered by bladex"}
 			this.currentIndex=this.until.loGet('currentIndex')
 			this.userInfo = this.until.loGet("userInfo");
+            // this.userInfo = info
 			if (this.userInfo.role_name.indexOf('boss')==(-1)) {
 				this.api.getDeptDetail(this.userInfo.dept_id).then(res1 => {
-					console.log(123132);
+					// console.log(123132);
 					this.until.loSave("deptNm", res1.deptName);
 				})
 			} else if (this.userInfo.role_name.indexOf('boss')!=-1)		console.log(444);
@@ -199,7 +201,7 @@
 			},
 			getInfo() {
 				this.loading=true
-				this.userInfo = this.until.loGet("userInfo");
+				// this.userInfo = this.until.loGet("userInfo");
 
 				this.api.getDeptDetail(this.userInfo.dept_id).then(res => {
 					// console.log(789,res);
@@ -305,9 +307,9 @@
 					this.list = []
 					this.finished = false
 					this.immediate=false
-					// this.getInfo()
+					this.getInfo()
 				}
-				
+
 
 			},
 			onConfirm(val) {

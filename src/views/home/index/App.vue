@@ -1,7 +1,8 @@
 <template>
 	<div class="content">
-		<van-overlay :show="userInfo.role_name.indexOf('boss')!=-1||!userInfo" >
-		    <van-loading />
+		<van-overlay :show="(userInfo && userInfo.role_name.indexOf('boss')!=-1)||!userInfo" >
+			{{errMsg}}
+		    <van-loading v-if="!errMsg"/>
 		</van-overlay>
 		<div class="mask" v-if="showMask">
 			<div class="maskContainer" >
@@ -110,6 +111,7 @@ export default {
       code: "",
       userInfo: "",
 	  info:{},
+        errMsg:null,
     };
   },
   computed: {
@@ -147,12 +149,12 @@ export default {
         window.localStorage.setItem("codeInfoDDD", "已进入");
         dd.runtime.permission.requestAuthCode({
           //获取code
-          // corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
-		  corpId: "dingc35f50400f19d66d",
+          corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
+		  // corpId: "dingc35f50400f19d66d",
           onSuccess: (info) => {
             console.log("获取钉钉code");
 
-            console.log(info);
+            // console.log(info);
             window.localStorage.setItem("codeInfoDDD", info);
             that.code = info.code;
             let obj = {
@@ -160,17 +162,20 @@ export default {
               tenantId: "000000",
             };
             that.api.login(obj).then((res) => {
+                // console.log('111111111111111')
               if (!res.error_description) {
                 let token = res.token_type + " " + res.access_token;
 				
                 that.until.loSave("token", token);
                 that.until.loSave("userInfo", res);
-			
+                that.userInfo = res
 				if (that.userInfo && that.userInfo.role_name.indexOf('boss')!=-1){
 					 that.until.href('/views/baobiao/xiangmu.html')
 					
 				}			
-              }
+              }else {
+                  this.errMsg = res.error_description
+			  }
 			  that.api.getContarticle().then(res2=>{
 			  	that.info=res2
 			  })

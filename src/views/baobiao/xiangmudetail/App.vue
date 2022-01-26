@@ -175,6 +175,7 @@ export default {
 <style lang="less" scoped>
 .content {
   background-color: #f1f3f2;
+  min-height: 100vh;
   .top {
     position: sticky;
     top: 0;

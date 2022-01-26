@@ -237,6 +237,7 @@
 <style lang="less" scoped>
 	.content {
 		background-color: #F1F3F2;
+		min-height: 100vh;
 		padding: 0.2rem;
 		padding-bottom: 2rem;
 		box-sizing: border-box;

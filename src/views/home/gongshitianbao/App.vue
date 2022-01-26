@@ -6,7 +6,7 @@
 					工时规则
 				</div>
 				<img :src="close" @click="showMask=false">
-				<div class="" style="margin-top: 0.2rem;" v-html="info.cont">
+				<div class="" style="margin-top: 0.2rem;font-size: 0.24rem !important;" v-html="info.cont">
 				</div>
 			</div>
 		</div>
@@ -24,12 +24,12 @@
 				@confirm="onConfirm2" @change='changeTm' />
 		</van-popup>
 		<van-popup v-model="showPicker3" round position="bottom">
-			<van-picker title="选择总部" show-toolbar :columns="pickService[pickIndex].columns1" @confirm="onConfirm3"
-				value-key="name" @cancel="showPicker3 = false" :default-index="pickService[pickIndex].index" />
+			<van-picker title="选择总部" show-toolbar :columns="pickService.length>0?pickService[pickIndex].columns1:''" @confirm="onConfirm3"
+				value-key="name" @cancel="showPicker3 = false" :default-index="pickService.length>0?pickService[pickIndex].index:''" />
 		</van-popup>
 		<van-popup v-model="showPicker4" round position="bottom">
-			<van-picker title="选择运营店" show-toolbar :columns="pickService[pickIndex2].columns2" @confirm="onConfirm4"
-				value-key="name" @cancel="showPicker4 = false" :default-index="pickService[pickIndex2].index2" />
+			<van-picker title="选择运营店" show-toolbar :columns="pickService.length>0?pickService[pickIndex2].columns2:''" @confirm="onConfirm4"
+				value-key="name" @cancel="showPicker4 = false" :default-index="pickService.length>0?pickService[pickIndex2].index2:''" />
 		</van-popup>
 		<van-popup v-model="showPicker5" round position="bottom">
 			<van-datetime-picker v-model="currentTime3" type="date" title="选择日期" @cancel="showPicker5 = false"
@@ -96,7 +96,7 @@
 				</div>
 			</div> -->
 			
-			<div class="addBox"  v-if="userInfo&&userInfo.detail.needProj==1" >
+			<div class="addBox"  v-if="userInfo&&userInfo.detail.needProj==1">
 				<div class="addList" v-for="(item,index) in pickService" :key='index'
 					:class="index===index1||index===index2?'active':''">
 					<div class="topBox" style="display: flex; align-items: center;">
@@ -224,6 +224,7 @@
 				userInfo: {},
 				currentTime3: new Date(),
 				type: '',
+				types:'',
 				minminute: '',
 				maxminute: '',
 				index1: "",
@@ -235,6 +236,7 @@
 			pickService: {
 				handler(val, val1) {
 					if (val.length == 1) {
+						console.log(111);
 						this.index1 = ''
 						this.index2 = ''
 						return
@@ -263,13 +265,15 @@
 										this.index2 = j
 										return
 									}
+									else{
+										this.index1 = ''
+										this.index2 = ''
+									}
 								} else {
 									this.index1 = ''
 									this.index2 = ''
 								}
 							}
-
-
 						}
 					}
 					console.log(55, this.index1, this.index2);
@@ -322,15 +326,20 @@
 		},
 		mounted() {
 			this.type = this.until.getQueryString('type')
+			this.types = this.until.getQueryString('types')
+			if (this.type == 2||this.types ==2 ) {
+				document.title = '工时补录'
+			}
+			if(this.types ==1 ){
+				document.title = '工时填报'
+			}
 			this.minDate = new Date(this.getMinDate())
 			this.maxDate = new Date(this.getMaxDate())
 			this.api.getContarticle().then(res=>{
-				console.log(777,res);
 				this.info=res
 			})
-			if (this.type == 2) {
-				document.title = '工时补录'
-			}
+		
+			
 			let id = this.until.getQueryString('id')
 			this.userInfo = this.until.loGet('userInfo')
 			if (!id) {
@@ -859,14 +868,12 @@
 				padding: 0.4rem 0.3rem;
 				box-sizing: border-box;
 				overflow-y: scroll;
-				text-align: center;
 				.title {
 					text-align: center;
-					font-size: 0.28rem;
-					font-weight: 500;
+					font-size: 0.3rem;
+					font-weight: bold;
 					color: #333333;
 				}
-
 				img {
 					width: 0.36rem;
 					height: 0.37rem;

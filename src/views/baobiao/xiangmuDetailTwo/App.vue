@@ -72,33 +72,43 @@
 				list: [],
 				deptIds: '',
 				isCharge: '',
+				projId:'',
+				deptId:''
 
 			};
 		},
 		mounted() {
+			this.until.loSave("currentIndex",0);
 			this.deptNm = this.until.getQueryString('deptNm')
 			this.projNm = this.until.getQueryString('projNm')
+			this.projId = this.until.getQueryString('projId')
+			this.deptId = this.until.getQueryString('deptId')
+			this.userInfo = this.until.loGet("userInfo");
 			if (this.userInfo) {
 				this.deptIds = this.userInfo.dept_id
 				this.isCharge = this.userInfo.detail.isCharge
 				if (this.userInfo.detail.chargeDepts) {
 					this.deptIds = this.deptIds + this.userInfo.detail.chargeDepts.join(",")
 				}
+				if(!this.userInfo.detail.chargeDepts&&this.userInfo.detail.isCharge == 1&&this.userInfo.role_name.indexOf('boss')==(-1)){
+					this.currentRole=3
+				}
 			}
-			this.userInfo = this.until.loGet("userInfo");
-			if (this.userInfo && this.userInfo.detail.isCharge == 1) this.currentRole = 1;
-			else if (this.userInfo && this.userInfo.role_name == "boss")
-				this.currentRole = 2;
-			if (this.currentRole == 2) document.title = "前筹一部-博白项目";
+			
+			if (this.userInfo && this.userInfo.detail.isCharge == 1&&this.userInfo.detail.chargeDepts) this.currentRole = 1;
+			 if (this.userInfo && this.userInfo.role_name.indexOf('boss')!=-1) this.currentRole = 2;
+			// if (this.currentRole == 2) document.title = "前筹一部-博白项目";
 			// this.getInfo()
+			console.log(888,this.currentRole);
 		},
 		methods: {
 			deleteDate(){
 				this.dateTime=''
 			},
 			getInfo() {
-				if (this.currentRole == 2&&!this.projNm) {
-					this.api.getDeptPersonReport(this.name, this.dateTime, '', '', this.current, this.size, this.deptNm)
+				if (this.currentRole == 2) {
+					document.title=this.deptNm+'-'+this.projNm
+					this.api.getProjPersonReport(this.name, this.dateTime, this.deptId,this.projId,this.current,this.size)
 						.then(res => {
 							this.total = res.total
 							this.list = [...this.list, ...res.records]
@@ -106,9 +116,9 @@
 							this.loading = false
 							this.current++
 						})
-				} else if (this.currentRole == 1&&!this.projNm) {
-					this.api.getDeptPersonReport(this.name, this.dateTime, this.isCharge, this.deptIds, this.current, this
-						.size, '').then(res => {
+				} else if (this.currentRole == 1) {
+					document.title=this.deptNm+'-'+this.projNm
+					this.api.getProjPersonReport(this.name, this.dateTime,this.deptId,this.projId,this.current,this.size).then(res => {
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
 						this.finished = this.list.length >= res.total;
@@ -116,8 +126,9 @@
 						this.current++
 					})
 				}
-				if(this.deptNm&&this.projNm){
-					this.api.getProjPersonReport(this.name,this.dateTime,this.deptNm,this.projNm,this.current,this.size).then(res=>{
+				else if(this.currentRole == 3){
+					document.title=this.projNm
+					this.api.getProjPersonReport(this.name,this.dateTime,this.deptId,this.projId,this.current,this.size).then(res=>{
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
 						this.finished = this.list.length >= res.total;

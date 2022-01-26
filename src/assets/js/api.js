@@ -13,7 +13,7 @@ const hostUrl = "http://htweb2.jinkworld.com:81"
 
 
 // const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxODk0MTExLCJuYmYiOjE2NDE4OTA1MTF9.IYG-Hy4_zc8zRCQzUCYHwnzqUSsgme-JbD3rCP2OCKE0KqPBVTU6ldIpI7_FetsDwRcpbCYyCqhPq22ku6xdIA'
-const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTQ4NDE0NDMxNDYxOTYyOTU3MCIsInJvbGVfaWQiOiIxMTIzNTk4ODE2NzM4Njc1MjA0IiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzcxMSIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQzMzYyMDgzLCJuYmYiOjE2NDI3NTcyODN9.jcvQKTLBmeJTgGlyqsEd7_6KGMJYRDuzJSxYOVKQ6hYhratxNnTFaxVpzhr8PNSR9-hvc-977-FVmUkgEl-0jQ'
+const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTQ4MTEwMjMwMDEzODI5OTM5NCIsInJvbGVfaWQiOiIxNDc5NDAwOTQ1MjcxNzk5ODEwIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY4MiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQzNjkyNjc3LCJuYmYiOjE2NDMwODc4Nzd9.VilZZ_rcqVcegIBIz9Fi-SRrPkUERfRLmF-_j3Aj4d7SOvK8-f3_ZYotdYDOnkHjh62ydDG8vNQZLMkrMEJNJw'
 
 import Vue from 'vue'
 
@@ -29,10 +29,10 @@ Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
 
-	// let headers = { ...header,...{'Cache-Control': 'no-cache'},...{ "Blade-Auth": until1.loGet("token") } }
+	let headers = { ...header,...{'Cache-Control': 'no-cache'},...{ "Blade-Auth": until1.loGet("token") } }
 
 	// let headers = { ...header, ...{ "Blade-Auth": 'bearer '+localStorage.getItem('token')}}
-	let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
+	// let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.get(url, { params: data, headers }).then(res => {
 			if (res.data.code == 0 || res.data.error_code == 0 || res.data.code == 200) {
@@ -62,9 +62,9 @@ function get(url, data, header, cache = false) {
 }
 
 function post(url, data, header) {
-	// let headers = { ...header,...{'Cache-Control': 'no-cache'}, ...{ "Blade-Auth": until1.loGet("token") } }
+	let headers = { ...header, ...{'Cache-Control': 'no-cache'}, ...{ "Blade-Auth": until1.loGet("token") } }
 	// let headers = { ...header, ...{ "Blade-Auth": 'bearer ' + localStorage.getItem('token') } }
-	let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
+	// let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.post(url, data, { headers })
 			.then(function (response) {
@@ -257,9 +257,9 @@ class api {
 	    })
 	}
 	//部门看人员
-	getDeptPersonReport(userNm,workDate,current,size,deptNm) {
+	getDeptPersonReport(userNm,workDate,current,size,deptId,projId) {
 	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/deptPersonReport?userNm='+userNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&deptNm='+deptNm).then(res => {
+	        post('/api/blade-proj/apis/projwhreport/deptPersonReport?userNm='+userNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&deptId='+deptId+'&projId='+projId).then(res => {
 	            resolve(res.data)
 	        })
 	    })
@@ -289,33 +289,41 @@ class api {
 	    })
 	}
 	//boss部门看项目
-	getDeptProjBossReport(projNm,workDate,deptNm,current,size) {
+	getDeptProjBossReport(projNm,workDate,deptId,current,size) {
 	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/deptProjBossReport?projNm='+projNm+'&workDate='+workDate+'&deptNm='+deptNm+'&current='+current+'&size='+size).then(res => {
+	        post('/api/blade-proj/apis/projwhreport/deptProjBossReport?projNm='+projNm+'&workDate='+workDate+'&deptId='+deptId+'&current='+current+'&size='+size).then(res => {
 	            resolve(res.data)
 	        })
 	    })
 	}
 	//项目看部门
-	getProjDeptReport(projNm,deptNm,workDate,current,size,isCharge,chargeDepts) {
+	getProjDeptReport(projId,deptNm,workDate,current,size,isCharge,chargeDepts) {
 	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/projDeptReport?projNm='+projNm+'&deptNm='+deptNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
+	        post('/api/blade-proj/apis/projwhreport/projDeptReport?projId='+projId+'&deptNm='+deptNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
 	            resolve(res.data)
 	        })
 	    })
 	}
 	//(Boss/领导)部门-->项目看人员
-	getProjPersonReport(userNm,workDate,deptNm,projNm,current,size) {
+	getProjPersonReport(userNm,workDate,deptId,projId,current,size) {
 	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/projPersonReport?userNm='+userNm+'&workDate='+workDate+'&deptNm='+deptNm+'&projNm='+projNm+'&current='+current+'&size='+size).then(res => {
+	        post('/api/blade-proj/apis/projwhreport/projPersonReport?userNm='+userNm+'&workDate='+workDate+'&deptId='+deptId+'&projId='+projId+'&current='+current+'&size='+size).then(res => {
 	            resolve(res.data)
 	         })  
 	    })
 	}
 	//Boss 部门人员看项目
-	getPersonProjBossReport(projNm,workDate,userNm,current,size,isCharge,chargeDepts) {
+	getPersonProjBossReport(projNm,workDate,userId,current,size,isCharge,chargeDepts) {
 	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/personProjBossReport?projNm='+projNm+'&workDate='+workDate+'&userNm='+userNm+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
+	        post('/api/blade-proj/apis/projwhreport/personProjBossReport?projNm='+projNm+'&workDate='+workDate+'&userId='+userId+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
+	            resolve(res.data)
+	         })  
+	    })
+	}
+	//Boss 部门人员看项目
+	getPersonProjBossReport1(projNm,workDate,userId,current,size,deptId) {
+	    return new Promise((resolve, reject) => {
+	        post('/api/blade-proj/apis/projwhreport/personProjBossReport1?projNm='+projNm+'&workDate='+workDate+'&userId='+userId+'&current='+current+'&size='+size+'&deptId='+deptId).then(res => {
 	            resolve(res.data)
 	         })  
 	    })
@@ -347,7 +355,7 @@ class api {
 	//获取部门名称
 	getDeptDetail(data) {
 	    return new Promise((resolve, reject) => {
-	        get('/api/blade-proj/apis/projwhreport/detail?id='+data).then(res => {
+	        get('/api/blade-proj/apis/projwhreport/deptDetail?id='+data).then(res => {
 	            resolve(res.data)
 	        })
 	    })

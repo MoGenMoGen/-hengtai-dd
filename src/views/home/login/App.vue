@@ -35,14 +35,16 @@ export default {
       code: "",
     };
   },
-  mounted() {},
+  mounted() {
+	  
+  },
   methods: {
     topage(url) {
       this.until.replace(url);
     },
     login() {
       let obj = {
-        code: "c1eb1508249132b6a9a4d87cce062f84",
+        code: "dingc35f50400f19d66d",
         tenantId: "000000",
         account: this.account,
         password: md.hex_md5(this.password),
@@ -60,7 +62,7 @@ export default {
         window.localStorage.setItem("codeInfoDDD", "已进入");
         dd.runtime.permission.requestAuthCode({
           //获取code
-          corpId: "dingc35f50400f19d66d", // 企业id
+          corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
           onSuccess: (info) => {
             console.log("获取钉钉code");
             console.log(info);
@@ -103,7 +105,7 @@ export default {
   padding: 0.3rem;
   box-sizing: border-box;
   width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
 
   .logo {
     width: 2.75rem;
@@ -164,7 +166,7 @@ export default {
     opacity: 0.8;
     margin-top: 3.3rem;
 	position: absolute;
-	bottom: 0.1rem;
+	bottom: 0.4rem;
 	left: 50%;
 	transform: translateX(-50%);
   }

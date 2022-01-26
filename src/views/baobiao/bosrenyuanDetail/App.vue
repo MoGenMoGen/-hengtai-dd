@@ -12,19 +12,18 @@
 				</div>
 			</div> -->
 			<div class="bodyContent">
-				<div class="workHours">
-					总计工时：125200.00H
-				</div>
+				<div class="workHours" v-if="list.length>0">总计工时：{{list[0].count}}H</div>
 				<div class="searchBox">
 					 <div class="boxOne">
 					 	<input placeholder="项目名称" v-model="name" />
 					 </div>
-					 <div class="boxTwo" @click="showPicker=true">
-					 	<p v-if="!dateTime">月份选择</p>
-						 <p  v-if="dateTime" style="color: #000;"> {{dateTime}}</p>
-						<img :src="time" >
-					 </div>
-					 <div class="btnSearch">
+					<div class="boxTwo" @click="showPicker = true" style="position: relative;">
+						<img :src="time" />
+						<p v-if="!dateTime" style="margin-left:0.14rem ;">月份选择</p>
+						<p v-if="dateTime" style="color: #000;margin-left:0.14rem ;">{{ dateTime }}</p>
+						<img :src="close" style="position: absolute; right:0.15rem" @click.stop="deleteDate" />
+					</div>
+					 <div class="btnSearch" @click="search">
 					 	查询
 					 </div>
 				</div>
@@ -42,19 +41,22 @@
 			</div>
 			
 		</div>
+		<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"
+			>
 		<div class="bottom">
-			<div class="list" v-for="item in 30">
+			<div class="list" v-for="(item,index) in list" :key='index'>
 				<div class="listName">
-				博白项目
+				{{item.projName}}
 				</div>
 				<div class="listName">
-					2021-12
+					{{item.workDate}}
 				</div>
 				<div class="listName">
-					504.00
+					{{item.workHours}}
 				</div>
 			</div>
 		</div>
+		</van-list>
 
 		
 		
@@ -65,29 +67,81 @@
 <script>
 	import bg from "../../../assets/img/总分背景.png"
 	import time from "../../../assets/img/时间控件.png"
+	import close from "../../../assets/img/关闭.png"
 	import {
 		Notify
 	} from 'vant';
 	export default {
 		data() {
 			return {
+				loading:false,
+				finished:false,
 				currentRole:2,
 				currentIndex:0,
 				bg,
 				time,
+				close,
 				name:'',
 				tabList:['项目','人员'],
 				showPicker:false,
 				currentTime:new Date(),
 				dateTime:"",
+				userNm:'',
+				deptNm:'',
+				list:[],
+				current:1,
+				size:10,
+				userInfo:'',
+				deptIds:'',
+				isCharge:'',
+				total:'',
 			}
 		},
 		mounted() {
-			
+			this.userNm=this.until.getQueryString('userNm')
+			this.deptNm=this.until.getQueryString('deptNm')
+			this.userInfo = this.until.loGet("userInfo");
+			if (this.userInfo) {
+				this.deptIds = this.userInfo.dept_id
+				this.isCharge = this.userInfo.detail.isCharge
+				if (this.userInfo.detail.chargeDepts) {
+					this.deptIds = this.deptIds +','+this.userInfo.detail.chargeDepts.join(",")
+				}
+			}
+			if (this.userInfo && this.userInfo.detail.isCharge == 1) this.currentRole = 1;
+			else if (this.userInfo && this.userInfo.role_name == "boss")
+			this.currentRole = 2;
+			if (this.currentRole == 2) document.title = "工时报表";
 		},
 		methods: {
-			toDetail(){
-				this.until.href("/views/baobiao/xiangmuDetailTwo.html")
+			search(){
+				this.current=1
+				this.list=[]
+				this.getInfo()
+			},
+			deleteDate(){
+				this.dateTime=''
+			},
+			getInfo(){
+				if(this.currentRole==2){
+					this.api.getPersonProjBossReport(this.name,this.dateTime,this.userNm,this.current,this.size,'','').then(res=>{
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+					})
+				}
+				if(this.currentRole==1){
+					this.api.getPersonProjBossReport(this.name,this.dateTime,'',this.current,this.size,'','').then(res=>{
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+					})
+				}
+				
 			},
 			changeTab(index){
 				this.currentIndex=index
@@ -184,7 +238,6 @@
 					border: 1px solid #D9D9D9;
 					display: flex;
 					background-color: #ffffff;
-					justify-content: space-between;
 					padding: 0.2rem;
 					box-sizing: border-box;
 					align-items: center;
@@ -229,6 +282,7 @@
 		}
 		.bottom{
 			padding:0rem 0.2rem ;
+			padding-bottom: 0.2rem;
 			box-sizing: border-box;
 			background-color: #F1F3F2;
 			.list{

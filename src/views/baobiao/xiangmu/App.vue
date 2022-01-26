@@ -1,94 +1,75 @@
 <template>
-  <div class="content">
-    <van-popup v-model="showPicker" round position="bottom">
-      <van-datetime-picker
-        v-model="currentTime"
-        type="year-month"
-        title="选择年月"
-        @cancel="showPicker = false"
-        @confirm="onConfirm"
-      />
-    </van-popup>
-    <div class="top">
-      <div class="tab">
-        <div
+	<div class="content">
+		<van-popup v-model="showPicker" round position="bottom">
+			<van-datetime-picker v-model="currentTime" type="year-month" title="选择年月" @cancel="showPicker = false"
+				@confirm="onConfirm" />
+		</van-popup>
+		<div class="top">
+			<div class="tab">
+				 <div
           class="tabList"
           v-for="(item, index) in tabList"
           :key="index"
           @click="changeTab(index)"
           :class="currentIndex == index ? 'active' : ''"
-          v-if="currentRole == 1"
+          v-if="currentRole == 3"
         >
           {{ item }}
         </div>
-        <div
-          class="tabList"
-          v-for="(item, index) in tabListTwo"
-          :key="index"
-          @click="changeTab(index)"
-          :class="currentIndex == index ? 'active' : ''"
-          v-if="currentRole == 2"
-        >
-          {{ item }}
-        </div>
-      </div>
-      <div class="bodyContent">
-        <div class="workHours">总计工时：125200.00H</div>
-        <div class="searchBox">
-          <div class="boxOne">
-            <input
-              placeholder="项目名称"
-              v-model="proname"
-              v-if="currentIndex == 0"
-            />
-            <input
-              placeholder="姓名"
-              v-model="name"
-              v-if="currentIndex == 1 && currentRole == 1"
-            />
-            <input
-              placeholder="部门名称"
-              v-model="name"
-              v-if="currentIndex == 1 && currentRole == 2"
-            />
-          </div>
-          <div class="boxTwo" @click="showPicker = true">
-            <p v-if="!dateTime">月份选择</p>
-            <p v-if="dateTime" style="color: #000">{{ dateTime }}</p>
-            <img :src="time" />
-          </div>
-          <div class="btnSearch">查询</div>
-        </div>
-      </div>
-    </div>
-    <div class="list1" style="padding: 0rem 0.2rem">
-      <div class="header" v-if="currentIndex == 0">
-        <div class="headName1 headname">项目</div>
-        <div class="headName2 headname">月份</div>
-        <div class="headName2 headname">工作时长(H)</div>
-        <div class="headName3 headname" v-if="currentRole == 1">人员详情</div>
-        <div class="headName3 headname" v-if="currentRole == 2">部门详情</div>
-      </div>
-      <div class="bottom">
-        <div class="list" v-for="(item,index) in list" v-if="currentIndex == 0">
-          <div class="listName1 listName">{{item.projName}}</div>
-          <div class="listName2 listName">{{item.workDate}}</div>
-          <div class="listName2 listName">{{item.workHours}}</div>
-          <div class="listName3 listName" @click="toDetail(item)">查看</div>
-        </div>
-      </div>
-    </div>
+				<div class="tabList" v-for="(item, index) in tabListTwo" :key="index" @click="changeTab(index)"
+					:class="currentIndex == index ? 'active' : ''"  v-if="currentRole!= 3">
+					{{ item }}
+				</div>
+			</div>
+			<div class="bodyContent">
+				<div class="workHours" v-if="list.length>0">总计工时：{{list[0].count}}H</div>
+				<div class="searchBox">
+					<div class="boxOne">
+						<input placeholder="项目名称" v-model="proname" v-if="currentIndex == 0" />
+						<!-- <input placeholder="姓名" v-model="name" v-if="currentIndex == 1 && currentRole == 1" /> -->
+						<input placeholder="部门名称" v-model="name" v-if="currentIndex == 1" />
+					</div>
+					<div class="boxTwo" @click="showPicker = true" style="position: relative;">
 
-    <div
+						<img :src="time" />
+						<p v-if="!dateTime" style="margin-left:0.14rem ;">月份选择</p>
+						<p v-if="dateTime" style="color: #000;margin-left:0.14rem ;">{{ dateTime }}</p>
+						<img :src="close" style="position: absolute; right:0.15rem" @click.stop="deleteDate" />
+					</div>
+					<div class="btnSearch" @click="search">查询</div>
+				</div>
+			</div>
+		</div>
+		<div class="list1" style="padding: 0rem 0.2rem;padding-bottom: 0.2rem;" v-if="currentIndex == 0">
+			<div class="header">
+				<div class="headName1 headname">项目</div>
+				<div class="headName2 headname">月份</div>
+				<div class="headName2 headname">工作时长(H)</div>
+				<div class="headName3 headname">部门详情</div>
+			</div>
+			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"v-if="currentIndex == 0">
+				<div class="bottom">
+					<div class="list" v-for="(item,index) in list" >
+						<div class="listName1 listName">{{item.projName}}</div>
+						<div class="listName2 listName">{{item.workDate}}</div>
+						<div class="listName2 listName">{{item.workHours}}</div>
+						<div class="listName3 listName" @click="toDetail(item)">查看</div>
+					</div>
+				</div>
+			</van-list>
+		</div>
+
+		<div
       class="list2"
       style="
         width: 100%;
         overflow: hidden;
         overflow-x: auto;
         padding: 0rem 0.2rem;
+		padding-bottom: 0.2rem;
       "
     >
-      <div class="header2" v-if="currentIndex == 1 && currentRole == 1">
+      <div class="header2" v-if="currentIndex == 1&&currentRole==3">
         <div class="headName4 headname">姓名</div>
         <div class="headName4 headname">月份</div>
         <div class="headName5 headname">月应出勤时长(H)</div>
@@ -96,424 +77,538 @@
         <div class="headName5 headname">达成率(%)</div>
         <div class="headName5 headname">项目详情</div>
       </div>
+	  <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"
+	  	 v-if="currentIndex == 1&&currentRole==3">
       <div
         class="list"
-        v-for="item in 30"
-        v-if="currentIndex == 1 && currentRole == 1"
+        v-for="(item,index) in list " :key="index"
+      
       >
-        <div class="listName4 listName">王冰冰</div>
-        <div class="listName4 listName">2021-12</div>
-        <div class="listName5 listName">24.00</div>
-        <div class="listName5 listName">24.00</div>
-        <div class="listName5 listName">100.00</div>
+        <div class="listName4 listName">{{item.userName}}</div>
+        <div class="listName4 listName">{{item.workDate}}</div>
+        <div class="listName5 listName">{{item.monthHours}}</div>
+        <div class="listName5 listName">{{item.workHours}}</div>
+        <div class="listName5 listName">{{item.workLv}}</div>
         <div
           class="listName5 listName"
           style="color: #ca093a; text-decoration: underline"
-          @click="pepDetial"
+          @click="pepDetial(item)"
         >
           查看
         </div>
       </div>
+	  </van-list>
     </div>
-    <div
-      class="list3"
-      style="
+		<div class="list3" style="
         width: 100%;
         overflow: hidden;
         overflow-x: auto;
         padding: 0rem 0.2rem;
-      "
-    >
-      <div class="header2" v-if="currentIndex == 1 && currentRole == 2">
-        <div class="headName4 headname">部门</div>
-        <div class="headName4 headname">月份</div>
-        <div class="headName5 headname">月应出勤时长(H)</div>
-        <div class="headName5 headname">月实际出勤时长(H)</div>
-        <div class="headName5 headname">达成率(%)</div>
-        <div class="headName5 headname">项目详情</div>
-        <div class="headName5 headname">人员详情</div>
-      </div>
-      <div
-        class="list"
-        v-for="item in 30"
-        v-if="currentIndex == 1 && currentRole == 2"
-      >
-        <div class="listName4 listName">王冰冰</div>
-        <div class="listName4 listName">2021-12</div>
-        <div class="listName5 listName">24.00</div>
-        <div class="listName5 listName">24.00</div>
-        <div class="listName5 listName">100.00</div>
-        <div
-          class="listName5 listName"
-          style="color: #ca093a; text-decoration: underline"
-          @click="pepDetial"
-        >
-          查看
-        </div>
-        <div
-          class="listName5 listName"
-          style="color: #ca093a; text-decoration: underline"
-          @click="pepDetialTwo"
-        >
-          查看
-        </div>
-      </div>
-    </div>
-  </div>
+		padding-bottom: 0.2rem;
+      ">
+			<div class="header2" v-if="currentIndex == 1&&currentRole!=3">
+				<div class="headName4 headname">部门</div>
+				<div class="headName4 headname">月份</div>
+				<div class="headName5 headname">月应出勤时长(H)</div>
+				<div class="headName5 headname">月实际出勤时长(H)</div>
+				<div class="headName5 headname">达成率(%)</div>
+				<div class="headName5 headname">项目详情</div>
+				<div class="headName5 headname">人员详情</div>
+			</div>
+			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"
+				v-if="currentIndex == 1&&currentRole!=3">
+				<div class="list" v-for="(item,index) in list" :key='index'>
+					<div class="listName4 listName">{{item.deptName}}</div>
+					<div class="listName4 listName">{{item.workDate}}</div>
+					<div class="listName5 listName">{{item.monthHours}}</div>
+					<div class="listName5 listName">{{item.monWorks}}</div>
+					<div class="listName5 listName">{{item.workLv}}</div>
+					<div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
+						@click="pepDetial(item)">
+						查看
+					</div>
+					<div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
+						@click="pepDetialTwo(item)">
+						查看
+					</div>
+				</div>
+			</van-list>
+		</div>
+	</div>
 </template>
 <script>
-import bg from "../../../assets/img/总分背景.png";
-import time from "../../../assets/img/时间控件.png";
-import { Notify } from "vant";
-export default {
-  data() {
-    return {
-      currentRole: 1, //1:领导;2:老板
-      currentIndex: 0,
-      bg,
-      time,
-      name: "",
-      tabList: ["项目", "人员"],
-      tabListTwo: ["项目", "部门"],
-      showPicker: false,
-      currentTime: new Date(),
-      dateTime: "",
-      proname: "",
-      userInfo: "",
-	  list:[],
-    };
-  },
-  mounted() {
-    // this.userInfo = this.until.loGet("userInfo");
-    // if (this.userInfo && userInfo.detail.isCharge == 1) this.currentRole = 1;
-    // else if (this.userInfo && userInfo.detail.role_name == "boss")
-    //   this.currentRole = 2;
-    if (this.currentRole == 2) document.title = "工时报表";
-	this.getInfo()
-  },
-  methods: {
-	  getInfo(){
-		  if(this.currentRole==1){
-			  let obj={
-			  	  projNm:this.proname,
-			  	  workDate:this.dateTime,
-			  	  isCharge:1,
-			  	  chargeDepts:2487692,
-			  	  current:1,
-			  	  size:10,
-			    }
-			  this.api.getDeptProjReport(this.proname,this.dateTime,'1','2487692','1',10).then(res=>{
-			  	this.list=res.records
-			  })
-		  }
-		  else if(this.currentRole==2){
-			  this.api.getProjBossReport(this.name,this.proname,this.dateTime,'1','10').then(res=>{
-				  console.log(res);
-			  	this.list=res.records
-			  })
-		  }
-	
-	  },
-    changeTab(index) {
-      this.currentIndex = index;
-    },
-    onConfirm(val) {
-      this.dateTime = this.getNowDate(val);
-      this.showPicker = false;
-    },
-    getNowDate(val) {
-      let nowDate = new Date(val);
-      let year = nowDate.getFullYear();
-      let month =
-        nowDate.getMonth() + 1 < 10
-          ? "0" + (nowDate.getMonth() + 1)
-          : nowDate.getMonth() + 1;
-      return year + "-" + month;
-    },
-    toDetail() {
-      this.until.href("/views/baobiao/xiangmudetail.html");
-    },
-    pepDetial() {
-      this.until.href("/views/baobiao/reyuandetail.html");
-    },
-    pepDetialTwo() {
-      this.until.href("/views/baobiao/bosxiangmuDetail.html");
-    },
-  },
-};
+	import bg from "../../../assets/img/总分背景.png";
+	import time from "../../../assets/img/时间控件.png";
+	import close from "../../../assets/img/关闭.png";
+	import {
+		Notify
+	} from "vant";
+	export default {
+		data() {
+			return {
+				loading: false,
+				finished: false,
+				currentRole: 1, //1:领导;2:老板;3:部门负责人
+				currentIndex: 0,
+				bg,
+				time,
+				close,
+				name: "",
+				tabList: ["项目", "人员"],
+				tabListTwo: ["项目", "部门"],
+				showPicker: false,
+				currentTime: new Date(),
+				dateTime: "",
+				proname: "",
+				userInfo: "",
+				list: [],
+				deptIds: "",
+				isCharge: '',
+				size: 15,
+				current: 1,
+				total: '',
+				deptName:'',
+			};
+		},
+		mounted() {
+			this.userInfo = this.until.loGet("userInfo");
+			if (this.userInfo) {
+				this.deptIds = this.userInfo.dept_id
+				this.isCharge = this.userInfo.detail.isCharge
+				if (this.userInfo.detail.chargeDepts) {
+					this.deptIds = this.deptIds +','+this.userInfo.detail.chargeDepts.join(",")
+				}
+				if(!this.userInfo.detail.chargeDepts&&this.userInfo.detail.isCharge == 1&&this.userInfo.role_name != "boss"){
+					this.currentRole=3
+				}
+			}
+			if (this.userInfo && this.userInfo.detail.isCharge == 1) this.currentRole = 1;
+			else if (this.userInfo && this.userInfo.role_name == "boss")
+			this.currentRole = 2;
+			if (this.currentRole == 2) document.title = "工时报表";
+			// this.getInfo()
+		},
+		methods: {
+			deleteDate() {
+				this.dateTime = ''
+			},
+			getInfo() {
+				if (this.currentRole == 1 && this.currentIndex == 0) {
+				this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size,this.isCharge,this.deptIds).then(res => {
+					this.total = res.total
+					this.list = [...this.list, ...res.records]
+					this.finished = this.list.length >= res.total;
+					this.loading = false
+					this.current++
+				})
+				}
+				 else if(this.currentRole == 3 && this.currentIndex == 0){
+					 this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size,this.isCharge,this.deptIds).then(res => {
+					 	this.total = res.total
+					 	this.list = [...this.list, ...res.records]
+					 	this.finished = this.list.length >= res.total;
+					 	this.loading = false
+					 	this.current++
+						})
+				 }
+				 else if (this.currentRole == 2 && this.currentIndex == 0) {
+					this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size,'','').then(res => {
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+
+					})
+				} 
+				else if(this.currentRole == 3 && this.currentIndex == 1){
+					// this.api.getDeptDetail(this.userInfo.dept_id).then(res=>{
+						this.api.getDeptDetail('2487682').then(res=>{
+						this.deptName=res.deptName
+						document.title = this.deptName
+						this.api.getDeptPersonReport(this.name,this.dateTime,this.current,this.size,this.deptName).then(res=>{
+							this.total = res.total
+							this.list = [...this.list, ...res.records]
+							this.finished = this.list.length >= res.total;
+							this.loading = false
+							this.current++
+						})
+					})
+					
+				}
+				else if (this.currentRole == 2 && this.currentIndex == 1) {
+					this.api.getDeptBossReport(this.name, this.dateTime, this.current, this.size, '', '').then(res => {
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+					})
+				} else if (this.currentRole == 1 && this.currentIndex == 1) {
+					this.api.getDeptBossReport(this.name, this.dateTime, this.current, this.size, this.isCharge, this
+						.deptIds).then(res => {
+						this.total = res.total
+						this.list = [...this.list, ...res.records]
+						this.finished = this.list.length >= res.total;
+						this.loading = false
+						this.current++
+					})
+				}
+
+
+
+			},
+			search() {
+				this.current = 1
+				this.list = []
+				this.getInfo()
+
+			},
+			changeTab(index) {
+				this.current = 1
+				this.list = []
+				this.currentIndex = index;
+				console.log(123);
+				this.getInfo()
+
+			},
+			onConfirm(val) {
+				this.dateTime = this.getNowDate(val);
+				this.showPicker = false;
+			},
+			getNowDate(val) {
+				let nowDate = new Date(val);
+				let year = nowDate.getFullYear();
+				let month =
+					nowDate.getMonth() + 1 < 10 ?
+					"0" + (nowDate.getMonth() + 1) :
+					nowDate.getMonth() + 1;
+				return year + "-" + month;
+			},
+			toDetail(item) {
+				console.log(item);
+				this.until.href(`/views/baobiao/xiangmudetail.html?deptNm=${item.deptName}&projNm=${item.projName}`);
+			},
+			pepDetial(item) {
+				this.until.href(`/views/baobiao/reyuandetail.html?userNm=${item.userName}&deptNm=${item.deptName}`);
+			},
+			pepDetialTwo(item) {
+				this.until.href(`/views/baobiao/bosxiangmuDetail.html?deptNm=${item.deptName}`);
+			},
+		},
+	};
 </script>
 <style lang="less" scoped>
-.content {
-  background-color: #f1f3f2;
-  .top {
-    position: sticky;
-    top: 0;
-    left: 0;
-    z-index: 50;
-    .tab {
-      width: 100%;
-      background-color: #ffffff;
-      height: 1rem;
-      display: flex;
-      border-bottom: 1px solid #d9d9d9;
-      .tabList {
-        flex: 1;
-        height: 100%;
-        text-align: center;
-        line-height: 1rem;
-        font-size: 0.3rem;
-        font-weight: 500;
-        color: #999999;
-      }
-      .active {
-        border-bottom: 1px solid #ca093a;
-        font-size: 0.3rem;
-        font-weight: bold;
-        color: #ca093a;
-        transition: 0.5s;
-      }
-    }
-    .bodyContent {
-      background-color: #f1f3f2;
-      padding: 0.3rem 0.2rem;
-      box-sizing: border-box;
-      .workHours {
-        height: 0.88rem;
-        width: 100%;
-        background-image: url(../../../assets/img/总分背景.png);
-        background-size: 100% 100%;
-        text-align: center;
-        line-height: 0.88rem;
-        font-size: 0.3rem;
-        font-weight: 500;
-        color: #ffffff;
-      }
-    }
-    .searchBox {
-      margin-top: 0.3rem;
-      display: flex;
-      justify-content: space-around;
-      .boxOne {
-        width: 2.63rem;
-        height: 0.6rem;
-        border: 1px solid #d9d9d9;
-        background-color: #ffffff;
-        input {
-          width: 100%;
-          height: 100%;
-          padding: 0.2rem;
-          box-sizing: border-box;
-          font-size: 0.24rem;
-          border: 0;
-        }
-        input::placeholder {
-          font-size: 0.24rem;
-          font-weight: 500;
-          color: #999999;
-        }
-      }
-      .boxTwo {
-        width: 2.63rem;
-        height: 0.6rem;
-        border: 1px solid #d9d9d9;
-        display: flex;
-        background-color: #ffffff;
-        justify-content: space-between;
-        padding: 0.2rem;
-        box-sizing: border-box;
-        align-items: center;
-        p {
-          font-size: 0.24rem;
-          font-weight: 500;
-          color: #999999;
-        }
-        img {
-          width: 0.28rem;
-          height: 0.26rem;
-        }
-      }
-      .btnSearch {
-        width: 1.44rem;
-        height: 0.6rem;
-        background: #ca093a;
-        border-radius: 0.04rem;
-        text-align: center;
-        line-height: 0.6rem;
-        font-size: 0.28rem;
-        font-weight: 500;
-        color: #ffffff;
-      }
-    }
-  }
-  .list2 {
-    .header2 {
-      width: 13rem;
-      overflow-x: auto;
-      white-space: nowrap;
-      height: 0.62rem;
-      box-sizing: border-box;
-      background: #9f9f9f;
-      box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
-      border-radius: 0.1rem;
-      margin-top: 0.3rem;
-      display: flex;
-      .headname {
-        text-align: center;
-        line-height: 0.62rem;
-        font-size: 0.24rem;
-        color: #ffffff;
-        display: inline-block;
-      }
-      .headName4 {
-        width: 1.5rem;
-        border-right: 1px solid #ffffff;
-      }
-      .headName5 {
-        width: 2.5rem;
-        border-right: 1px solid #ffffff;
-      }
-    }
-    .list {
-      width: 13rem;
-      padding: 0.3rem 0;
-      background: #ffffff;
-      box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
-      border-radius: 0.1rem;
-      display: flex;
-      margin-bottom: 0.1rem;
-      overflow-x: auto;
-      white-space: nowrap;
-      box-sizing: border-box;
-      .listName {
-        font-size: 0.24rem;
-        color: #333333;
-        line-height: 0.24rem;
-        text-align: center;
-      }
-      .listName4 {
-        width: 1.5rem;
-      }
-      .listName5 {
-        width: 2.5rem;
-      }
-    }
-  }
-  .list1 {
-    .bottom {
-      box-sizing: border-box;
-      background-color: #f1f3f2;
-      .list {
-        padding: 0.3rem 0;
-        background: #ffffff;
-        box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
-        border-radius: 0.1rem;
-        display: flex;
-        margin-bottom: 0.1rem;
-        .listName {
-          font-size: 0.24rem;
-          color: #333333;
-          line-height: 0.24rem;
-          text-align: center;
-        }
-        .listName1 {
-          width: 30%;
-        }
-        .listName2 {
-          width: 25%;
-        }
-        .listName3 {
-          width: 20%;
-          color: #ca093a;
-          text-decoration: underline;
-        }
-        .listName4 {
-          width: 20%;
-        }
-        .listName5 {
-          width: 30%;
-        }
-      }
-    }
-    .header {
-      height: 0.62rem;
-      box-sizing: border-box;
-      background: #9f9f9f;
-      box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
-      border-radius: 0.1rem;
-      margin-top: 0.3rem;
-      display: flex;
-      .headname {
-        text-align: center;
-        line-height: 0.62rem;
-        font-size: 0.24rem;
-        color: #ffffff;
-        display: inline-block;
-      }
-      .headName1 {
-        width: 30%;
-        border-right: 1px solid #ffffff;
-      }
-      .headName2 {
-        width: 25%;
-        border-right: 1px solid #ffffff;
-      }
-      .headName3 {
-        width: 20%;
-      }
-    }
-  }
-  .list3 {
-    .header2 {
-      width: 15.5rem;
-      overflow-x: auto;
-      white-space: nowrap;
-      height: 0.62rem;
-      box-sizing: border-box;
-      background: #9f9f9f;
-      box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
-      border-radius: 0.1rem;
-      margin-top: 0.3rem;
-      display: flex;
-      .headname {
-        text-align: center;
-        line-height: 0.62rem;
-        font-size: 0.24rem;
-        color: #ffffff;
-        display: inline-block;
-      }
-      .headName4 {
-        width: 1.5rem;
-        border-right: 1px solid #ffffff;
-      }
-      .headName5 {
-        width: 2.5rem;
-        border-right: 1px solid #ffffff;
-      }
-    }
-    .list {
-      width: 15.5rem;
-      padding: 0.3rem 0;
-      background: #ffffff;
-      box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
-      border-radius: 0.1rem;
-      display: flex;
-      margin-bottom: 0.1rem;
-      overflow-x: auto;
-      white-space: nowrap;
-      box-sizing: border-box;
-      .listName {
-        font-size: 0.24rem;
-        color: #333333;
-        line-height: 0.24rem;
-        text-align: center;
-      }
-      .listName4 {
-        width: 1.5rem;
-      }
-      .listName5 {
-        width: 2.5rem;
-      }
-    }
-  }
-}
+	.content {
+		background-color: #f1f3f2;
+
+		.top {
+			position: sticky;
+			top: 0;
+			left: 0;
+			z-index: 50;
+
+			.tab {
+				width: 100%;
+				background-color: #ffffff;
+				height: 1rem;
+				display: flex;
+				border-bottom: 1px solid #d9d9d9;
+
+				.tabList {
+					flex: 1;
+					height: 100%;
+					text-align: center;
+					line-height: 1rem;
+					font-size: 0.3rem;
+					font-weight: 500;
+					color: #999999;
+				}
+
+				.active {
+					border-bottom: 1px solid #ca093a;
+					font-size: 0.3rem;
+					font-weight: bold;
+					color: #ca093a;
+					transition: 0.5s;
+				}
+			}
+
+			.bodyContent {
+				background-color: #f1f3f2;
+				padding: 0.3rem 0.2rem;
+				box-sizing: border-box;
+
+				.workHours {
+					height: 0.88rem;
+					width: 100%;
+					background-image: url(../../../assets/img/总分背景.png);
+					background-size: 100% 100%;
+					text-align: center;
+					line-height: 0.88rem;
+					font-size: 0.3rem;
+					font-weight: 500;
+					color: #ffffff;
+				}
+			}
+
+			.searchBox {
+				margin-top: 0.3rem;
+				display: flex;
+				justify-content: space-around;
+
+				.boxOne {
+					width: 2.63rem;
+					height: 0.6rem;
+					border: 1px solid #d9d9d9;
+					background-color: #ffffff;
+
+					input {
+						width: 100%;
+						height: 100%;
+						padding: 0.2rem;
+						box-sizing: border-box;
+						font-size: 0.24rem;
+						border: 0;
+					}
+
+					input::placeholder {
+						font-size: 0.24rem;
+						font-weight: 500;
+						color: #999999;
+					}
+				}
+
+				.boxTwo {
+					width: 2.63rem;
+					height: 0.6rem;
+					border: 1px solid #d9d9d9;
+					display: flex;
+					background-color: #ffffff;
+					padding: 0.2rem;
+					box-sizing: border-box;
+					align-items: center;
+
+					p {
+						font-size: 0.24rem;
+						font-weight: 500;
+						color: #999999;
+					}
+
+					img {
+						width: 0.28rem;
+						height: 0.26rem;
+					}
+				}
+
+				.btnSearch {
+					width: 1.44rem;
+					height: 0.6rem;
+					background: #ca093a;
+					border-radius: 0.04rem;
+					text-align: center;
+					line-height: 0.6rem;
+					font-size: 0.28rem;
+					font-weight: 500;
+					color: #ffffff;
+				}
+			}
+		}
+
+		.list2 {
+			.header2 {
+				width: 13rem;
+				overflow-x: auto;
+				white-space: nowrap;
+				height: 0.62rem;
+				box-sizing: border-box;
+				background: #9f9f9f;
+				box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
+				border-radius: 0.1rem;
+				display: flex;
+
+				.headname {
+					text-align: center;
+					line-height: 0.62rem;
+					font-size: 0.24rem;
+					color: #ffffff;
+					display: inline-block;
+				}
+
+				.headName4 {
+					width: 1.5rem;
+					border-right: 1px solid #ffffff;
+				}
+
+				.headName5 {
+					width: 2.5rem;
+					border-right: 1px solid #ffffff;
+				}
+			}
+
+			.list {
+				width: 13rem;
+				padding: 0.3rem 0;
+				background: #ffffff;
+				box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
+				border-radius: 0.1rem;
+				display: flex;
+				margin-bottom: 0.1rem;
+				overflow-x: auto;
+				white-space: nowrap;
+				box-sizing: border-box;
+
+				.listName {
+					font-size: 0.24rem;
+					color: #333333;
+					line-height: 0.24rem;
+					text-align: center;
+				}
+
+				.listName4 {
+					width: 1.5rem;
+				}
+
+				.listName5 {
+					width: 2.5rem;
+				}
+			}
+		}
+
+		.list1 {
+			.bottom {
+				box-sizing: border-box;
+				background-color: #f1f3f2;
+
+				.list {
+					padding: 0.3rem 0;
+					background: #ffffff;
+					box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
+					border-radius: 0.1rem;
+					display: flex;
+					margin-bottom: 0.1rem;
+
+					.listName {
+						font-size: 0.24rem;
+						color: #333333;
+						line-height: 0.24rem;
+						text-align: center;
+					}
+
+					.listName1 {
+						width: 30%;
+					}
+
+					.listName2 {
+						width: 25%;
+					}
+
+					.listName3 {
+						width: 20%;
+						color: #ca093a;
+						text-decoration: underline;
+					}
+
+					.listName4 {
+						width: 20%;
+					}
+
+					.listName5 {
+						width: 30%;
+					}
+				}
+			}
+
+			.header {
+				height: 0.62rem;
+				box-sizing: border-box;
+				background: #9f9f9f;
+				box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
+				border-radius: 0.1rem;
+				display: flex;
+
+				.headname {
+					text-align: center;
+					line-height: 0.62rem;
+					font-size: 0.24rem;
+					color: #ffffff;
+					display: inline-block;
+				}
+
+				.headName1 {
+					width: 30%;
+					border-right: 1px solid #ffffff;
+				}
+
+				.headName2 {
+					width: 25%;
+					border-right: 1px solid #ffffff;
+				}
+
+				.headName3 {
+					width: 20%;
+				}
+			}
+		}
+
+		.list3 {
+			.header2 {
+				width: 15.5rem;
+				overflow-x: auto;
+				white-space: nowrap;
+				height: 0.62rem;
+				box-sizing: border-box;
+				background: #9f9f9f;
+				box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
+				border-radius: 0.1rem;
+				display: flex;
+
+				.headname {
+					text-align: center;
+					line-height: 0.62rem;
+					font-size: 0.24rem;
+					color: #ffffff;
+					display: inline-block;
+				}
+
+				.headName4 {
+					width: 1.5rem;
+					border-right: 1px solid #ffffff;
+				}
+
+				.headName5 {
+					width: 2.5rem;
+					border-right: 1px solid #ffffff;
+				}
+			}
+
+			.list {
+				width: 15.5rem;
+				padding: 0.3rem 0;
+				background: #ffffff;
+				box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
+				border-radius: 0.1rem;
+				display: flex;
+				margin-bottom: 0.1rem;
+				overflow-x: auto;
+				white-space: nowrap;
+				box-sizing: border-box;
+
+				.listName {
+					font-size: 0.24rem;
+					color: #333333;
+					line-height: 0.24rem;
+					text-align: center;
+				}
+
+				.listName4 {
+					width: 1.5rem;
+				}
+
+				.listName5 {
+					width: 2.5rem;
+				}
+			}
+		}
+	}
 </style>

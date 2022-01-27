@@ -36,12 +36,12 @@
 				@confirm="onConfirm5" :max-date="maxDate" :min-date="minDate" />
 		</van-popup>
 		<div class="bodyList">
-			<div class="listItem" v-if="type!=2">
+			<div class="listItem" v-if="types!=2">
 				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
 				<p>工作日期：</p>
 				<p class="itemRight">{{nowDate}}</p>
 			</div>
-			<div class="listItem" v-if="type==2">
+			<div class="listItem" v-if="types==2">
 				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
 				<p>工作日期：</p>
 				<div class="timeBox" @click="showPicker5=true">
@@ -325,9 +325,9 @@
 			}
 		},
 		mounted() {
-			this.type = this.until.getQueryString('type')
+			// this.type = this.until.getQueryString('type') ? this.until.getQueryString('type') : this.until.getQueryString('types')
 			this.types = this.until.getQueryString('types')
-			if (this.type == 2||this.types ==2 ) {
+			if (this.types ==2 ) {
 				document.title = '工时补录'
 			}
 			if(this.types ==1 ){
@@ -357,7 +357,7 @@
 				})
 			}
 
-			if (this.type != 2) {
+			if (this.types != 2) {
 				this.nowDate = this.getNowDate()
 				this.api.getPaiban(this.nowDate).then(res => {
 					this.startTm = res.start ? Number(res.start.split(":")[0]) : '9'
@@ -822,7 +822,7 @@
 					jobIds: jobId,
 					projs: projsList,
 					rmks: this.rmks,
-					types: this.type == 2 ? '2' : '1',
+					types: this.types == 2 ? '2' : '1',
 					audit: "",
 				}
 				let id = this.until.getQueryString('id')

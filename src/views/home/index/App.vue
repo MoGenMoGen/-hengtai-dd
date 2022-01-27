@@ -1,7 +1,7 @@
 <template>
 	<div class="content">
 		<van-overlay :show="(userInfo && userInfo.role_name.indexOf('boss')!=-1)||!userInfo" >
-			{{errMsg}}
+			<p style="padding: 0 10vw 20vh">{{errMsg}}</p>
 		    <van-loading v-if="!errMsg"/>
 		</van-overlay>
 		<div class="mask" v-if="showMask">
@@ -21,7 +21,7 @@
 			</van-swipe>
 		</div>
 		<div class="bodyList">
-			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?type=1')">
+			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?types=1')">
 				<img class="img1" :src="bulu" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -33,7 +33,7 @@
 				</div>
 				<img class="img2":src="arrowRight" mode=""></img>
 			</div>
-			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?type=2')">
+			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?types=2')">
 				<img class="img1" :src="wode" mode=""></img>
 				<div class="contentBox">
 					<div class="top">
@@ -132,8 +132,8 @@ export default {
 	// }
   },
   created() {
-	  this.userInfo = this.until.loGet("userInfo");
-	this.currentRole = 2;
+	  // this.userInfo = this.until.loGet("userInfo");
+	// this.currentRole = 2;
     this.dd();
   },
   mounted() {},
@@ -149,8 +149,8 @@ export default {
         window.localStorage.setItem("codeInfoDDD", "已进入");
         dd.runtime.permission.requestAuthCode({
           //获取code
-          corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
-		  // corpId: "dingc35f50400f19d66d",
+          // corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
+		  corpId: "dingc35f50400f19d66d",
           onSuccess: (info) => {
             console.log("获取钉钉code");
 
@@ -162,7 +162,7 @@ export default {
               tenantId: "000000",
             };
             that.api.login(obj).then((res) => {
-                // console.log('111111111111111')
+                console.log('111111111111111')
               if (!res.error_description) {
                 let token = res.token_type + " " + res.access_token;
 				
@@ -172,18 +172,23 @@ export default {
 				if (that.userInfo && that.userInfo.role_name.indexOf('boss')!=-1){
 					 that.until.href('/views/baobiao/xiangmu.html')
 					
-				}			
+				}
+                  that.api.getContarticle().then(res2=>{
+                      that.info=res2
+                  })
+                  that.api.getListAdsByPos().then(res3=>{
+                      res3.forEach(item=>{
+                          that.imgList.push(item.imgUrl)
+                      })
+                  })
               }else {
-                  this.errMsg = res.error_description
+                  console.log('错误的')
+                  console.log(res.error_description)
+                  that.errMsg = res.error_description
+				   that.until.loRemove('token')
+                  that.until.loRemove('userInfo')
 			  }
-			  that.api.getContarticle().then(res2=>{
-			  	that.info=res2
-			  })
-			  that.api.getListAdsByPos().then(res3=>{
-			  	res3.forEach(item=>{
-			  		that.imgList.push(item.imgUrl)
-			  	})
-			  })
+
             });
           },
           onFail: (err) => {

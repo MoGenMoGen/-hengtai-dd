@@ -44,7 +44,7 @@ function get(url, data, header, cache = false) {
 			}
 			else {
 
-				Toast(res.data.error_description)
+				Toast(res.data.msg)
 			}
 		}).catch(err => {
 			if (err.response.data.code == 401) {
@@ -78,14 +78,13 @@ function post(url, data, header) {
 						}, 1000  );
 					
 					}
-					else if(response.data.error_code==400){
-						Toast(response.data.error_description);
-						return
-					}
-						resolve(response.data);
+					resolve(response.data);
 				}
-				 else {
-					Toast(response.data.msg)
+				 else if(url.indexOf('/blade-dingding/access/login')!=-1 && response.data.error_code==400){
+                    Toast(response.data.error_description);
+                    resolve(response.data);
+				}else {
+                    Toast(response.data.msg)
 				}
 			})
 			.catch(function (error) {

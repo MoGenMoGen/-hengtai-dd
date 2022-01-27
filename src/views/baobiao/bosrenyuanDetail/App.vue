@@ -134,7 +134,13 @@
 					document.title=this.deptNm+"-"+this.userNm
 					this.api.getPersonProjBossReport1(this.name,this.dateTime,this.userId,this.current,this.size,this.deptId).then(res=>{
 						this.total = res.total
+                        res.records.forEach(item=>{
+                            item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
+                        })
 						this.list = [...this.list, ...res.records]
+                        if(this.current==1){
+                            this.list[0].count=this.total >0 ? parseFloat(this.list[0].count).toFixed(2) : '0.00'
+                        }
 						this.finished = this.list.length >= res.total;
 						this.loading = false
 						this.current++
@@ -145,6 +151,9 @@
 					this.api.getPersonProjBossReport1(this.name,this.dateTime,this.userNm,this.current,this.size,this.deptId).then(res=>{
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
+                        if(this.current==1){
+                            this.list[0].count=this.total >0 ? parseFloat(this.list[0].count).toFixed(2) : '0.00'
+                        }
 						this.finished = this.list.length >= res.total;
 						this.loading = false
 						this.current++
@@ -155,6 +164,9 @@
 					this.api.getPersonProjBossReport(this.name,this.dateTime,this.userId,this.current,this.size,this.isCharge,this.deptIds).then(res=>{
 						this.total = res.total
 						this.list = [...this.list, ...res.records]
+                        if(this.current==1){
+                            this.list[0].count=this.total >0 ? parseFloat(this.list[0].count).toFixed(2) : '0.00'
+                        }
 						this.finished = this.list.length >= res.total;
 						this.loading = false
 						this.current++

@@ -111,7 +111,13 @@
 					this.api.getProjPersonReport(this.name, this.dateTime, this.deptId,this.projId,this.current,this.size)
 						.then(res => {
 							this.total = res.total
+							res.records.forEach(item=>{
+                                item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
+							})
 							this.list = [...this.list, ...res.records]
+                            if(this.current==1){
+                                this.list[0].count=this.total >0 ? parseFloat(this.list[0].count).toFixed(2) : '0.00'
+                            }
 							this.finished = this.list.length >= res.total;
 							this.loading = false
 							this.current++
@@ -163,7 +169,7 @@
 <style lang="less" scoped>
 	.content {
 		background-color: #f1f3f2;
-		height: 100%;
+		height: 100vh;
 
 		.top {
 			position: sticky;

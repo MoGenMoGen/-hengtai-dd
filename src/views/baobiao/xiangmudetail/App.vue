@@ -125,7 +125,13 @@ export default {
 			 document.title=this.projNm
 			 this.api.getProjDeptReport(this.projId,this.name,this.dateTime,this.current,this.size,'','').then(res=>{
 			 	this.total=res.total
+                 res.records.forEach(item=>{
+                     item.AllHours = item.AllHours ? parseFloat(item.AllHours).toFixed(2) : '0.00'
+                 })
 			 	this.info=[...this.info,...res.records]
+                 if(this.current==1){
+                     this.info[0].count=this.total >0 ? parseFloat(this.info[0].count).toFixed(2) : '0.00'
+                 }
 			 	 this.finished = this.info.length >= res.total;
 			 	 this.loading = false
 			 	this.current++
@@ -136,6 +142,9 @@ export default {
 			 this.api.getProjDeptReport(this.projId,this.name,this.dateTime,this.current,this.size,this.isCharge,this.deptIds).then(res=>{
 			 	this.total=res.total
 			 	this.info=[...this.info,...res.records]
+                 if(this.current==1){
+                     this.info[0].count=this.total >0 ? parseFloat(this.info[0].count).toFixed(2) : '0.00'
+                 }
 			 	 this.finished = this.info.length >= res.total;
 			 	 this.loading = false
 			 	this.current++

@@ -17,7 +17,7 @@
 				</div>
 			</div> -->
       <div class="bodyContent">
-        <div class="workHours" v-if="list.length>0">总计工时：{{list[0].count}}H</div>
+        <div class="workHours" v-if="list.length>0">总计工时：{{total ? list[0].count : '0.00'}}H</div>
         <div class="searchBox">
           <div class="boxOne">
             <input placeholder="项目名称" v-model="name" />
@@ -120,7 +120,13 @@ export default {
 			  document.title=this.deptNm
 			this.api.getDeptProjBossReport(this.name,this.dateTime,this.deptId,this.current,this.size).then(res=>{
 				this.total = res.total
+                res.records.forEach(item=>{
+                    item.AllHours = item.AllHours ? parseFloat(item.AllHours).toFixed(2) : '0.00'
+                })
 				this.list = [...this.list, ...res.records]
+                if(this.current==1 && this.total){
+                    this.list[0].count=parseFloat(this.list[0].count).toFixed(2)
+                }
 				this.finished = this.list.length >= res.total;
 				this.loading = false
 				this.current++
@@ -129,7 +135,13 @@ export default {
 		  else if(this.currentRole==3){
 			  this.api.getPersonProjBossReport(this.name,this.dateTime,'',this.current,this.size,this.isCharge,this.deptIds).then(res=>{
 			  	this.total = res.total
+                  res.records.forEach(item=>{
+                      item.AllHours = item.AllHours ? parseFloat(item.AllHours).toFixed(2) : '0.00'
+                  })
 			  	this.list = [...this.list, ...res.records]
+                  if(this.current==1 && this.total){
+                      this.list[0].count= parseFloat(this.list[0].count).toFixed(2)
+                  }
 			  	this.finished = this.list.length >= res.total;
 			  	this.loading = false
 			  	this.current++

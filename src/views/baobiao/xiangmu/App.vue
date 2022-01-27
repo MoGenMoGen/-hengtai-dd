@@ -16,7 +16,7 @@
 				</div>
 			</div>
 			<div class="bodyContent">
-				<div class="workHours" v-if="list.length>0">总计工时：{{list[0].count}}H</div>
+				<div class="workHours" v-if="list.length>0">总计工时：{{total ? list[0].count : '0.00'}}H</div>
 				<div class="searchBox">
 					<div class="boxOne">
 						<input placeholder="项目名称" v-model="proname" v-if="currentIndex == 0" />
@@ -81,10 +81,10 @@
                         </div>
                         <div class="list" v-for="(item,index) in list " :key="index">
                             <!--<div class="listName4 listName">{{item.userName}}</div>-->
-                            <div class="listName4 listName">{{item.workDate}}1</div>
-                            <div class="listName5 listName">{{item.planHours}}2</div>
-                            <div class="listName5 listName">{{item.workHours}}3</div>
-                            <div class="listName5 listName">{{item.workLv}}4</div>
+                            <div class="listName4 listName">{{item.workDate}}</div>
+                            <div class="listName5 listName">{{item.planHours}}</div>
+                            <div class="listName5 listName">{{item.workHours}}</div>
+                            <div class="listName5 listName">{{item.workLv}}</div>
                             <div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
                                  @click="pepDetial(item)">
                                 查看
@@ -121,10 +121,10 @@
                         </div>
                         <div class="list" v-for="(item,index) in list" :key='index'>
                             <!--<div class="listName4 listName">{{item.deptName}}</div>-->
-                            <div class="listName4 listName">{{item.workDate}}1</div>
-                            <div class="listName5 listName">{{item.planHours}}2</div>
-                            <div class="listName5 listName">{{item.workHours}}3</div>
-                            <div class="listName5 listName">{{item.workLv}}4</div>
+                            <div class="listName4 listName">{{item.workDate}}</div>
+                            <div class="listName5 listName">{{item.planHours}}</div>
+                            <div class="listName5 listName">{{item.workHours}}</div>
+                            <div class="listName5 listName">{{item.workLv}}</div>
                             <div class="listName5 listName" style="color: #ca093a; text-decoration: underline"
                                  @click="pepDetial(item)">
                                 查看
@@ -179,20 +179,40 @@
 			};
 		},
 		mounted() {
+            document.title = ''
 		    // let info = {"tenant_id":"000000","user_id":"136117678","dept_id":"2487682","post_id":"540497","role_id":"1479400945271799810","oauth_id":"","account":"13968355558","user_name":"13968355558","nick_name":"陈中梁","role_name":"nomal","avatar":"","access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJub21hbCIsInBvc3RfaWQiOiI1NDA0OTciLCJ1c2VyX2lkIjoiMTM2MTE3Njc4Iiwicm9sZV9pZCI6IjE0Nzk0MDA5NDUyNzE3OTk4MTAiLCJ1c2VyX25hbWUiOiIxMzk2ODM1NTU1OCIsIm5pY2tfbmFtZSI6IumZiOS4reaigSIsImRldGFpbCI6eyJ0eXBlIjoid2ViIiwiaXNDaGFyZ2UiOjEsIm5lZWRQcm9qIjoxfSwidG9rZW5fdHlwZSI6ImFjY2Vzc190b2tlbiIsImRlcHRfaWQiOiIyNDg3NjgyIiwiYWNjb3VudCI6IjEzOTY4MzU1NTU4IiwiY2xpZW50X2lkIjoic3dvcmQiLCJleHAiOjE2NDMxODA4MTAsIm5iZiI6MTY0MzE3NzIxMH0.myiaSG5YG3pIuIsNRCTY4_CGqIUUyHKTNK7KcJSZ0y3_PwYhAfnfvPEV4r-ki4nr5b5WOTQkSDG_JMaIuUuKVw","refresh_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTM2MTE3Njc4Iiwicm9sZV9pZCI6IjE0Nzk0MDA5NDUyNzE3OTk4MTAiLCJ0b2tlbl90eXBlIjoicmVmcmVzaF90b2tlbiIsImRlcHRfaWQiOiIyNDg3NjgyIiwiY2xpZW50X2lkIjoic3dvcmQiLCJleHAiOjE2NDM3ODIwMTAsIm5iZiI6MTY0MzE3NzIxMH0.UOPRw3sppIiqB53CAQFqsT-ZWZ-lxT-VJVmMcLvPKOcdADsFBJiwam0HsAXgdk6a71nCRY9MgOqCbPeeMWTu9g","token_type":"bearer","expires_in":3600,"detail":{"type":"web","isCharge":1,"needProj":1},"license":"powered by bladex"}
 			this.currentIndex=this.until.loGet('currentIndex')
 			this.userInfo = this.until.loGet("userInfo");
             // this.userInfo = info
+            let val = ''
 			if (this.userInfo.role_name.indexOf('boss')==(-1)) {
-				this.api.getDeptDetail(this.userInfo.dept_id).then(res1 => {
-					// console.log(123132);
-					this.until.loSave("deptNm", res1.deptName);
-				})
-			} else if (this.userInfo.role_name.indexOf('boss')!=-1)		console.log(444);
-				document.title = "工时报表";
+			    console.log('非老板')
+                console.log(this.userInfo.detai)
+			    if(this.userInfo.detail.chargeDepts){//领导人
+
+                    val = "工时报表";
+                }else {
+                    this.api.getDeptDetail(this.userInfo.dept_id).then(res1 => {
+                        console.log('工时详情1111',res1.deptName);
+                        this.until.loSave("deptNm", res1.deptName);
+                        val = res1.deptName
+                    })
+                }
+
+			} else if (this.userInfo.role_name.indexOf('boss')!=-1)	{
+                console.log(444);
+                val = "工时报表";
+            }
 			
-			this.deptName = this.until.loGet("deptNm");
-			document.title = this.deptName
+			// this.deptName = this.until.loGet("deptNm");
+			// document.title = this.deptName
+            dd.ready(function() {
+                dd.biz.navigation.setTitle({
+                    title : val,//控制标题文本，空字符串表示显示默认文本
+                    onSuccess : function(result) {},
+                    onFail : function(err) {}
+                });
+            });
 			this.getInfo()
 		},
 		methods: {
@@ -227,7 +247,13 @@
 						this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size, this
 							.isCharge, this.deptIds).then(res => {
 							this.total = res.total
+                            res.records.forEach(item=>{
+                                item.AllHours = item.AllHours ? parseFloat(item.AllHours).toFixed(2) : '0.00'
+                            })
 							this.list = [...this.list, ...res.records]
+                            if(this.current==1 && this.total){
+                                this.list[0].count=  parseFloat(this.list[0].count).toFixed(2)
+                            }
 							this.finished = this.list.length >= res.total;
 							this.loading = false
 							this.current++
@@ -237,7 +263,13 @@
 						this.api.getProjBossReport(this.proname, this.dateTime, this.current, this.size, this
 							.isCharge, this.deptIds).then(res => {
 							this.total = res.total
+                            res.records.forEach(item=>{
+                                item.AllHours = item.AllHours ? parseFloat(item.AllHours).toFixed(2) : '0.00'
+                            })
 							this.list = [...this.list, ...res.records]
+                            if(this.current==1 && this.total){
+                                this.list[0].count= parseFloat(this.list[0].count).toFixed(2)
+                            }
 							this.finished = this.list.length >= res.total;
 							this.loading = false
 							this.current++
@@ -248,7 +280,13 @@
 							.then(res => {
 								console.log(122);
 								this.total = res.total
+                                res.records.forEach(item=>{
+                                    item.AllHours = item.AllHours ? parseFloat(item.AllHours).toFixed(2) : '0.00'
+                                })
 								this.list = [...this.list, ...res.records]
+                                if(this.current==1 && this.total){
+                                    this.list[0].count= parseFloat(this.list[0].count).toFixed(2)
+                                }
 								this.finished = this.list.length >= res.total;
 								this.loading = false
 								this.current++
@@ -260,7 +298,15 @@
 						this.api.getDeptPersonReport(this.name, this.dateTime, this.current, this.size, this
 							.userInfo.dept_id,'').then(res => {
 							this.total = res.total
+                            res.records.forEach(item=>{
+                                item.planHours = item.planHours ? parseFloat(item.planHours).toFixed(2) : '0.00'
+                                item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
+                            })
 							this.list = [...this.list, ...res.records]
+                            if(this.current==1 && this.total){
+							    console.log('total:',this.total)
+                                this.list[0].count=parseFloat(this.list[0].count).toFixed(2)
+                            }
 							this.finished = this.list.length >= res.total;
 							this.loading = false
 							this.current++
@@ -270,8 +316,16 @@
 						this.loading=true
 						this.api.getDeptBossReport(this.name, this.dateTime, this.current, this.size, '', '').then(
 							res => {
+                                res.records.forEach(item=>{
+                                    item.planHours = item.planHours ? parseFloat(item.planHours).toFixed(2) : '0.00'
+                                    item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
+                                })
 								this.total = res.total
+                                console.log('老板')
 								this.list = [...this.list, ...res.records]
+                                if(this.current==1 && this.total){
+                                    this.list[0].count=  parseFloat(this.list[0].count).toFixed(2)
+                                }
 								this.finished = this.list.length >= res.total;
 								this.loading = false
 								this.current++
@@ -281,8 +335,16 @@
 						this.api.getDeptBossReport(this.name, this.dateTime, this.current, this.size, this
 							.isCharge, this
 							.deptIds).then(res => {
+                            res.records.forEach(item=>{
+                                item.planHours = item.planHours ? parseFloat(item.planHours).toFixed(2) : '0.00'
+                                item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
+                            })
+
 							this.total = res.total
 							this.list = [...this.list, ...res.records]
+                            if(this.current==1 && this.total){
+                                this.list[0].count= parseFloat(this.list[0].count).toFixed(2)
+                            }
 							this.finished = this.list.length >= res.total;
 							this.loading = false
 							this.current++

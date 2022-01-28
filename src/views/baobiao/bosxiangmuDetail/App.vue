@@ -163,9 +163,13 @@
 				if(this.currentRole==1){
 					this.api.getDeptPersonReport(this.name,this.dateTime,this.current,this.size,this.deptNm,this.projNm).then(res=>{
 						this.total = res.total
+                        res.records.forEach(item=>{
+                            item.planHours = item.planHours ? parseFloat(item.planHours).toFixed(2) : '0.00'
+                            item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
+                        })
 						this.list = [...this.list, ...res.records]
-                        if(this.current==1){
-                            this.list[0].count=this.total >0 ? parseFloat(this.list[0].count).toFixed(2) : '0.00'
+                        if(this.current==1 && this.total){
+                            this.list[0].count=parseFloat(this.list[0].count).toFixed(2)
                         }
 						this.finished = this.list.length >= res.total;
 						this.loading = false

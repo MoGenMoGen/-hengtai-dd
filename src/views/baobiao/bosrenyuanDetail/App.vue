@@ -12,7 +12,7 @@
 				</div>
 			</div> -->
 			<div class="bodyContent">
-				<div class="workHours" v-if="list.length>0">总计工时：{{list[0].count}}H</div>
+				<div class="workHours" v-if="list.length>0">总计工时：{{total ? list[0].count : '0.00'}}H</div>
 				<div class="searchBox">
 					 <div class="boxOne">
 					 	<input placeholder="项目名称" v-model="name" />
@@ -138,8 +138,8 @@
                             item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
                         })
 						this.list = [...this.list, ...res.records]
-                        if(this.current==1){
-                            this.list[0].count=this.total >0 ? parseFloat(this.list[0].count).toFixed(2) : '0.00'
+                        if(this.current==1 && this.total){
+                            this.list[0].count=parseFloat(this.list[0].count).toFixed(2)
                         }
 						this.finished = this.list.length >= res.total;
 						this.loading = false
@@ -148,11 +148,14 @@
 				}
 				if(this.currentRole==1){
 					document.title=this.deptNm+"-"+this.userNm
-					this.api.getPersonProjBossReport1(this.name,this.dateTime,this.userNm,this.current,this.size,this.deptId).then(res=>{
+					this.api.getPersonProjBossReport1(this.name,this.dateTime,this.userId,this.current,this.size,this.deptId).then(res=>{
 						this.total = res.total
+                        res.records.forEach(item=>{
+                            item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
+                        })
 						this.list = [...this.list, ...res.records]
-                        if(this.current==1){
-                            this.list[0].count=this.total >0 ? parseFloat(this.list[0].count).toFixed(2) : '0.00'
+                        if(this.current==1 && this.total){
+                            this.list[0].count=parseFloat(this.list[0].count).toFixed(2)
                         }
 						this.finished = this.list.length >= res.total;
 						this.loading = false
@@ -163,9 +166,12 @@
 					document.title=this.userNm
 					this.api.getPersonProjBossReport(this.name,this.dateTime,this.userId,this.current,this.size,this.isCharge,this.deptIds).then(res=>{
 						this.total = res.total
+                        res.records.forEach(item=>{
+                            item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
+                        })
 						this.list = [...this.list, ...res.records]
-                        if(this.current==1){
-                            this.list[0].count=this.total >0 ? parseFloat(this.list[0].count).toFixed(2) : '0.00'
+                        if(this.current==1 && this.total){
+                            this.list[0].count=parseFloat(this.list[0].count).toFixed(2)
                         }
 						this.finished = this.list.length >= res.total;
 						this.loading = false

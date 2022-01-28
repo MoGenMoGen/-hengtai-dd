@@ -321,7 +321,7 @@
                                     item.workHours = item.workHours ? parseFloat(item.workHours).toFixed(2) : '0.00'
                                 })
 								this.total = res.total
-                                console.log('老板')
+                                // console.log('老板')
 								this.list = [...this.list, ...res.records]
                                 if(this.current==1 && this.total){
                                     this.list[0].count=  parseFloat(this.list[0].count).toFixed(2)

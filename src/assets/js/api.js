@@ -18,7 +18,8 @@ const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkI
 import Vue from 'vue'
 
 import axios from 'axios'
-import { Toast } from 'mint-ui';
+// import { Toast } from 'mint-ui';
+import { Toast } from 'vant';
 import qs from 'qs';
 import { until } from '@/assets/js/until'
 
@@ -63,12 +64,18 @@ function get(url, data, header, cache = false) {
 }
 
 function post(url, data, header) {
+    Toast.loading({
+        message: '加载中...',
+        forbidClick: true,
+        duration:0,
+    });
 	let headers = { ...header, ...{'Cache-Control': 'no-cache'}, ...{ "Blade-Auth": until1.loGet("token") } }
 	// let headers = { ...header, ...{ "Blade-Auth": 'bearer ' + localStorage.getItem('token') } }
 	// let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.post(url, data, { headers })
 			.then(function (response) {
+                Toast.clear()
 				console.log('then', response);
 				if (response.data.code == 0 || response.status == 200) {
 					if (response.data.error_description == '请绑定账号.') {
@@ -88,6 +95,7 @@ function post(url, data, header) {
 				}
 			})
 			.catch(function (error) {
+                Toast.clear()
 				console.log('catch', error);
 				Toast(error.response.data.msg)
 				if (error.response.data.code == 401) {

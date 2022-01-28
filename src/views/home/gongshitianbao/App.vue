@@ -188,6 +188,7 @@
 				xiala,
 				shanchu,
 				guize,
+                processInstanceId:'',
 				nowDate: "", //当前日期
 				startTm: 9, //最小时间
 				endTm: 17, //最大时间
@@ -377,6 +378,7 @@
 					this.workHours = res.workHours
 					this.workdays = res.workDays
 					this.rmks = res.rmks
+					this.processInstanceId = res.processInstanceId
 					let a = JSON.parse(res.params)
 					this.api.getProjjobcontListAll().then(res1 => {
 						this.checkList = res1
@@ -828,6 +830,7 @@
 				let id = this.until.getQueryString('id')
 				if (id) {
 					from.id = id
+					from.processInstanceId = this.processInstanceId
 				}
 				console.log(from);
 				this.api.ProjwhreportSubmit(from).then(res => {

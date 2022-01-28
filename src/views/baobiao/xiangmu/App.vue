@@ -35,15 +35,16 @@
 				</div>
 			</div>
 		</div>
+
         <!--项目-->
 		<div class="list1" style="padding: 0rem 0.2rem;padding-bottom: 0.2rem;" v-if="currentIndex == 0">
-			<div class="header">
-				<div class="headName1 headname">项目</div>
-				<div class="headName2 headname">月份</div>
-				<div class="headName2 headname">工作时长(H)</div>
-				<div class="headName3 headname" v-if="currentRole!=3">部门详情</div>
-				<div class="headName3 headname" v-if="currentRole==3">人员详情</div>
-			</div>
+            <div class="header">
+                <div class="headName1 headname">项目</div>
+                <div class="headName2 headname">月份</div>
+                <div class="headName2 headname">工作时长(H)</div>
+                <div class="headName3 headname" v-if="currentRole!=3">部门详情</div>
+                <div class="headName3 headname" v-if="currentRole==3">人员详情</div>
+            </div>
 			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="getInfo()"   :immediate-check="immediate"
 				v-if="currentIndex == 0">
 				<div class="bottom">
@@ -65,7 +66,7 @@
                         <div class="header2">
                             <div class="headName4 headname">姓名</div>
                         </div>
-                        <div class="list" v-for="(item,index) in list " :key="index">
+                        <div class="list" v-for="(item,index) in list" :key="index">
                             <!--<div class="listName4 listName">{{item.userName}}</div>-->
                             <div class="listName4 listName">{{item.userName}}</div>
                         </div>
@@ -79,7 +80,7 @@
                             <div class="headName5 headname">达成率(%)</div>
                             <div class="headName5 headname">项目详情</div>
                         </div>
-                        <div class="list" v-for="(item,index) in list " :key="index">
+                        <div class="list" v-for="(item,index) in list" :key="index">
                             <!--<div class="listName4 listName">{{item.userName}}</div>-->
                             <div class="listName4 listName">{{item.workDate}}</div>
                             <div class="listName5 listName">{{item.planHours}}</div>
@@ -169,7 +170,7 @@
 				proname: "",
 				userInfo: "",
 				list: [],
-                list2:['','','',''],
+                list2:['','','','','','','','','','','','','','','',''],
 				deptIds: "",
 				isCharge: '',
 				size: 15,
@@ -465,7 +466,7 @@
 			}
 
 			.searchBox {
-				margin-top: 0.3rem;
+				/*margin-top: 0.3rem;*/
 				display: flex;
 				justify-content: space-around;
 
@@ -526,7 +527,6 @@
 				}
 			}
 		}
-
 		.list2 {
 			.header2 {
 				width: 13rem;
@@ -588,6 +588,7 @@
 		}
 
 		.list1 {
+
 			.bottom {
 				box-sizing: border-box;
 				background-color: #f1f3f2;
@@ -638,7 +639,10 @@
 				box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
 				border-radius: 0.1rem;
 				display: flex;
-
+                position: sticky;
+                top: 2.2rem;
+                left: 0;
+                z-index: 50;
 				.headname {
 					text-align: center;
 					line-height: 0.62rem;
@@ -662,7 +666,10 @@
 				}
 			}
 		}
-
+        /*.header2{*/
+            /*position: sticky;*/
+            /*top: 2.2rem;*/
+        /*}*/
 		.list3 {
 			.header2 {
 				width: 15.5rem;

@@ -299,6 +299,9 @@ export default {
         font-size: 0.24rem;
         color: #ffffff;
         flex: 1;
+        &:first-of-type{
+          width: 2rem;
+        }
       }
     }
   }
@@ -320,6 +323,9 @@ export default {
         line-height: 0.24rem;
         text-align: center;
         flex: 1;
+        &:first-of-type{
+          width: 2rem;
+        }
       }
     }
   }

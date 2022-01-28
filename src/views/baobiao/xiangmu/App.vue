@@ -684,7 +684,7 @@
 				}
 
 				.headName4 {
-					width: 1.5rem;
+					width: 2rem;
 					border-right: 1px solid #ffffff;
 				}
 
@@ -756,7 +756,7 @@
             margin: 0 auto 0.2rem;
             .listLeft{
                 flex-shrink: 0;
-                width: 1.5rem;
+                width: 2rem;
                 .header2,.list{
                     width: 100%;
                     border-radius: 0.1rem 0 0 0.1rem;

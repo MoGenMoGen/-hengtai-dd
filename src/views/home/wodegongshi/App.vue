@@ -54,7 +54,7 @@
         <img :src="butongguo" v-if="item.audit == 3" />
         <div class="btn" v-if="item.audit==1" >
           <div class="btnLeft" @click.stop="modify(item.id,item.types)">修改</div>
-          <div class="btnRight" @click.stop="remove(item,index)">删除</div>
+          <div class="btnRight" @click.stop="remove(item,index)">撤回</div>
         </div>
       </div>
     </van-list>
@@ -140,20 +140,20 @@ export default {
       console.log(item,index);
       Dialog.confirm({
         title: "提示",
-        message: "是否确认删除",
+        message: "是否确认撤回？",
       })
 
         .then(() => {
           console.log(777);
 		  
           this.api.removeProjwhreport(item.id).then((res) => {
-            Notify({ type: "success", message: "删除成功" });
+            Notify({ type: "success", message: "撤回成功" });
             this.infoList.splice(index,1)
           });
         })
         .catch(() => {
           Notify({
-            message: "取消删除",
+            message: "取消撤回",
             color: "#ffffff",
             background: "#cccccc",
           });

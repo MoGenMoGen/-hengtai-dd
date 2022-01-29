@@ -453,6 +453,7 @@
 				box-sizing: border-box;
 
 				.workHours {
+                    margin-bottom: 0.1rem;
 					height: 0.88rem;
 					width: 100%;
 					background-image: url(../../../assets/img/总分背景.png);
@@ -538,7 +539,7 @@
 				box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
 				border-radius: 0.1rem;
 				display: flex;
-
+                margin-bottom: 0.1rem;
 				.headname {
 					text-align: center;
 					line-height: 0.62rem;
@@ -639,9 +640,7 @@
 				box-shadow: 0.1rem 0.1 0.1rem 0.1rem rgba(47, 73, 154, 0.08);
 				border-radius: 0.1rem;
 				display: flex;
-                position: sticky;
-                top: 2.2rem;
-                left: 0;
+                margin-bottom: 0.1rem;
                 z-index: 50;
 				.headname {
 					text-align: center;
@@ -672,6 +671,7 @@
         /*}*/
 		.list3 {
 			.header2 {
+                margin-bottom: 0.1rem;
 				width: 15.5rem;
 				overflow-x: auto;
 				white-space: nowrap;

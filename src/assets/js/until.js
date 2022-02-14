@@ -438,7 +438,7 @@ class until{
     localStorage.setItem(name,JSON.stringify(obj));
   }
   loGet(name){
-    console.log('token',localStorage.getItem(name));
+    console.log('token',JSON.parse(localStorage.getItem(name)));
     if(localStorage.getItem(name))
     return JSON.parse(localStorage.getItem(name));
     else return '';

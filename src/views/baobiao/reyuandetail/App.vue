@@ -89,6 +89,7 @@ export default {
 	  this.until.loSave("currentIndex",1);
 	 this.deptNm=this.until.getQueryString('deptNm')
 	 this.deptId=this.until.getQueryString('deptId')
+	this.dateTime=this.until.getQueryString('dateTime')
 	 this.userInfo = this.until.loGet("userInfo");
 	 if(this.userInfo){
 	 	this.deptIds=this.userInfo.dept_id
@@ -153,7 +154,7 @@ export default {
 				
 	  },
     toDetail(item) {
-      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&deptId=${item.deptId}`);
+      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&deptId=${item.deptId}&dateTime=${item.workDate}`);
     },
     onConfirm(val) {
       this.dateTime = this.getNowDate(val);

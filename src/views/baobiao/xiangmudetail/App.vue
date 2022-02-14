@@ -114,6 +114,7 @@ export default {
 	this.deptNm=this.until.getQueryString('deptNm')
 	this.projNm=this.until.getQueryString('projNm')
 	this.projId=this.until.getQueryString('projId')
+	this.dateTime=this.until.getQueryString('dateTime')
 	// this.getInfo()
   },
   methods: {
@@ -163,7 +164,7 @@ export default {
 		this.getInfo() 
 	 },
     toDetail(item) {
-      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&deptId=${item.deptId}`);
+      this.until.href(`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&deptId=${item.deptId}&dateTime=${item.workDate}`);
     },
     changeTab(index) {
       this.currentIndex = index;

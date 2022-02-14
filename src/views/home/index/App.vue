@@ -93,25 +93,25 @@ import close from "../../../assets/img/close.png";
 export default {
   data() {
     return {
-	  guize,
+      guize,
       logo,
       tianbao,
-	  close,
+      close,
       bulu,
       wode,
       baobiao,
-	  shanchu,
+      shanchu,
       arrowRight,
       imgList: [],
       indicatorDots: true,
-	  showMask:false,//弹出层显示隐藏
+      showMask: false, //弹出层显示隐藏
       autoplay: true,
       interval: 2000,
       duration: 500,
       code: "",
       userInfo: "",
-	  info:{},
-        errMsg:null,
+      info: {},
+      errMsg: null,
     };
   },
   computed: {
@@ -120,20 +120,20 @@ export default {
       if (this.userInfo) {
         if (
           this.userInfo.detail.isCharge == 1 ||
-          this.userInfo.role_name.indexOf('boss')!=-1
+          this.userInfo.role_name.indexOf("boss") != -1
         )
-		
           return true;
         else return false;
       } else return false;
     },
-	// showReport(){
-	// 	return true
-	// }
+    // showReport(){
+    // 	return true
+    // }
   },
   created() {
-	  // this.userInfo = this.until.loGet("userInfo");
-	// this.currentRole = 2;
+    // this.userInfo = this.until.loGet("userInfo");
+    // this.currentRole = 2;
+
     this.dd();
   },
   mounted() {},
@@ -150,7 +150,7 @@ export default {
         dd.runtime.permission.requestAuthCode({
           //获取code
           // corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
-		  corpId: "dingc35f50400f19d66d",
+          corpId: "dingc35f50400f19d66d",
           onSuccess: (info) => {
             console.log("获取钉钉code");
 
@@ -162,33 +162,34 @@ export default {
               tenantId: "000000",
             };
             that.api.login(obj).then((res) => {
-                console.log('111111111111111')
+              console.log("111111111111111");
               if (!res.error_description) {
                 let token = res.token_type + " " + res.access_token;
-				
+
                 that.until.loSave("token", token);
                 that.until.loSave("userInfo", res);
-                that.userInfo = res
-				if (that.userInfo && that.userInfo.role_name.indexOf('boss')!=-1){
-					 that.until.href('/views/baobiao/xiangmu.html')
-					
-				}
-                  that.api.getContarticle().then(res2=>{
-                      that.info=res2
-                  })
-                  that.api.getListAdsByPos().then(res3=>{
-                      res3.forEach(item=>{
-                          that.imgList.push(item.imgUrl)
-                      })
-                  })
-              }else {
-                  console.log('错误的')
-                  console.log(res.error_description)
-                  that.errMsg = res.error_description
-				   that.until.loRemove('token')
-                  that.until.loRemove('userInfo')
-			  }
-
+                that.userInfo = res;
+                if (
+                  that.userInfo &&
+                  that.userInfo.role_name.indexOf("boss") != -1
+                ) {
+                  that.until.href("/views/baobiao/xiangmu.html");
+                }
+                that.api.getContarticle().then((res2) => {
+                  that.info = res2;
+                });
+                that.api.getListAdsByPos().then((res3) => {
+                  res3.forEach((item) => {
+                    that.imgList.push(item.imgUrl);
+                  });
+                });
+              } else {
+                console.log("错误的");
+                console.log(res.error_description);
+                that.errMsg = res.error_description;
+                that.until.loRemove("token");
+                that.until.loRemove("userInfo");
+              }
             });
           },
           onFail: (err) => {
@@ -212,66 +213,70 @@ export default {
   padding: 0.3rem;
   box-sizing: border-box;
   width: 100vw;
-   height: 100vh;
-   .van-overlay{
-	   display: flex;
-	       justify-content: center;
-	       align-items: center;
-		   background-color: #ffffff;
-   }
-  .mask{
-	  width: 100vw;
-	  height: 100vh;
-	  background-color: rgba(0,0,0,0.5);
-	  z-index: 10;
-	  position: fixed;
-	  top: 0;
-	  left: 0;
-	  display: flex;
-	  justify-content: center;
-	  align-items: center;
-	  .maskContainer{
-		  position: relative;
-		  width: 90%;
-		 max-height: 60%;
-		  background-color: #ffffff;
-		  border-radius: 0.12rem;
-		  z-index: 50;
-		  padding: 0.4rem 0.3rem;
-		  box-sizing: border-box;
-		  overflow-y: scroll;
-		  .title{
-			  text-align: center;
-			  font-size: 0.3rem;
-			  font-weight:bold;
-			  color: #333333;
-		  }
-		  img{
-			  width: 0.36rem;
-			  height: 0.37rem;
-			  position: absolute;
-			  top: 0.4rem;
-			  right:0.3rem;
-		  }
-	  }
+  height: 100vh;
+  .van-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+  }
+  .mask {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .maskContainer {
+      position: relative;
+      width: 90%;
+      max-height: 60%;
+      background-color: #ffffff;
+      border-radius: 0.12rem;
+      z-index: 50;
+      padding: 0.4rem 0.3rem;
+      box-sizing: border-box;
+      overflow-y: scroll;
+      .title {
+        text-align: center;
+        font-size: 0.3rem;
+        font-weight: bold;
+        color: #333333;
+      }
+      img {
+        width: 0.36rem;
+        height: 0.37rem;
+        position: absolute;
+        top: 0.4rem;
+        right: 0.3rem;
+      }
+    }
   }
   .topSwiper {
     width: 6.9rem;
     height: 3.5rem;
-    border-radius: 0.12rem;
+    // border-radius: 0.12rem;
     .swiper {
-      width: 100%;
-      height: 100%;
-      text-align: center;
-	  border-radius: 0.12rem;
+      // width: 100%;
+      // height: 100%;
+      // text-align: center;
+      border-radius: 0.12rem;
+      // transform: translateY(0);
+      overflow: hidden;
       .swiper-item {
-        width: 100%;
-        height: 100%;
-		border-radius: 0.12rem;
+        // width: 100%;
+        // height: 100%;
+        // border-radius: 0.12rem;
         img {
-          width: 100%;
-          height: 100%;
-		  border-radius: 0.12rem;
+          // width: 100%;
+          // height: 100%;
+          width: 6.9rem;
+          height: 3.5rem;
+          // border-radius: 0.12rem;
         }
       }
     }
@@ -318,26 +323,25 @@ export default {
     }
   }
   .bottomText {
-	  
     text-align: center;
     font-size: 0.2rem;
     color: #666666;
     opacity: 0.8;
-	position: absolute;
-	bottom: 0.4rem;
-	left: 50%;
-	transform: translateX(-50%);
+    position: absolute;
+    bottom: 0.4rem;
+    left: 50%;
+    transform: translateX(-50%);
   }
-  .guize{
-	  position: absolute;
-	  right: 0.54rem;
-	  bottom: 10%;
-	  img{
-		  width: 0.84rem;
-		  height: 0.84rem;
-		  background: #FFFFFF;
-		  border-radius: 50%;
-	  }
+  .guize {
+    position: absolute;
+    right: 0.54rem;
+    bottom: 10%;
+    img {
+      width: 0.84rem;
+      height: 0.84rem;
+      background: #ffffff;
+      border-radius: 50%;
+    }
   }
 }
 </style>

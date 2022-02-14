@@ -391,22 +391,22 @@
 			toDetail(item) {
 				console.log(item);
 				if (this.currentRole != 3) {
-					this.until.href(`/views/baobiao/xiangmudetail.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}`);
+					this.until.href(`/views/baobiao/xiangmudetail.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&dateTime=${item.workDate}`);
 				} else {
 					this.until.href(
-					`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&deptId=${item.deptId}`);
+					`/views/baobiao/xiangmuDetailTwo.html?deptNm=${item.deptName}&projNm=${item.projName}&projId=${item.projId}&deptId=${item.deptId}&dateTime=${item.workDate}`);
 				}
 			},
 			pepDetial(item) {
 				if (this.currentRole != 3) {
-					this.until.href(`/views/baobiao/reyuandetail.html?userNm=${item.userName}&deptNm=${item.deptName}&deptId=${item.deptId}`);
+					this.until.href(`/views/baobiao/reyuandetail.html?userNm=${item.userName}&deptNm=${item.deptName}&deptId=${item.deptId}&dateTime=${item.workDate}`);
 				} else {
 					this.until.href(
-					`/views/baobiao/bosrenyuanDetail.html?userNm=${item.userName}&deptNm=${item.deptId}&userId=${item.userId}`);
+					`/views/baobiao/bosrenyuanDetail.html?userNm=${item.userName}&deptNm=${item.deptId}&userId=${item.userId}&dateTime=${item.workDate}`);
 				}
 			},
 			pepDetialTwo(item) {
-				this.until.href(`/views/baobiao/bosxiangmuDetail.html?deptNm=${item.deptName}&projNm=${item.projName}&deptId=${item.deptId}`);
+				this.until.href(`/views/baobiao/bosxiangmuDetail.html?deptNm=${item.deptName}&projNm=${item.projName}&deptId=${item.deptId}&dateTime=${item.workDate}`);
 			},
 		},
 	};

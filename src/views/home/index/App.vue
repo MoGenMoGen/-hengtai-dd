@@ -15,11 +15,9 @@
 				</div>
 			</div>
 		</div>
-		<div class="topSwiper">
-			<van-swipe class="swiper" :autoplay="3000" indicator-color="white" >
-			  <van-swipe-item class="swiper-item" v-for="(item,index) in imgList" :key="index"><img :src="item" ></van-swipe-item>
-			</van-swipe>
-		</div>
+		<van-swipe class="swiper" :autoplay="3000" indicator-color="white" >
+		  <van-swipe-item class="swiper-item" v-for="(item,index) in imgList" :key="index"><img :src="item" ></van-swipe-item>
+		</van-swipe>
 		<div class="bodyList">
 			<div class="listItem" @click="topage('/views/home/gongshitianbao.html?types=1')">
 				<img class="img1" :src="bulu" mode=""></img>
@@ -102,7 +100,8 @@ export default {
       baobiao,
       shanchu,
       arrowRight,
-      imgList: [],
+      imgList: [ 'https://img.yzcdn.cn/vant/apple-1.jpg',
+          'https://img.yzcdn.cn/vant/cat.jpeg',],
       indicatorDots: true,
       showMask: false, //弹出层显示隐藏
       autoplay: true,
@@ -134,7 +133,7 @@ export default {
     // this.userInfo = this.until.loGet("userInfo");
     // this.currentRole = 2;
 
-    this.dd();
+    // this.dd();
   },
   mounted() {},
   methods: {
@@ -256,6 +255,26 @@ export default {
       }
     }
   }
+	.swiper {
+		width: 6.9rem;
+		height: 3.5rem;
+		// text-align: center;
+		border-radius: 0.12rem;
+		// transform: translateY(0);
+		overflow: hidden;
+		.swiper-item {
+			// width: 100%;
+			// height: 100%;
+			// border-radius: 0.12rem;
+			img {
+				// width: 100%;
+				// height: 100%;
+				width: 6.9rem;
+				height: 3.5rem;
+				// border-radius: 0.12rem;
+			}
+		}
+	}
   .topSwiper {
     width: 6.9rem;
     height: 3.5rem;

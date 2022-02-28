@@ -834,7 +834,11 @@
 				}
 				console.log(from);
 				this.api.ProjwhreportSubmit(from).then(res => {
-					this.until.back()
+					Toast("提交成功")
+					setTimeout(()=>{
+						this.until.back()
+					},1000)
+					
 				})
 			}
 

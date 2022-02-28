@@ -240,7 +240,7 @@ export default {
           color: #606060;
           margin-bottom: 0.3rem;
           .listLeft {
-			  width:1.2rem ;
+			  width:1.4rem ;
           }
           .listRight {
 			flex: 1;

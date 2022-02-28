@@ -100,8 +100,7 @@ export default {
       baobiao,
       shanchu,
       arrowRight,
-      imgList: [ 'https://img.yzcdn.cn/vant/apple-1.jpg',
-          'https://img.yzcdn.cn/vant/cat.jpeg',],
+      imgList: [],
       indicatorDots: true,
       showMask: false, //弹出层显示隐藏
       autoplay: true,
@@ -133,7 +132,7 @@ export default {
     // this.userInfo = this.until.loGet("userInfo");
     // this.currentRole = 2;
 
-    // this.dd();
+    this.dd();
   },
   mounted() {},
   methods: {

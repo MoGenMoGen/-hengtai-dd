@@ -63,6 +63,7 @@ export default {
         dd.runtime.permission.requestAuthCode({
           //获取code
           corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
+		   // corpId: "dingc35f50400f19d66d",
 		  // corpId: "812fbbc44fa43ba1a8584b026b67c3a0",
           onSuccess: (info) => {
             console.log("获取钉钉code");

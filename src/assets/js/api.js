@@ -98,6 +98,12 @@ function post(url, data, header) {
                 Toast.clear()
 				console.log('catch', error);
 				Toast(error.response.data.msg)
+				if(error.response.data.msg.indexOf("工作时间重复")>-1)
+				{
+					console.log(22,error.response.data.msg);
+					reject(error.response.data.msg)
+					
+				}
 				if (error.response.data.code == 401) {
 					Toast('请重新登录');
 					setTimeout(() => {
@@ -194,12 +200,18 @@ class api {
 		let header = {
 			'Content-Type': 'application/json',
 		}
-		return new Promise(resolve => {
+		return new Promise((resolve,reject)=> {
 			post('/api/blade-proj/apis/projwhreport/submit', data, header).then(res => {
 				resolve(res)
 			})
+			.catch(err=>{
+				console.log(11,err);
+				reject(err)
+			})
+			
 		})
 	}
+	
 	//工时填报详情
 	getProjwhreportDetail(data) {
 		return new Promise((resolve, reject) => {

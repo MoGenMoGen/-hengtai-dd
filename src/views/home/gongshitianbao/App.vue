@@ -50,7 +50,7 @@
 					<img :src="shijian">
 				</div>
 			</div>
-			<div class="listItem">
+			<div class="listItem" style="padding: 0.5rem 0.34rem;box-sizing: border-box;" :style="{border:showBorder?'1px solid red':'none'}">
 				<p style="color: #FF2015; font-size: 0.24rem;">*</p>
 				<p>工作时间：</p>
 				<div class="selectBox">
@@ -231,6 +231,7 @@
 				index1: "",
 				index2: "",
 				info:'',
+				showBorder:false,
 			}
 		},
 		watch: {
@@ -686,7 +687,7 @@
 				let year = nowDate.getFullYear();
 				let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) : nowDate.getMonth() + 1;
 				let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
-				if (day == 1) {
+				if (day == 1&&this.types ==2 ) {
 					Toast('一号不能补录')
 					setTimeout(() => {
 						this.until.back()
@@ -834,12 +835,16 @@
 				}
 				console.log(from);
 				this.api.ProjwhreportSubmit(from).then(res => {
-					Toast("提交成功")
-					setTimeout(()=>{
-						this.until.back()
-					},1000)
+						Toast("提交成功")
+						setTimeout(()=>{
+							this.until.back()
+						},1000)
 					
 				})
+				.catch(err=>{
+					this.showBorder=true
+				})
+				
 			}
 
 		}
@@ -1053,9 +1058,8 @@
 					display: flex;
 					justify-content: center;
 					align-items: center;
-					width: 3rem;
+					width: 3.5rem;
 					height: 0.6rem;
-					border: 0.01px solid #DDDDDD;
 					border-radius: 0rem;
 
 					.beginTm {
@@ -1074,7 +1078,7 @@
 				}
 
 				.allSelectBox {
-					margin-left: 0.5rem;
+					margin-left: 0.1rem;
 					display: flex;
 					justify-content: center;
 					align-items: center;

@@ -1,9 +1,9 @@
 {
   "name": "dongsang",
   "version": "1.0.1",
-  "author": "wyh",
+  "author": "wyh http://htweb.jinkworld.com http://lwkacgr.nat.ipyingshe.com",
   "scripts": {
-    "dev": "node --max_old_space_size=4096 build/dev-server.js --proxy=http://htweb.jinkworld.com",
+    "dev": "node --max_old_space_size=4096 build/dev-server.js --proxy=http://htweb2.jinkworld.com:82",
     "build": "node build/build.js",
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "e2e": "node test/e2e/runner.js",

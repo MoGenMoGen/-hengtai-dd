@@ -13,7 +13,6 @@ const hostUrl = "http://htweb2.jinkworld.com:81"
 
 
 // const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJhZG1pbmlzdHJhdG9yIiwicG9zdF9pZCI6IjI4MDQ1MiIsInVzZXJfaWQiOiIxMTIzNTk4ODIxNzM4Njc1MjAxIiwicm9sZV9pZCI6IjExMjM1OTg4MTY3Mzg2NzUyMDEiLCJ1c2VyX25hbWUiOiJhZG1pbiIsIm5pY2tfbmFtZSI6IueuoeeQhuWRmCIsImRldGFpbCI6eyJ0eXBlIjoid2ViIn0sInRva2VuX3R5cGUiOiJhY2Nlc3NfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY5MiIsImFjY291bnQiOiJhZG1pbiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQxODk0MTExLCJuYmYiOjE2NDE4OTA1MTF9.IYG-Hy4_zc8zRCQzUCYHwnzqUSsgme-JbD3rCP2OCKE0KqPBVTU6ldIpI7_FetsDwRcpbCYyCqhPq22ku6xdIA'
-const token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTQ4MTEwMjMwMDEzODI5OTM5NCIsInJvbGVfaWQiOiIxNDc5NDAwOTQ1MjcxNzk5ODEwIiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJkZXB0X2lkIjoiMjQ4NzY4MiIsImNsaWVudF9pZCI6InNhYmVyIiwiZXhwIjoxNjQzNjkyNjc3LCJuYmYiOjE2NDMwODc4Nzd9.VilZZ_rcqVcegIBIz9Fi-SRrPkUERfRLmF-_j3Aj4d7SOvK8-f3_ZYotdYDOnkHjh62ydDG8vNQZLMkrMEJNJw'
 
 import Vue from 'vue'
 
@@ -27,10 +26,16 @@ const until1 = new until();
 // const token = until1.loGet("token")
 // const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
+
+const token =
+'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJub21hbCIsInBvc3RfaWQiOiIxNDk0NTkzNjEyMzIyODAzNzEzIiwidXNlcl9pZCI6IjE2MjA2NzA3NiIsInJvbGVfaWQiOiIxNDc5NDAwOTQ1MjcxNzk5ODEwIiwidXNlcl9uYW1lIjoi5YWr5pyIIiwibmlja19uYW1lIjoi5YWr5pyIIiwiZGV0YWlsIjp7InR5cGUiOiJ3ZWIiLCJpc0NoYXJnZSI6MCwibmVlZFByb2oiOjF9LCJ0b2tlbl90eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGVwdF9pZCI6IjI0ODc2ODIiLCJhY2NvdW50Ijoi5YWr5pyIIiwiY2xpZW50X2lkIjoic2FiZXIiLCJleHAiOjE2NDY5ODI4NDQsIm5iZiI6MTY0Njk3OTI0NH0.Ux8ENqCG5Uwjkau1O1FViKi1cunEQuAKjk7Df7Tu-vPHT1mkHJlAXMoJf54XBPKg-vy6bYAow13tSpT4BlE63A'
+
+
+until1.loSave("token",token)
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
 
-	let headers = { ...header,...{'Cache-Control': 'no-cache'},...{ "Blade-Auth": until1.loGet("token") } }
+	let headers = { ...header, ...{ 'Cache-Control': 'no-cache' }, ...{ "Blade-Auth": until1.loGet("token") } }
 
 	// let headers = { ...header, ...{ "Blade-Auth": 'bearer '+localStorage.getItem('token')}}
 	// let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
@@ -54,8 +59,7 @@ function get(url, data, header, cache = false) {
 					window.location.replace("/views/home/index.html")
 				}, 1000);
 			}
-			else
-			{
+			else {
 				Toast(err.response.data.msg)
 			}
 		})
@@ -64,45 +68,44 @@ function get(url, data, header, cache = false) {
 }
 
 function post(url, data, header) {
-    Toast.loading({
-        message: '加载中...',
-        forbidClick: true,
-        duration:0,
-    });
-	let headers = { ...header, ...{'Cache-Control': 'no-cache'}, ...{ "Blade-Auth": until1.loGet("token") } }
+	Toast.loading({
+		message: '加载中...',
+		forbidClick: true,
+		duration: 0,
+	});
+	let headers = { ...header, ...{ 'Cache-Control': 'no-cache' }, ...{ "Blade-Auth": until1.loGet("token") } }
 	// let headers = { ...header, ...{ "Blade-Auth": 'bearer ' + localStorage.getItem('token') } }
 	// let headers = { ...header,...{'Cache-Control': 'no-cache'} ,...{ "Blade-Auth": 'bearer '+token } }
 	let promise = new Promise((resolve, reject) => {
 		axios.post(url, data, { headers })
 			.then(function (response) {
-                Toast.clear()
+				Toast.clear()
 				console.log('then', response);
 				if (response.data.code == 0 || response.status == 200) {
 					if (response.data.error_description == '请绑定账号.') {
 						Toast('请绑定账号.');
 						setTimeout(() => {
 							window.location.replace("/views/home/login.html")
-						}, 1000  );
-					
+						}, 1000);
+
 					}
 					resolve(response.data);
 				}
-				 else if(url.indexOf('/blade-dingding/access/login')!=-1 && response.data.error_code==400){
-                    Toast(response.data.error_description);
-                    resolve(response.data);
-				}else {
-                    Toast(response.data.msg)
+				else if (url.indexOf('/blade-dingding/access/login') != -1 && response.data.error_code == 400) {
+					Toast(response.data.error_description);
+					resolve(response.data);
+				} else {
+					Toast(response.data.msg)
 				}
 			})
 			.catch(function (error) {
-                Toast.clear()
+				Toast.clear()
 				console.log('catch', error);
 				Toast(error.response.data.msg)
-				if(error.response.data.msg.indexOf("工作时间重复")>-1)
-				{
-					console.log(22,error.response.data.msg);
+				if (error.response.data.msg.indexOf("工作时间重复") > -1) {
+					console.log(22, error.response.data.msg);
 					reject(error.response.data.msg)
-					
+
 				}
 				if (error.response.data.code == 401) {
 					Toast('请重新登录');
@@ -110,8 +113,7 @@ function post(url, data, header) {
 						window.location.replace("/views/home/index.html")
 					}, 1000);
 				}
-				else if(error.response.data.msg=='不存在的临时授权码')
-				{
+				else if (error.response.data.msg == '不存在的临时授权码') {
 					setTimeout(() => {
 						window.location.replace("/views/home/index.html")
 					}, 1000);
@@ -200,18 +202,18 @@ class api {
 		let header = {
 			'Content-Type': 'application/json',
 		}
-		return new Promise((resolve,reject)=> {
+		return new Promise((resolve, reject) => {
 			post('/api/blade-proj/apis/projwhreport/submit', data, header).then(res => {
 				resolve(res)
 			})
-			.catch(err=>{
-				console.log(11,err);
-				reject(err)
-			})
-			
+				.catch(err => {
+					console.log(11, err);
+					reject(err)
+				})
+
 		})
 	}
-	
+
 	//工时填报详情
 	getProjwhreportDetail(data) {
 		return new Promise((resolve, reject) => {
@@ -262,123 +264,123 @@ class api {
 	}
 	//计算工作时长
 	getDuration(data) {
-	    return new Promise((resolve, reject) => {
-	        get('/api/blade-proj/apis/projwhreport/getDuration',data).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+		return new Promise((resolve, reject) => {
+			get('/api/blade-proj/apis/projwhreport/getDuration', data).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//部门看项目
-	getDeptProjReport(projNm,workDate,isCharge,chargeDepts,current,size) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/deptProjReport?projNm='+projNm+'&workDate='+workDate+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts+'&current='+current+'&size='+size).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+	getDeptProjReport(projNm, workDate, isCharge, chargeDepts, current, size) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/deptProjReport?projNm=' + projNm + '&workDate=' + workDate + '&isCharge=' + isCharge + '&chargeDepts=' + chargeDepts + '&current=' + current + '&size=' + size).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//部门看人员
-	getDeptPersonReport(userNm,workDate,current,size,deptId,projId) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/deptPersonReport?userNm='+userNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&deptId='+deptId+'&projId='+projId).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+	getDeptPersonReport(userNm, workDate, current, size, deptId, projId) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/deptPersonReport?userNm=' + userNm + '&workDate=' + workDate + '&current=' + current + '&size=' + size + '&deptId=' + deptId + '&projId=' + projId).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//部门 人员看项目
-	getPersonProjReport(projNm,workDate,userNm,deptNm,current,size) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/personProjReport?projNm='+projNm+'&workDate='+workDate+'&userNm='+userNm+'&deptNm='+deptNm+'&current='+current+'&size='+size).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+	getPersonProjReport(projNm, workDate, userNm, deptNm, current, size) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/personProjReport?projNm=' + projNm + '&workDate=' + workDate + '&userNm=' + userNm + '&deptNm=' + deptNm + '&current=' + current + '&size=' + size).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//直接看项目
-	getProjBossReport(projNm,workDate,current,size,isCharge,chargeDepts) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/projBossReport?projNm='+projNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+	getProjBossReport(projNm, workDate, current, size, isCharge, chargeDepts) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/projBossReport?projNm=' + projNm + '&workDate=' + workDate + '&current=' + current + '&size=' + size + '&isCharge=' + isCharge + '&chargeDepts=' + chargeDepts).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//直接看部门
-	getDeptBossReport(deptNm,workDate,current,size,isCharge,chargeDepts) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/deptBossReport?deptNm='+deptNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+	getDeptBossReport(deptNm, workDate, current, size, isCharge, chargeDepts) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/deptBossReport?deptNm=' + deptNm + '&workDate=' + workDate + '&current=' + current + '&size=' + size + '&isCharge=' + isCharge + '&chargeDepts=' + chargeDepts).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//boss部门看项目
-	getDeptProjBossReport(projNm,workDate,deptId,current,size) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/deptProjBossReport?projNm='+projNm+'&workDate='+workDate+'&deptId='+deptId+'&current='+current+'&size='+size).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+	getDeptProjBossReport(projNm, workDate, deptId, current, size) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/deptProjBossReport?projNm=' + projNm + '&workDate=' + workDate + '&deptId=' + deptId + '&current=' + current + '&size=' + size).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//项目看部门
-	getProjDeptReport(projId,deptNm,workDate,current,size,isCharge,chargeDepts) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/projDeptReport?projId='+projId+'&deptNm='+deptNm+'&workDate='+workDate+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+	getProjDeptReport(projId, deptNm, workDate, current, size, isCharge, chargeDepts) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/projDeptReport?projId=' + projId + '&deptNm=' + deptNm + '&workDate=' + workDate + '&current=' + current + '&size=' + size + '&isCharge=' + isCharge + '&chargeDepts=' + chargeDepts).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//(Boss/领导)部门-->项目看人员
-	getProjPersonReport(userNm,workDate,deptId,projId,current,size) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/projPersonReport?userNm='+userNm+'&workDate='+workDate+'&deptId='+deptId+'&projId='+projId+'&current='+current+'&size='+size).then(res => {
-	            resolve(res.data)
-	         })  
-	    })
+	getProjPersonReport(userNm, workDate, deptId, projId, current, size) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/projPersonReport?userNm=' + userNm + '&workDate=' + workDate + '&deptId=' + deptId + '&projId=' + projId + '&current=' + current + '&size=' + size).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//Boss 部门人员看项目
-	getPersonProjBossReport(projNm,workDate,userId,current,size,isCharge,chargeDepts) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/personProjBossReport?projNm='+projNm+'&workDate='+workDate+'&userId='+userId+'&current='+current+'&size='+size+'&isCharge='+isCharge+'&chargeDepts='+chargeDepts).then(res => {
-	            resolve(res.data)
-	         })  
-	    })
+	getPersonProjBossReport(projNm, workDate, userId, current, size, isCharge, chargeDepts) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/personProjBossReport?projNm=' + projNm + '&workDate=' + workDate + '&userId=' + userId + '&current=' + current + '&size=' + size + '&isCharge=' + isCharge + '&chargeDepts=' + chargeDepts).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//Boss 部门人员看项目
-	getPersonProjBossReport1(projNm,workDate,userId,current,size,deptId) {
-	    return new Promise((resolve, reject) => {
-	        post('/api/blade-proj/apis/projwhreport/personProjBossReport1?projNm='+projNm+'&workDate='+workDate+'&userId='+userId+'&current='+current+'&size='+size+'&deptId='+deptId).then(res => {
-	            resolve(res.data)
-	         })  
-	    })
+	getPersonProjBossReport1(projNm, workDate, userId, current, size, deptId) {
+		return new Promise((resolve, reject) => {
+			post('/api/blade-proj/apis/projwhreport/personProjBossReport1?projNm=' + projNm + '&workDate=' + workDate + '&userId=' + userId + '&current=' + current + '&size=' + size + '&deptId=' + deptId).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//工时填报-流程详情
 	getProcess(data) {
-	    return new Promise((resolve, reject) => {
-	        get('/api/blade-proj/apis/projwhreport/getProcess?processInstanceId='+data).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+		return new Promise((resolve, reject) => {
+			get('/api/blade-proj/apis/projwhreport/getProcess?processInstanceId=' + data).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//获取工时规则
 	getContarticle() {
-	    return new Promise((resolve, reject) => {
-	        get('/api/blade-cont/contarticle/info').then(res => {
-	            resolve(res.data)
-	        })
-	    })
+		return new Promise((resolve, reject) => {
+			get('/api/blade-cont/contarticle/info').then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//获取轮播图
 	getListAdsByPos() {
-	    return new Promise((resolve, reject) => {
-	        get('/api/open/advertinfo/listAdsByPos?posCd=ADPOS.001').then(res => {
-	            resolve(res.data)
-	        })
-	    })
+		return new Promise((resolve, reject) => {
+			get('/api/open/advertinfo/listAdsByPos?posCd=ADPOS.001').then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 	//获取部门名称
 	getDeptDetail(data) {
-	    return new Promise((resolve, reject) => {
-	        get('/api/blade-proj/apis/projwhreport/deptDetail?id='+data).then(res => {
-	            resolve(res.data)
-	        })
-	    })
+		return new Promise((resolve, reject) => {
+			get('/api/blade-proj/apis/projwhreport/deptDetail?id=' + data).then(res => {
+				resolve(res.data)
+			})
+		})
 	}
 
 

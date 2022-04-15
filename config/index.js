@@ -45,8 +45,9 @@ module.exports = {
 	  proxyTable: {
 	      '/api':{
 	          // target:'http://192.168.2.140',
-	          // target:'http://htweb.jinkworld.com/api',
-	          target:'http://lwkacgr.nat.ipyingshe.com',
+	          // target:'http://htweb2.jinkworld.com:82/api',
+	          target:'http://htweb.jinkworld.com/api',
+	          // target:'http://lwkacgr.nat.ipyingshe.com',
 	          changeOrigin:true,
 	          pathRewrite:{
 	              '^/api':'/'

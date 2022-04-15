@@ -140,6 +140,7 @@ export default {
       this.until.href(url);
     },
     dd() {
+
       let that = this;
       console.log("是钉钉");
       window.localStorage.setItem("codeInfoDDD", "是钉钉");
@@ -147,8 +148,8 @@ export default {
         window.localStorage.setItem("codeInfoDDD", "已进入");
         dd.runtime.permission.requestAuthCode({
           //获取code
-          corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 企业id
-          // corpId: "dingc35f50400f19d66d",
+          // corpId: "ding0a5a75e21ecf953f35c2f4657eb6378f", // 恒太企业id
+          corpId: "dingc35f50400f19d66d",//聚联id
           onSuccess: (info) => {
             console.log("获取钉钉code");
 

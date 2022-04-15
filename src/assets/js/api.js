@@ -27,11 +27,33 @@ const until1 = new until();
 // const token=localStorage.getItem('token')
 Vue.prototype.axios = axios    //全局注册，使用方法为:this.$axios
 
-const token =
-'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJub21hbCIsInBvc3RfaWQiOiIxNDk0NTkzNjEyMzIyODAzNzEzIiwidXNlcl9pZCI6IjE2MjA2NzA3NiIsInJvbGVfaWQiOiIxNDc5NDAwOTQ1MjcxNzk5ODEwIiwidXNlcl9uYW1lIjoi5YWr5pyIIiwibmlja19uYW1lIjoi5YWr5pyIIiwiZGV0YWlsIjp7InR5cGUiOiJ3ZWIiLCJpc0NoYXJnZSI6MCwibmVlZFByb2oiOjF9LCJ0b2tlbl90eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGVwdF9pZCI6IjI0ODc2ODIiLCJhY2NvdW50Ijoi5YWr5pyIIiwiY2xpZW50X2lkIjoic2FiZXIiLCJleHAiOjE2NDY5ODI4NDQsIm5iZiI6MTY0Njk3OTI0NH0.Ux8ENqCG5Uwjkau1O1FViKi1cunEQuAKjk7Df7Tu-vPHT1mkHJlAXMoJf54XBPKg-vy6bYAow13tSpT4BlE63A'
+// const token =
+// 	'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJub21hbCIsInBvc3RfaWQiOiIxNTA0MzU5Mjc3MDk1MTI5MDg5IiwidXNlcl9pZCI6IjE2MjA2NzA3NiIsInJvbGVfaWQiOiIxNDc5NDAwOTQ1MjcxNzk5ODEwIiwidXNlcl9uYW1lIjoi5YWr5pyIIiwibmlja19uYW1lIjoi5YWr5pyIIiwiZGV0YWlsIjp7InR5cGUiOiJ3ZWIiLCJpc0NoYXJnZSI6MCwibmVlZFByb2oiOjF9LCJ0b2tlbl90eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGVwdF9pZCI6IjI0ODc2ODIiLCJhY2NvdW50Ijoi5YWr5pyIIiwiY2xpZW50X2lkIjoic2FiZXIiLCJleHAiOjE2NDg0MzUzMDYsIm5iZiI6MTY0ODQzMTcwNn0.gCwgNbJE09Kb02aCDfUst5PQ0NhLgVmWpYZFsJ9BX_WpPuHRIeryALSR3AFHjNbTqu9EMCYxekQR9z0dbhwkGQ'
+// const userInfo = {
+// 	access_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ0ZW5hbnRfaWQiOiIwMDAwMDAiLCJyb2xlX25hbWUiOiJub21hbCIsInBvc3RfaWQiOiIxNTA0MzU5Mjc3MDk1MTI5MDg5IiwidXNlcl9pZCI6IjE2MjA2NzA3NiIsInJvbGVfaWQiOiIxNDc5NDAwOTQ1MjcxNzk5ODEwIiwidXNlcl9uYW1lIjoi5YWr5pyIIiwibmlja19uYW1lIjoi5YWr5pyIIiwiZGV0YWlsIjp7InR5cGUiOiJ3ZWIiLCJpc0NoYXJnZSI6MCwibmVlZFByb2oiOjF9LCJ0b2tlbl90eXBlIjoiYWNjZXNzX3Rva2VuIiwiZGVwdF9pZCI6IjI0ODc2ODIiLCJhY2NvdW50Ijoi5YWr5pyIIiwiY2xpZW50X2lkIjoic2FiZXIiLCJleHAiOjE2NDg0MzUzMDYsIm5iZiI6MTY0ODQzMTcwNn0.gCwgNbJE09Kb02aCDfUst5PQ0NhLgVmWpYZFsJ9BX_WpPuHRIeryALSR3AFHjNbTqu9EMCYxekQR9z0dbhwkGQ",
+// 	account: "八月",
+// 	avatar: "/img/bg/img-logo.png",
+// 	dept_id: "2487682",
+// 	detail: { type: "web", isCharge: 0, needProj: 1 },
+// 	isCharge: 0,
+// 	needProj: 1,
+// 	type: "web",
+// 	expires_in: 3600,
+// 	license: "powered by bladex",
+// 	nick_name: "八月",
+// 	oauth_id: "",
+// 	post_id: "1504359277095129089",
+// 	refresh_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJpc3N1c2VyIiwiYXVkIjoiYXVkaWVuY2UiLCJ1c2VyX2lkIjoiMTYyMDY3MDc2Iiwicm9sZV9pZCI6IjE0Nzk0MDA5NDUyNzE3OTk4MTAiLCJ0b2tlbl90eXBlIjoicmVmcmVzaF90b2tlbiIsImRlcHRfaWQiOiIyNDg3NjgyIiwiY2xpZW50X2lkIjoic2FiZXIiLCJleHAiOjE2NDkwMzY1MDYsIm5iZiI6MTY0ODQzMTcwNn0.B0WIoJKKYTsxhmUJQOw4xZ4jeST1gGP33PB3CEC7lE2cPVQ3EPgN4l5bXyhoqnFKANg7_QSnAQk-AQfjZwQfcw",
+// 	role_id: "1479400945271799810",
+// 	role_name: "nomal",
+// 	tenant_id: "000000",
+// 	token_type: "bearer",
+// 	user_id: "162067076",
+// 	user_name: "八月"
+// }
 
-
-until1.loSave("token",token)
+// until1.loSave("token", token)
+// until1.loSave("userInfo", userInfo)
 //ajax请求listByDepart
 function get(url, data, header, cache = false) {
 

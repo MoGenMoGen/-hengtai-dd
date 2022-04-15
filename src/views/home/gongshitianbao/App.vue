@@ -151,8 +151,8 @@
 				</div>
 			</div> -->
 
-      <!-- <div class="addBox"  v-if="userInfo&&userInfo.detail.needProj==1"> -->
-      <div class="addBox">
+      <div class="addBox"  v-if="userInfo&&userInfo.detail.needProj==1">
+      <!-- <div class="addBox"> -->
         <div
           class="addList"
           v-for="(item, index) in pickService"
